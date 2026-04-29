@@ -511,189 +511,6 @@
         "x-explicit-tags": []
       }
     },
-    "/api/environments/{environment_id}/app_metrics/{id}/": {
-      "get": {
-        "operationId": "environments_app_metrics_retrieve",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "environment_id",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Deprecated. Use /api/projects/{project_id}/ instead."
-          },
-          {
-            "in": "path",
-            "name": "id",
-            "schema": {
-              "type": "integer"
-            },
-            "description": "A unique integer value identifying this plugin config.",
-            "required": true
-          }
-        ],
-        "tags": [
-          "app_metrics"
-        ],
-        "security": [
-          {
-            "PersonalAPIKeyAuth": [
-              "plugin:read"
-            ]
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "additionalProperties": {}
-                }
-              }
-            },
-            "description": ""
-          }
-        },
-        "deprecated": true,
-        "x-explicit-tags": []
-      }
-    },
-    "/api/environments/{environment_id}/app_metrics/{id}/error_details/": {
-      "get": {
-        "operationId": "environments_app_metrics_error_details_retrieve",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "environment_id",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Deprecated. Use /api/projects/{project_id}/ instead."
-          },
-          {
-            "in": "path",
-            "name": "id",
-            "schema": {
-              "type": "integer"
-            },
-            "description": "A unique integer value identifying this plugin config.",
-            "required": true
-          }
-        ],
-        "tags": [
-          "app_metrics"
-        ],
-        "responses": {
-          "200": {
-            "description": "No response body"
-          }
-        },
-        "deprecated": true,
-        "x-explicit-tags": []
-      }
-    },
-    "/api/environments/{environment_id}/app_metrics/{plugin_config_id}/historical_exports/": {
-      "get": {
-        "operationId": "environments_app_metrics_historical_exports_list",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "environment_id",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Deprecated. Use /api/projects/{project_id}/ instead."
-          },
-          {
-            "in": "path",
-            "name": "plugin_config_id",
-            "schema": {
-              "type": "integer"
-            },
-            "required": true
-          }
-        ],
-        "tags": [
-          "app_metrics"
-        ],
-        "security": [
-          {
-            "PersonalAPIKeyAuth": [
-              "plugin:read"
-            ]
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "No response body"
-          }
-        },
-        "deprecated": true,
-        "x-explicit-tags": []
-      }
-    },
-    "/api/environments/{environment_id}/app_metrics/{plugin_config_id}/historical_exports/{id}/": {
-      "get": {
-        "operationId": "environments_app_metrics_historical_exports_retrieve",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "environment_id",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Deprecated. Use /api/projects/{project_id}/ instead."
-          },
-          {
-            "in": "path",
-            "name": "id",
-            "schema": {
-              "type": "integer"
-            },
-            "required": true
-          },
-          {
-            "in": "path",
-            "name": "plugin_config_id",
-            "schema": {
-              "type": "integer"
-            },
-            "required": true
-          }
-        ],
-        "tags": [
-          "app_metrics"
-        ],
-        "security": [
-          {
-            "PersonalAPIKeyAuth": [
-              "plugin:read"
-            ]
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "additionalProperties": {}
-                }
-              }
-            },
-            "description": ""
-          }
-        },
-        "deprecated": true,
-        "x-explicit-tags": []
-      }
-    },
     "/api/environments/{environment_id}/batch_exports/": {
       "get": {
         "operationId": "environments_batch_exports_list",
@@ -10568,6 +10385,60 @@
         "responses": {
           "204": {
             "description": "No response body"
+          }
+        },
+        "deprecated": true,
+        "x-explicit-tags": []
+      }
+    },
+    "/api/environments/{environment_id}/file_system_shortcut/reorder/": {
+      "post": {
+        "operationId": "environments_file_system_shortcut_reorder_create",
+        "description": "Set the display order of the current user's shortcuts. `ordered_ids` becomes the new top-to-bottom order; any unknown IDs are rejected.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "environment_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Deprecated. Use /api/projects/{project_id}/ instead."
+          }
+        ],
+        "tags": [
+          "file_system_shortcut"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FileSystemShortcutReorder"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/FileSystemShortcutReorder"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/FileSystemShortcutReorder"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedFileSystemShortcutList"
+                }
+              }
+            },
+            "description": ""
           }
         },
         "deprecated": true,
@@ -35099,6 +34970,14 @@
         "operationId": "llm_skills_list",
         "parameters": [
           {
+            "in": "query",
+            "name": "created_by_id",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Filter skills by the ID of the user who created them."
+          },
+          {
             "name": "limit",
             "required": false,
             "in": "query",
@@ -37265,6 +37144,89 @@
         ]
       }
     },
+    "/api/environments/{project_id}/session_summaries/config/": {
+      "get": {
+        "operationId": "retrieve_session_summaries_config",
+        "description": "Retrieve the team's session summaries configuration (product context used to tailor single-session replay summaries).",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+          }
+        ],
+        "tags": [
+          "session_summaries"
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionSummariesConfig"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-explicit-tags": []
+      },
+      "patch": {
+        "operationId": "update_session_summaries_config",
+        "description": "Update the team's session summaries configuration (product context used to tailor single-session replay summaries).",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+          }
+        ],
+        "tags": [
+          "session_summaries"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchedSessionSummariesConfig"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchedSessionSummariesConfig"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchedSessionSummariesConfig"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionSummariesConfig"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-explicit-tags": []
+      }
+    },
     "/api/environments/{project_id}/session_summaries/create_session_summaries/": {
       "post": {
         "operationId": "create_session_summaries",
@@ -37303,6 +37265,13 @@
           },
           "required": true
         },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "session_recording:read"
+            ]
+          }
+        ],
         "responses": {
           "200": {
             "content": {
@@ -37356,6 +37325,13 @@
           },
           "required": true
         },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "session_recording:read"
+            ]
+          }
+        ],
         "responses": {
           "200": {
             "content": {
@@ -44425,185 +44401,6 @@
         "x-explicit-tags": [
           "core"
         ]
-      }
-    },
-    "/api/projects/{project_id}/app_metrics/{id}/": {
-      "get": {
-        "operationId": "app_metrics_retrieve",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "id",
-            "schema": {
-              "type": "integer"
-            },
-            "description": "A unique integer value identifying this plugin config.",
-            "required": true
-          },
-          {
-            "in": "path",
-            "name": "project_id",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
-          }
-        ],
-        "tags": [
-          "app_metrics"
-        ],
-        "security": [
-          {
-            "PersonalAPIKeyAuth": [
-              "plugin:read"
-            ]
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "additionalProperties": {}
-                }
-              }
-            },
-            "description": ""
-          }
-        },
-        "x-explicit-tags": []
-      }
-    },
-    "/api/projects/{project_id}/app_metrics/{id}/error_details/": {
-      "get": {
-        "operationId": "app_metrics_error_details_retrieve",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "id",
-            "schema": {
-              "type": "integer"
-            },
-            "description": "A unique integer value identifying this plugin config.",
-            "required": true
-          },
-          {
-            "in": "path",
-            "name": "project_id",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
-          }
-        ],
-        "tags": [
-          "app_metrics"
-        ],
-        "responses": {
-          "200": {
-            "description": "No response body"
-          }
-        },
-        "x-explicit-tags": []
-      }
-    },
-    "/api/projects/{project_id}/app_metrics/{plugin_config_id}/historical_exports/": {
-      "get": {
-        "operationId": "app_metrics_historical_exports_list",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "plugin_config_id",
-            "schema": {
-              "type": "integer"
-            },
-            "required": true
-          },
-          {
-            "in": "path",
-            "name": "project_id",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
-          }
-        ],
-        "tags": [
-          "app_metrics"
-        ],
-        "security": [
-          {
-            "PersonalAPIKeyAuth": [
-              "plugin:read"
-            ]
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "No response body"
-          }
-        },
-        "x-explicit-tags": []
-      }
-    },
-    "/api/projects/{project_id}/app_metrics/{plugin_config_id}/historical_exports/{id}/": {
-      "get": {
-        "operationId": "app_metrics_historical_exports_retrieve",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "id",
-            "schema": {
-              "type": "integer"
-            },
-            "required": true
-          },
-          {
-            "in": "path",
-            "name": "plugin_config_id",
-            "schema": {
-              "type": "integer"
-            },
-            "required": true
-          },
-          {
-            "in": "path",
-            "name": "project_id",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
-          }
-        ],
-        "tags": [
-          "app_metrics"
-        ],
-        "security": [
-          {
-            "PersonalAPIKeyAuth": [
-              "plugin:read"
-            ]
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "additionalProperties": {}
-                }
-              }
-            },
-            "description": ""
-          }
-        },
-        "x-explicit-tags": []
       }
     },
     "/api/projects/{project_id}/batch_exports/": {
@@ -55145,6 +54942,60 @@
         ]
       }
     },
+    "/api/projects/{project_id}/event_definitions/promoted_properties/": {
+      "get": {
+        "operationId": "event_definitions_promoted_properties_retrieve",
+        "description": "Resolve team-configured promoted properties for event definitions.\n\nThe response only contains entries where a non-null promoted_property is set on the\nEventDefinition. Callers should fall back to the core taxonomy defaults client-side\nfor names not present in the response.",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "names",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "description": "Optional: restrict the response to these event names. Repeat the parameter for multiple names (e.g. `?names=a&names=b`). When omitted, returns every team-configured promoted property."
+          },
+          {
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+          }
+        ],
+        "tags": [
+          "core",
+          "event_definitions"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "event_definition:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PromotedPropertiesResponse"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-explicit-tags": [
+          "core"
+        ]
+      }
+    },
     "/api/projects/{project_id}/event_definitions/python/": {
       "get": {
         "operationId": "event_definitions_python_retrieve",
@@ -57530,6 +57381,58 @@
         "responses": {
           "200": {
             "description": "No response body"
+          }
+        },
+        "x-explicit-tags": [
+          "experiments"
+        ]
+      }
+    },
+    "/api/projects/{project_id}/experiments/{id}/unarchive/": {
+      "post": {
+        "operationId": "experiments_unarchive_create",
+        "description": "Unarchive an archived experiment.\n\nRestores the experiment to the default list view. Returns 400 if the\nexperiment is not currently archived.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "A unique integer value identifying this experiment.",
+            "required": true
+          },
+          {
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+          }
+        ],
+        "tags": [
+          "experiments",
+          "experiments"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "experiment:write"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Experiment"
+                }
+              }
+            },
+            "description": ""
           }
         },
         "x-explicit-tags": [
@@ -62218,6 +62121,59 @@
         "x-explicit-tags": []
       }
     },
+    "/api/projects/{project_id}/file_system_shortcut/reorder/": {
+      "post": {
+        "operationId": "file_system_shortcut_reorder_create",
+        "description": "Set the display order of the current user's shortcuts. `ordered_ids` becomes the new top-to-bottom order; any unknown IDs are rejected.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+          }
+        ],
+        "tags": [
+          "file_system_shortcut"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FileSystemShortcutReorder"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/FileSystemShortcutReorder"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/FileSystemShortcutReorder"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedFileSystemShortcutList"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-explicit-tags": []
+      }
+    },
     "/api/projects/{project_id}/flag_value/values/": {
       "get": {
         "operationId": "flag_value_values_retrieve",
@@ -62903,7 +62859,7 @@
         "security": [
           {
             "PersonalAPIKeyAuth": [
-              "group:read"
+              "usage_metric:read"
             ]
           }
         ],
@@ -62973,7 +62929,7 @@
         "security": [
           {
             "PersonalAPIKeyAuth": [
-              "group:write"
+              "usage_metric:write"
             ]
           }
         ],
@@ -63035,7 +62991,7 @@
         "security": [
           {
             "PersonalAPIKeyAuth": [
-              "group:read"
+              "usage_metric:read"
             ]
           }
         ],
@@ -63115,7 +63071,7 @@
         "security": [
           {
             "PersonalAPIKeyAuth": [
-              "group:write"
+              "usage_metric:write"
             ]
           }
         ],
@@ -63194,7 +63150,7 @@
         "security": [
           {
             "PersonalAPIKeyAuth": [
-              "group:write"
+              "usage_metric:write"
             ]
           }
         ],
@@ -63254,7 +63210,7 @@
         "security": [
           {
             "PersonalAPIKeyAuth": [
-              "group:write"
+              "usage_metric:write"
             ]
           }
         ],
@@ -84155,6 +84111,58 @@
         ]
       }
     },
+    "/api/projects/{project_id}/visual_review/repos/{id}/thumbnails/{identifier}/": {
+      "get": {
+        "operationId": "visual_review_repos_thumbnails_retrieve",
+        "description": "Serve a snapshot thumbnail by identifier. Returns WebP with ETag caching.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "in": "path",
+            "name": "identifier",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "in": "path",
+            "name": "project_id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Project ID of the project you're trying to access. To find the ID of the project, make a call to /api/projects/."
+          }
+        ],
+        "tags": [
+          "visual_review",
+          "visual_review"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "visual_review:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "WebP thumbnail image"
+          }
+        },
+        "x-explicit-tags": [
+          "visual_review"
+        ]
+      }
+    },
     "/api/projects/{project_id}/visual_review/runs/": {
       "get": {
         "operationId": "visual_review_runs_list",
@@ -87128,6 +87136,7 @@
     "/api/user_home_settings/{uuid}/": {
       "get": {
         "operationId": "user_home_settings_retrieve",
+        "description": "Get the authenticated user's pinned sidebar tabs and configured homepage for the current team. Pass `@me` as the UUID.",
         "parameters": [
           {
             "in": "path",
@@ -87140,7 +87149,7 @@
           }
         ],
         "tags": [
-          "user_home_settings",
+          "platform_features",
           "user_home_settings"
         ],
         "security": [
@@ -87163,11 +87172,12 @@
           }
         },
         "x-explicit-tags": [
-          "user_home_settings"
+          "platform_features"
         ]
       },
       "patch": {
         "operationId": "user_home_settings_partial_update",
+        "description": "Update the authenticated user's pinned sidebar tabs and/or homepage for the current team. Pass `@me` as the UUID. Send `tabs` to replace the pinned tab list, `homepage` to set the home destination (any PostHog URL — dashboard, insight, search results, scene). Either field may be omitted to leave it unchanged; sending `homepage: null` or `{}` clears the homepage.",
         "parameters": [
           {
             "in": "path",
@@ -87180,7 +87190,7 @@
           }
         ],
         "tags": [
-          "user_home_settings",
+          "platform_features",
           "user_home_settings"
         ],
         "requestBody": {
@@ -87222,7 +87232,7 @@
           }
         },
         "x-explicit-tags": [
-          "user_home_settings"
+          "platform_features"
         ]
       }
     },
@@ -87733,6 +87743,256 @@
         "responses": {
           "200": {
             "description": "No response body"
+          }
+        },
+        "x-explicit-tags": [
+          "core"
+        ]
+      }
+    },
+    "/api/users/{uuid}/integrations/": {
+      "get": {
+        "operationId": "users_integrations_list",
+        "description": "`/api/users/@me/integrations/` — manage the user's personal GitHub integrations.",
+        "summary": "List personal GitHub integrations",
+        "parameters": [
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Number of results to return per page.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "offset",
+            "required": false,
+            "in": "query",
+            "description": "The initial index from which to return the results.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "in": "path",
+            "name": "uuid",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "tags": [
+          "core",
+          "users"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "user:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedUserGitHubIntegrationListResponseList"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-explicit-tags": [
+          "core"
+        ]
+      }
+    },
+    "/api/users/{uuid}/integrations/github/{installation_id}/": {
+      "delete": {
+        "operationId": "users_integrations_github_destroy",
+        "description": "Remove a specific GitHub installation by its installation_id.",
+        "summary": "Disconnect a personal GitHub integration",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "installation_id",
+            "schema": {
+              "type": "string",
+              "pattern": "^\\d+$"
+            },
+            "required": true
+          },
+          {
+            "in": "path",
+            "name": "uuid",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "tags": [
+          "core",
+          "users"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "user:write"
+            ]
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Integration removed."
+          }
+        },
+        "x-explicit-tags": [
+          "core"
+        ]
+      }
+    },
+    "/api/users/{uuid}/integrations/github/{installation_id}/repos/": {
+      "get": {
+        "operationId": "users_integrations_github_repos_retrieve",
+        "description": "List repositories accessible to a specific GitHub installation (paginated, cached).",
+        "summary": "List repositories for a personal GitHub installation",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "installation_id",
+            "schema": {
+              "type": "string",
+              "pattern": "^\\d+$"
+            },
+            "required": true
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer",
+              "maximum": 500,
+              "minimum": 1,
+              "default": 100
+            },
+            "description": "Maximum number of repositories to return per request (max 500)."
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            },
+            "description": "Number of repositories to skip before returning results."
+          },
+          {
+            "in": "query",
+            "name": "search",
+            "schema": {
+              "type": "string",
+              "default": ""
+            },
+            "description": "Optional case-insensitive repository name search query."
+          },
+          {
+            "in": "path",
+            "name": "uuid",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "tags": [
+          "core",
+          "users"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "user:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GitHubReposResponse"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-explicit-tags": [
+          "core"
+        ]
+      }
+    },
+    "/api/users/{uuid}/integrations/github/start/": {
+      "post": {
+        "operationId": "users_integrations_github_start_create",
+        "description": "Start GitHub linking: either full App install or OAuth-only (user-to-server).\n\n``**_kwargs`` absorbs ``parent_lookup_uuid`` from the nested\n``/api/users/{uuid}/integrations/`` router (same pattern as ``local_evaluation``\nunder projects).\n\n- If the current project has **no** team-level GitHub ``Integration``, returns\n  ``install_url`` pointing at ``/installations/new`` (configure org + repos).\n- If the team **already** has a GitHub installation, returns ``install_url``\n  pointing at ``/login/oauth/authorize`` so the user only authorizes as\n  themselves for that installation (no repo scoping UI on GitHub).\n\nIn both cases the response key is ``install_url`` for compatibility with callers.",
+        "summary": "Start GitHub personal integration linking",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "uuid",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "tags": [
+          "core",
+          "users"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserGitHubLinkStartRequest"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/UserGitHubLinkStartRequest"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/UserGitHubLinkStartRequest"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "user:write"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserGitHubLinkStartResponse"
+                }
+              }
+            },
+            "description": ""
           }
         },
         "x-explicit-tags": [
@@ -91330,6 +91590,21 @@
         "title": "BehavioralFilter",
         "type": "object"
       },
+      "BiasRisk": {
+        "additionalProperties": false,
+        "properties": {
+          "multiple_variant_percentage": {
+            "description": "Observed share of users assigned to `$multiple`, as a percentage (0-100).",
+            "title": "Multiple Variant Percentage",
+            "type": "number"
+          }
+        },
+        "required": [
+          "multiple_variant_percentage"
+        ],
+        "title": "BiasRisk",
+        "type": "object"
+      },
       "BlankEnum": {
         "enum": [
           ""
@@ -92916,7 +93191,7 @@
                 "$ref": "#/components/schemas/ReasoningEffortEnum"
               }
             ],
-            "description": "Reasoning effort to request for models that expose an effort control.\n\n* `low` - low\n* `medium` - medium\n* `high` - high\n* `max` - max"
+            "description": "Reasoning effort to request for models that expose an effort control.\n\n* `low` - low\n* `medium` - medium\n* `high` - high\n* `xhigh` - xhigh\n* `max` - max"
           },
           "github_user_token": {
             "type": "string",
@@ -93181,7 +93456,7 @@
                 "$ref": "#/components/schemas/ReasoningEffortEnum"
               }
             ],
-            "description": "Reasoning effort to request for models that expose an effort control.\n\n* `low` - low\n* `medium` - medium\n* `high` - high\n* `max` - max"
+            "description": "Reasoning effort to request for models that expose an effort control.\n\n* `low` - low\n* `medium` - medium\n* `high` - high\n* `xhigh` - xhigh\n* `max` - max"
           },
           "github_user_token": {
             "type": "string",
@@ -98238,7 +98513,7 @@
                 "$ref": "#/components/schemas/ExternalDataSourceTypeEnum"
               }
             ],
-            "description": "The source type to validate against.\n\n* `Ashby` - Ashby\n* `Supabase` - Supabase\n* `CustomerIO` - CustomerIO\n* `Github` - Github\n* `Stripe` - Stripe\n* `Hubspot` - Hubspot\n* `Postgres` - Postgres\n* `Zendesk` - Zendesk\n* `Snowflake` - Snowflake\n* `Salesforce` - Salesforce\n* `MySQL` - MySQL\n* `MongoDB` - MongoDB\n* `MSSQL` - MSSQL\n* `Vitally` - Vitally\n* `BigQuery` - BigQuery\n* `Chargebee` - Chargebee\n* `Clerk` - Clerk\n* `GoogleAds` - GoogleAds\n* `TemporalIO` - TemporalIO\n* `DoIt` - DoIt\n* `GoogleSheets` - GoogleSheets\n* `MetaAds` - MetaAds\n* `Klaviyo` - Klaviyo\n* `Mailchimp` - Mailchimp\n* `Braze` - Braze\n* `Mailjet` - Mailjet\n* `Redshift` - Redshift\n* `Polar` - Polar\n* `RevenueCat` - RevenueCat\n* `LinkedinAds` - LinkedinAds\n* `RedditAds` - RedditAds\n* `TikTokAds` - TikTokAds\n* `BingAds` - BingAds\n* `Shopify` - Shopify\n* `Attio` - Attio\n* `SnapchatAds` - SnapchatAds\n* `Linear` - Linear\n* `Intercom` - Intercom\n* `Amplitude` - Amplitude\n* `Mixpanel` - Mixpanel\n* `Jira` - Jira\n* `ActiveCampaign` - ActiveCampaign\n* `Marketo` - Marketo\n* `Adjust` - Adjust\n* `AppsFlyer` - AppsFlyer\n* `Freshdesk` - Freshdesk\n* `GoogleAnalytics` - GoogleAnalytics\n* `Pipedrive` - Pipedrive\n* `SendGrid` - SendGrid\n* `Slack` - Slack\n* `PagerDuty` - PagerDuty\n* `Asana` - Asana\n* `Notion` - Notion\n* `Airtable` - Airtable\n* `Greenhouse` - Greenhouse\n* `BambooHR` - BambooHR\n* `Lever` - Lever\n* `GitLab` - GitLab\n* `Datadog` - Datadog\n* `Sentry` - Sentry\n* `Pendo` - Pendo\n* `FullStory` - FullStory\n* `AmazonAds` - AmazonAds\n* `PinterestAds` - PinterestAds\n* `AppleSearchAds` - AppleSearchAds\n* `QuickBooks` - QuickBooks\n* `Xero` - Xero\n* `NetSuite` - NetSuite\n* `WooCommerce` - WooCommerce\n* `BigCommerce` - BigCommerce\n* `PayPal` - PayPal\n* `Square` - Square\n* `Zoom` - Zoom\n* `Trello` - Trello\n* `Monday` - Monday\n* `ClickUp` - ClickUp\n* `Confluence` - Confluence\n* `Recurly` - Recurly\n* `SalesLoft` - SalesLoft\n* `Outreach` - Outreach\n* `Gong` - Gong\n* `Calendly` - Calendly\n* `Typeform` - Typeform\n* `Iterable` - Iterable\n* `ZohoCRM` - ZohoCRM\n* `Close` - Close\n* `Oracle` - Oracle\n* `DynamoDB` - DynamoDB\n* `Elasticsearch` - Elasticsearch\n* `Kafka` - Kafka\n* `LaunchDarkly` - LaunchDarkly\n* `Braintree` - Braintree\n* `Recharge` - Recharge\n* `HelpScout` - HelpScout\n* `Gorgias` - Gorgias\n* `Instagram` - Instagram\n* `YouTubeAnalytics` - YouTubeAnalytics\n* `FacebookPages` - FacebookPages\n* `TwitterAds` - TwitterAds\n* `Workday` - Workday\n* `ServiceNow` - ServiceNow\n* `Pardot` - Pardot\n* `Copper` - Copper\n* `Front` - Front\n* `ChartMogul` - ChartMogul\n* `Zuora` - Zuora\n* `Paddle` - Paddle\n* `CircleCI` - CircleCI\n* `CockroachDB` - CockroachDB\n* `Firebase` - Firebase\n* `AzureBlob` - AzureBlob\n* `GoogleDrive` - GoogleDrive\n* `OneDrive` - OneDrive\n* `SharePoint` - SharePoint\n* `Box` - Box\n* `SFTP` - SFTP\n* `MicrosoftTeams` - MicrosoftTeams\n* `Aircall` - Aircall\n* `Webflow` - Webflow\n* `Okta` - Okta\n* `Auth0` - Auth0\n* `Productboard` - Productboard\n* `Smartsheet` - Smartsheet\n* `Wrike` - Wrike\n* `Plaid` - Plaid\n* `SurveyMonkey` - SurveyMonkey\n* `Eventbrite` - Eventbrite\n* `RingCentral` - RingCentral\n* `Twilio` - Twilio\n* `Freshsales` - Freshsales\n* `Shortcut` - Shortcut\n* `ConvertKit` - ConvertKit\n* `Drip` - Drip\n* `CampaignMonitor` - CampaignMonitor\n* `MailerLite` - MailerLite\n* `Omnisend` - Omnisend\n* `Brevo` - Brevo\n* `Postmark` - Postmark\n* `Granola` - Granola\n* `BuildBetter` - BuildBetter\n* `Convex` - Convex\n* `ClickHouse` - ClickHouse\n* `Plain` - Plain"
+            "description": "The source type to validate against.\n\n* `Ashby` - Ashby\n* `Supabase` - Supabase\n* `CustomerIO` - CustomerIO\n* `Github` - Github\n* `Stripe` - Stripe\n* `Hubspot` - Hubspot\n* `Postgres` - Postgres\n* `Zendesk` - Zendesk\n* `Snowflake` - Snowflake\n* `Salesforce` - Salesforce\n* `MySQL` - MySQL\n* `MongoDB` - MongoDB\n* `MSSQL` - MSSQL\n* `Vitally` - Vitally\n* `BigQuery` - BigQuery\n* `Chargebee` - Chargebee\n* `Clerk` - Clerk\n* `GoogleAds` - GoogleAds\n* `TemporalIO` - TemporalIO\n* `DoIt` - DoIt\n* `GoogleSheets` - GoogleSheets\n* `MetaAds` - MetaAds\n* `Klaviyo` - Klaviyo\n* `Mailchimp` - Mailchimp\n* `Braze` - Braze\n* `Mailjet` - Mailjet\n* `Redshift` - Redshift\n* `Polar` - Polar\n* `RevenueCat` - RevenueCat\n* `LinkedinAds` - LinkedinAds\n* `RedditAds` - RedditAds\n* `TikTokAds` - TikTokAds\n* `BingAds` - BingAds\n* `Shopify` - Shopify\n* `Attio` - Attio\n* `SnapchatAds` - SnapchatAds\n* `Linear` - Linear\n* `Intercom` - Intercom\n* `Amplitude` - Amplitude\n* `Mixpanel` - Mixpanel\n* `Jira` - Jira\n* `ActiveCampaign` - ActiveCampaign\n* `Marketo` - Marketo\n* `Adjust` - Adjust\n* `AppsFlyer` - AppsFlyer\n* `Freshdesk` - Freshdesk\n* `GoogleAnalytics` - GoogleAnalytics\n* `Pipedrive` - Pipedrive\n* `SendGrid` - SendGrid\n* `Slack` - Slack\n* `PagerDuty` - PagerDuty\n* `Asana` - Asana\n* `Notion` - Notion\n* `Airtable` - Airtable\n* `Greenhouse` - Greenhouse\n* `BambooHR` - BambooHR\n* `Lever` - Lever\n* `GitLab` - GitLab\n* `Datadog` - Datadog\n* `Sentry` - Sentry\n* `Pendo` - Pendo\n* `FullStory` - FullStory\n* `AmazonAds` - AmazonAds\n* `PinterestAds` - PinterestAds\n* `AppleSearchAds` - AppleSearchAds\n* `QuickBooks` - QuickBooks\n* `Xero` - Xero\n* `NetSuite` - NetSuite\n* `WooCommerce` - WooCommerce\n* `BigCommerce` - BigCommerce\n* `PayPal` - PayPal\n* `Square` - Square\n* `Zoom` - Zoom\n* `Trello` - Trello\n* `Monday` - Monday\n* `ClickUp` - ClickUp\n* `Confluence` - Confluence\n* `Recurly` - Recurly\n* `SalesLoft` - SalesLoft\n* `Outreach` - Outreach\n* `Gong` - Gong\n* `Calendly` - Calendly\n* `Typeform` - Typeform\n* `Iterable` - Iterable\n* `ZohoCRM` - ZohoCRM\n* `Close` - Close\n* `Oracle` - Oracle\n* `DynamoDB` - DynamoDB\n* `Elasticsearch` - Elasticsearch\n* `Kafka` - Kafka\n* `LaunchDarkly` - LaunchDarkly\n* `Braintree` - Braintree\n* `Recharge` - Recharge\n* `HelpScout` - HelpScout\n* `Gorgias` - Gorgias\n* `Instagram` - Instagram\n* `YouTubeAnalytics` - YouTubeAnalytics\n* `FacebookPages` - FacebookPages\n* `TwitterAds` - TwitterAds\n* `Workday` - Workday\n* `ServiceNow` - ServiceNow\n* `Pardot` - Pardot\n* `Copper` - Copper\n* `Front` - Front\n* `ChartMogul` - ChartMogul\n* `Zuora` - Zuora\n* `Paddle` - Paddle\n* `CircleCI` - CircleCI\n* `CockroachDB` - CockroachDB\n* `Firebase` - Firebase\n* `AzureBlob` - AzureBlob\n* `GoogleDrive` - GoogleDrive\n* `OneDrive` - OneDrive\n* `SharePoint` - SharePoint\n* `Box` - Box\n* `SFTP` - SFTP\n* `MicrosoftTeams` - MicrosoftTeams\n* `Aircall` - Aircall\n* `Webflow` - Webflow\n* `Okta` - Okta\n* `Auth0` - Auth0\n* `Productboard` - Productboard\n* `Smartsheet` - Smartsheet\n* `Wrike` - Wrike\n* `Plaid` - Plaid\n* `SurveyMonkey` - SurveyMonkey\n* `Eventbrite` - Eventbrite\n* `RingCentral` - RingCentral\n* `Twilio` - Twilio\n* `Freshsales` - Freshsales\n* `Shortcut` - Shortcut\n* `ConvertKit` - ConvertKit\n* `Drip` - Drip\n* `CampaignMonitor` - CampaignMonitor\n* `MailerLite` - MailerLite\n* `Omnisend` - Omnisend\n* `Brevo` - Brevo\n* `Postmark` - Postmark\n* `Granola` - Granola\n* `BuildBetter` - BuildBetter\n* `Convex` - Convex\n* `ClickHouse` - ClickHouse\n* `Plain` - Plain\n* `Resend` - Resend"
           }
         },
         "required": [
@@ -99828,11 +100103,6 @@
             "type": "string",
             "description": "Last materialization error message, if any."
           },
-          "sync_frequency": {
-            "type": "string",
-            "nullable": true,
-            "description": "How often the materialization refreshes (e.g. 'every_hour')."
-          },
           "saved_query_id": {
             "type": "string",
             "format": "uuid",
@@ -99872,11 +100142,10 @@
             "nullable": true,
             "description": "Human-readable description of what this endpoint returns."
           },
-          "cache_age_seconds": {
-            "type": "number",
-            "format": "double",
+          "data_freshness_seconds": {
+            "type": "integer",
             "nullable": true,
-            "description": "Cache TTL in seconds (60–86400)."
+            "description": "How fresh the data should be, in seconds. Must be one of: 900 (15 min), 1800 (30 min), 3600 (1 h), 21600 (6 h), 43200 (12 h), 86400 (24 h, default), 604800 (7 d). Controls cache TTL and materialization sync frequency."
           },
           "is_active": {
             "type": "boolean",
@@ -99887,11 +100156,6 @@
             "type": "boolean",
             "nullable": true,
             "description": "Whether query results are materialized to S3."
-          },
-          "sync_frequency": {
-            "type": "string",
-            "nullable": true,
-            "description": "Materialization refresh frequency (e.g. 'every_hour', 'every_day')."
           },
           "derived_from_insight": {
             "type": "string",
@@ -99941,11 +100205,9 @@
             "type": "boolean",
             "description": "Whether the endpoint can be executed via the API."
           },
-          "cache_age_seconds": {
-            "type": "number",
-            "format": "double",
-            "nullable": true,
-            "description": "Cache TTL in seconds, or null for default interval-based caching."
+          "data_freshness_seconds": {
+            "type": "integer",
+            "description": "How fresh the data is, in seconds. One of: 900, 1800, 3600, 21600, 43200, 86400, 604800."
           },
           "endpoint_path": {
             "type": "string",
@@ -100033,11 +100295,11 @@
         },
         "required": [
           "bucket_overrides",
-          "cache_age_seconds",
           "columns",
           "created_at",
           "created_by",
           "current_version",
+          "data_freshness_seconds",
           "derived_from_insight",
           "description",
           "endpoint_path",
@@ -100172,11 +100434,9 @@
             "type": "boolean",
             "description": "Whether the endpoint can be executed via the API."
           },
-          "cache_age_seconds": {
-            "type": "number",
-            "format": "double",
-            "nullable": true,
-            "description": "Cache TTL in seconds, or null for default interval-based caching."
+          "data_freshness_seconds": {
+            "type": "integer",
+            "description": "How fresh the data is, in seconds. One of: 900, 1800, 3600, 21600, 43200, 86400, 604800."
           },
           "endpoint_path": {
             "type": "string",
@@ -100296,11 +100556,11 @@
         },
         "required": [
           "bucket_overrides",
-          "cache_age_seconds",
           "columns",
           "created_at",
           "created_by",
           "current_version",
+          "data_freshness_seconds",
           "derived_from_insight",
           "description",
           "endpoint_is_active",
@@ -101017,6 +101277,12 @@
           },
           "enforcement_mode": {
             "$ref": "#/components/schemas/EnforcementModeEnum"
+          },
+          "promoted_property": {
+            "type": "string",
+            "nullable": true,
+            "description": "Name of a single property on this event that PostHog UIs should display alongside the event (for example `$pathname` on `$pageview`). When set, surfaces like the session replay inspector show the property's value next to the event name without the user having to open the event.",
+            "maxLength": 400
           },
           "is_action": {
             "type": "boolean",
@@ -103830,6 +104096,12 @@
           "enforcement_mode": {
             "$ref": "#/components/schemas/EnforcementModeEnum"
           },
+          "promoted_property": {
+            "type": "string",
+            "nullable": true,
+            "description": "Name of a single property on this event that PostHog UIs should display alongside the event (for example `$pathname` on `$pageview`). When set, surfaces like the session replay inspector show the property's value next to the event name without the user having to open the event.",
+            "maxLength": 400
+          },
           "is_action": {
             "type": "boolean",
             "readOnly": true
@@ -106541,6 +106813,11 @@
       "ExperimentExposureQueryResponse": {
         "additionalProperties": false,
         "properties": {
+          "bias_risk": {
+            "default": null,
+            "$ref": "#/components/schemas/BiasRisk",
+            "nullable": true
+          },
           "date_range": {
             "$ref": "#/components/schemas/DateRange"
           },
@@ -107733,6 +108010,12 @@
             "type": "number",
             "nullable": true
           },
+          "covariate_sum_product": {
+            "default": null,
+            "title": "Covariate Sum Product",
+            "type": "number",
+            "nullable": true
+          },
           "covariate_sum_squares": {
             "default": null,
             "title": "Covariate Sum Squares",
@@ -107754,12 +108037,6 @@
           "key": {
             "title": "Key",
             "type": "string"
-          },
-          "main_covariate_sum_product": {
-            "default": null,
-            "title": "Main Covariate Sum Product",
-            "type": "number",
-            "nullable": true
           },
           "number_of_samples": {
             "title": "Number Of Samples",
@@ -108111,6 +108388,12 @@
             "type": "number",
             "nullable": true
           },
+          "covariate_sum_product": {
+            "default": null,
+            "title": "Covariate Sum Product",
+            "type": "number",
+            "nullable": true
+          },
           "covariate_sum_squares": {
             "default": null,
             "title": "Covariate Sum Squares",
@@ -108143,12 +108426,6 @@
           "key": {
             "title": "Key",
             "type": "string"
-          },
-          "main_covariate_sum_product": {
-            "default": null,
-            "title": "Main Covariate Sum Product",
-            "type": "number",
-            "nullable": true
           },
           "method": {
             "default": "bayesian",
@@ -108242,6 +108519,12 @@
             "type": "number",
             "nullable": true
           },
+          "covariate_sum_product": {
+            "default": null,
+            "title": "Covariate Sum Product",
+            "type": "number",
+            "nullable": true
+          },
           "covariate_sum_squares": {
             "default": null,
             "title": "Covariate Sum Squares",
@@ -108263,12 +108546,6 @@
           "key": {
             "title": "Key",
             "type": "string"
-          },
-          "main_covariate_sum_product": {
-            "default": null,
-            "title": "Main Covariate Sum Product",
-            "type": "number",
-            "nullable": true
           },
           "method": {
             "default": "frequentist",
@@ -108707,7 +108984,7 @@
                 "$ref": "#/components/schemas/ExternalDataSourceTypeEnum"
               }
             ],
-            "description": "The source type (e.g. 'Postgres', 'Stripe').\n\n* `Ashby` - Ashby\n* `Supabase` - Supabase\n* `CustomerIO` - CustomerIO\n* `Github` - Github\n* `Stripe` - Stripe\n* `Hubspot` - Hubspot\n* `Postgres` - Postgres\n* `Zendesk` - Zendesk\n* `Snowflake` - Snowflake\n* `Salesforce` - Salesforce\n* `MySQL` - MySQL\n* `MongoDB` - MongoDB\n* `MSSQL` - MSSQL\n* `Vitally` - Vitally\n* `BigQuery` - BigQuery\n* `Chargebee` - Chargebee\n* `Clerk` - Clerk\n* `GoogleAds` - GoogleAds\n* `TemporalIO` - TemporalIO\n* `DoIt` - DoIt\n* `GoogleSheets` - GoogleSheets\n* `MetaAds` - MetaAds\n* `Klaviyo` - Klaviyo\n* `Mailchimp` - Mailchimp\n* `Braze` - Braze\n* `Mailjet` - Mailjet\n* `Redshift` - Redshift\n* `Polar` - Polar\n* `RevenueCat` - RevenueCat\n* `LinkedinAds` - LinkedinAds\n* `RedditAds` - RedditAds\n* `TikTokAds` - TikTokAds\n* `BingAds` - BingAds\n* `Shopify` - Shopify\n* `Attio` - Attio\n* `SnapchatAds` - SnapchatAds\n* `Linear` - Linear\n* `Intercom` - Intercom\n* `Amplitude` - Amplitude\n* `Mixpanel` - Mixpanel\n* `Jira` - Jira\n* `ActiveCampaign` - ActiveCampaign\n* `Marketo` - Marketo\n* `Adjust` - Adjust\n* `AppsFlyer` - AppsFlyer\n* `Freshdesk` - Freshdesk\n* `GoogleAnalytics` - GoogleAnalytics\n* `Pipedrive` - Pipedrive\n* `SendGrid` - SendGrid\n* `Slack` - Slack\n* `PagerDuty` - PagerDuty\n* `Asana` - Asana\n* `Notion` - Notion\n* `Airtable` - Airtable\n* `Greenhouse` - Greenhouse\n* `BambooHR` - BambooHR\n* `Lever` - Lever\n* `GitLab` - GitLab\n* `Datadog` - Datadog\n* `Sentry` - Sentry\n* `Pendo` - Pendo\n* `FullStory` - FullStory\n* `AmazonAds` - AmazonAds\n* `PinterestAds` - PinterestAds\n* `AppleSearchAds` - AppleSearchAds\n* `QuickBooks` - QuickBooks\n* `Xero` - Xero\n* `NetSuite` - NetSuite\n* `WooCommerce` - WooCommerce\n* `BigCommerce` - BigCommerce\n* `PayPal` - PayPal\n* `Square` - Square\n* `Zoom` - Zoom\n* `Trello` - Trello\n* `Monday` - Monday\n* `ClickUp` - ClickUp\n* `Confluence` - Confluence\n* `Recurly` - Recurly\n* `SalesLoft` - SalesLoft\n* `Outreach` - Outreach\n* `Gong` - Gong\n* `Calendly` - Calendly\n* `Typeform` - Typeform\n* `Iterable` - Iterable\n* `ZohoCRM` - ZohoCRM\n* `Close` - Close\n* `Oracle` - Oracle\n* `DynamoDB` - DynamoDB\n* `Elasticsearch` - Elasticsearch\n* `Kafka` - Kafka\n* `LaunchDarkly` - LaunchDarkly\n* `Braintree` - Braintree\n* `Recharge` - Recharge\n* `HelpScout` - HelpScout\n* `Gorgias` - Gorgias\n* `Instagram` - Instagram\n* `YouTubeAnalytics` - YouTubeAnalytics\n* `FacebookPages` - FacebookPages\n* `TwitterAds` - TwitterAds\n* `Workday` - Workday\n* `ServiceNow` - ServiceNow\n* `Pardot` - Pardot\n* `Copper` - Copper\n* `Front` - Front\n* `ChartMogul` - ChartMogul\n* `Zuora` - Zuora\n* `Paddle` - Paddle\n* `CircleCI` - CircleCI\n* `CockroachDB` - CockroachDB\n* `Firebase` - Firebase\n* `AzureBlob` - AzureBlob\n* `GoogleDrive` - GoogleDrive\n* `OneDrive` - OneDrive\n* `SharePoint` - SharePoint\n* `Box` - Box\n* `SFTP` - SFTP\n* `MicrosoftTeams` - MicrosoftTeams\n* `Aircall` - Aircall\n* `Webflow` - Webflow\n* `Okta` - Okta\n* `Auth0` - Auth0\n* `Productboard` - Productboard\n* `Smartsheet` - Smartsheet\n* `Wrike` - Wrike\n* `Plaid` - Plaid\n* `SurveyMonkey` - SurveyMonkey\n* `Eventbrite` - Eventbrite\n* `RingCentral` - RingCentral\n* `Twilio` - Twilio\n* `Freshsales` - Freshsales\n* `Shortcut` - Shortcut\n* `ConvertKit` - ConvertKit\n* `Drip` - Drip\n* `CampaignMonitor` - CampaignMonitor\n* `MailerLite` - MailerLite\n* `Omnisend` - Omnisend\n* `Brevo` - Brevo\n* `Postmark` - Postmark\n* `Granola` - Granola\n* `BuildBetter` - BuildBetter\n* `Convex` - Convex\n* `ClickHouse` - ClickHouse\n* `Plain` - Plain"
+            "description": "The source type (e.g. 'Postgres', 'Stripe').\n\n* `Ashby` - Ashby\n* `Supabase` - Supabase\n* `CustomerIO` - CustomerIO\n* `Github` - Github\n* `Stripe` - Stripe\n* `Hubspot` - Hubspot\n* `Postgres` - Postgres\n* `Zendesk` - Zendesk\n* `Snowflake` - Snowflake\n* `Salesforce` - Salesforce\n* `MySQL` - MySQL\n* `MongoDB` - MongoDB\n* `MSSQL` - MSSQL\n* `Vitally` - Vitally\n* `BigQuery` - BigQuery\n* `Chargebee` - Chargebee\n* `Clerk` - Clerk\n* `GoogleAds` - GoogleAds\n* `TemporalIO` - TemporalIO\n* `DoIt` - DoIt\n* `GoogleSheets` - GoogleSheets\n* `MetaAds` - MetaAds\n* `Klaviyo` - Klaviyo\n* `Mailchimp` - Mailchimp\n* `Braze` - Braze\n* `Mailjet` - Mailjet\n* `Redshift` - Redshift\n* `Polar` - Polar\n* `RevenueCat` - RevenueCat\n* `LinkedinAds` - LinkedinAds\n* `RedditAds` - RedditAds\n* `TikTokAds` - TikTokAds\n* `BingAds` - BingAds\n* `Shopify` - Shopify\n* `Attio` - Attio\n* `SnapchatAds` - SnapchatAds\n* `Linear` - Linear\n* `Intercom` - Intercom\n* `Amplitude` - Amplitude\n* `Mixpanel` - Mixpanel\n* `Jira` - Jira\n* `ActiveCampaign` - ActiveCampaign\n* `Marketo` - Marketo\n* `Adjust` - Adjust\n* `AppsFlyer` - AppsFlyer\n* `Freshdesk` - Freshdesk\n* `GoogleAnalytics` - GoogleAnalytics\n* `Pipedrive` - Pipedrive\n* `SendGrid` - SendGrid\n* `Slack` - Slack\n* `PagerDuty` - PagerDuty\n* `Asana` - Asana\n* `Notion` - Notion\n* `Airtable` - Airtable\n* `Greenhouse` - Greenhouse\n* `BambooHR` - BambooHR\n* `Lever` - Lever\n* `GitLab` - GitLab\n* `Datadog` - Datadog\n* `Sentry` - Sentry\n* `Pendo` - Pendo\n* `FullStory` - FullStory\n* `AmazonAds` - AmazonAds\n* `PinterestAds` - PinterestAds\n* `AppleSearchAds` - AppleSearchAds\n* `QuickBooks` - QuickBooks\n* `Xero` - Xero\n* `NetSuite` - NetSuite\n* `WooCommerce` - WooCommerce\n* `BigCommerce` - BigCommerce\n* `PayPal` - PayPal\n* `Square` - Square\n* `Zoom` - Zoom\n* `Trello` - Trello\n* `Monday` - Monday\n* `ClickUp` - ClickUp\n* `Confluence` - Confluence\n* `Recurly` - Recurly\n* `SalesLoft` - SalesLoft\n* `Outreach` - Outreach\n* `Gong` - Gong\n* `Calendly` - Calendly\n* `Typeform` - Typeform\n* `Iterable` - Iterable\n* `ZohoCRM` - ZohoCRM\n* `Close` - Close\n* `Oracle` - Oracle\n* `DynamoDB` - DynamoDB\n* `Elasticsearch` - Elasticsearch\n* `Kafka` - Kafka\n* `LaunchDarkly` - LaunchDarkly\n* `Braintree` - Braintree\n* `Recharge` - Recharge\n* `HelpScout` - HelpScout\n* `Gorgias` - Gorgias\n* `Instagram` - Instagram\n* `YouTubeAnalytics` - YouTubeAnalytics\n* `FacebookPages` - FacebookPages\n* `TwitterAds` - TwitterAds\n* `Workday` - Workday\n* `ServiceNow` - ServiceNow\n* `Pardot` - Pardot\n* `Copper` - Copper\n* `Front` - Front\n* `ChartMogul` - ChartMogul\n* `Zuora` - Zuora\n* `Paddle` - Paddle\n* `CircleCI` - CircleCI\n* `CockroachDB` - CockroachDB\n* `Firebase` - Firebase\n* `AzureBlob` - AzureBlob\n* `GoogleDrive` - GoogleDrive\n* `OneDrive` - OneDrive\n* `SharePoint` - SharePoint\n* `Box` - Box\n* `SFTP` - SFTP\n* `MicrosoftTeams` - MicrosoftTeams\n* `Aircall` - Aircall\n* `Webflow` - Webflow\n* `Okta` - Okta\n* `Auth0` - Auth0\n* `Productboard` - Productboard\n* `Smartsheet` - Smartsheet\n* `Wrike` - Wrike\n* `Plaid` - Plaid\n* `SurveyMonkey` - SurveyMonkey\n* `Eventbrite` - Eventbrite\n* `RingCentral` - RingCentral\n* `Twilio` - Twilio\n* `Freshsales` - Freshsales\n* `Shortcut` - Shortcut\n* `ConvertKit` - ConvertKit\n* `Drip` - Drip\n* `CampaignMonitor` - CampaignMonitor\n* `MailerLite` - MailerLite\n* `Omnisend` - Omnisend\n* `Brevo` - Brevo\n* `Postmark` - Postmark\n* `Granola` - Granola\n* `BuildBetter` - BuildBetter\n* `Convex` - Convex\n* `ClickHouse` - ClickHouse\n* `Plain` - Plain\n* `Resend` - Resend"
           },
           "payload": {
             "type": "object",
@@ -109024,10 +109301,11 @@
           "BuildBetter",
           "Convex",
           "ClickHouse",
-          "Plain"
+          "Plain",
+          "Resend"
         ],
         "type": "string",
-        "description": "* `Ashby` - Ashby\n* `Supabase` - Supabase\n* `CustomerIO` - CustomerIO\n* `Github` - Github\n* `Stripe` - Stripe\n* `Hubspot` - Hubspot\n* `Postgres` - Postgres\n* `Zendesk` - Zendesk\n* `Snowflake` - Snowflake\n* `Salesforce` - Salesforce\n* `MySQL` - MySQL\n* `MongoDB` - MongoDB\n* `MSSQL` - MSSQL\n* `Vitally` - Vitally\n* `BigQuery` - BigQuery\n* `Chargebee` - Chargebee\n* `Clerk` - Clerk\n* `GoogleAds` - GoogleAds\n* `TemporalIO` - TemporalIO\n* `DoIt` - DoIt\n* `GoogleSheets` - GoogleSheets\n* `MetaAds` - MetaAds\n* `Klaviyo` - Klaviyo\n* `Mailchimp` - Mailchimp\n* `Braze` - Braze\n* `Mailjet` - Mailjet\n* `Redshift` - Redshift\n* `Polar` - Polar\n* `RevenueCat` - RevenueCat\n* `LinkedinAds` - LinkedinAds\n* `RedditAds` - RedditAds\n* `TikTokAds` - TikTokAds\n* `BingAds` - BingAds\n* `Shopify` - Shopify\n* `Attio` - Attio\n* `SnapchatAds` - SnapchatAds\n* `Linear` - Linear\n* `Intercom` - Intercom\n* `Amplitude` - Amplitude\n* `Mixpanel` - Mixpanel\n* `Jira` - Jira\n* `ActiveCampaign` - ActiveCampaign\n* `Marketo` - Marketo\n* `Adjust` - Adjust\n* `AppsFlyer` - AppsFlyer\n* `Freshdesk` - Freshdesk\n* `GoogleAnalytics` - GoogleAnalytics\n* `Pipedrive` - Pipedrive\n* `SendGrid` - SendGrid\n* `Slack` - Slack\n* `PagerDuty` - PagerDuty\n* `Asana` - Asana\n* `Notion` - Notion\n* `Airtable` - Airtable\n* `Greenhouse` - Greenhouse\n* `BambooHR` - BambooHR\n* `Lever` - Lever\n* `GitLab` - GitLab\n* `Datadog` - Datadog\n* `Sentry` - Sentry\n* `Pendo` - Pendo\n* `FullStory` - FullStory\n* `AmazonAds` - AmazonAds\n* `PinterestAds` - PinterestAds\n* `AppleSearchAds` - AppleSearchAds\n* `QuickBooks` - QuickBooks\n* `Xero` - Xero\n* `NetSuite` - NetSuite\n* `WooCommerce` - WooCommerce\n* `BigCommerce` - BigCommerce\n* `PayPal` - PayPal\n* `Square` - Square\n* `Zoom` - Zoom\n* `Trello` - Trello\n* `Monday` - Monday\n* `ClickUp` - ClickUp\n* `Confluence` - Confluence\n* `Recurly` - Recurly\n* `SalesLoft` - SalesLoft\n* `Outreach` - Outreach\n* `Gong` - Gong\n* `Calendly` - Calendly\n* `Typeform` - Typeform\n* `Iterable` - Iterable\n* `ZohoCRM` - ZohoCRM\n* `Close` - Close\n* `Oracle` - Oracle\n* `DynamoDB` - DynamoDB\n* `Elasticsearch` - Elasticsearch\n* `Kafka` - Kafka\n* `LaunchDarkly` - LaunchDarkly\n* `Braintree` - Braintree\n* `Recharge` - Recharge\n* `HelpScout` - HelpScout\n* `Gorgias` - Gorgias\n* `Instagram` - Instagram\n* `YouTubeAnalytics` - YouTubeAnalytics\n* `FacebookPages` - FacebookPages\n* `TwitterAds` - TwitterAds\n* `Workday` - Workday\n* `ServiceNow` - ServiceNow\n* `Pardot` - Pardot\n* `Copper` - Copper\n* `Front` - Front\n* `ChartMogul` - ChartMogul\n* `Zuora` - Zuora\n* `Paddle` - Paddle\n* `CircleCI` - CircleCI\n* `CockroachDB` - CockroachDB\n* `Firebase` - Firebase\n* `AzureBlob` - AzureBlob\n* `GoogleDrive` - GoogleDrive\n* `OneDrive` - OneDrive\n* `SharePoint` - SharePoint\n* `Box` - Box\n* `SFTP` - SFTP\n* `MicrosoftTeams` - MicrosoftTeams\n* `Aircall` - Aircall\n* `Webflow` - Webflow\n* `Okta` - Okta\n* `Auth0` - Auth0\n* `Productboard` - Productboard\n* `Smartsheet` - Smartsheet\n* `Wrike` - Wrike\n* `Plaid` - Plaid\n* `SurveyMonkey` - SurveyMonkey\n* `Eventbrite` - Eventbrite\n* `RingCentral` - RingCentral\n* `Twilio` - Twilio\n* `Freshsales` - Freshsales\n* `Shortcut` - Shortcut\n* `ConvertKit` - ConvertKit\n* `Drip` - Drip\n* `CampaignMonitor` - CampaignMonitor\n* `MailerLite` - MailerLite\n* `Omnisend` - Omnisend\n* `Brevo` - Brevo\n* `Postmark` - Postmark\n* `Granola` - Granola\n* `BuildBetter` - BuildBetter\n* `Convex` - Convex\n* `ClickHouse` - ClickHouse\n* `Plain` - Plain"
+        "description": "* `Ashby` - Ashby\n* `Supabase` - Supabase\n* `CustomerIO` - CustomerIO\n* `Github` - Github\n* `Stripe` - Stripe\n* `Hubspot` - Hubspot\n* `Postgres` - Postgres\n* `Zendesk` - Zendesk\n* `Snowflake` - Snowflake\n* `Salesforce` - Salesforce\n* `MySQL` - MySQL\n* `MongoDB` - MongoDB\n* `MSSQL` - MSSQL\n* `Vitally` - Vitally\n* `BigQuery` - BigQuery\n* `Chargebee` - Chargebee\n* `Clerk` - Clerk\n* `GoogleAds` - GoogleAds\n* `TemporalIO` - TemporalIO\n* `DoIt` - DoIt\n* `GoogleSheets` - GoogleSheets\n* `MetaAds` - MetaAds\n* `Klaviyo` - Klaviyo\n* `Mailchimp` - Mailchimp\n* `Braze` - Braze\n* `Mailjet` - Mailjet\n* `Redshift` - Redshift\n* `Polar` - Polar\n* `RevenueCat` - RevenueCat\n* `LinkedinAds` - LinkedinAds\n* `RedditAds` - RedditAds\n* `TikTokAds` - TikTokAds\n* `BingAds` - BingAds\n* `Shopify` - Shopify\n* `Attio` - Attio\n* `SnapchatAds` - SnapchatAds\n* `Linear` - Linear\n* `Intercom` - Intercom\n* `Amplitude` - Amplitude\n* `Mixpanel` - Mixpanel\n* `Jira` - Jira\n* `ActiveCampaign` - ActiveCampaign\n* `Marketo` - Marketo\n* `Adjust` - Adjust\n* `AppsFlyer` - AppsFlyer\n* `Freshdesk` - Freshdesk\n* `GoogleAnalytics` - GoogleAnalytics\n* `Pipedrive` - Pipedrive\n* `SendGrid` - SendGrid\n* `Slack` - Slack\n* `PagerDuty` - PagerDuty\n* `Asana` - Asana\n* `Notion` - Notion\n* `Airtable` - Airtable\n* `Greenhouse` - Greenhouse\n* `BambooHR` - BambooHR\n* `Lever` - Lever\n* `GitLab` - GitLab\n* `Datadog` - Datadog\n* `Sentry` - Sentry\n* `Pendo` - Pendo\n* `FullStory` - FullStory\n* `AmazonAds` - AmazonAds\n* `PinterestAds` - PinterestAds\n* `AppleSearchAds` - AppleSearchAds\n* `QuickBooks` - QuickBooks\n* `Xero` - Xero\n* `NetSuite` - NetSuite\n* `WooCommerce` - WooCommerce\n* `BigCommerce` - BigCommerce\n* `PayPal` - PayPal\n* `Square` - Square\n* `Zoom` - Zoom\n* `Trello` - Trello\n* `Monday` - Monday\n* `ClickUp` - ClickUp\n* `Confluence` - Confluence\n* `Recurly` - Recurly\n* `SalesLoft` - SalesLoft\n* `Outreach` - Outreach\n* `Gong` - Gong\n* `Calendly` - Calendly\n* `Typeform` - Typeform\n* `Iterable` - Iterable\n* `ZohoCRM` - ZohoCRM\n* `Close` - Close\n* `Oracle` - Oracle\n* `DynamoDB` - DynamoDB\n* `Elasticsearch` - Elasticsearch\n* `Kafka` - Kafka\n* `LaunchDarkly` - LaunchDarkly\n* `Braintree` - Braintree\n* `Recharge` - Recharge\n* `HelpScout` - HelpScout\n* `Gorgias` - Gorgias\n* `Instagram` - Instagram\n* `YouTubeAnalytics` - YouTubeAnalytics\n* `FacebookPages` - FacebookPages\n* `TwitterAds` - TwitterAds\n* `Workday` - Workday\n* `ServiceNow` - ServiceNow\n* `Pardot` - Pardot\n* `Copper` - Copper\n* `Front` - Front\n* `ChartMogul` - ChartMogul\n* `Zuora` - Zuora\n* `Paddle` - Paddle\n* `CircleCI` - CircleCI\n* `CockroachDB` - CockroachDB\n* `Firebase` - Firebase\n* `AzureBlob` - AzureBlob\n* `GoogleDrive` - GoogleDrive\n* `OneDrive` - OneDrive\n* `SharePoint` - SharePoint\n* `Box` - Box\n* `SFTP` - SFTP\n* `MicrosoftTeams` - MicrosoftTeams\n* `Aircall` - Aircall\n* `Webflow` - Webflow\n* `Okta` - Okta\n* `Auth0` - Auth0\n* `Productboard` - Productboard\n* `Smartsheet` - Smartsheet\n* `Wrike` - Wrike\n* `Plaid` - Plaid\n* `SurveyMonkey` - SurveyMonkey\n* `Eventbrite` - Eventbrite\n* `RingCentral` - RingCentral\n* `Twilio` - Twilio\n* `Freshsales` - Freshsales\n* `Shortcut` - Shortcut\n* `ConvertKit` - ConvertKit\n* `Drip` - Drip\n* `CampaignMonitor` - CampaignMonitor\n* `MailerLite` - MailerLite\n* `Omnisend` - Omnisend\n* `Brevo` - Brevo\n* `Postmark` - Postmark\n* `Granola` - Granola\n* `BuildBetter` - BuildBetter\n* `Convex` - Convex\n* `ClickHouse` - ClickHouse\n* `Plain` - Plain\n* `Resend` - Resend"
       },
       "ExternalQueryError": {
         "additionalProperties": false,
@@ -110244,6 +110522,11 @@
             "type": "string",
             "nullable": true
           },
+          "order": {
+            "type": "integer",
+            "maximum": 2147483647,
+            "minimum": -2147483648
+          },
           "created_at": {
             "type": "string",
             "format": "date-time",
@@ -110254,6 +110537,22 @@
           "created_at",
           "id",
           "path"
+        ]
+      },
+      "FileSystemShortcutReorder": {
+        "type": "object",
+        "properties": {
+          "ordered_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "IDs of the current user's shortcuts in the desired display order."
+          }
+        },
+        "required": [
+          "ordered_ids"
         ]
       },
       "FilterEnum": {
@@ -112880,27 +113179,50 @@
           },
           "name": {
             "type": "string",
+            "description": "Name of the usage metric. Must be unique per group type within the project.",
             "maxLength": 255
           },
           "format": {
-            "$ref": "#/components/schemas/GroupUsageMetricFormatEnum"
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/GroupUsageMetricFormatEnum"
+              }
+            ],
+            "default": "numeric",
+            "description": "How the metric value is formatted in the UI. One of `numeric` or `currency`.\n\n* `numeric` - numeric\n* `currency` - currency"
           },
           "interval": {
             "type": "integer",
-            "maximum": 2147483647,
-            "minimum": -2147483648,
-            "description": "In days"
+            "default": 7,
+            "description": "Rolling time window in days used to compute the metric. Defaults to 7."
           },
           "display": {
-            "$ref": "#/components/schemas/GroupUsageMetricDisplayEnum"
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/GroupUsageMetricDisplayEnum"
+              }
+            ],
+            "default": "number",
+            "description": "Visual representation in the UI. One of `number` or `sparkline`.\n\n* `number` - number\n* `sparkline` - sparkline"
           },
-          "filters": {},
+          "filters": {
+            "type": "object",
+            "additionalProperties": {},
+            "description": "HogQL filter definition used to compute the metric. Same shape as HogFunction filters: a dict containing an `events` list and optional `properties` list."
+          },
           "math": {
-            "$ref": "#/components/schemas/MathEnum"
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/MathEnum"
+              }
+            ],
+            "default": "count",
+            "description": "Aggregation function. `count` counts matching events; `sum` sums the value of `math_property` on matching events.\n\n* `count` - count\n* `sum` - sum"
           },
           "math_property": {
             "type": "string",
             "nullable": true,
+            "description": "Event property to sum. Required when `math` is `sum` and forbidden when `math` is `count`.",
             "maxLength": 255
           }
         },
@@ -117043,41 +117365,42 @@
       },
       "IntegrationKindEnum": {
         "enum": [
-          "slack",
-          "slack-posthog-code",
-          "salesforce",
-          "hubspot",
-          "google-pubsub",
-          "google-cloud-storage",
-          "google-ads",
-          "google-sheets",
-          "google-cloud-service-account",
-          "snapchat",
-          "linkedin-ads",
-          "reddit-ads",
-          "tiktok-ads",
+          "azure-blob",
           "bing-ads",
-          "intercom",
+          "clickup",
+          "customerio-app",
+          "customerio-track",
+          "customerio-webhook",
+          "databricks",
           "email",
-          "linear",
+          "firebase",
           "github",
           "gitlab",
-          "meta-ads",
-          "twilio",
-          "clickup",
-          "vercel",
-          "databricks",
-          "azure-blob",
-          "firebase",
+          "google-ads",
+          "google-cloud-service-account",
+          "google-cloud-storage",
+          "google-pubsub",
+          "google-sheets",
+          "hubspot",
+          "intercom",
           "jira",
+          "linear",
+          "linkedin-ads",
+          "meta-ads",
           "pinterest-ads",
+          "postgresql",
+          "reddit-ads",
+          "salesforce",
+          "slack",
+          "slack-posthog-code",
+          "snapchat",
           "stripe",
-          "customerio-app",
-          "customerio-webhook",
-          "customerio-track"
+          "tiktok-ads",
+          "twilio",
+          "vercel"
         ],
         "type": "string",
-        "description": "* `slack` - Slack\n* `slack-posthog-code` - Slack Posthog Code\n* `salesforce` - Salesforce\n* `hubspot` - Hubspot\n* `google-pubsub` - Google Pubsub\n* `google-cloud-storage` - Google Cloud Storage\n* `google-ads` - Google Ads\n* `google-sheets` - Google Sheets\n* `google-cloud-service-account` - Google Cloud Service Account\n* `snapchat` - Snapchat\n* `linkedin-ads` - Linkedin Ads\n* `reddit-ads` - Reddit Ads\n* `tiktok-ads` - Tiktok Ads\n* `bing-ads` - Bing Ads\n* `intercom` - Intercom\n* `email` - Email\n* `linear` - Linear\n* `github` - Github\n* `gitlab` - Gitlab\n* `meta-ads` - Meta Ads\n* `twilio` - Twilio\n* `clickup` - Clickup\n* `vercel` - Vercel\n* `databricks` - Databricks\n* `azure-blob` - Azure Blob\n* `firebase` - Firebase\n* `jira` - Jira\n* `pinterest-ads` - Pinterest Ads\n* `stripe` - Stripe\n* `customerio-app` - Customerio App\n* `customerio-webhook` - Customerio Webhook\n* `customerio-track` - Customerio Track"
+        "description": "* `azure-blob` - Azure Blob\n* `bing-ads` - Bing Ads\n* `clickup` - Clickup\n* `customerio-app` - Customerio App\n* `customerio-track` - Customerio Track\n* `customerio-webhook` - Customerio Webhook\n* `databricks` - Databricks\n* `email` - Email\n* `firebase` - Firebase\n* `github` - Github\n* `gitlab` - Gitlab\n* `google-ads` - Google Ads\n* `google-cloud-service-account` - Google Cloud Service Account\n* `google-cloud-storage` - Google Cloud Storage\n* `google-pubsub` - Google Pubsub\n* `google-sheets` - Google Sheets\n* `hubspot` - Hubspot\n* `intercom` - Intercom\n* `jira` - Jira\n* `linear` - Linear\n* `linkedin-ads` - Linkedin Ads\n* `meta-ads` - Meta Ads\n* `pinterest-ads` - Pinterest Ads\n* `postgresql` - Postgresql\n* `reddit-ads` - Reddit Ads\n* `salesforce` - Salesforce\n* `slack` - Slack\n* `slack-posthog-code` - Slack Posthog Code\n* `snapchat` - Snapchat\n* `stripe` - Stripe\n* `tiktok-ads` - Tiktok Ads\n* `twilio` - Twilio\n* `vercel` - Vercel"
       },
       "InterestingNote": {
         "type": "object",
@@ -117637,10 +117960,11 @@
           "gemini",
           "openrouter",
           "fireworks",
-          "azure_openai"
+          "azure_openai",
+          "together_ai"
         ],
         "type": "string",
-        "description": "* `openai` - Openai\n* `anthropic` - Anthropic\n* `gemini` - Gemini\n* `openrouter` - Openrouter\n* `fireworks` - Fireworks\n* `azure_openai` - Azure OpenAI"
+        "description": "* `openai` - Openai\n* `anthropic` - Anthropic\n* `gemini` - Gemini\n* `openrouter` - Openrouter\n* `fireworks` - Fireworks\n* `azure_openai` - Azure OpenAI\n* `together_ai` - Together AI"
       },
       "LLMProviderKey": {
         "type": "object",
@@ -122011,15 +122335,16 @@
       },
       "MultipleBreakdownType": {
         "enum": [
-          "cohort",
           "person",
           "event",
           "event_metadata",
           "group",
           "session",
           "hogql",
-          "data_warehouse_person_property",
-          "revenue_analytics"
+          "cohort",
+          "revenue_analytics",
+          "data_warehouse",
+          "data_warehouse_person_property"
         ],
         "title": "MultipleBreakdownType",
         "type": "string"
@@ -127237,6 +127562,37 @@
           }
         }
       },
+      "PaginatedUserGitHubIntegrationListResponseList": {
+        "type": "object",
+        "required": [
+          "count",
+          "results"
+        ],
+        "properties": {
+          "count": {
+            "type": "integer",
+            "example": 123
+          },
+          "next": {
+            "type": "string",
+            "nullable": true,
+            "format": "uri",
+            "example": "http://api.example.org/accounts/?offset=400&limit=100"
+          },
+          "previous": {
+            "type": "string",
+            "nullable": true,
+            "format": "uri",
+            "example": "http://api.example.org/accounts/?offset=200&limit=100"
+          },
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UserGitHubIntegrationListResponse"
+            }
+          }
+        }
+      },
       "PaginatedUserInterviewList": {
         "type": "object",
         "required": [
@@ -129096,11 +129452,10 @@
             "nullable": true,
             "description": "Human-readable description of what this endpoint returns."
           },
-          "cache_age_seconds": {
-            "type": "number",
-            "format": "double",
+          "data_freshness_seconds": {
+            "type": "integer",
             "nullable": true,
-            "description": "Cache TTL in seconds (60–86400)."
+            "description": "How fresh the data should be, in seconds. Must be one of: 900 (15 min), 1800 (30 min), 3600 (1 h), 21600 (6 h), 43200 (12 h), 86400 (24 h, default), 604800 (7 d). Controls cache TTL and materialization sync frequency."
           },
           "is_active": {
             "type": "boolean",
@@ -129111,11 +129466,6 @@
             "type": "boolean",
             "nullable": true,
             "description": "Whether query results are materialized to S3."
-          },
-          "sync_frequency": {
-            "type": "string",
-            "nullable": true,
-            "description": "Materialization refresh frequency (e.g. 'every_hour', 'every_day')."
           },
           "derived_from_insight": {
             "type": "string",
@@ -129218,6 +129568,12 @@
           },
           "enforcement_mode": {
             "$ref": "#/components/schemas/EnforcementModeEnum"
+          },
+          "promoted_property": {
+            "type": "string",
+            "nullable": true,
+            "description": "Name of a single property on this event that PostHog UIs should display alongside the event (for example `$pathname` on `$pageview`). When set, surfaces like the session replay inspector show the property's value next to the event name without the user having to open the event.",
+            "maxLength": 400
           },
           "is_action": {
             "type": "boolean",
@@ -130596,6 +130952,11 @@
             "type": "string",
             "nullable": true
           },
+          "order": {
+            "type": "integer",
+            "maximum": 2147483647,
+            "minimum": -2147483648
+          },
           "created_at": {
             "type": "string",
             "format": "date-time",
@@ -130652,27 +131013,50 @@
           },
           "name": {
             "type": "string",
+            "description": "Name of the usage metric. Must be unique per group type within the project.",
             "maxLength": 255
           },
           "format": {
-            "$ref": "#/components/schemas/GroupUsageMetricFormatEnum"
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/GroupUsageMetricFormatEnum"
+              }
+            ],
+            "default": "numeric",
+            "description": "How the metric value is formatted in the UI. One of `numeric` or `currency`.\n\n* `numeric` - numeric\n* `currency` - currency"
           },
           "interval": {
             "type": "integer",
-            "maximum": 2147483647,
-            "minimum": -2147483648,
-            "description": "In days"
+            "default": 7,
+            "description": "Rolling time window in days used to compute the metric. Defaults to 7."
           },
           "display": {
-            "$ref": "#/components/schemas/GroupUsageMetricDisplayEnum"
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/GroupUsageMetricDisplayEnum"
+              }
+            ],
+            "default": "number",
+            "description": "Visual representation in the UI. One of `number` or `sparkline`.\n\n* `number` - number\n* `sparkline` - sparkline"
           },
-          "filters": {},
+          "filters": {
+            "type": "object",
+            "additionalProperties": {},
+            "description": "HogQL filter definition used to compute the metric. Same shape as HogFunction filters: a dict containing an `events` list and optional `properties` list."
+          },
           "math": {
-            "$ref": "#/components/schemas/MathEnum"
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/MathEnum"
+              }
+            ],
+            "default": "count",
+            "description": "Aggregation function. `count` counts matching events; `sum` sums the value of `math_property` on matching events.\n\n* `count` - count\n* `sum` - sum"
           },
           "math_property": {
             "type": "string",
             "nullable": true,
+            "description": "Event property to sum. Required when `math` is `sum` and forbidden when `math` is `count`.",
             "maxLength": 255
           }
         }
@@ -132327,7 +132711,8 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/PinnedSceneTab"
-            }
+            },
+            "description": "Ordered list of pinned navigation tabs shown in the sidebar for the authenticated user within the current team. Send the full list to replace the existing pins; omit to leave them unchanged."
           },
           "homepage": {
             "allOf": [
@@ -132335,7 +132720,8 @@
                 "$ref": "#/components/schemas/PinnedSceneTab"
               }
             ],
-            "nullable": true
+            "nullable": true,
+            "description": "Tab descriptor for the user's chosen home page — the destination opened when they click the PostHog logo or hit `/`. Set to a tab descriptor to pick a homepage, send `null` or `{}` to clear it and fall back to the project default."
           }
         }
       },
@@ -133383,6 +133769,16 @@
             "type": "string",
             "writeOnly": true,
             "title": " create in folder"
+          }
+        }
+      },
+      "PatchedSessionSummariesConfig": {
+        "type": "object",
+        "properties": {
+          "product_context": {
+            "type": "string",
+            "description": "Free-form description of the team's product, used to tailor AI-generated single-session replay summaries. Injected into the system prompt of every summary generated for this team via the replay page.",
+            "maxLength": 10000
           }
         }
       },
@@ -136329,38 +136725,50 @@
         "type": "object",
         "properties": {
           "id": {
-            "type": "string"
+            "type": "string",
+            "description": "Stable identifier for the tab. Generated client-side; safe to omit on create."
           },
           "pathname": {
-            "type": "string"
+            "type": "string",
+            "description": "URL pathname the tab points at — for example `/project/123/dashboard/45` or `/project/123/insights`. Combined with `search` and `hash` to reconstruct the destination."
           },
           "search": {
-            "type": "string"
+            "type": "string",
+            "description": "Query string portion of the URL, including the leading `?`. Empty string when there is no query."
           },
           "hash": {
-            "type": "string"
+            "type": "string",
+            "description": "Fragment portion of the URL, including the leading `#`. Empty string when there is no fragment."
           },
           "title": {
-            "type": "string"
+            "type": "string",
+            "description": "Default tab title derived from the destination scene. Used when `customTitle` is not set."
           },
           "customTitle": {
             "type": "string",
-            "nullable": true
+            "nullable": true,
+            "description": "Optional user-provided title that overrides `title` in the navigation UI."
           },
           "iconType": {
-            "type": "string"
+            "type": "string",
+            "description": "Icon key shown next to the tab in the sidebar — for example `dashboard`, `insight`, `blank`."
           },
           "sceneId": {
             "type": "string",
-            "nullable": true
+            "nullable": true,
+            "description": "Scene identifier resolved from the pathname when known — used by the frontend for icon/title hints."
           },
           "sceneKey": {
             "type": "string",
-            "nullable": true
+            "nullable": true,
+            "description": "Scene key (logic key) for the destination, paired with `sceneParams` for deeper routing context."
           },
-          "sceneParams": {},
+          "sceneParams": {
+            "description": "Free-form scene parameters captured at pin time, used by the frontend to rehydrate the destination."
+          },
           "pinned": {
-            "type": "boolean"
+            "type": "boolean",
+            "description": "Whether this entry is pinned. Always coerced to true on save — pass true or omit."
           }
         }
       },
@@ -136371,7 +136779,8 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/PinnedSceneTab"
-            }
+            },
+            "description": "Ordered list of pinned navigation tabs shown in the sidebar for the authenticated user within the current team. Send the full list to replace the existing pins; omit to leave them unchanged."
           },
           "homepage": {
             "allOf": [
@@ -136379,7 +136788,8 @@
                 "$ref": "#/components/schemas/PinnedSceneTab"
               }
             ],
-            "nullable": true
+            "nullable": true,
+            "description": "Tab descriptor for the user's chosen home page — the destination opened when they click the PostHog logo or hit `/`. Set to a tab descriptor to pick a homepage, send `null` or `{}` to clear it and fall back to the project default."
           }
         }
       },
@@ -137281,6 +137691,21 @@
           "mask_value",
           "scopes",
           "value"
+        ]
+      },
+      "PromotedPropertiesResponse": {
+        "type": "object",
+        "properties": {
+          "promoted_properties": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "description": "Mapping from event name to the team-configured promoted property for that event. Names without a configured promoted property are omitted; callers should fall back to the core taxonomy defaults for those."
+          }
+        },
+        "required": [
+          "promoted_properties"
         ]
       },
       "Property": {
@@ -139568,6 +139993,11 @@
       "QueryResponseAlternative21": {
         "additionalProperties": false,
         "properties": {
+          "bias_risk": {
+            "default": null,
+            "$ref": "#/components/schemas/BiasRisk",
+            "nullable": true
+          },
           "date_range": {
             "$ref": "#/components/schemas/DateRange"
           },
@@ -145732,10 +146162,11 @@
           "low",
           "medium",
           "high",
+          "xhigh",
           "max"
         ],
         "type": "string",
-        "description": "* `low` - low\n* `medium` - medium\n* `high` - high\n* `max` - max"
+        "description": "* `low` - low\n* `medium` - medium\n* `high` - high\n* `xhigh` - xhigh\n* `max` - max"
       },
       "RecomputeResult": {
         "type": "object",
@@ -151922,6 +152353,7 @@
             "items": {
               "type": "string"
             },
+            "description": "Trace IDs or generation IDs to classify, depending on analysis_level.",
             "maxItems": 5,
             "minItems": 1
           },
@@ -151931,19 +152363,23 @@
                 "$ref": "#/components/schemas/SentimentRequestAnalysisLevelEnum"
               }
             ],
-            "default": "trace"
+            "default": "trace",
+            "description": "Whether the IDs are 'trace' IDs or 'generation' IDs.\n\n* `trace` - trace\n* `generation` - generation"
           },
           "force_refresh": {
             "type": "boolean",
-            "default": false
+            "default": false,
+            "description": "If true, bypass cache and reclassify."
           },
           "date_from": {
             "type": "string",
-            "nullable": true
+            "nullable": true,
+            "description": "Start of date range for the lookup (e.g. '-7d' or '2026-01-01'). Defaults to -30d."
           },
           "date_to": {
             "type": "string",
-            "nullable": true
+            "nullable": true,
+            "description": "End of date range for the lookup. Defaults to now."
           }
         },
         "required": [
@@ -152947,6 +153383,16 @@
         "required": [
           "session_ids"
         ]
+      },
+      "SessionSummariesConfig": {
+        "type": "object",
+        "properties": {
+          "product_context": {
+            "type": "string",
+            "description": "Free-form description of the team's product, used to tailor AI-generated single-session replay summaries. Injected into the system prompt of every summary generated for this team via the replay page.",
+            "maxLength": 10000
+          }
+        }
       },
       "SessionTableVersion": {
         "enum": [
@@ -157440,7 +157886,7 @@
                 "$ref": "#/components/schemas/ReasoningEffortEnum"
               }
             ],
-            "description": "Reasoning effort to request for models that expose an effort control.\n\n* `low` - low\n* `medium` - medium\n* `high` - high\n* `max` - max"
+            "description": "Reasoning effort to request for models that expose an effort control.\n\n* `low` - low\n* `medium` - medium\n* `high` - high\n* `xhigh` - xhigh\n* `max` - max"
           },
           "github_user_token": {
             "type": "string",
@@ -162645,6 +163091,109 @@
           "total"
         ]
       },
+      "UserGitHubAccount": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "nullable": true,
+            "description": "GitHub account type for the installation (e.g. User or Organization)."
+          },
+          "name": {
+            "type": "string",
+            "nullable": true,
+            "description": "GitHub login or organization name tied to the installation."
+          }
+        }
+      },
+      "UserGitHubIntegrationItem": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "type": "string",
+            "description": "Integration kind; always `github` for this API."
+          },
+          "installation_id": {
+            "type": "string",
+            "description": "GitHub App installation id."
+          },
+          "repository_selection": {
+            "type": "string",
+            "nullable": true,
+            "description": "Repository selection mode from GitHub (e.g. selected or all)."
+          },
+          "account": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/UserGitHubAccount"
+              }
+            ],
+            "nullable": true,
+            "description": "Installation account metadata from GitHub."
+          },
+          "uses_shared_installation": {
+            "type": "boolean",
+            "description": "True when this installation id matches a team-level GitHub integration on the active project."
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When this integration row was created."
+          }
+        },
+        "required": [
+          "created_at",
+          "installation_id",
+          "kind",
+          "uses_shared_installation"
+        ]
+      },
+      "UserGitHubIntegrationListResponse": {
+        "type": "object",
+        "properties": {
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UserGitHubIntegrationItem"
+            },
+            "description": "GitHub personal integrations for the authenticated user."
+          }
+        },
+        "required": [
+          "results"
+        ]
+      },
+      "UserGitHubLinkStartRequest": {
+        "type": "object",
+        "properties": {
+          "team_id": {
+            "type": "integer",
+            "nullable": true,
+            "description": "Optional team/project id (e.g. PostHog Code); web UI uses the session's current team."
+          },
+          "connect_from": {
+            "type": "string",
+            "description": "Optional client hint (e.g. posthog_code) for return routing after OAuth."
+          }
+        }
+      },
+      "UserGitHubLinkStartResponse": {
+        "type": "object",
+        "properties": {
+          "install_url": {
+            "type": "string",
+            "description": "URL to open in the browser to install or authorize the GitHub App for this user."
+          },
+          "connect_flow": {
+            "type": "string",
+            "description": "oauth_authorize when using user OAuth against an existing team installation; app_install for the GitHub App installation UI."
+          }
+        },
+        "required": [
+          "connect_flow",
+          "install_url"
+        ]
+      },
       "UserInterview": {
         "type": "object",
         "properties": {
@@ -166731,7 +167280,6 @@
         "advanced_activity_logs",
         "alerts",
         "annotations",
-        "app_metrics",
         "approval_policies",
         "batch_exports",
         "cdp",
