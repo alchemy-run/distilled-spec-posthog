@@ -2281,6 +2281,14 @@
           },
           {
             "in": "query",
+            "name": "filters_override",
+            "schema": {
+              "type": "string"
+            },
+            "description": "JSON object to override dashboard filters for this request only (not persisted). Top-level keys replace; nested values are not deep-merged — pass the complete value for any key you override. See the dashboard filters schema for available keys (e.g., `date_from`, `date_to`, `properties`). Ignored when accessed via a dashboard sharing token."
+          },
+          {
+            "in": "query",
             "name": "format",
             "schema": {
               "type": "string",
@@ -2298,6 +2306,14 @@
             },
             "description": "A unique integer value identifying this dashboard.",
             "required": true
+          },
+          {
+            "in": "query",
+            "name": "variables_override",
+            "schema": {
+              "type": "string"
+            },
+            "description": "JSON object to override dashboard variables for this request only (not persisted). Format: {\"<variable_id>\": {\"code_name\": \"<code_name>\", \"variableId\": \"<variable_id>\", \"value\": <new_value>}}. Each entry must include `code_name` — partial entries are silently dropped. The simplest workflow is to call `dashboard-get` first, copy the matching entry from the response's `variables` field, and mutate `value`. Top-level keys replace; nested values are not deep-merged. Ignored when accessed via a dashboard sharing token."
           }
         ],
         "tags": [
@@ -2841,6 +2857,14 @@
           },
           {
             "in": "query",
+            "name": "filters_override",
+            "schema": {
+              "type": "string"
+            },
+            "description": "JSON object to override dashboard filters for this request only (not persisted). Top-level keys replace; nested values are not deep-merged — pass the complete value for any key you override. See the dashboard filters schema for available keys (e.g., `date_from`, `date_to`, `properties`). Ignored when accessed via a dashboard sharing token."
+          },
+          {
+            "in": "query",
             "name": "format",
             "schema": {
               "type": "string",
@@ -2883,6 +2907,14 @@
               ]
             },
             "description": "Cache behavior. 'force_cache' (default) serves from cache even if stale. 'blocking' uses cache if fresh, otherwise recalculates. 'force_blocking' always recalculates."
+          },
+          {
+            "in": "query",
+            "name": "variables_override",
+            "schema": {
+              "type": "string"
+            },
+            "description": "JSON object to override dashboard variables for this request only (not persisted). Format: {\"<variable_id>\": {\"code_name\": \"<code_name>\", \"variableId\": \"<variable_id>\", \"value\": <new_value>}}. Each entry must include `code_name` — partial entries are silently dropped. The simplest workflow is to call `dashboard-get` first, copy the matching entry from the response's `variables` field, and mutate `value`. Top-level keys replace; nested values are not deep-merged. Ignored when accessed via a dashboard sharing token."
           }
         ],
         "tags": [
@@ -2992,6 +3024,14 @@
           },
           {
             "in": "query",
+            "name": "filters_override",
+            "schema": {
+              "type": "string"
+            },
+            "description": "JSON object to override dashboard filters for this request only (not persisted). Top-level keys replace; nested values are not deep-merged — pass the complete value for any key you override. See the dashboard filters schema for available keys (e.g., `date_from`, `date_to`, `properties`). Ignored when accessed via a dashboard sharing token."
+          },
+          {
+            "in": "query",
             "name": "format",
             "schema": {
               "type": "string",
@@ -3009,6 +3049,26 @@
             },
             "description": "A unique integer value identifying this dashboard.",
             "required": true
+          },
+          {
+            "in": "query",
+            "name": "layoutSize",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "sm",
+                "xs"
+              ]
+            },
+            "description": "Layout size for tile positioning. 'sm' (default) for standard, 'xs' for mobile. The snake_case alias `layout_size` is also accepted for backward compatibility."
+          },
+          {
+            "in": "query",
+            "name": "variables_override",
+            "schema": {
+              "type": "string"
+            },
+            "description": "JSON object to override dashboard variables for this request only (not persisted). Format: {\"<variable_id>\": {\"code_name\": \"<code_name>\", \"variableId\": \"<variable_id>\", \"value\": <new_value>}}. Each entry must include `code_name` — partial entries are silently dropped. The simplest workflow is to call `dashboard-get` first, copy the matching entry from the response's `variables` field, and mutate `value`. Top-level keys replace; nested values are not deep-merged. Ignored when accessed via a dashboard sharing token."
           }
         ],
         "tags": [
@@ -3510,6 +3570,556 @@
         "deprecated": true,
         "x-explicit-tags": [
           "dashboards"
+        ]
+      }
+    },
+    "/api/environments/{environment_id}/data_modeling_jobs/": {
+      "get": {
+        "operationId": "environments_data_modeling_jobs_list",
+        "description": "List data modeling jobs which are \"runs\" for our saved queries.",
+        "parameters": [
+          {
+            "name": "cursor",
+            "required": false,
+            "in": "query",
+            "description": "The pagination cursor value.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/EnvironmentIdPath"
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Number of results to return per page.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "saved_query_id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "tags": [
+          "data_warehouse",
+          "data_modeling_jobs"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "warehouse_view:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedDataModelingJobList"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "deprecated": true,
+        "x-explicit-tags": [
+          "data_warehouse"
+        ]
+      }
+    },
+    "/api/environments/{environment_id}/data_modeling_jobs/{id}/": {
+      "get": {
+        "operationId": "environments_data_modeling_jobs_retrieve",
+        "description": "List data modeling jobs which are \"runs\" for our saved queries.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/EnvironmentIdPath"
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "A UUID string identifying this data modeling job.",
+            "required": true
+          }
+        ],
+        "tags": [
+          "data_warehouse",
+          "data_modeling_jobs"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "warehouse_view:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DataModelingJob"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "deprecated": true,
+        "x-explicit-tags": [
+          "data_warehouse"
+        ]
+      }
+    },
+    "/api/environments/{environment_id}/data_modeling_jobs/recent/": {
+      "get": {
+        "operationId": "environments_data_modeling_jobs_recent_retrieve",
+        "description": "Get the most recent non-running job for each saved query from the v2 backend.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/EnvironmentIdPath"
+          }
+        ],
+        "tags": [
+          "data_warehouse",
+          "data_modeling_jobs"
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DataModelingJob"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "deprecated": true,
+        "x-explicit-tags": [
+          "data_warehouse"
+        ]
+      }
+    },
+    "/api/environments/{environment_id}/data_modeling_jobs/running/": {
+      "get": {
+        "operationId": "environments_data_modeling_jobs_running_retrieve",
+        "description": "Get all currently running jobs from the v2 backend.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/EnvironmentIdPath"
+          }
+        ],
+        "tags": [
+          "data_warehouse",
+          "data_modeling_jobs"
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DataModelingJob"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "deprecated": true,
+        "x-explicit-tags": [
+          "data_warehouse"
+        ]
+      }
+    },
+    "/api/environments/{environment_id}/data_warehouse/check-database-name/": {
+      "get": {
+        "operationId": "environments_data_warehouse_check_database_name_retrieve",
+        "description": "Check if a database name is available.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/EnvironmentIdPath"
+          },
+          {
+            "in": "query",
+            "name": "name",
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "Database name to check",
+            "required": true
+          }
+        ],
+        "tags": [
+          "data_warehouse"
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CheckDatabaseNameResponse"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "deprecated": true,
+        "x-explicit-tags": [
+          "data_warehouse"
+        ]
+      }
+    },
+    "/api/environments/{environment_id}/data_warehouse/completed_activity/": {
+      "get": {
+        "operationId": "environments_data_warehouse_completed_activity_retrieve",
+        "description": "Returns completed/non-running activities (jobs with status 'Completed').\nSupports pagination and cutoff time filtering.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/EnvironmentIdPath"
+          }
+        ],
+        "tags": [
+          "data_warehouse"
+        ],
+        "responses": {
+          "200": {
+            "description": "No response body"
+          }
+        },
+        "deprecated": true,
+        "x-explicit-tags": [
+          "data_warehouse"
+        ]
+      }
+    },
+    "/api/environments/{environment_id}/data_warehouse/data_health_issues/": {
+      "get": {
+        "operationId": "environments_data_warehouse_data_health_issues_retrieve",
+        "description": "Returns failed/disabled data pipeline items for the Pipeline status side panel.\nIncludes: materializations, syncs, sources, destinations, and transformations.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/EnvironmentIdPath"
+          }
+        ],
+        "tags": [
+          "data_warehouse"
+        ],
+        "responses": {
+          "200": {
+            "description": "No response body"
+          }
+        },
+        "deprecated": true,
+        "x-explicit-tags": [
+          "data_warehouse"
+        ]
+      }
+    },
+    "/api/environments/{environment_id}/data_warehouse/data_ops_dashboard/": {
+      "get": {
+        "operationId": "environments_data_warehouse_data_ops_dashboard_retrieve",
+        "description": "Returns the data ops overview dashboard ID for this team, creating it if it doesn't exist yet.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/EnvironmentIdPath"
+          }
+        ],
+        "tags": [
+          "data_warehouse"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "warehouse_view:write"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response body"
+          }
+        },
+        "deprecated": true,
+        "x-explicit-tags": [
+          "data_warehouse"
+        ]
+      }
+    },
+    "/api/environments/{environment_id}/data_warehouse/deprovision/": {
+      "post": {
+        "operationId": "environments_data_warehouse_deprovision_create",
+        "description": "Start deprovisioning the managed warehouse for this team.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/EnvironmentIdPath"
+          }
+        ],
+        "tags": [
+          "data_warehouse"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "warehouse_view:write"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeprovisionWarehouseResponse"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "deprecated": true,
+        "x-explicit-tags": [
+          "data_warehouse"
+        ]
+      }
+    },
+    "/api/environments/{environment_id}/data_warehouse/job_stats/": {
+      "get": {
+        "operationId": "environments_data_warehouse_job_stats_retrieve",
+        "description": "Returns success and failed job statistics for the last 1, 7, or 30 days.\nQuery parameter 'days' can be 1, 7, or 30 (default: 7).",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/EnvironmentIdPath"
+          }
+        ],
+        "tags": [
+          "data_warehouse"
+        ],
+        "responses": {
+          "200": {
+            "description": "No response body"
+          }
+        },
+        "deprecated": true,
+        "x-explicit-tags": [
+          "data_warehouse"
+        ]
+      }
+    },
+    "/api/environments/{environment_id}/data_warehouse/property_values/": {
+      "get": {
+        "operationId": "environments_data_warehouse_property_values_retrieve",
+        "description": "API endpoints for data warehouse aggregate statistics and operations.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/EnvironmentIdPath"
+          }
+        ],
+        "tags": [
+          "data_warehouse"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "query:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response body"
+          }
+        },
+        "deprecated": true,
+        "x-explicit-tags": [
+          "data_warehouse"
+        ]
+      }
+    },
+    "/api/environments/{environment_id}/data_warehouse/provision/": {
+      "post": {
+        "operationId": "environments_data_warehouse_provision_create",
+        "description": "Start provisioning a managed warehouse for this team.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/EnvironmentIdPath"
+          }
+        ],
+        "tags": [
+          "data_warehouse"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProvisionWarehouseRequest"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/ProvisionWarehouseRequest"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/ProvisionWarehouseRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "warehouse_view:write"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProvisionWarehouseResponse"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "deprecated": true,
+        "x-explicit-tags": [
+          "data_warehouse"
+        ]
+      }
+    },
+    "/api/environments/{environment_id}/data_warehouse/reset-password/": {
+      "post": {
+        "operationId": "environments_data_warehouse_reset_password_create",
+        "description": "Reset the root password for the managed warehouse.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/EnvironmentIdPath"
+          }
+        ],
+        "tags": [
+          "data_warehouse"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "warehouse_view:write"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResetPasswordResponse"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "deprecated": true,
+        "x-explicit-tags": [
+          "data_warehouse"
+        ]
+      }
+    },
+    "/api/environments/{environment_id}/data_warehouse/running_activity/": {
+      "get": {
+        "operationId": "environments_data_warehouse_running_activity_retrieve",
+        "description": "Returns currently running activities (jobs with status 'Running').\nSupports pagination and cutoff time filtering.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/EnvironmentIdPath"
+          }
+        ],
+        "tags": [
+          "data_warehouse"
+        ],
+        "responses": {
+          "200": {
+            "description": "No response body"
+          }
+        },
+        "deprecated": true,
+        "x-explicit-tags": [
+          "data_warehouse"
+        ]
+      }
+    },
+    "/api/environments/{environment_id}/data_warehouse/total_rows_stats/": {
+      "get": {
+        "operationId": "environments_data_warehouse_total_rows_stats_retrieve",
+        "description": "Returns aggregated statistics for the data warehouse total rows processed within the current billing period.\nUsed by the frontend data warehouse scene to display usage information.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/EnvironmentIdPath"
+          }
+        ],
+        "tags": [
+          "data_warehouse"
+        ],
+        "responses": {
+          "200": {
+            "description": "No response body"
+          }
+        },
+        "deprecated": true,
+        "x-explicit-tags": [
+          "data_warehouse"
+        ]
+      }
+    },
+    "/api/environments/{environment_id}/data_warehouse/warehouse_status/": {
+      "get": {
+        "operationId": "environments_data_warehouse_warehouse_status_retrieve",
+        "description": "Get the current provisioning status of the managed warehouse.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/EnvironmentIdPath"
+          }
+        ],
+        "tags": [
+          "data_warehouse"
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WarehouseStatusResponse"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "deprecated": true,
+        "x-explicit-tags": [
+          "data_warehouse"
         ]
       }
     },
@@ -15117,6 +15727,108 @@
         ]
       }
     },
+    "/api/environments/{environment_id}/integrations/github/link_existing/": {
+      "post": {
+        "operationId": "environments_integrations_github_link_existing_create",
+        "description": "Reuse a GitHub installation already linked to a sibling team in the same organization.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/EnvironmentIdPath"
+          }
+        ],
+        "tags": [
+          "integrations",
+          "integrations"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IntegrationConfig"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/IntegrationConfig"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/IntegrationConfig"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "integration:write"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response body"
+          }
+        },
+        "deprecated": true,
+        "x-explicit-tags": [
+          "integrations"
+        ]
+      }
+    },
+    "/api/environments/{environment_id}/integrations/github/oauth_authorize/": {
+      "post": {
+        "operationId": "environments_integrations_github_oauth_authorize_create",
+        "description": "Mint a User OAuth URL to bootstrap a fresh `code` when the install flow returns without one.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/EnvironmentIdPath"
+          }
+        ],
+        "tags": [
+          "integrations",
+          "integrations"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IntegrationConfig"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/IntegrationConfig"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/IntegrationConfig"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "integration:write"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response body"
+          }
+        },
+        "deprecated": true,
+        "x-explicit-tags": [
+          "integrations"
+        ]
+      }
+    },
     "/api/environments/{environment_id}/logs/alerts/": {
       "get": {
         "operationId": "environments_logs_alerts_list",
@@ -15199,8 +15911,7 @@
                 "$ref": "#/components/schemas/LogsAlertConfiguration"
               }
             }
-          },
-          "required": true
+          }
         },
         "security": [
           {
@@ -15311,8 +16022,7 @@
                 "$ref": "#/components/schemas/LogsAlertConfiguration"
               }
             }
-          },
-          "required": true
+          }
         },
         "security": [
           {
@@ -22533,6 +23243,742 @@
         ]
       }
     },
+    "/api/environments/{environment_id}/warehouse_view_link/": {
+      "get": {
+        "operationId": "environments_warehouse_view_link_list",
+        "description": "Create, Read, Update and Delete View Columns.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/EnvironmentIdPath"
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Number of results to return per page.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "offset",
+            "required": false,
+            "in": "query",
+            "description": "The initial index from which to return the results.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "description": "A search term.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "tags": [
+          "warehouse_view_link"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "warehouse_view:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedViewLinkList"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "deprecated": true,
+        "x-explicit-tags": [
+          "data_warehouse"
+        ]
+      },
+      "post": {
+        "operationId": "environments_warehouse_view_link_create",
+        "description": "Create, Read, Update and Delete View Columns.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/EnvironmentIdPath"
+          }
+        ],
+        "tags": [
+          "warehouse_view_link"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ViewLink"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/ViewLink"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/ViewLink"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "warehouse_view:write"
+            ]
+          }
+        ],
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ViewLink"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "deprecated": true,
+        "x-explicit-tags": [
+          "data_warehouse"
+        ]
+      }
+    },
+    "/api/environments/{environment_id}/warehouse_view_link/{id}/": {
+      "get": {
+        "operationId": "environments_warehouse_view_link_retrieve",
+        "description": "Create, Read, Update and Delete View Columns.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/EnvironmentIdPath"
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "A UUID string identifying this data warehouse join.",
+            "required": true
+          }
+        ],
+        "tags": [
+          "warehouse_view_link"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "warehouse_view:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ViewLink"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "deprecated": true,
+        "x-explicit-tags": []
+      },
+      "put": {
+        "operationId": "environments_warehouse_view_link_update",
+        "description": "Create, Read, Update and Delete View Columns.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/EnvironmentIdPath"
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "A UUID string identifying this data warehouse join.",
+            "required": true
+          }
+        ],
+        "tags": [
+          "warehouse_view_link"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ViewLink"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/ViewLink"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/ViewLink"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "warehouse_view:write"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ViewLink"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "deprecated": true,
+        "x-explicit-tags": []
+      },
+      "patch": {
+        "operationId": "environments_warehouse_view_link_partial_update",
+        "description": "Create, Read, Update and Delete View Columns.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/EnvironmentIdPath"
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "A UUID string identifying this data warehouse join.",
+            "required": true
+          }
+        ],
+        "tags": [
+          "warehouse_view_link"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchedViewLink"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchedViewLink"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchedViewLink"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "warehouse_view:write"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ViewLink"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "deprecated": true,
+        "x-explicit-tags": []
+      },
+      "delete": {
+        "operationId": "environments_warehouse_view_link_destroy",
+        "description": "Create, Read, Update and Delete View Columns.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/EnvironmentIdPath"
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "A UUID string identifying this data warehouse join.",
+            "required": true
+          }
+        ],
+        "tags": [
+          "warehouse_view_link"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "warehouse_view:write"
+            ]
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No response body"
+          }
+        },
+        "deprecated": true,
+        "x-explicit-tags": []
+      }
+    },
+    "/api/environments/{environment_id}/warehouse_view_link/validate/": {
+      "post": {
+        "operationId": "environments_warehouse_view_link_validate_create",
+        "description": "Create, Read, Update and Delete View Columns.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/EnvironmentIdPath"
+          }
+        ],
+        "tags": [
+          "warehouse_view_link"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ViewLinkValidation"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/ViewLinkValidation"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/ViewLinkValidation"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "No response body"
+          }
+        },
+        "deprecated": true,
+        "x-explicit-tags": [
+          "data_warehouse"
+        ]
+      }
+    },
+    "/api/environments/{environment_id}/warehouse_view_links/": {
+      "get": {
+        "operationId": "environments_warehouse_view_links_list",
+        "description": "Create, Read, Update and Delete View Columns.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/EnvironmentIdPath"
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Number of results to return per page.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "offset",
+            "required": false,
+            "in": "query",
+            "description": "The initial index from which to return the results.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "description": "A search term.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "tags": [
+          "warehouse_view_links"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "warehouse_view:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedViewLinkList"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "deprecated": true,
+        "x-explicit-tags": [
+          "data_warehouse"
+        ]
+      },
+      "post": {
+        "operationId": "environments_warehouse_view_links_create",
+        "description": "Create, Read, Update and Delete View Columns.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/EnvironmentIdPath"
+          }
+        ],
+        "tags": [
+          "warehouse_view_links"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ViewLink"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/ViewLink"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/ViewLink"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "warehouse_view:write"
+            ]
+          }
+        ],
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ViewLink"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "deprecated": true,
+        "x-explicit-tags": [
+          "data_warehouse"
+        ]
+      }
+    },
+    "/api/environments/{environment_id}/warehouse_view_links/{id}/": {
+      "get": {
+        "operationId": "environments_warehouse_view_links_retrieve",
+        "description": "Create, Read, Update and Delete View Columns.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/EnvironmentIdPath"
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "A UUID string identifying this data warehouse join.",
+            "required": true
+          }
+        ],
+        "tags": [
+          "warehouse_view_links"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "warehouse_view:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ViewLink"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "deprecated": true,
+        "x-explicit-tags": []
+      },
+      "put": {
+        "operationId": "environments_warehouse_view_links_update",
+        "description": "Create, Read, Update and Delete View Columns.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/EnvironmentIdPath"
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "A UUID string identifying this data warehouse join.",
+            "required": true
+          }
+        ],
+        "tags": [
+          "warehouse_view_links"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ViewLink"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/ViewLink"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/ViewLink"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "warehouse_view:write"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ViewLink"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "deprecated": true,
+        "x-explicit-tags": []
+      },
+      "patch": {
+        "operationId": "environments_warehouse_view_links_partial_update",
+        "description": "Create, Read, Update and Delete View Columns.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/EnvironmentIdPath"
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "A UUID string identifying this data warehouse join.",
+            "required": true
+          }
+        ],
+        "tags": [
+          "warehouse_view_links"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchedViewLink"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchedViewLink"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchedViewLink"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "warehouse_view:write"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ViewLink"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "deprecated": true,
+        "x-explicit-tags": []
+      },
+      "delete": {
+        "operationId": "environments_warehouse_view_links_destroy",
+        "description": "Create, Read, Update and Delete View Columns.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/EnvironmentIdPath"
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "A UUID string identifying this data warehouse join.",
+            "required": true
+          }
+        ],
+        "tags": [
+          "warehouse_view_links"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "warehouse_view:write"
+            ]
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No response body"
+          }
+        },
+        "deprecated": true,
+        "x-explicit-tags": []
+      }
+    },
+    "/api/environments/{environment_id}/warehouse_view_links/validate/": {
+      "post": {
+        "operationId": "environments_warehouse_view_links_validate_create",
+        "description": "Create, Read, Update and Delete View Columns.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/EnvironmentIdPath"
+          }
+        ],
+        "tags": [
+          "warehouse_view_links"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ViewLinkValidation"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/ViewLinkValidation"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/ViewLinkValidation"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "No response body"
+          }
+        },
+        "deprecated": true,
+        "x-explicit-tags": [
+          "data_warehouse"
+        ]
+      }
+    },
     "/api/environments/{project_id}/approval_policies/": {
       "get": {
         "operationId": "approval_policies_list",
@@ -28340,6 +29786,27 @@
         "x-explicit-tags": []
       }
     },
+    "/api/environments/{project_id}/lineage/get_upstream/": {
+      "get": {
+        "operationId": "lineage_get_upstream_retrieve",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "lineage"
+        ],
+        "responses": {
+          "200": {
+            "description": "No response body"
+          }
+        },
+        "x-explicit-tags": [
+          "data_warehouse"
+        ]
+      }
+    },
     "/api/environments/{project_id}/llm_analytics/clustering_config/": {
       "get": {
         "operationId": "llm_analytics_clustering_config_retrieve",
@@ -33332,6 +34799,86 @@
         ]
       }
     },
+    "/api/environments/{project_id}/managed_viewsets/{kind}/": {
+      "get": {
+        "operationId": "managed_viewsets_retrieve",
+        "description": "Get all views associated with a specific managed viewset.\nGET /api/environments/{team_id}/managed_viewsets/{kind}/",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "kind",
+            "schema": {
+              "enum": [
+                "revenue_analytics"
+              ],
+              "type": "string",
+              "description": "* `revenue_analytics` - Revenue Analytics"
+            },
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "managed_viewsets"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "warehouse_view:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response body"
+          }
+        },
+        "x-explicit-tags": [
+          "data_warehouse"
+        ]
+      },
+      "put": {
+        "operationId": "managed_viewsets_update",
+        "description": "Enable or disable a managed viewset by kind.\nPUT /api/environments/{team_id}/managed_viewsets/{kind}/ with body {\"enabled\": true/false}",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "kind",
+            "schema": {
+              "enum": [
+                "revenue_analytics"
+              ],
+              "type": "string",
+              "description": "* `revenue_analytics` - Revenue Analytics"
+            },
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "managed_viewsets"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "warehouse_view:write"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response body"
+          }
+        },
+        "x-explicit-tags": [
+          "data_warehouse"
+        ]
+      }
+    },
     "/api/environments/{project_id}/max_tools/create_and_query_insight/": {
       "post": {
         "operationId": "max_tools_create_and_query_insight_create",
@@ -34387,6 +35934,7 @@
           }
         ],
         "tags": [
+          "replay",
           "session_summaries"
         ],
         "requestBody": {
@@ -34428,7 +35976,9 @@
             "description": ""
           }
         },
-        "x-explicit-tags": []
+        "x-explicit-tags": [
+          "replay"
+        ]
       }
     },
     "/api/environments/{project_id}/subscriptions/{subscription_id}/deliveries/": {
@@ -45137,6 +46687,14 @@
         "parameters": [
           {
             "in": "query",
+            "name": "filters_override",
+            "schema": {
+              "type": "string"
+            },
+            "description": "JSON object to override dashboard filters for this request only (not persisted). Top-level keys replace; nested values are not deep-merged — pass the complete value for any key you override. See the dashboard filters schema for available keys (e.g., `date_from`, `date_to`, `properties`). Ignored when accessed via a dashboard sharing token."
+          },
+          {
+            "in": "query",
             "name": "format",
             "schema": {
               "type": "string",
@@ -45157,6 +46715,14 @@
           },
           {
             "$ref": "#/components/parameters/ProjectIdPath"
+          },
+          {
+            "in": "query",
+            "name": "variables_override",
+            "schema": {
+              "type": "string"
+            },
+            "description": "JSON object to override dashboard variables for this request only (not persisted). Format: {\"<variable_id>\": {\"code_name\": \"<code_name>\", \"variableId\": \"<variable_id>\", \"value\": <new_value>}}. Each entry must include `code_name` — partial entries are silently dropped. The simplest workflow is to call `dashboard-get` first, copy the matching entry from the response's `variables` field, and mutate `value`. Top-level keys replace; nested values are not deep-merged. Ignored when accessed via a dashboard sharing token."
           }
         ],
         "tags": [
@@ -45689,6 +47255,14 @@
         "parameters": [
           {
             "in": "query",
+            "name": "filters_override",
+            "schema": {
+              "type": "string"
+            },
+            "description": "JSON object to override dashboard filters for this request only (not persisted). Top-level keys replace; nested values are not deep-merged — pass the complete value for any key you override. See the dashboard filters schema for available keys (e.g., `date_from`, `date_to`, `properties`). Ignored when accessed via a dashboard sharing token."
+          },
+          {
+            "in": "query",
             "name": "format",
             "schema": {
               "type": "string",
@@ -45734,6 +47308,14 @@
               ]
             },
             "description": "Cache behavior. 'force_cache' (default) serves from cache even if stale. 'blocking' uses cache if fresh, otherwise recalculates. 'force_blocking' always recalculates."
+          },
+          {
+            "in": "query",
+            "name": "variables_override",
+            "schema": {
+              "type": "string"
+            },
+            "description": "JSON object to override dashboard variables for this request only (not persisted). Format: {\"<variable_id>\": {\"code_name\": \"<code_name>\", \"variableId\": \"<variable_id>\", \"value\": <new_value>}}. Each entry must include `code_name` — partial entries are silently dropped. The simplest workflow is to call `dashboard-get` first, copy the matching entry from the response's `variables` field, and mutate `value`. Top-level keys replace; nested values are not deep-merged. Ignored when accessed via a dashboard sharing token."
           }
         ],
         "tags": [
@@ -45838,6 +47420,14 @@
         "parameters": [
           {
             "in": "query",
+            "name": "filters_override",
+            "schema": {
+              "type": "string"
+            },
+            "description": "JSON object to override dashboard filters for this request only (not persisted). Top-level keys replace; nested values are not deep-merged — pass the complete value for any key you override. See the dashboard filters schema for available keys (e.g., `date_from`, `date_to`, `properties`). Ignored when accessed via a dashboard sharing token."
+          },
+          {
+            "in": "query",
             "name": "format",
             "schema": {
               "type": "string",
@@ -45857,7 +47447,27 @@
             "required": true
           },
           {
+            "in": "query",
+            "name": "layoutSize",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "sm",
+                "xs"
+              ]
+            },
+            "description": "Layout size for tile positioning. 'sm' (default) for standard, 'xs' for mobile. The snake_case alias `layout_size` is also accepted for backward compatibility."
+          },
+          {
             "$ref": "#/components/parameters/ProjectIdPath"
+          },
+          {
+            "in": "query",
+            "name": "variables_override",
+            "schema": {
+              "type": "string"
+            },
+            "description": "JSON object to override dashboard variables for this request only (not persisted). Format: {\"<variable_id>\": {\"code_name\": \"<code_name>\", \"variableId\": \"<variable_id>\", \"value\": <new_value>}}. Each entry must include `code_name` — partial entries are silently dropped. The simplest workflow is to call `dashboard-get` first, copy the matching entry from the response's `variables` field, and mutate `value`. Top-level keys replace; nested values are not deep-merged. Ignored when accessed via a dashboard sharing token."
           }
         ],
         "tags": [
@@ -46349,6 +47959,540 @@
         },
         "x-explicit-tags": [
           "dashboards"
+        ]
+      }
+    },
+    "/api/projects/{project_id}/data_modeling_jobs/": {
+      "get": {
+        "operationId": "data_modeling_jobs_list",
+        "description": "List data modeling jobs which are \"runs\" for our saved queries.",
+        "parameters": [
+          {
+            "name": "cursor",
+            "required": false,
+            "in": "query",
+            "description": "The pagination cursor value.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Number of results to return per page.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          },
+          {
+            "in": "query",
+            "name": "saved_query_id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "tags": [
+          "data_warehouse",
+          "data_modeling_jobs"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "warehouse_view:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedDataModelingJobList"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-explicit-tags": [
+          "data_warehouse"
+        ]
+      }
+    },
+    "/api/projects/{project_id}/data_modeling_jobs/{id}/": {
+      "get": {
+        "operationId": "data_modeling_jobs_retrieve",
+        "description": "List data modeling jobs which are \"runs\" for our saved queries.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "A UUID string identifying this data modeling job.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "data_warehouse",
+          "data_modeling_jobs"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "warehouse_view:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DataModelingJob"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-explicit-tags": [
+          "data_warehouse"
+        ]
+      }
+    },
+    "/api/projects/{project_id}/data_modeling_jobs/recent/": {
+      "get": {
+        "operationId": "data_modeling_jobs_recent_retrieve",
+        "description": "Get the most recent non-running job for each saved query from the v2 backend.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "data_warehouse",
+          "data_modeling_jobs"
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DataModelingJob"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-explicit-tags": [
+          "data_warehouse"
+        ]
+      }
+    },
+    "/api/projects/{project_id}/data_modeling_jobs/running/": {
+      "get": {
+        "operationId": "data_modeling_jobs_running_retrieve",
+        "description": "Get all currently running jobs from the v2 backend.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "data_warehouse",
+          "data_modeling_jobs"
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DataModelingJob"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-explicit-tags": [
+          "data_warehouse"
+        ]
+      }
+    },
+    "/api/projects/{project_id}/data_warehouse/check-database-name/": {
+      "get": {
+        "operationId": "data_warehouse_check_database_name_retrieve",
+        "description": "Check if a database name is available.",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "name",
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "Database name to check",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "data_warehouse"
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CheckDatabaseNameResponse"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-explicit-tags": [
+          "data_warehouse"
+        ]
+      }
+    },
+    "/api/projects/{project_id}/data_warehouse/completed_activity/": {
+      "get": {
+        "operationId": "data_warehouse_completed_activity_retrieve",
+        "description": "Returns completed/non-running activities (jobs with status 'Completed').\nSupports pagination and cutoff time filtering.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "data_warehouse"
+        ],
+        "responses": {
+          "200": {
+            "description": "No response body"
+          }
+        },
+        "x-explicit-tags": [
+          "data_warehouse"
+        ]
+      }
+    },
+    "/api/projects/{project_id}/data_warehouse/data_health_issues/": {
+      "get": {
+        "operationId": "data_warehouse_data_health_issues_retrieve",
+        "description": "Returns failed/disabled data pipeline items for the Pipeline status side panel.\nIncludes: materializations, syncs, sources, destinations, and transformations.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "data_warehouse"
+        ],
+        "responses": {
+          "200": {
+            "description": "No response body"
+          }
+        },
+        "x-explicit-tags": [
+          "data_warehouse"
+        ]
+      }
+    },
+    "/api/projects/{project_id}/data_warehouse/data_ops_dashboard/": {
+      "get": {
+        "operationId": "data_warehouse_data_ops_dashboard_retrieve",
+        "description": "Returns the data ops overview dashboard ID for this team, creating it if it doesn't exist yet.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "data_warehouse"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "warehouse_view:write"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response body"
+          }
+        },
+        "x-explicit-tags": [
+          "data_warehouse"
+        ]
+      }
+    },
+    "/api/projects/{project_id}/data_warehouse/deprovision/": {
+      "post": {
+        "operationId": "data_warehouse_deprovision_create",
+        "description": "Start deprovisioning the managed warehouse for this team.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "data_warehouse"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "warehouse_view:write"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeprovisionWarehouseResponse"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-explicit-tags": [
+          "data_warehouse"
+        ]
+      }
+    },
+    "/api/projects/{project_id}/data_warehouse/job_stats/": {
+      "get": {
+        "operationId": "data_warehouse_job_stats_retrieve",
+        "description": "Returns success and failed job statistics for the last 1, 7, or 30 days.\nQuery parameter 'days' can be 1, 7, or 30 (default: 7).",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "data_warehouse"
+        ],
+        "responses": {
+          "200": {
+            "description": "No response body"
+          }
+        },
+        "x-explicit-tags": [
+          "data_warehouse"
+        ]
+      }
+    },
+    "/api/projects/{project_id}/data_warehouse/property_values/": {
+      "get": {
+        "operationId": "data_warehouse_property_values_retrieve",
+        "description": "API endpoints for data warehouse aggregate statistics and operations.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "data_warehouse"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "query:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response body"
+          }
+        },
+        "x-explicit-tags": [
+          "data_warehouse"
+        ]
+      }
+    },
+    "/api/projects/{project_id}/data_warehouse/provision/": {
+      "post": {
+        "operationId": "data_warehouse_provision_create",
+        "description": "Start provisioning a managed warehouse for this team.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "data_warehouse"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProvisionWarehouseRequest"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/ProvisionWarehouseRequest"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/ProvisionWarehouseRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "warehouse_view:write"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProvisionWarehouseResponse"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-explicit-tags": [
+          "data_warehouse"
+        ]
+      }
+    },
+    "/api/projects/{project_id}/data_warehouse/reset-password/": {
+      "post": {
+        "operationId": "data_warehouse_reset_password_create",
+        "description": "Reset the root password for the managed warehouse.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "data_warehouse"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "warehouse_view:write"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResetPasswordResponse"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-explicit-tags": [
+          "data_warehouse"
+        ]
+      }
+    },
+    "/api/projects/{project_id}/data_warehouse/running_activity/": {
+      "get": {
+        "operationId": "data_warehouse_running_activity_retrieve",
+        "description": "Returns currently running activities (jobs with status 'Running').\nSupports pagination and cutoff time filtering.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "data_warehouse"
+        ],
+        "responses": {
+          "200": {
+            "description": "No response body"
+          }
+        },
+        "x-explicit-tags": [
+          "data_warehouse"
+        ]
+      }
+    },
+    "/api/projects/{project_id}/data_warehouse/total_rows_stats/": {
+      "get": {
+        "operationId": "data_warehouse_total_rows_stats_retrieve",
+        "description": "Returns aggregated statistics for the data warehouse total rows processed within the current billing period.\nUsed by the frontend data warehouse scene to display usage information.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "data_warehouse"
+        ],
+        "responses": {
+          "200": {
+            "description": "No response body"
+          }
+        },
+        "x-explicit-tags": [
+          "data_warehouse"
+        ]
+      }
+    },
+    "/api/projects/{project_id}/data_warehouse/warehouse_status/": {
+      "get": {
+        "operationId": "data_warehouse_warehouse_status_retrieve",
+        "description": "Get the current provisioning status of the managed warehouse.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "data_warehouse"
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WarehouseStatusResponse"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-explicit-tags": [
+          "data_warehouse"
         ]
       }
     },
@@ -63661,6 +65805,106 @@
         ]
       }
     },
+    "/api/projects/{project_id}/integrations/github/link_existing/": {
+      "post": {
+        "operationId": "integrations_github_link_existing_create",
+        "description": "Reuse a GitHub installation already linked to a sibling team in the same organization.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "integrations",
+          "integrations"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IntegrationConfig"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/IntegrationConfig"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/IntegrationConfig"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "integration:write"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response body"
+          }
+        },
+        "x-explicit-tags": [
+          "integrations"
+        ]
+      }
+    },
+    "/api/projects/{project_id}/integrations/github/oauth_authorize/": {
+      "post": {
+        "operationId": "integrations_github_oauth_authorize_create",
+        "description": "Mint a User OAuth URL to bootstrap a fresh `code` when the install flow returns without one.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "integrations",
+          "integrations"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IntegrationConfig"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/IntegrationConfig"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/IntegrationConfig"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "integration:write"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response body"
+          }
+        },
+        "x-explicit-tags": [
+          "integrations"
+        ]
+      }
+    },
     "/api/projects/{project_id}/js-snippet/resolve/": {
       "get": {
         "operationId": "js_snippet_resolve_retrieve",
@@ -64298,8 +66542,7 @@
                 "$ref": "#/components/schemas/LogsAlertConfiguration"
               }
             }
-          },
-          "required": true
+          }
         },
         "security": [
           {
@@ -64408,8 +66651,7 @@
                 "$ref": "#/components/schemas/LogsAlertConfiguration"
               }
             }
-          },
-          "required": true
+          }
         },
         "security": [
           {
@@ -79087,6 +81329,131 @@
         ]
       }
     },
+    "/api/projects/{project_id}/warehouse_dag/": {
+      "get": {
+        "operationId": "warehouse_dag_list",
+        "description": "Return this team's DAG as a set of edges and nodes",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "warehouse_dag"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "warehouse_view:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response body"
+          }
+        },
+        "x-explicit-tags": [
+          "data_warehouse"
+        ]
+      }
+    },
+    "/api/projects/{project_id}/warehouse_model_paths/": {
+      "get": {
+        "operationId": "warehouse_model_paths_list",
+        "parameters": [
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Number of results to return per page.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "offset",
+            "required": false,
+            "in": "query",
+            "description": "The initial index from which to return the results.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "warehouse_model_paths"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "warehouse_view:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedDataWarehouseModelPathList"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-explicit-tags": [
+          "data_warehouse"
+        ]
+      }
+    },
+    "/api/projects/{project_id}/warehouse_model_paths/{id}/": {
+      "get": {
+        "operationId": "warehouse_model_paths_retrieve",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "A UUID string identifying this data warehouse model path.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "warehouse_model_paths"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "warehouse_view:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DataWarehouseModelPath"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-explicit-tags": []
+      }
+    },
     "/api/projects/{project_id}/warehouse_saved_queries/": {
       "get": {
         "operationId": "warehouse_saved_queries_list",
@@ -80678,6 +83045,728 @@
         ]
       }
     },
+    "/api/projects/{project_id}/warehouse_view_link/": {
+      "get": {
+        "operationId": "warehouse_view_link_list",
+        "description": "Create, Read, Update and Delete View Columns.",
+        "parameters": [
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Number of results to return per page.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "offset",
+            "required": false,
+            "in": "query",
+            "description": "The initial index from which to return the results.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "description": "A search term.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "tags": [
+          "warehouse_view_link"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "warehouse_view:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedViewLinkList"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-explicit-tags": [
+          "data_warehouse"
+        ]
+      },
+      "post": {
+        "operationId": "warehouse_view_link_create",
+        "description": "Create, Read, Update and Delete View Columns.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "warehouse_view_link"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ViewLink"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/ViewLink"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/ViewLink"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "warehouse_view:write"
+            ]
+          }
+        ],
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ViewLink"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-explicit-tags": [
+          "data_warehouse"
+        ]
+      }
+    },
+    "/api/projects/{project_id}/warehouse_view_link/{id}/": {
+      "get": {
+        "operationId": "warehouse_view_link_retrieve",
+        "description": "Create, Read, Update and Delete View Columns.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "A UUID string identifying this data warehouse join.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "warehouse_view_link"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "warehouse_view:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ViewLink"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-explicit-tags": []
+      },
+      "put": {
+        "operationId": "warehouse_view_link_update",
+        "description": "Create, Read, Update and Delete View Columns.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "A UUID string identifying this data warehouse join.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "warehouse_view_link"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ViewLink"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/ViewLink"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/ViewLink"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "warehouse_view:write"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ViewLink"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-explicit-tags": []
+      },
+      "patch": {
+        "operationId": "warehouse_view_link_partial_update",
+        "description": "Create, Read, Update and Delete View Columns.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "A UUID string identifying this data warehouse join.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "warehouse_view_link"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchedViewLink"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchedViewLink"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchedViewLink"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "warehouse_view:write"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ViewLink"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-explicit-tags": []
+      },
+      "delete": {
+        "operationId": "warehouse_view_link_destroy",
+        "description": "Create, Read, Update and Delete View Columns.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "A UUID string identifying this data warehouse join.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "warehouse_view_link"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "warehouse_view:write"
+            ]
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No response body"
+          }
+        },
+        "x-explicit-tags": []
+      }
+    },
+    "/api/projects/{project_id}/warehouse_view_link/validate/": {
+      "post": {
+        "operationId": "warehouse_view_link_validate_create",
+        "description": "Create, Read, Update and Delete View Columns.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "warehouse_view_link"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ViewLinkValidation"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/ViewLinkValidation"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/ViewLinkValidation"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "No response body"
+          }
+        },
+        "x-explicit-tags": [
+          "data_warehouse"
+        ]
+      }
+    },
+    "/api/projects/{project_id}/warehouse_view_links/": {
+      "get": {
+        "operationId": "warehouse_view_links_list",
+        "description": "Create, Read, Update and Delete View Columns.",
+        "parameters": [
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Number of results to return per page.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "offset",
+            "required": false,
+            "in": "query",
+            "description": "The initial index from which to return the results.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "description": "A search term.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "tags": [
+          "warehouse_view_links"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "warehouse_view:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedViewLinkList"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-explicit-tags": [
+          "data_warehouse"
+        ]
+      },
+      "post": {
+        "operationId": "warehouse_view_links_create",
+        "description": "Create, Read, Update and Delete View Columns.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "warehouse_view_links"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ViewLink"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/ViewLink"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/ViewLink"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "warehouse_view:write"
+            ]
+          }
+        ],
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ViewLink"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-explicit-tags": [
+          "data_warehouse"
+        ]
+      }
+    },
+    "/api/projects/{project_id}/warehouse_view_links/{id}/": {
+      "get": {
+        "operationId": "warehouse_view_links_retrieve",
+        "description": "Create, Read, Update and Delete View Columns.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "A UUID string identifying this data warehouse join.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "warehouse_view_links"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "warehouse_view:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ViewLink"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-explicit-tags": []
+      },
+      "put": {
+        "operationId": "warehouse_view_links_update",
+        "description": "Create, Read, Update and Delete View Columns.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "A UUID string identifying this data warehouse join.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "warehouse_view_links"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ViewLink"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/ViewLink"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/ViewLink"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "warehouse_view:write"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ViewLink"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-explicit-tags": []
+      },
+      "patch": {
+        "operationId": "warehouse_view_links_partial_update",
+        "description": "Create, Read, Update and Delete View Columns.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "A UUID string identifying this data warehouse join.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "warehouse_view_links"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchedViewLink"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchedViewLink"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchedViewLink"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "warehouse_view:write"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ViewLink"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-explicit-tags": []
+      },
+      "delete": {
+        "operationId": "warehouse_view_links_destroy",
+        "description": "Create, Read, Update and Delete View Columns.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "A UUID string identifying this data warehouse join.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "warehouse_view_links"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "warehouse_view:write"
+            ]
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No response body"
+          }
+        },
+        "x-explicit-tags": []
+      }
+    },
+    "/api/projects/{project_id}/warehouse_view_links/validate/": {
+      "post": {
+        "operationId": "warehouse_view_links_validate_create",
+        "description": "Create, Read, Update and Delete View Columns.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "warehouse_view_links"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ViewLinkValidation"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/ViewLinkValidation"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/ViewLinkValidation"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "No response body"
+          }
+        },
+        "x-explicit-tags": [
+          "data_warehouse"
+        ]
+      }
+    },
     "/api/projects/{project_id}/web_experiments/": {
       "get": {
         "operationId": "web_experiments_list",
@@ -81770,6 +84859,98 @@
         ]
       }
     },
+    "/api/users/{uuid}/integrations/github/{installation_id}/branches/": {
+      "get": {
+        "operationId": "users_integrations_github_branches_retrieve",
+        "description": "List branches for a repository accessible to a personal GitHub installation.",
+        "summary": "List branches for a personal GitHub installation repository",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "installation_id",
+            "schema": {
+              "type": "string",
+              "pattern": "^\\d+$"
+            },
+            "required": true
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer",
+              "maximum": 1000,
+              "minimum": 1,
+              "default": 100
+            },
+            "description": "Maximum number of branches to return"
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            },
+            "description": "Number of branches to skip"
+          },
+          {
+            "in": "query",
+            "name": "repo",
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "Repository in owner/repo format",
+            "required": true
+          },
+          {
+            "in": "query",
+            "name": "search",
+            "schema": {
+              "type": "string",
+              "default": ""
+            },
+            "description": "Optional case-insensitive branch name search query."
+          },
+          {
+            "in": "path",
+            "name": "uuid",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "tags": [
+          "core",
+          "users"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "user:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GitHubBranchesResponse"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-explicit-tags": [
+          "core"
+        ]
+      }
+    },
     "/api/users/{uuid}/integrations/github/{installation_id}/repos/": {
       "get": {
         "operationId": "users_integrations_github_repos_retrieve",
@@ -81841,6 +85022,58 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/GitHubReposResponse"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-explicit-tags": [
+          "core"
+        ]
+      }
+    },
+    "/api/users/{uuid}/integrations/github/{installation_id}/repos/refresh/": {
+      "post": {
+        "operationId": "users_integrations_github_repos_refresh_create",
+        "description": "Refresh repositories accessible to a specific GitHub installation.",
+        "summary": "Refresh repositories for a personal GitHub installation",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "installation_id",
+            "schema": {
+              "type": "string",
+              "pattern": "^\\d+$"
+            },
+            "required": true
+          },
+          {
+            "in": "path",
+            "name": "uuid",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "tags": [
+          "core",
+          "users"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "user:write"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GitHubReposRefreshResponse"
                 }
               }
             },
@@ -87305,6 +90538,21 @@
         "title": "ChartSettingsFormatting",
         "type": "object"
       },
+      "CheckDatabaseNameResponse": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "available": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "available",
+          "name"
+        ]
+      },
       "ClaudeRuntimeAdapterEnum": {
         "enum": [
           "claude"
@@ -87396,7 +90644,7 @@
           "github_user_token": {
             "type": "string",
             "writeOnly": true,
-            "description": "Ephemeral GitHub user token from PostHog Code for user-authored cloud pull requests."
+            "description": "Optional GitHub user token from PostHog Code for user-authored cloud pull requests. Prefer linking GitHub from Settings → Linked accounts so the server can manage tokens; this field remains supported for callers that still manage their own tokens."
           },
           "initial_permission_mode": {
             "allOf": [
@@ -87661,7 +90909,7 @@
           "github_user_token": {
             "type": "string",
             "writeOnly": true,
-            "description": "Ephemeral GitHub user token from PostHog Code for user-authored cloud pull requests."
+            "description": "Optional GitHub user token from PostHog Code for user-authored cloud pull requests. Prefer linking GitHub from Settings → Linked accounts so the server can manage tokens; this field remains supported for callers that still manage their own tokens."
           },
           "initial_permission_mode": {
             "allOf": [
@@ -89872,6 +93120,15 @@
           "uploads"
         ]
       },
+      "CreatedViaEnum": {
+        "enum": [
+          "web",
+          "api",
+          "mcp"
+        ],
+        "type": "string",
+        "description": "* `web` - web\n* `api` - api\n* `mcp` - mcp"
+      },
       "CreationModeEnum": {
         "enum": [
           "default",
@@ -90972,6 +94229,87 @@
         "title": "DataColorToken",
         "type": "string"
       },
+      "DataModelingJob": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "readOnly": true
+          },
+          "saved_query_id": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true,
+            "readOnly": true
+          },
+          "status": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/DataModelingJobStatusEnum"
+              }
+            ],
+            "readOnly": true
+          },
+          "rows_materialized": {
+            "type": "integer",
+            "readOnly": true
+          },
+          "error": {
+            "type": "string",
+            "readOnly": true,
+            "nullable": true
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          },
+          "last_run_at": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          },
+          "workflow_id": {
+            "type": "string",
+            "readOnly": true,
+            "nullable": true
+          },
+          "workflow_run_id": {
+            "type": "string",
+            "readOnly": true,
+            "nullable": true
+          },
+          "rows_expected": {
+            "type": "integer",
+            "readOnly": true,
+            "nullable": true,
+            "description": "Total rows expected to be materialized"
+          }
+        },
+        "required": [
+          "created_at",
+          "error",
+          "id",
+          "last_run_at",
+          "rows_expected",
+          "rows_materialized",
+          "saved_query_id",
+          "status",
+          "workflow_id",
+          "workflow_run_id"
+        ]
+      },
+      "DataModelingJobStatusEnum": {
+        "enum": [
+          "Cancelled",
+          "Completed",
+          "Failed",
+          "Running"
+        ],
+        "type": "string",
+        "description": "* `Cancelled` - Cancelled\n* `Completed` - Completed\n* `Failed` - Failed\n* `Running` - Running"
+      },
       "DataTableNode": {
         "additionalProperties": false,
         "properties": {
@@ -91558,6 +94896,63 @@
         "title": "DataWarehouseEventsModifier",
         "type": "object"
       },
+      "DataWarehouseModelPath": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "readOnly": true
+          },
+          "path": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "readOnly": true
+          },
+          "team": {
+            "type": "integer"
+          },
+          "table": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "saved_query": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          },
+          "created_by": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/UserBasic"
+              }
+            ],
+            "readOnly": true
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true,
+            "nullable": true
+          }
+        },
+        "required": [
+          "created_at",
+          "created_by",
+          "id",
+          "path",
+          "team",
+          "updated_at"
+        ]
+      },
       "DataWarehouseNode": {
         "additionalProperties": false,
         "properties": {
@@ -92128,6 +95523,12 @@
             "readOnly": true,
             "nullable": true,
             "description": "When this test view should be automatically deleted."
+          },
+          "user_access_level": {
+            "type": "string",
+            "nullable": true,
+            "readOnly": true,
+            "description": "The effective access level the user has for this object"
           }
         },
         "required": [
@@ -92145,11 +95546,13 @@
           "name",
           "origin",
           "status",
-          "sync_frequency"
+          "sync_frequency",
+          "user_access_level"
         ]
       },
       "DataWarehouseSavedQueryFolder": {
         "type": "object",
+        "description": "Mixin for serializers to add user access control fields",
         "properties": {
           "id": {
             "type": "string",
@@ -92177,6 +95580,12 @@
           "view_count": {
             "type": "integer",
             "readOnly": true
+          },
+          "user_access_level": {
+            "type": "string",
+            "nullable": true,
+            "readOnly": true,
+            "description": "The effective access level the user has for this object"
           }
         },
         "required": [
@@ -92184,6 +95593,7 @@
           "created_by",
           "id",
           "name",
+          "user_access_level",
           "view_count"
         ]
       },
@@ -92300,6 +95710,12 @@
             "readOnly": true,
             "nullable": true,
             "description": "When this test view should be automatically deleted."
+          },
+          "user_access_level": {
+            "type": "string",
+            "nullable": true,
+            "readOnly": true,
+            "description": "The effective access level the user has for this object"
           }
         },
         "required": [
@@ -92319,7 +95735,8 @@
           "name",
           "origin",
           "status",
-          "sync_frequency"
+          "sync_frequency",
+          "user_access_level"
         ]
       },
       "DataWarehouseViewLink": {
@@ -93356,6 +96773,21 @@
           "id",
           "key",
           "name"
+        ]
+      },
+      "DeprovisionWarehouseResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string"
+          },
+          "team": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "status",
+          "team"
         ]
       },
       "DescriptionContentTypeEnum": {
@@ -104056,6 +107488,15 @@
             ],
             "default": "warehouse",
             "description": "Connection mode: 'warehouse' (import) or 'direct' (live query).\n\n* `warehouse` - warehouse\n* `direct` - direct"
+          },
+          "created_via": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CreatedViaEnum"
+              }
+            ],
+            "default": "api",
+            "description": "Where the request came from\n\n* `web` - web\n* `api` - api\n* `mcp` - mcp"
           }
         },
         "required": [
@@ -104092,6 +107533,14 @@
             "type": "string",
             "nullable": true,
             "readOnly": true
+          },
+          "created_via": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CreatedViaEnum"
+              }
+            ],
+            "description": "How this source was created. Defaults to `api` on create when omitted. `web` for the in-app UI, `api` for direct API callers, `mcp` for agent/MCP tool calls. Ignored on update.\n\n* `web` - web\n* `api` - api\n* `mcp` - mcp"
           },
           "status": {
             "type": "string",
@@ -112887,6 +116336,7 @@
           "google-sheets",
           "linkedin-ads",
           "snapchat",
+          "stripe",
           "intercom",
           "email",
           "twilio",
@@ -115901,7 +119351,7 @@
           },
           "name": {
             "type": "string",
-            "description": "Human-readable name for this alert.",
+            "description": "Human-readable name for this alert. Defaults to 'Untitled alert' on create when omitted.",
             "maxLength": 255
           },
           "enabled": {
@@ -115910,12 +119360,13 @@
             "description": "Whether the alert is actively being evaluated. Disabling resets the state to not_firing."
           },
           "filters": {
-            "description": "Filter criteria — subset of LogsViewerFilters. Must contain at least one of: severityLevels (list of severity strings), serviceNames (list of service name strings), or filterGroup (property filter group object)."
+            "description": "Filter criteria — subset of LogsViewerFilters. Must contain at least one of: severityLevels (list of severity strings), serviceNames (list of service name strings), or filterGroup (property filter group object). May be empty on draft alerts (enabled=false)."
           },
           "threshold_count": {
             "type": "integer",
             "minimum": 1,
-            "description": "Number of matching log entries that constitutes a threshold breach within the evaluation window."
+            "default": 100,
+            "description": "Number of matching log entries that constitutes a threshold breach within the evaluation window. Defaults to 100."
           },
           "threshold_operator": {
             "allOf": [
@@ -116019,6 +119470,13 @@
             "readOnly": true,
             "description": "Notification destination types configured for this alert — e.g. 'slack', 'webhook'. Empty list means no notifications will fire. One or more destinations should be added after creating an alert."
           },
+          "first_enabled_at": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true,
+            "nullable": true,
+            "description": "When the alert was first enabled. Null means the alert is still in draft state."
+          },
           "created_at": {
             "type": "string",
             "format": "date-time",
@@ -116047,16 +119505,14 @@
           "created_at",
           "created_by",
           "destination_types",
-          "filters",
+          "first_enabled_at",
           "id",
           "last_checked_at",
           "last_error_message",
           "last_notified_at",
-          "name",
           "next_check_at",
           "state",
           "state_timeline",
-          "threshold_count",
           "updated_at"
         ]
       },
@@ -116673,7 +120129,7 @@
             "description": "Optional list of predicates over string attributes, e.g. [{\"key\":\"http.route\",\"op\":\"eq\",\"value\":\"/api\"}]."
           },
           "config": {
-            "description": "Type-specific JSON (severity actions, path_drop patterns, or future rate_limit settings)."
+            "description": "Type-specific JSON. For path_drop: object with required `patterns` (list of regex strings) and optional `match_attribute_key` (string). When `match_attribute_key` is omitted or empty, patterns match the same virtual path string as ingestion (url.path, http.path, http.route, path). When set, each pattern is tested only against that string attribute on the log record. For severity_sampling: object with `actions` per severity level and optional `always_keep`. rate_limit is reserved."
           },
           "version": {
             "type": "integer",
@@ -120522,6 +123978,63 @@
           }
         }
       },
+      "PaginatedDataModelingJobList": {
+        "type": "object",
+        "required": [
+          "results"
+        ],
+        "properties": {
+          "next": {
+            "type": "string",
+            "nullable": true,
+            "format": "uri",
+            "example": "http://api.example.org/accounts/?cursor=cD00ODY%3D\""
+          },
+          "previous": {
+            "type": "string",
+            "nullable": true,
+            "format": "uri",
+            "example": "http://api.example.org/accounts/?cursor=cj0xJnA9NDg3"
+          },
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DataModelingJob"
+            }
+          }
+        }
+      },
+      "PaginatedDataWarehouseModelPathList": {
+        "type": "object",
+        "required": [
+          "count",
+          "results"
+        ],
+        "properties": {
+          "count": {
+            "type": "integer",
+            "example": 123
+          },
+          "next": {
+            "type": "string",
+            "nullable": true,
+            "format": "uri",
+            "example": "http://api.example.org/accounts/?offset=400&limit=100"
+          },
+          "previous": {
+            "type": "string",
+            "nullable": true,
+            "format": "uri",
+            "example": "http://api.example.org/accounts/?offset=200&limit=100"
+          },
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DataWarehouseModelPath"
+            }
+          }
+        }
+      },
       "PaginatedDataWarehouseSavedQueryMinimalList": {
         "type": "object",
         "required": [
@@ -123825,6 +127338,37 @@
           }
         }
       },
+      "PaginatedViewLinkList": {
+        "type": "object",
+        "required": [
+          "count",
+          "results"
+        ],
+        "properties": {
+          "count": {
+            "type": "integer",
+            "example": 123
+          },
+          "next": {
+            "type": "string",
+            "nullable": true,
+            "format": "uri",
+            "example": "http://api.example.org/accounts/?offset=400&limit=100"
+          },
+          "previous": {
+            "type": "string",
+            "nullable": true,
+            "format": "uri",
+            "example": "http://api.example.org/accounts/?offset=200&limit=100"
+          },
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ViewLink"
+            }
+          }
+        }
+      },
       "PaginatedWebExperimentsAPIList": {
         "type": "object",
         "required": [
@@ -125215,11 +128759,18 @@
             "readOnly": true,
             "nullable": true,
             "description": "When this test view should be automatically deleted."
+          },
+          "user_access_level": {
+            "type": "string",
+            "nullable": true,
+            "readOnly": true,
+            "description": "The effective access level the user has for this object"
           }
         }
       },
       "PatchedDataWarehouseSavedQueryFolder": {
         "type": "object",
+        "description": "Mixin for serializers to add user access control fields",
         "properties": {
           "id": {
             "type": "string",
@@ -125247,6 +128798,12 @@
           "view_count": {
             "type": "integer",
             "readOnly": true
+          },
+          "user_access_level": {
+            "type": "string",
+            "nullable": true,
+            "readOnly": true,
+            "description": "The effective access level the user has for this object"
           }
         }
       },
@@ -126906,6 +130463,14 @@
             "nullable": true,
             "readOnly": true
           },
+          "created_via": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CreatedViaEnum"
+              }
+            ],
+            "description": "How this source was created. Defaults to `api` on create when omitted. `web` for the in-app UI, `api` for direct API callers, `mcp` for agent/MCP tool calls. Ignored on update.\n\n* `web` - web\n* `api` - api\n* `mcp` - mcp"
+          },
           "status": {
             "type": "string",
             "readOnly": true
@@ -128137,7 +131702,7 @@
           },
           "name": {
             "type": "string",
-            "description": "Human-readable name for this alert.",
+            "description": "Human-readable name for this alert. Defaults to 'Untitled alert' on create when omitted.",
             "maxLength": 255
           },
           "enabled": {
@@ -128146,12 +131711,13 @@
             "description": "Whether the alert is actively being evaluated. Disabling resets the state to not_firing."
           },
           "filters": {
-            "description": "Filter criteria — subset of LogsViewerFilters. Must contain at least one of: severityLevels (list of severity strings), serviceNames (list of service name strings), or filterGroup (property filter group object)."
+            "description": "Filter criteria — subset of LogsViewerFilters. Must contain at least one of: severityLevels (list of severity strings), serviceNames (list of service name strings), or filterGroup (property filter group object). May be empty on draft alerts (enabled=false)."
           },
           "threshold_count": {
             "type": "integer",
             "minimum": 1,
-            "description": "Number of matching log entries that constitutes a threshold breach within the evaluation window."
+            "default": 100,
+            "description": "Number of matching log entries that constitutes a threshold breach within the evaluation window. Defaults to 100."
           },
           "threshold_operator": {
             "allOf": [
@@ -128255,6 +131821,13 @@
             "readOnly": true,
             "description": "Notification destination types configured for this alert — e.g. 'slack', 'webhook'. Empty list means no notifications will fire. One or more destinations should be added after creating an alert."
           },
+          "first_enabled_at": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true,
+            "nullable": true,
+            "description": "When the alert was first enabled. Null means the alert is still in draft state."
+          },
           "created_at": {
             "type": "string",
             "format": "date-time",
@@ -128332,7 +131905,7 @@
             "description": "Optional list of predicates over string attributes, e.g. [{\"key\":\"http.route\",\"op\":\"eq\",\"value\":\"/api\"}]."
           },
           "config": {
-            "description": "Type-specific JSON (severity actions, path_drop patterns, or future rate_limit settings)."
+            "description": "Type-specific JSON. For path_drop: object with required `patterns` (list of regex strings) and optional `match_attribute_key` (string). When `match_attribute_key` is omitted or empty, patterns match the same virtual path string as ingestion (url.path, http.path, http.route, path). When set, each pattern is tested only against that string attribute on the log record. For severity_sampling: object with `actions` per severity level and optional `always_keep`. rate_limit is reserved."
           },
           "version": {
             "type": "integer",
@@ -130438,6 +134011,7 @@
       },
       "PatchedTable": {
         "type": "object",
+        "description": "Mixin for serializers to add user access control fields",
         "properties": {
           "id": {
             "type": "string",
@@ -130500,6 +134074,12 @@
           "options": {
             "type": "object",
             "additionalProperties": true
+          },
+          "user_access_level": {
+            "type": "string",
+            "nullable": true,
+            "readOnly": true,
+            "description": "The effective access level the user has for this object"
           }
         }
       },
@@ -130609,6 +134189,12 @@
             "type": "integer",
             "nullable": true,
             "description": "GitHub integration for this task"
+          },
+          "github_user_integration": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true,
+            "description": "User-scoped GitHub integration to use for user-authored cloud runs."
           },
           "signal_report": {
             "type": "string",
@@ -131705,6 +135291,56 @@
             "type": "string",
             "format": "uri",
             "writeOnly": true
+          }
+        }
+      },
+      "PatchedViewLink": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "readOnly": true
+          },
+          "deleted": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "created_by": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/UserBasic"
+              }
+            ],
+            "readOnly": true
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          },
+          "source_table_name": {
+            "type": "string",
+            "maxLength": 400
+          },
+          "source_table_key": {
+            "type": "string",
+            "maxLength": 400
+          },
+          "joining_table_name": {
+            "type": "string",
+            "maxLength": 400
+          },
+          "joining_table_key": {
+            "type": "string",
+            "maxLength": 400
+          },
+          "field_name": {
+            "type": "string",
+            "maxLength": 400
+          },
+          "configuration": {
+            "nullable": true
           }
         }
       },
@@ -134572,6 +138208,33 @@
         ],
         "title": "PropertyValuesQueryResponse",
         "type": "object"
+      },
+      "ProvisionWarehouseRequest": {
+        "type": "object",
+        "properties": {
+          "database_name": {
+            "type": "string",
+            "description": "Name for the new database"
+          }
+        },
+        "required": [
+          "database_name"
+        ]
+      },
+      "ProvisionWarehouseResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string"
+          },
+          "team": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "status",
+          "team"
+        ]
       },
       "ProxyRecord": {
         "type": "object",
@@ -144162,6 +147825,21 @@
           "replayInsights",
           "repository",
           "windowDays"
+        ]
+      },
+      "ResetPasswordResponse": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "password",
+          "username"
         ]
       },
       "ResolvedDateRangeResponse": {
@@ -155438,6 +159116,7 @@
       },
       "Table": {
         "type": "object",
+        "description": "Mixin for serializers to add user access control fields",
         "properties": {
           "id": {
             "type": "string",
@@ -155500,6 +159179,12 @@
           "options": {
             "type": "object",
             "additionalProperties": true
+          },
+          "user_access_level": {
+            "type": "string",
+            "nullable": true,
+            "readOnly": true,
+            "description": "The effective access level the user has for this object"
           }
         },
         "required": [
@@ -155512,7 +159197,8 @@
           "format",
           "id",
           "name",
-          "url_pattern"
+          "url_pattern",
+          "user_access_level"
         ]
       },
       "TableFormatEnum": {
@@ -155754,6 +159440,12 @@
             "type": "integer",
             "nullable": true,
             "description": "GitHub integration for this task"
+          },
+          "github_user_integration": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true,
+            "description": "User-scoped GitHub integration to use for user-authored cloud runs."
           },
           "signal_report": {
             "type": "string",
@@ -156771,7 +160463,7 @@
           "github_user_token": {
             "type": "string",
             "writeOnly": true,
-            "description": "Ephemeral GitHub user token from PostHog Code for user-authored cloud pull requests."
+            "description": "Optional GitHub user token from PostHog Code for user-authored cloud pull requests. Prefer linking GitHub from Settings → Linked accounts so the server can manage tokens; this field remains supported for callers that still manage their own tokens."
           }
         }
       },
@@ -161823,6 +165515,11 @@
       "UserGitHubIntegrationItem": {
         "type": "object",
         "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "PostHog UserIntegration row id."
+          },
           "kind": {
             "type": "string",
             "description": "Integration kind; always `github` for this API."
@@ -161857,6 +165554,7 @@
         },
         "required": [
           "created_at",
+          "id",
           "installation_id",
           "kind",
           "uses_shared_installation"
@@ -161900,7 +165598,7 @@
           },
           "connect_flow": {
             "type": "string",
-            "description": "oauth_authorize when using user OAuth against an existing team installation; app_install for the GitHub App installation UI."
+            "description": "OAuth or install flow used for this GitHub connection."
           }
         },
         "required": [
@@ -162123,6 +165821,93 @@
         "title": "VectorSearchResponseItem",
         "type": "object"
       },
+      "ViewLink": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "readOnly": true
+          },
+          "deleted": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "created_by": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/UserBasic"
+              }
+            ],
+            "readOnly": true
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          },
+          "source_table_name": {
+            "type": "string",
+            "maxLength": 400
+          },
+          "source_table_key": {
+            "type": "string",
+            "maxLength": 400
+          },
+          "joining_table_name": {
+            "type": "string",
+            "maxLength": 400
+          },
+          "joining_table_key": {
+            "type": "string",
+            "maxLength": 400
+          },
+          "field_name": {
+            "type": "string",
+            "maxLength": 400
+          },
+          "configuration": {
+            "nullable": true
+          }
+        },
+        "required": [
+          "created_at",
+          "created_by",
+          "field_name",
+          "id",
+          "joining_table_key",
+          "joining_table_name",
+          "source_table_key",
+          "source_table_name"
+        ]
+      },
+      "ViewLinkValidation": {
+        "type": "object",
+        "properties": {
+          "joining_table_name": {
+            "type": "string",
+            "maxLength": 255
+          },
+          "joining_table_key": {
+            "type": "string",
+            "maxLength": 255
+          },
+          "source_table_name": {
+            "type": "string",
+            "maxLength": 255
+          },
+          "source_table_key": {
+            "type": "string",
+            "maxLength": 255
+          }
+        },
+        "required": [
+          "joining_table_key",
+          "joining_table_name",
+          "source_table_key",
+          "source_table_name"
+        ]
+      },
       "VizSpecificOptions": {
         "additionalProperties": false,
         "properties": {
@@ -162166,6 +165951,49 @@
         ],
         "title": "VolumeBucket",
         "type": "object"
+      },
+      "WarehouseStatusResponse": {
+        "type": "object",
+        "properties": {
+          "team_name": {
+            "type": "string"
+          },
+          "state": {
+            "$ref": "#/components/schemas/WarehouseStatusResponseStateEnum"
+          },
+          "status_message": {
+            "type": "string"
+          },
+          "ready_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "failed_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          }
+        },
+        "required": [
+          "failed_at",
+          "ready_at",
+          "state",
+          "status_message",
+          "team_name"
+        ]
+      },
+      "WarehouseStatusResponseStateEnum": {
+        "enum": [
+          "pending",
+          "provisioning",
+          "ready",
+          "failed",
+          "deleting",
+          "deleted"
+        ],
+        "type": "string",
+        "description": "* `pending` - pending\n* `provisioning` - provisioning\n* `ready` - ready\n* `failed` - failed\n* `deleting` - deleting\n* `deleted` - deleted"
       },
       "WebAnalyticsExternalSummaryQuery": {
         "additionalProperties": false,
@@ -166717,6 +170545,9 @@
       "name": "data_color_themes"
     },
     {
+      "name": "data_modeling_jobs"
+    },
+    {
       "name": "data_warehouse"
     },
     {
@@ -166840,6 +170671,9 @@
       "name": "legal_documents"
     },
     {
+      "name": "lineage"
+    },
+    {
       "name": "live_debugger_breakpoints"
     },
     {
@@ -166853,6 +170687,9 @@
     },
     {
       "name": "logs"
+    },
+    {
+      "name": "managed_viewsets"
     },
     {
       "name": "max"
@@ -167005,6 +170842,12 @@
       "name": "visual_review"
     },
     {
+      "name": "warehouse_dag"
+    },
+    {
+      "name": "warehouse_model_paths"
+    },
+    {
       "name": "warehouse_saved_queries"
     },
     {
@@ -167012,6 +170855,12 @@
     },
     {
       "name": "warehouse_tables"
+    },
+    {
+      "name": "warehouse_view_link"
+    },
+    {
+      "name": "warehouse_view_links"
     },
     {
       "name": "web_analytics"
@@ -167056,6 +170905,7 @@
         "dashboard_templates",
         "dashboards",
         "data_color_themes",
+        "data_modeling_jobs",
         "data_warehouse",
         "dataset_items",
         "datasets",
@@ -167097,11 +170947,13 @@
         "invites",
         "js-snippet",
         "legal_documents",
+        "lineage",
         "live_debugger_breakpoints",
         "llm_analytics",
         "llm_prompts",
         "llm_skills",
         "logs",
+        "managed_viewsets",
         "max",
         "max_tools",
         "mcp_server_installations",
@@ -167152,9 +171004,13 @@
         "user_interviews",
         "users",
         "visual_review",
+        "warehouse_dag",
+        "warehouse_model_paths",
         "warehouse_saved_queries",
         "warehouse_saved_query_folders",
         "warehouse_tables",
+        "warehouse_view_link",
+        "warehouse_view_links",
         "web_analytics",
         "web_experiments",
         "web_vitals",
