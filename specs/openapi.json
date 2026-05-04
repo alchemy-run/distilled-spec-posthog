@@ -1791,6 +1791,14 @@
             "schema": {
               "type": "integer"
             }
+          },
+          {
+            "in": "query",
+            "name": "search",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Optional. Fuzzy match against dashboard `name` and `description` using Postgres trigram word similarity (handles typos, transpositions, and prefix-as-you-type). `name` matches rank above `description` matches. Results are ordered by relevance, then pinned status, then name. When omitted, dashboards are ordered by pinned status then alphabetical name. Capped at 200 characters; longer queries return a 400 error."
           }
         ],
         "tags": [
@@ -46266,6 +46274,14 @@
           },
           {
             "$ref": "#/components/parameters/ProjectIdPath"
+          },
+          {
+            "in": "query",
+            "name": "search",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Optional. Fuzzy match against dashboard `name` and `description` using Postgres trigram word similarity (handles typos, transpositions, and prefix-as-you-type). `name` matches rank above `description` matches. Results are ordered by relevance, then pinned status, then name. When omitted, dashboards are ordered by pinned status then alphabetical name. Capped at 200 characters; longer queries return a 400 error."
           }
         ],
         "tags": [
@@ -119840,6 +119856,13 @@
           "window_minutes": {
             "type": "integer",
             "description": "Window size in minutes — determines bucket interval."
+          },
+          "check_interval_minutes": {
+            "type": "integer",
+            "maximum": 60,
+            "minimum": 1,
+            "default": 5,
+            "description": "How often the alert is evaluated, in minutes."
           },
           "evaluation_periods": {
             "type": "integer",
