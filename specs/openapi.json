@@ -2293,7 +2293,8 @@
             "schema": {
               "type": "string"
             },
-            "description": "JSON object to override dashboard filters for this request only (not persisted). Top-level keys replace; nested values are not deep-merged — pass the complete value for any key you override. See the dashboard filters schema for available keys (e.g., `date_from`, `date_to`, `properties`). Ignored when accessed via a dashboard sharing token."
+            "description": "Object (or pre-encoded JSON string) to override dashboard filters for this request only (not persisted). Top-level keys replace; nested values are not deep-merged — pass the complete value for any key you override. Accepts the same keys as the dashboard filters schema (e.g., `date_from`, `date_to`, `properties`). Ignored when accessed via a sharing token.",
+            "x-accepts-stringified-json": true
           },
           {
             "in": "query",
@@ -2321,7 +2322,8 @@
             "schema": {
               "type": "string"
             },
-            "description": "JSON object to override dashboard variables for this request only (not persisted). Format: {\"<variable_id>\": {\"code_name\": \"<code_name>\", \"variableId\": \"<variable_id>\", \"value\": <new_value>}}. Each entry must include `code_name` — partial entries are silently dropped. The simplest workflow is to call `dashboard-get` first, copy the matching entry from the response's `variables` field, and mutate `value`. Top-level keys replace; nested values are not deep-merged. Ignored when accessed via a dashboard sharing token."
+            "description": "Object (or pre-encoded JSON string) to override dashboard variables for this request only (not persisted). Format: {\"<variable_id>\": {\"code_name\": \"<code_name>\", \"variableId\": \"<variable_id>\", \"value\": <new_value>}}. Each entry must include `code_name` — partial entries are silently dropped. The simplest workflow is to call `dashboard-get` first, copy the matching entry from the response, and mutate `value`. Top-level keys replace; nested values are not deep-merged. Ignored when accessed via a sharing token.",
+            "x-accepts-stringified-json": true
           }
         ],
         "tags": [
@@ -2869,7 +2871,8 @@
             "schema": {
               "type": "string"
             },
-            "description": "JSON object to override dashboard filters for this request only (not persisted). Top-level keys replace; nested values are not deep-merged — pass the complete value for any key you override. See the dashboard filters schema for available keys (e.g., `date_from`, `date_to`, `properties`). Ignored when accessed via a dashboard sharing token."
+            "description": "Object (or pre-encoded JSON string) to override dashboard filters for this request only (not persisted). Top-level keys replace; nested values are not deep-merged — pass the complete value for any key you override. Accepts the same keys as the dashboard filters schema (e.g., `date_from`, `date_to`, `properties`). Ignored when accessed via a sharing token.",
+            "x-accepts-stringified-json": true
           },
           {
             "in": "query",
@@ -2922,7 +2925,8 @@
             "schema": {
               "type": "string"
             },
-            "description": "JSON object to override dashboard variables for this request only (not persisted). Format: {\"<variable_id>\": {\"code_name\": \"<code_name>\", \"variableId\": \"<variable_id>\", \"value\": <new_value>}}. Each entry must include `code_name` — partial entries are silently dropped. The simplest workflow is to call `dashboard-get` first, copy the matching entry from the response's `variables` field, and mutate `value`. Top-level keys replace; nested values are not deep-merged. Ignored when accessed via a dashboard sharing token."
+            "description": "Object (or pre-encoded JSON string) to override dashboard variables for this request only (not persisted). Format: {\"<variable_id>\": {\"code_name\": \"<code_name>\", \"variableId\": \"<variable_id>\", \"value\": <new_value>}}. Each entry must include `code_name` — partial entries are silently dropped. The simplest workflow is to call `dashboard-get` first, copy the matching entry from the response, and mutate `value`. Top-level keys replace; nested values are not deep-merged. Ignored when accessed via a sharing token.",
+            "x-accepts-stringified-json": true
           }
         ],
         "tags": [
@@ -3036,7 +3040,8 @@
             "schema": {
               "type": "string"
             },
-            "description": "JSON object to override dashboard filters for this request only (not persisted). Top-level keys replace; nested values are not deep-merged — pass the complete value for any key you override. See the dashboard filters schema for available keys (e.g., `date_from`, `date_to`, `properties`). Ignored when accessed via a dashboard sharing token."
+            "description": "Object (or pre-encoded JSON string) to override dashboard filters for this request only (not persisted). Top-level keys replace; nested values are not deep-merged — pass the complete value for any key you override. Accepts the same keys as the dashboard filters schema (e.g., `date_from`, `date_to`, `properties`). Ignored when accessed via a sharing token.",
+            "x-accepts-stringified-json": true
           },
           {
             "in": "query",
@@ -3076,7 +3081,8 @@
             "schema": {
               "type": "string"
             },
-            "description": "JSON object to override dashboard variables for this request only (not persisted). Format: {\"<variable_id>\": {\"code_name\": \"<code_name>\", \"variableId\": \"<variable_id>\", \"value\": <new_value>}}. Each entry must include `code_name` — partial entries are silently dropped. The simplest workflow is to call `dashboard-get` first, copy the matching entry from the response's `variables` field, and mutate `value`. Top-level keys replace; nested values are not deep-merged. Ignored when accessed via a dashboard sharing token."
+            "description": "Object (or pre-encoded JSON string) to override dashboard variables for this request only (not persisted). Format: {\"<variable_id>\": {\"code_name\": \"<code_name>\", \"variableId\": \"<variable_id>\", \"value\": <new_value>}}. Each entry must include `code_name` — partial entries are silently dropped. The simplest workflow is to call `dashboard-get` first, copy the matching entry from the response, and mutate `value`. Top-level keys replace; nested values are not deep-merged. Ignored when accessed via a sharing token.",
+            "x-accepts-stringified-json": true
           }
         ],
         "tags": [
@@ -12105,15 +12111,6 @@
             }
           },
           {
-            "name": "search",
-            "required": false,
-            "in": "query",
-            "description": "A search term.",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
             "in": "query",
             "name": "type",
             "schema": {
@@ -13967,6 +13964,15 @@
           },
           {
             "in": "query",
+            "name": "filters_override",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Object (or pre-encoded JSON string) to override the insight's filters for this request only (not persisted). Top-level keys replace; nested values are not deep-merged — pass the complete value for any key you override. Accepts the same keys as the dashboard filters schema (e.g., `date_from`, `date_to`, `properties`). Ignored when accessed via a sharing token.",
+            "x-accepts-stringified-json": true
+          },
+          {
+            "in": "query",
             "name": "format",
             "schema": {
               "type": "string",
@@ -14017,6 +14023,15 @@
               "default": "force_cache"
             },
             "description": "\nWhether to refresh the insight, how aggresively, and if sync or async:\n- `'force_cache'` - return cached data or a cache miss; always completes immediately as it never calculates\n- `'blocking'` - calculate synchronously (returning only when the query is done), UNLESS there are very fresh results in the cache\n- `'async'` - kick off background calculation (returning immediately with a query status), UNLESS there are very fresh results in the cache\n- `'lazy_async'` - kick off background calculation, UNLESS there are somewhat fresh results in the cache\n- `'force_blocking'` - calculate synchronously, even if fresh results are already cached\n- `'force_async'` - kick off background calculation, even if fresh results are already cached\nBackground calculation can be tracked using the `query_status` response field."
+          },
+          {
+            "in": "query",
+            "name": "variables_override",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Object (or pre-encoded JSON string) to override the insight's HogQL variables for this request only (not persisted). Format: {\"<variable_id>\": {\"code_name\": \"<code_name>\", \"variableId\": \"<variable_id>\", \"value\": <new_value>}}. Each entry must include `code_name` — partial entries are silently dropped. The simplest workflow is to call `insight-get` first, copy the matching entry from the response, and mutate `value`. Top-level keys replace; nested values are not deep-merged. Ignored when accessed via a sharing token.",
+            "x-accepts-stringified-json": true
           }
         ],
         "tags": [
@@ -21622,6 +21637,60 @@
         "responses": {
           "202": {
             "description": "Test delivery workflow started"
+          }
+        },
+        "deprecated": true,
+        "x-explicit-tags": [
+          "core"
+        ]
+      }
+    },
+    "/api/environments/{environment_id}/subscriptions/summary_quota/": {
+      "get": {
+        "operationId": "environments_subscriptions_summary_quota_retrieve",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/EnvironmentIdPath"
+          }
+        ],
+        "tags": [
+          "core",
+          "subscriptions"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "subscription:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "active_count": {
+                      "type": "integer"
+                    },
+                    "limit": {
+                      "type": "integer",
+                      "nullable": true
+                    },
+                    "at_limit": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "active_count",
+                    "limit",
+                    "at_limit"
+                  ]
+                }
+              }
+            },
+            "description": "Org-wide AI summary quota: count of currently-active summaries and the limit for the org's plan tier. `limit` is null when no cap is configured."
           }
         },
         "deprecated": true,
@@ -35807,6 +35876,65 @@
         ]
       }
     },
+    "/api/environments/{project_id}/mcp_tools/docs_search/": {
+      "post": {
+        "operationId": "docs_search",
+        "description": "Run a hybrid (semantic + full-text) RAG search over the PostHog documentation via Inkeep. Returns a markdown body with title, URL, and excerpt for each match for the agent to cite back to the user.",
+        "summary": "Search PostHog documentation",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "docs",
+          "mcp_tools"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DocsSearchRequest"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/DocsSearchRequest"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/DocsSearchRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "project:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DocsSearchResponse"
+                }
+              }
+            },
+            "description": "Markdown-formatted documentation results."
+          }
+        },
+        "x-explicit-tags": [
+          "docs",
+          "posthog_ai"
+        ]
+      }
+    },
     "/api/environments/{project_id}/session_summaries/config/": {
       "get": {
         "operationId": "retrieve_session_summaries_config",
@@ -39029,6 +39157,14 @@
           },
           {
             "$ref": "#/components/parameters/OrganizationIdPath"
+          },
+          {
+            "in": "query",
+            "name": "search",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Fuzzy match against member `first_name`, `last_name`, and `email` using Postgres trigram word similarity. Supports typos and prefix-as-you-type. Capped at 200 characters."
           }
         ],
         "tags": [
@@ -45254,6 +45390,7 @@
             "schema": {
               "type": "string",
               "enum": [
+                "github_issue",
                 "slack_bot_mention",
                 "slack_channel_message",
                 "slack_emoji_reaction",
@@ -45272,6 +45409,7 @@
               "type": "string",
               "enum": [
                 "email",
+                "github",
                 "slack",
                 "teams",
                 "widget"
@@ -46764,7 +46902,8 @@
             "schema": {
               "type": "string"
             },
-            "description": "JSON object to override dashboard filters for this request only (not persisted). Top-level keys replace; nested values are not deep-merged — pass the complete value for any key you override. See the dashboard filters schema for available keys (e.g., `date_from`, `date_to`, `properties`). Ignored when accessed via a dashboard sharing token."
+            "description": "Object (or pre-encoded JSON string) to override dashboard filters for this request only (not persisted). Top-level keys replace; nested values are not deep-merged — pass the complete value for any key you override. Accepts the same keys as the dashboard filters schema (e.g., `date_from`, `date_to`, `properties`). Ignored when accessed via a sharing token.",
+            "x-accepts-stringified-json": true
           },
           {
             "in": "query",
@@ -46795,7 +46934,8 @@
             "schema": {
               "type": "string"
             },
-            "description": "JSON object to override dashboard variables for this request only (not persisted). Format: {\"<variable_id>\": {\"code_name\": \"<code_name>\", \"variableId\": \"<variable_id>\", \"value\": <new_value>}}. Each entry must include `code_name` — partial entries are silently dropped. The simplest workflow is to call `dashboard-get` first, copy the matching entry from the response's `variables` field, and mutate `value`. Top-level keys replace; nested values are not deep-merged. Ignored when accessed via a dashboard sharing token."
+            "description": "Object (or pre-encoded JSON string) to override dashboard variables for this request only (not persisted). Format: {\"<variable_id>\": {\"code_name\": \"<code_name>\", \"variableId\": \"<variable_id>\", \"value\": <new_value>}}. Each entry must include `code_name` — partial entries are silently dropped. The simplest workflow is to call `dashboard-get` first, copy the matching entry from the response, and mutate `value`. Top-level keys replace; nested values are not deep-merged. Ignored when accessed via a sharing token.",
+            "x-accepts-stringified-json": true
           }
         ],
         "tags": [
@@ -47332,7 +47472,8 @@
             "schema": {
               "type": "string"
             },
-            "description": "JSON object to override dashboard filters for this request only (not persisted). Top-level keys replace; nested values are not deep-merged — pass the complete value for any key you override. See the dashboard filters schema for available keys (e.g., `date_from`, `date_to`, `properties`). Ignored when accessed via a dashboard sharing token."
+            "description": "Object (or pre-encoded JSON string) to override dashboard filters for this request only (not persisted). Top-level keys replace; nested values are not deep-merged — pass the complete value for any key you override. Accepts the same keys as the dashboard filters schema (e.g., `date_from`, `date_to`, `properties`). Ignored when accessed via a sharing token.",
+            "x-accepts-stringified-json": true
           },
           {
             "in": "query",
@@ -47388,7 +47529,8 @@
             "schema": {
               "type": "string"
             },
-            "description": "JSON object to override dashboard variables for this request only (not persisted). Format: {\"<variable_id>\": {\"code_name\": \"<code_name>\", \"variableId\": \"<variable_id>\", \"value\": <new_value>}}. Each entry must include `code_name` — partial entries are silently dropped. The simplest workflow is to call `dashboard-get` first, copy the matching entry from the response's `variables` field, and mutate `value`. Top-level keys replace; nested values are not deep-merged. Ignored when accessed via a dashboard sharing token."
+            "description": "Object (or pre-encoded JSON string) to override dashboard variables for this request only (not persisted). Format: {\"<variable_id>\": {\"code_name\": \"<code_name>\", \"variableId\": \"<variable_id>\", \"value\": <new_value>}}. Each entry must include `code_name` — partial entries are silently dropped. The simplest workflow is to call `dashboard-get` first, copy the matching entry from the response, and mutate `value`. Top-level keys replace; nested values are not deep-merged. Ignored when accessed via a sharing token.",
+            "x-accepts-stringified-json": true
           }
         ],
         "tags": [
@@ -47497,7 +47639,8 @@
             "schema": {
               "type": "string"
             },
-            "description": "JSON object to override dashboard filters for this request only (not persisted). Top-level keys replace; nested values are not deep-merged — pass the complete value for any key you override. See the dashboard filters schema for available keys (e.g., `date_from`, `date_to`, `properties`). Ignored when accessed via a dashboard sharing token."
+            "description": "Object (or pre-encoded JSON string) to override dashboard filters for this request only (not persisted). Top-level keys replace; nested values are not deep-merged — pass the complete value for any key you override. Accepts the same keys as the dashboard filters schema (e.g., `date_from`, `date_to`, `properties`). Ignored when accessed via a sharing token.",
+            "x-accepts-stringified-json": true
           },
           {
             "in": "query",
@@ -47540,7 +47683,8 @@
             "schema": {
               "type": "string"
             },
-            "description": "JSON object to override dashboard variables for this request only (not persisted). Format: {\"<variable_id>\": {\"code_name\": \"<code_name>\", \"variableId\": \"<variable_id>\", \"value\": <new_value>}}. Each entry must include `code_name` — partial entries are silently dropped. The simplest workflow is to call `dashboard-get` first, copy the matching entry from the response's `variables` field, and mutate `value`. Top-level keys replace; nested values are not deep-merged. Ignored when accessed via a dashboard sharing token."
+            "description": "Object (or pre-encoded JSON string) to override dashboard variables for this request only (not persisted). Format: {\"<variable_id>\": {\"code_name\": \"<code_name>\", \"variableId\": \"<variable_id>\", \"value\": <new_value>}}. Each entry must include `code_name` — partial entries are silently dropped. The simplest workflow is to call `dashboard-get` first, copy the matching entry from the response, and mutate `value`. Top-level keys replace; nested values are not deep-merged. Ignored when accessed via a sharing token.",
+            "x-accepts-stringified-json": true
           }
         ],
         "tags": [
@@ -53030,10 +53174,10 @@
         ]
       }
     },
-    "/api/projects/{project_id}/event_definitions/promoted_properties/": {
+    "/api/projects/{project_id}/event_definitions/primary_properties/": {
       "get": {
-        "operationId": "event_definitions_promoted_properties_retrieve",
-        "description": "Resolve team-configured promoted properties for event definitions.\n\nThe response only contains entries where a non-null promoted_property is set on the\nEventDefinition. Callers should fall back to the core taxonomy defaults client-side\nfor names not present in the response.",
+        "operationId": "event_definitions_primary_properties_retrieve",
+        "description": "Resolve team-configured primary properties for event definitions.\n\nThe response only contains entries where a non-null primary_property is set on the\nEventDefinition. Callers should fall back to the core taxonomy defaults client-side\nfor names not present in the response.",
         "parameters": [
           {
             "in": "query",
@@ -53044,7 +53188,7 @@
                 "type": "string"
               }
             },
-            "description": "Optional: restrict the response to these event names. Repeat the parameter for multiple names (e.g. `?names=a&names=b`). When omitted, returns every team-configured promoted property."
+            "description": "Optional: restrict the response to these event names. Repeat the parameter for multiple names (e.g. `?names=a&names=b`). When omitted, returns every team-configured primary property."
           },
           {
             "$ref": "#/components/parameters/ProjectIdPath"
@@ -53066,7 +53210,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PromotedPropertiesResponse"
+                  "$ref": "#/components/schemas/PrimaryPropertiesResponse"
                 }
               }
             },
@@ -62314,15 +62458,6 @@
             "$ref": "#/components/parameters/ProjectIdPath"
           },
           {
-            "name": "search",
-            "required": false,
-            "in": "query",
-            "description": "A search term.",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
             "in": "query",
             "name": "type",
             "schema": {
@@ -64145,6 +64280,15 @@
         "parameters": [
           {
             "in": "query",
+            "name": "filters_override",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Object (or pre-encoded JSON string) to override the insight's filters for this request only (not persisted). Top-level keys replace; nested values are not deep-merged — pass the complete value for any key you override. Accepts the same keys as the dashboard filters schema (e.g., `date_from`, `date_to`, `properties`). Ignored when accessed via a sharing token.",
+            "x-accepts-stringified-json": true
+          },
+          {
+            "in": "query",
             "name": "format",
             "schema": {
               "type": "string",
@@ -64198,6 +64342,15 @@
               "default": "force_cache"
             },
             "description": "\nWhether to refresh the insight, how aggresively, and if sync or async:\n- `'force_cache'` - return cached data or a cache miss; always completes immediately as it never calculates\n- `'blocking'` - calculate synchronously (returning only when the query is done), UNLESS there are very fresh results in the cache\n- `'async'` - kick off background calculation (returning immediately with a query status), UNLESS there are very fresh results in the cache\n- `'lazy_async'` - kick off background calculation, UNLESS there are somewhat fresh results in the cache\n- `'force_blocking'` - calculate synchronously, even if fresh results are already cached\n- `'force_async'` - kick off background calculation, even if fresh results are already cached\nBackground calculation can be tracked using the `query_status` response field."
+          },
+          {
+            "in": "query",
+            "name": "variables_override",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Object (or pre-encoded JSON string) to override the insight's HogQL variables for this request only (not persisted). Format: {\"<variable_id>\": {\"code_name\": \"<code_name>\", \"variableId\": \"<variable_id>\", \"value\": <new_value>}}. Each entry must include `code_name` — partial entries are silently dropped. The simplest workflow is to call `insight-get` first, copy the matching entry from the response, and mutate `value`. Top-level keys replace; nested values are not deep-merged. Ignored when accessed via a sharing token.",
+            "x-accepts-stringified-json": true
           }
         ],
         "tags": [
@@ -76095,6 +76248,59 @@
         ]
       }
     },
+    "/api/projects/{project_id}/subscriptions/summary_quota/": {
+      "get": {
+        "operationId": "subscriptions_summary_quota_retrieve",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "core",
+          "subscriptions"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "subscription:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "active_count": {
+                      "type": "integer"
+                    },
+                    "limit": {
+                      "type": "integer",
+                      "nullable": true
+                    },
+                    "at_limit": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "active_count",
+                    "limit",
+                    "at_limit"
+                  ]
+                }
+              }
+            },
+            "description": "Org-wide AI summary quota: count of currently-active summaries and the limit for the org's plan tier. `limit` is null when no cap is configured."
+          }
+        },
+        "x-explicit-tags": [
+          "core"
+        ]
+      }
+    },
     "/api/projects/{project_id}/surveys/": {
       "get": {
         "operationId": "surveys_list",
@@ -76128,13 +76334,12 @@
             "$ref": "#/components/parameters/ProjectIdPath"
           },
           {
-            "name": "search",
-            "required": false,
             "in": "query",
-            "description": "A search term.",
+            "name": "search",
             "schema": {
               "type": "string"
-            }
+            },
+            "description": "Fuzzy match against survey `name` and `description` using Postgres trigram word similarity. Supports typos and prefix-as-you-type."
           }
         ],
         "tags": [
@@ -88319,12 +88524,6 @@
       "BaselineEntry": {
         "type": "object",
         "properties": {
-          "sparkline": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/BaselineSparklineDay"
-            }
-          },
           "identifier": {
             "type": "string"
           },
@@ -88360,21 +88559,24 @@
             "type": "string",
             "format": "date-time"
           },
-          "recent_diff_avg": {
+          "baseline_change_count": {
+            "type": "integer"
+          },
+          "recent_drift_avg": {
             "type": "number",
             "format": "double",
             "nullable": true
           }
         },
         "required": [
+          "baseline_change_count",
           "browser",
           "height",
           "identifier",
           "is_quarantined",
           "last_run_at",
-          "recent_diff_avg",
+          "recent_drift_avg",
           "run_type",
-          "sparkline",
           "thumbnail_hash",
           "tolerate_count_30d",
           "tolerate_count_90d",
@@ -88406,29 +88608,6 @@
           "generated_at",
           "totals",
           "truncated"
-        ]
-      },
-      "BaselineSparklineDay": {
-        "type": "object",
-        "properties": {
-          "clean": {
-            "type": "integer"
-          },
-          "tolerated": {
-            "type": "integer"
-          },
-          "changed": {
-            "type": "integer"
-          },
-          "quarantined": {
-            "type": "integer"
-          }
-        },
-        "required": [
-          "changed",
-          "clean",
-          "quarantined",
-          "tolerated"
         ]
       },
       "BaselineTotals": {
@@ -90402,20 +90581,22 @@
           "teams_channel_message",
           "teams_bot_mention",
           "widget_embedded",
-          "widget_api"
+          "widget_api",
+          "github_issue"
         ],
         "type": "string",
-        "description": "* `slack_channel_message` - Channel message\n* `slack_bot_mention` - Bot mention\n* `slack_emoji_reaction` - Emoji reaction\n* `teams_channel_message` - Teams channel message\n* `teams_bot_mention` - Teams bot mention\n* `widget_embedded` - Widget\n* `widget_api` - API"
+        "description": "* `slack_channel_message` - Channel message\n* `slack_bot_mention` - Bot mention\n* `slack_emoji_reaction` - Emoji reaction\n* `teams_channel_message` - Teams channel message\n* `teams_bot_mention` - Teams bot mention\n* `widget_embedded` - Widget\n* `widget_api` - API\n* `github_issue` - GitHub issue"
       },
       "ChannelSourceEnum": {
         "enum": [
           "widget",
           "email",
           "slack",
-          "teams"
+          "teams",
+          "github"
         ],
         "type": "string",
-        "description": "* `widget` - Widget\n* `email` - Email\n* `slack` - Slack\n* `teams` - Microsoft Teams"
+        "description": "* `widget` - Widget\n* `email` - Email\n* `slack` - Slack\n* `teams` - Microsoft Teams\n* `github` - GitHub"
       },
       "ChartAxis": {
         "additionalProperties": false,
@@ -97235,6 +97416,30 @@
         "title": "DistanceFunc",
         "type": "string"
       },
+      "DocsSearchRequest": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Natural-language description of what to find in the PostHog documentation. Inkeep performs hybrid (semantic + full-text) RAG, so phrase the query the way a user would ask the question."
+          }
+        },
+        "required": [
+          "query"
+        ]
+      },
+      "DocsSearchResponse": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "string",
+            "description": "Markdown-formatted documentation results. Each block has a title, URL and excerpt; an empty result set returns guidance to navigate to https://posthog.com/docs."
+          }
+        },
+        "required": [
+          "content"
+        ]
+      },
       "DocumentSimilarityQuery": {
         "additionalProperties": false,
         "properties": {
@@ -99375,7 +99580,7 @@
           "enforcement_mode": {
             "$ref": "#/components/schemas/EnforcementModeEnum"
           },
-          "promoted_property": {
+          "primary_property": {
             "type": "string",
             "nullable": true,
             "description": "Name of a single property on this event that PostHog UIs should display alongside the event (for example `$pathname` on `$pageview`). When set, surfaces like the session replay inspector show the property's value next to the event name without the user having to open the event.",
@@ -101237,6 +101442,12 @@
             "readOnly": true
           },
           "meta": {
+            "type": "object",
+            "additionalProperties": true,
+            "readOnly": true
+          },
+          "completed": {
+            "type": "boolean",
             "readOnly": true
           },
           "computed_at": {
@@ -101251,11 +101462,6 @@
             "readOnly": true,
             "nullable": true
           },
-          "next_refresh_at": {
-            "type": "string",
-            "nullable": true,
-            "readOnly": true
-          },
           "created_at": {
             "type": "string",
             "format": "date-time",
@@ -101268,12 +101474,12 @@
           }
         },
         "required": [
+          "completed",
           "computed_at",
           "created_at",
           "dismissed_at",
           "id",
           "meta",
-          "next_refresh_at",
           "type",
           "updated_at"
         ]
@@ -102412,7 +102618,7 @@
           "enforcement_mode": {
             "$ref": "#/components/schemas/EnforcementModeEnum"
           },
-          "promoted_property": {
+          "primary_property": {
             "type": "string",
             "nullable": true,
             "description": "Name of a single property on this event that PostHog UIs should display alongside the event (for example `$pathname` on `$pageview`). When set, surfaces like the session replay inspector show the property's value next to the event name without the user having to open the event.",
@@ -129480,7 +129686,7 @@
           "enforcement_mode": {
             "$ref": "#/components/schemas/EnforcementModeEnum"
           },
-          "promoted_property": {
+          "primary_property": {
             "type": "string",
             "nullable": true,
             "description": "Name of a single property on this event that PostHog UIs should display alongside the event (for example `$pathname` on `$pageview`). When set, surfaces like the session replay inspector show the property's value next to the event name without the user having to open the event.",
@@ -135149,6 +135355,16 @@
           "cc_participants": {
             "readOnly": true
           },
+          "github_repo": {
+            "type": "string",
+            "readOnly": true,
+            "nullable": true
+          },
+          "github_issue_number": {
+            "type": "integer",
+            "readOnly": true,
+            "nullable": true
+          },
           "person": {
             "allOf": [
               {
@@ -137154,6 +137370,21 @@
         "title": "PreprocessingConfig",
         "type": "object"
       },
+      "PrimaryPropertiesResponse": {
+        "type": "object",
+        "properties": {
+          "primary_properties": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "description": "Mapping from event name to the team-configured primary property for that event. Names without a configured primary property are omitted; callers should fall back to the core taxonomy defaults for those."
+          }
+        },
+        "required": [
+          "primary_properties"
+        ]
+      },
       "PriorityEnum": {
         "enum": [
           "low",
@@ -137893,21 +138124,6 @@
           "mask_value",
           "scopes",
           "value"
-        ]
-      },
-      "PromotedPropertiesResponse": {
-        "type": "object",
-        "properties": {
-          "promoted_properties": {
-            "type": "object",
-            "additionalProperties": {
-              "type": "string"
-            },
-            "description": "Mapping from event name to the team-configured promoted property for that event. Names without a configured promoted property are omitted; callers should fall back to the core taxonomy defaults for those."
-          }
-        },
-        "required": [
-          "promoted_properties"
         ]
       },
       "Property": {
@@ -162248,6 +162464,16 @@
           "cc_participants": {
             "readOnly": true
           },
+          "github_repo": {
+            "type": "string",
+            "readOnly": true,
+            "nullable": true
+          },
+          "github_issue_number": {
+            "type": "integer",
+            "readOnly": true,
+            "nullable": true
+          },
           "person": {
             "allOf": [
               {
@@ -162272,6 +162498,8 @@
           "email_from",
           "email_subject",
           "email_to",
+          "github_issue_number",
+          "github_repo",
           "id",
           "last_message_at",
           "last_message_text",
@@ -170850,6 +171078,9 @@
       "name": "desktop_recordings"
     },
     {
+      "name": "docs"
+    },
+    {
       "name": "domains"
     },
     {
@@ -171200,6 +171431,7 @@
         "dataset_items",
         "datasets",
         "desktop_recordings",
+        "docs",
         "domains",
         "early_access_feature",
         "early_access_features",
