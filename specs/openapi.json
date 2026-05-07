@@ -63,7 +63,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "#/components/schemas/TaskRunErrorResponse"
                 }
               }
             },
@@ -538,17 +538,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/BatchExport"
+                "$ref": "#/components/schemas/BatchExportRequest"
               }
             },
             "application/x-www-form-urlencoded": {
               "schema": {
-                "$ref": "#/components/schemas/BatchExport"
+                "$ref": "#/components/schemas/BatchExportRequest"
               }
             },
             "multipart/form-data": {
               "schema": {
-                "$ref": "#/components/schemas/BatchExport"
+                "$ref": "#/components/schemas/BatchExportRequest"
               }
             }
           },
@@ -1262,17 +1262,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/BatchExport"
+                "$ref": "#/components/schemas/BatchExportRequest"
               }
             },
             "application/x-www-form-urlencoded": {
               "schema": {
-                "$ref": "#/components/schemas/BatchExport"
+                "$ref": "#/components/schemas/BatchExportRequest"
               }
             },
             "multipart/form-data": {
               "schema": {
-                "$ref": "#/components/schemas/BatchExport"
+                "$ref": "#/components/schemas/BatchExportRequest"
               }
             }
           },
@@ -1327,17 +1327,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/PatchedBatchExport"
+                "$ref": "#/components/schemas/PatchedBatchExportRequest"
               }
             },
             "application/x-www-form-urlencoded": {
               "schema": {
-                "$ref": "#/components/schemas/PatchedBatchExport"
+                "$ref": "#/components/schemas/PatchedBatchExportRequest"
               }
             },
             "multipart/form-data": {
               "schema": {
-                "$ref": "#/components/schemas/PatchedBatchExport"
+                "$ref": "#/components/schemas/PatchedBatchExportRequest"
               }
             }
           }
@@ -19084,16 +19084,8 @@
     "/api/environments/{environment_id}/persons/properties_at_time/": {
       "get": {
         "operationId": "environments_persons_properties_at_time_retrieve",
-        "description": "Get person properties as they existed at a specific point in time.\n\nThis endpoint reconstructs person properties by querying ClickHouse events\nfor $set and $set_once operations up to the specified timestamp.\n\nQuery parameters:\n- distinct_id: The distinct_id of the person\n- timestamp: ISO datetime string for the point in time (e.g., \"2023-06-15T14:30:00Z\")\n- include_set_once: Whether to handle $set_once operations (default: false)\n- debug: Whether to include debug information with raw events (default: false)",
+        "description": "Get person properties as they existed at a specific point in time.\n\nThis endpoint reconstructs person properties by querying ClickHouse events\nfor $set and $set_once operations up to the specified timestamp.\n\nQuery parameters:\n- distinct_id: The distinct_id of the person\n- timestamp: ISO datetime string for the point in time (e.g., \"2023-06-15T14:30:00Z\")\n- include_set_once: Whether to handle $set_once operations (default: false)",
         "parameters": [
-          {
-            "in": "query",
-            "name": "debug",
-            "schema": {
-              "type": "boolean"
-            },
-            "description": "Whether to include debug information with raw events (only works when DEBUG=True, default: false)"
-          },
           {
             "in": "query",
             "name": "distinct_id",
@@ -38117,17 +38109,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/BatchExport"
+                "$ref": "#/components/schemas/BatchExportRequest"
               }
             },
             "application/x-www-form-urlencoded": {
               "schema": {
-                "$ref": "#/components/schemas/BatchExport"
+                "$ref": "#/components/schemas/BatchExportRequest"
               }
             },
             "multipart/form-data": {
               "schema": {
-                "$ref": "#/components/schemas/BatchExport"
+                "$ref": "#/components/schemas/BatchExportRequest"
               }
             }
           },
@@ -38229,17 +38221,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/BatchExport"
+                "$ref": "#/components/schemas/BatchExportRequest"
               }
             },
             "application/x-www-form-urlencoded": {
               "schema": {
-                "$ref": "#/components/schemas/BatchExport"
+                "$ref": "#/components/schemas/BatchExportRequest"
               }
             },
             "multipart/form-data": {
               "schema": {
-                "$ref": "#/components/schemas/BatchExport"
+                "$ref": "#/components/schemas/BatchExportRequest"
               }
             }
           },
@@ -38294,17 +38286,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/PatchedBatchExport"
+                "$ref": "#/components/schemas/PatchedBatchExportRequest"
               }
             },
             "application/x-www-form-urlencoded": {
               "schema": {
-                "$ref": "#/components/schemas/PatchedBatchExport"
+                "$ref": "#/components/schemas/PatchedBatchExportRequest"
               }
             },
             "multipart/form-data": {
               "schema": {
-                "$ref": "#/components/schemas/PatchedBatchExport"
+                "$ref": "#/components/schemas/PatchedBatchExportRequest"
               }
             }
           }
@@ -43833,17 +43825,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/BatchExport"
+                "$ref": "#/components/schemas/BatchExportRequest"
               }
             },
             "application/x-www-form-urlencoded": {
               "schema": {
-                "$ref": "#/components/schemas/BatchExport"
+                "$ref": "#/components/schemas/BatchExportRequest"
               }
             },
             "multipart/form-data": {
               "schema": {
-                "$ref": "#/components/schemas/BatchExport"
+                "$ref": "#/components/schemas/BatchExportRequest"
               }
             }
           },
@@ -44546,17 +44538,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/BatchExport"
+                "$ref": "#/components/schemas/BatchExportRequest"
               }
             },
             "application/x-www-form-urlencoded": {
               "schema": {
-                "$ref": "#/components/schemas/BatchExport"
+                "$ref": "#/components/schemas/BatchExportRequest"
               }
             },
             "multipart/form-data": {
               "schema": {
-                "$ref": "#/components/schemas/BatchExport"
+                "$ref": "#/components/schemas/BatchExportRequest"
               }
             }
           },
@@ -44610,17 +44602,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/PatchedBatchExport"
+                "$ref": "#/components/schemas/PatchedBatchExportRequest"
               }
             },
             "application/x-www-form-urlencoded": {
               "schema": {
-                "$ref": "#/components/schemas/PatchedBatchExport"
+                "$ref": "#/components/schemas/PatchedBatchExportRequest"
               }
             },
             "multipart/form-data": {
               "schema": {
-                "$ref": "#/components/schemas/PatchedBatchExport"
+                "$ref": "#/components/schemas/PatchedBatchExportRequest"
               }
             }
           }
@@ -59065,6 +59057,111 @@
         ]
       }
     },
+    "/api/projects/{project_id}/feature_flags/{id}/test_evaluation/": {
+      "post": {
+        "operationId": "feature_flags_test_evaluation_create",
+        "description": "Test feature flag evaluation against a specific user at an optional point in time.\n\nThis endpoint allows testing how a feature flag would evaluate for a specific user,\noptionally at a historical timestamp. When a timestamp is provided, both the flag\nconditions and person properties are evaluated as they existed at that time.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "A unique integer value identifying this feature flag.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "feature_flags",
+          "feature_flags"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FeatureFlagTestEvaluationRequest"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/FeatureFlagTestEvaluationRequest"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/FeatureFlagTestEvaluationRequest"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "feature_flag:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FeatureFlagTestEvaluationResponse"
+                }
+              }
+            },
+            "description": ""
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Invalid parameters"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Person not found"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Server error"
+          },
+          "502": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Flag evaluation service error"
+          }
+        },
+        "x-explicit-tags": [
+          "feature_flags"
+        ]
+      }
+    },
     "/api/projects/{project_id}/feature_flags/{id}/versions/{version_number}/": {
       "get": {
         "operationId": "feature_flags_versions_retrieve",
@@ -72166,16 +72263,8 @@
     "/api/projects/{project_id}/persons/properties_at_time/": {
       "get": {
         "operationId": "persons_properties_at_time_retrieve",
-        "description": "Get person properties as they existed at a specific point in time.\n\nThis endpoint reconstructs person properties by querying ClickHouse events\nfor $set and $set_once operations up to the specified timestamp.\n\nQuery parameters:\n- distinct_id: The distinct_id of the person\n- timestamp: ISO datetime string for the point in time (e.g., \"2023-06-15T14:30:00Z\")\n- include_set_once: Whether to handle $set_once operations (default: false)\n- debug: Whether to include debug information with raw events (default: false)",
+        "description": "Get person properties as they existed at a specific point in time.\n\nThis endpoint reconstructs person properties by querying ClickHouse events\nfor $set and $set_once operations up to the specified timestamp.\n\nQuery parameters:\n- distinct_id: The distinct_id of the person\n- timestamp: ISO datetime string for the point in time (e.g., \"2023-06-15T14:30:00Z\")\n- include_set_once: Whether to handle $set_once operations (default: false)",
         "parameters": [
-          {
-            "in": "query",
-            "name": "debug",
-            "schema": {
-              "type": "boolean"
-            },
-            "description": "Whether to include debug information with raw events (only works when DEBUG=True, default: false)"
-          },
           {
             "in": "query",
             "name": "distinct_id",
@@ -72529,13 +72618,12 @@
             "$ref": "#/components/parameters/ProjectIdPath"
           },
           {
-            "name": "search",
-            "required": false,
             "in": "query",
-            "description": "A search term.",
+            "name": "search",
             "schema": {
               "type": "string"
-            }
+            },
+            "description": "Fuzzy match against product tour `name` and `description` using Postgres trigram word similarity. Supports typos and prefix-as-you-type."
           }
         ],
         "tags": [
@@ -79513,7 +79601,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "#/components/schemas/TaskRunErrorResponse"
                 }
               }
             },
@@ -79599,7 +79687,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "#/components/schemas/TaskRunErrorResponse"
                 }
               }
             },
@@ -79903,7 +79991,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "#/components/schemas/TaskRunErrorResponse"
                 }
               }
             },
@@ -79998,7 +80086,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "#/components/schemas/TaskRunErrorResponse"
                 }
               }
             },
@@ -80093,7 +80181,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "#/components/schemas/TaskRunErrorResponse"
                 }
               }
             },
@@ -80181,7 +80269,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "#/components/schemas/TaskRunErrorResponse"
                 }
               }
             },
@@ -80276,7 +80364,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "#/components/schemas/TaskRunErrorResponse"
                 }
               }
             },
@@ -80371,7 +80459,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "#/components/schemas/TaskRunErrorResponse"
                 }
               }
             },
@@ -80466,7 +80554,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "#/components/schemas/TaskRunErrorResponse"
                 }
               }
             },
@@ -80561,7 +80649,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "#/components/schemas/TaskRunErrorResponse"
                 }
               }
             },
@@ -80574,7 +80662,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "#/components/schemas/TaskRunErrorResponse"
                 }
               }
             },
@@ -80854,7 +80942,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "#/components/schemas/TaskRunErrorResponse"
                 }
               }
             },
@@ -81135,7 +81223,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
+                  "$ref": "#/components/schemas/TaskRunErrorResponse"
                 }
               }
             },
@@ -88568,12 +88656,13 @@
         "title": "AggregationAxisFormat",
         "type": "string"
       },
-      "AggregationPropertyType": {
+      "AggregationPropertyType1": {
         "enum": [
           "event",
-          "person"
+          "person",
+          "data_warehouse"
         ],
-        "title": "AggregationPropertyType",
+        "title": "AggregationPropertyType1",
         "type": "string"
       },
       "AggregationType": {
@@ -89661,6 +89750,78 @@
         "type": "string",
         "description": "* `ingest_first_event` - ingest_first_event\n* `set_up_reverse_proxy` - set_up_reverse_proxy\n* `create_first_insight` - create_first_insight\n* `create_first_dashboard` - create_first_dashboard\n* `track_custom_events` - track_custom_events\n* `define_actions` - define_actions\n* `set_up_cohorts` - set_up_cohorts\n* `explore_trends_insight` - explore_trends_insight\n* `create_funnel` - create_funnel\n* `explore_retention_insight` - explore_retention_insight\n* `explore_paths_insight` - explore_paths_insight\n* `explore_stickiness_insight` - explore_stickiness_insight\n* `explore_lifecycle_insight` - explore_lifecycle_insight\n* `add_authorized_domain` - add_authorized_domain\n* `set_up_web_vitals` - set_up_web_vitals\n* `review_web_analytics_dashboard` - review_web_analytics_dashboard\n* `filter_web_analytics` - filter_web_analytics\n* `set_up_web_analytics_conversion_goals` - set_up_web_analytics_conversion_goals\n* `visit_web_vitals_dashboard` - visit_web_vitals_dashboard\n* `setup_session_recordings` - setup_session_recordings\n* `watch_session_recording` - watch_session_recording\n* `configure_recording_settings` - configure_recording_settings\n* `create_recording_playlist` - create_recording_playlist\n* `enable_console_logs` - enable_console_logs\n* `create_feature_flag` - create_feature_flag\n* `implement_flag_in_code` - implement_flag_in_code\n* `update_feature_flag_release_conditions` - update_feature_flag_release_conditions\n* `create_multivariate_flag` - create_multivariate_flag\n* `set_up_flag_payloads` - set_up_flag_payloads\n* `set_up_flag_evaluation_runtimes` - set_up_flag_evaluation_runtimes\n* `create_experiment` - create_experiment\n* `implement_experiment_variants` - implement_experiment_variants\n* `launch_experiment` - launch_experiment\n* `review_experiment_results` - review_experiment_results\n* `create_survey` - create_survey\n* `launch_survey` - launch_survey\n* `collect_survey_responses` - collect_survey_responses\n* `connect_source` - connect_source\n* `run_first_query` - run_first_query\n* `join_external_data` - join_external_data\n* `create_saved_view` - create_saved_view\n* `enable_error_tracking` - enable_error_tracking\n* `upload_source_maps` - upload_source_maps\n* `view_first_error` - view_first_error\n* `resolve_first_error` - resolve_first_error\n* `ingest_first_llm_event` - ingest_first_llm_event\n* `view_first_trace` - view_first_trace\n* `track_costs` - track_costs\n* `set_up_llm_evaluation` - set_up_llm_evaluation\n* `run_ai_playground` - run_ai_playground\n* `enable_revenue_analytics_viewset` - enable_revenue_analytics_viewset\n* `connect_revenue_source` - connect_revenue_source\n* `set_up_revenue_goal` - set_up_revenue_goal\n* `enable_log_capture` - enable_log_capture\n* `view_first_logs` - view_first_logs\n* `create_first_workflow` - create_first_workflow\n* `set_up_first_workflow_channel` - set_up_first_workflow_channel\n* `configure_workflow_trigger` - configure_workflow_trigger\n* `add_workflow_action` - add_workflow_action\n* `launch_workflow` - launch_workflow\n* `create_first_endpoint` - create_first_endpoint\n* `configure_endpoint` - configure_endpoint\n* `test_endpoint` - test_endpoint\n* `create_early_access_feature` - create_early_access_feature\n* `update_feature_stage` - update_feature_stage"
       },
+      "AzureBlobDestinationConfig": {
+        "type": "object",
+        "description": "Typed configuration for an Azure Blob Storage batch-export destination.\n\nCredentials live in the linked Integration, not in this config. Mirrors\n`AzureBlobBatchExportInputs` in `products/batch_exports/backend/service.py`.",
+        "properties": {
+          "container_name": {
+            "type": "string",
+            "description": "Azure Blob Storage container name."
+          },
+          "prefix": {
+            "type": "string",
+            "default": "",
+            "description": "Object key prefix applied to every exported file."
+          },
+          "compression": {
+            "nullable": true,
+            "description": "Optional compression codec applied to exported files. Valid codecs depend on file_format.\n\n* `brotli` - brotli\n* `gzip` - gzip\n* `lz4` - lz4\n* `snappy` - snappy\n* `zstd` - zstd",
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/CompressionEnum"
+              },
+              {
+                "$ref": "#/components/schemas/NullEnum"
+              }
+            ]
+          },
+          "file_format": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/FileFormatEnum"
+              }
+            ],
+            "default": "JSONLines",
+            "description": "File format used for exported objects.\n\n* `JSONLines` - JSONLines\n* `Parquet` - Parquet"
+          },
+          "max_file_size_mb": {
+            "type": "integer",
+            "nullable": true,
+            "description": "If set, rolls to a new file once the current file exceeds this size in MB."
+          }
+        },
+        "required": [
+          "container_name"
+        ]
+      },
+      "AzureBlobDestinationRequest": {
+        "type": "object",
+        "description": "Request shape for creating or updating an Azure Blob Storage batch-export destination.",
+        "properties": {
+          "type": {
+            "$ref": "#/components/schemas/AzureBlobDestinationRequestTypeEnum"
+          },
+          "integration_id": {
+            "type": "integer",
+            "description": "ID of an azure-blob-kind Integration. Use the integrations-list MCP tool to find one."
+          },
+          "config": {
+            "$ref": "#/components/schemas/AzureBlobDestinationConfig"
+          }
+        },
+        "required": [
+          "config",
+          "integration_id",
+          "type"
+        ]
+      },
+      "AzureBlobDestinationRequestTypeEnum": {
+        "enum": [
+          "AzureBlob"
+        ],
+        "type": "string",
+        "description": "* `AzureBlob` - AzureBlob"
+      },
       "BaseCurrencyEnum": {
         "enum": [
           "AED",
@@ -90029,10 +90190,20 @@
             ]
           },
           "destination": {
-            "$ref": "#/components/schemas/BatchExportDestination"
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/BatchExportDestination"
+              }
+            ],
+            "description": "Destination configuration (type, config, and optional integration)."
           },
           "interval": {
-            "$ref": "#/components/schemas/IntervalEnum"
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/IntervalEnum"
+              }
+            ],
+            "description": "How often the batch export should run.\n\n* `hour` - hour\n* `day` - day\n* `week` - week\n* `every 5 minutes` - every 5 minutes\n* `every 15 minutes` - every 15 minutes"
           },
           "paused": {
             "type": "boolean",
@@ -90073,10 +90244,12 @@
             "items": {
               "$ref": "#/components/schemas/BatchExportRun"
             },
-            "readOnly": true
+            "readOnly": true,
+            "description": "The 10 most recent runs of this batch export, ordered newest first."
           },
           "hogql_query": {
-            "type": "string"
+            "type": "string",
+            "description": "Optional HogQL SELECT defining a custom model schema. Only recommended in advanced use cases."
           },
           "schema": {
             "readOnly": true,
@@ -90088,6 +90261,7 @@
           },
           "timezone": {
             "nullable": true,
+            "description": "IANA timezone name controlling daily and weekly interval boundaries. Defaults to UTC.\n\n* `Africa/Abidjan` - Africa/Abidjan\n* `Africa/Accra` - Africa/Accra\n* `Africa/Addis_Ababa` - Africa/Addis_Ababa\n* `Africa/Algiers` - Africa/Algiers\n* `Africa/Asmara` - Africa/Asmara\n* `Africa/Asmera` - Africa/Asmera\n* `Africa/Bamako` - Africa/Bamako\n* `Africa/Bangui` - Africa/Bangui\n* `Africa/Banjul` - Africa/Banjul\n* `Africa/Bissau` - Africa/Bissau\n* `Africa/Blantyre` - Africa/Blantyre\n* `Africa/Brazzaville` - Africa/Brazzaville\n* `Africa/Bujumbura` - Africa/Bujumbura\n* `Africa/Cairo` - Africa/Cairo\n* `Africa/Casablanca` - Africa/Casablanca\n* `Africa/Ceuta` - Africa/Ceuta\n* `Africa/Conakry` - Africa/Conakry\n* `Africa/Dakar` - Africa/Dakar\n* `Africa/Dar_es_Salaam` - Africa/Dar_es_Salaam\n* `Africa/Djibouti` - Africa/Djibouti\n* `Africa/Douala` - Africa/Douala\n* `Africa/El_Aaiun` - Africa/El_Aaiun\n* `Africa/Freetown` - Africa/Freetown\n* `Africa/Gaborone` - Africa/Gaborone\n* `Africa/Harare` - Africa/Harare\n* `Africa/Johannesburg` - Africa/Johannesburg\n* `Africa/Juba` - Africa/Juba\n* `Africa/Kampala` - Africa/Kampala\n* `Africa/Khartoum` - Africa/Khartoum\n* `Africa/Kigali` - Africa/Kigali\n* `Africa/Kinshasa` - Africa/Kinshasa\n* `Africa/Lagos` - Africa/Lagos\n* `Africa/Libreville` - Africa/Libreville\n* `Africa/Lome` - Africa/Lome\n* `Africa/Luanda` - Africa/Luanda\n* `Africa/Lubumbashi` - Africa/Lubumbashi\n* `Africa/Lusaka` - Africa/Lusaka\n* `Africa/Malabo` - Africa/Malabo\n* `Africa/Maputo` - Africa/Maputo\n* `Africa/Maseru` - Africa/Maseru\n* `Africa/Mbabane` - Africa/Mbabane\n* `Africa/Mogadishu` - Africa/Mogadishu\n* `Africa/Monrovia` - Africa/Monrovia\n* `Africa/Nairobi` - Africa/Nairobi\n* `Africa/Ndjamena` - Africa/Ndjamena\n* `Africa/Niamey` - Africa/Niamey\n* `Africa/Nouakchott` - Africa/Nouakchott\n* `Africa/Ouagadougou` - Africa/Ouagadougou\n* `Africa/Porto-Novo` - Africa/Porto-Novo\n* `Africa/Sao_Tome` - Africa/Sao_Tome\n* `Africa/Timbuktu` - Africa/Timbuktu\n* `Africa/Tripoli` - Africa/Tripoli\n* `Africa/Tunis` - Africa/Tunis\n* `Africa/Windhoek` - Africa/Windhoek\n* `America/Adak` - America/Adak\n* `America/Anchorage` - America/Anchorage\n* `America/Anguilla` - America/Anguilla\n* `America/Antigua` - America/Antigua\n* `America/Araguaina` - America/Araguaina\n* `America/Argentina/Buenos_Aires` - America/Argentina/Buenos_Aires\n* `America/Argentina/Catamarca` - America/Argentina/Catamarca\n* `America/Argentina/ComodRivadavia` - America/Argentina/ComodRivadavia\n* `America/Argentina/Cordoba` - America/Argentina/Cordoba\n* `America/Argentina/Jujuy` - America/Argentina/Jujuy\n* `America/Argentina/La_Rioja` - America/Argentina/La_Rioja\n* `America/Argentina/Mendoza` - America/Argentina/Mendoza\n* `America/Argentina/Rio_Gallegos` - America/Argentina/Rio_Gallegos\n* `America/Argentina/Salta` - America/Argentina/Salta\n* `America/Argentina/San_Juan` - America/Argentina/San_Juan\n* `America/Argentina/San_Luis` - America/Argentina/San_Luis\n* `America/Argentina/Tucuman` - America/Argentina/Tucuman\n* `America/Argentina/Ushuaia` - America/Argentina/Ushuaia\n* `America/Aruba` - America/Aruba\n* `America/Asuncion` - America/Asuncion\n* `America/Atikokan` - America/Atikokan\n* `America/Atka` - America/Atka\n* `America/Bahia` - America/Bahia\n* `America/Bahia_Banderas` - America/Bahia_Banderas\n* `America/Barbados` - America/Barbados\n* `America/Belem` - America/Belem\n* `America/Belize` - America/Belize\n* `America/Blanc-Sablon` - America/Blanc-Sablon\n* `America/Boa_Vista` - America/Boa_Vista\n* `America/Bogota` - America/Bogota\n* `America/Boise` - America/Boise\n* `America/Buenos_Aires` - America/Buenos_Aires\n* `America/Cambridge_Bay` - America/Cambridge_Bay\n* `America/Campo_Grande` - America/Campo_Grande\n* `America/Cancun` - America/Cancun\n* `America/Caracas` - America/Caracas\n* `America/Catamarca` - America/Catamarca\n* `America/Cayenne` - America/Cayenne\n* `America/Cayman` - America/Cayman\n* `America/Chicago` - America/Chicago\n* `America/Chihuahua` - America/Chihuahua\n* `America/Ciudad_Juarez` - America/Ciudad_Juarez\n* `America/Coral_Harbour` - America/Coral_Harbour\n* `America/Cordoba` - America/Cordoba\n* `America/Costa_Rica` - America/Costa_Rica\n* `America/Creston` - America/Creston\n* `America/Cuiaba` - America/Cuiaba\n* `America/Curacao` - America/Curacao\n* `America/Danmarkshavn` - America/Danmarkshavn\n* `America/Dawson` - America/Dawson\n* `America/Dawson_Creek` - America/Dawson_Creek\n* `America/Denver` - America/Denver\n* `America/Detroit` - America/Detroit\n* `America/Dominica` - America/Dominica\n* `America/Edmonton` - America/Edmonton\n* `America/Eirunepe` - America/Eirunepe\n* `America/El_Salvador` - America/El_Salvador\n* `America/Ensenada` - America/Ensenada\n* `America/Fort_Nelson` - America/Fort_Nelson\n* `America/Fort_Wayne` - America/Fort_Wayne\n* `America/Fortaleza` - America/Fortaleza\n* `America/Glace_Bay` - America/Glace_Bay\n* `America/Godthab` - America/Godthab\n* `America/Goose_Bay` - America/Goose_Bay\n* `America/Grand_Turk` - America/Grand_Turk\n* `America/Grenada` - America/Grenada\n* `America/Guadeloupe` - America/Guadeloupe\n* `America/Guatemala` - America/Guatemala\n* `America/Guayaquil` - America/Guayaquil\n* `America/Guyana` - America/Guyana\n* `America/Halifax` - America/Halifax\n* `America/Havana` - America/Havana\n* `America/Hermosillo` - America/Hermosillo\n* `America/Indiana/Indianapolis` - America/Indiana/Indianapolis\n* `America/Indiana/Knox` - America/Indiana/Knox\n* `America/Indiana/Marengo` - America/Indiana/Marengo\n* `America/Indiana/Petersburg` - America/Indiana/Petersburg\n* `America/Indiana/Tell_City` - America/Indiana/Tell_City\n* `America/Indiana/Vevay` - America/Indiana/Vevay\n* `America/Indiana/Vincennes` - America/Indiana/Vincennes\n* `America/Indiana/Winamac` - America/Indiana/Winamac\n* `America/Indianapolis` - America/Indianapolis\n* `America/Inuvik` - America/Inuvik\n* `America/Iqaluit` - America/Iqaluit\n* `America/Jamaica` - America/Jamaica\n* `America/Jujuy` - America/Jujuy\n* `America/Juneau` - America/Juneau\n* `America/Kentucky/Louisville` - America/Kentucky/Louisville\n* `America/Kentucky/Monticello` - America/Kentucky/Monticello\n* `America/Knox_IN` - America/Knox_IN\n* `America/Kralendijk` - America/Kralendijk\n* `America/La_Paz` - America/La_Paz\n* `America/Lima` - America/Lima\n* `America/Los_Angeles` - America/Los_Angeles\n* `America/Louisville` - America/Louisville\n* `America/Lower_Princes` - America/Lower_Princes\n* `America/Maceio` - America/Maceio\n* `America/Managua` - America/Managua\n* `America/Manaus` - America/Manaus\n* `America/Marigot` - America/Marigot\n* `America/Martinique` - America/Martinique\n* `America/Matamoros` - America/Matamoros\n* `America/Mazatlan` - America/Mazatlan\n* `America/Mendoza` - America/Mendoza\n* `America/Menominee` - America/Menominee\n* `America/Merida` - America/Merida\n* `America/Metlakatla` - America/Metlakatla\n* `America/Mexico_City` - America/Mexico_City\n* `America/Miquelon` - America/Miquelon\n* `America/Moncton` - America/Moncton\n* `America/Monterrey` - America/Monterrey\n* `America/Montevideo` - America/Montevideo\n* `America/Montreal` - America/Montreal\n* `America/Montserrat` - America/Montserrat\n* `America/Nassau` - America/Nassau\n* `America/New_York` - America/New_York\n* `America/Nipigon` - America/Nipigon\n* `America/Nome` - America/Nome\n* `America/Noronha` - America/Noronha\n* `America/North_Dakota/Beulah` - America/North_Dakota/Beulah\n* `America/North_Dakota/Center` - America/North_Dakota/Center\n* `America/North_Dakota/New_Salem` - America/North_Dakota/New_Salem\n* `America/Nuuk` - America/Nuuk\n* `America/Ojinaga` - America/Ojinaga\n* `America/Panama` - America/Panama\n* `America/Pangnirtung` - America/Pangnirtung\n* `America/Paramaribo` - America/Paramaribo\n* `America/Phoenix` - America/Phoenix\n* `America/Port-au-Prince` - America/Port-au-Prince\n* `America/Port_of_Spain` - America/Port_of_Spain\n* `America/Porto_Acre` - America/Porto_Acre\n* `America/Porto_Velho` - America/Porto_Velho\n* `America/Puerto_Rico` - America/Puerto_Rico\n* `America/Punta_Arenas` - America/Punta_Arenas\n* `America/Rainy_River` - America/Rainy_River\n* `America/Rankin_Inlet` - America/Rankin_Inlet\n* `America/Recife` - America/Recife\n* `America/Regina` - America/Regina\n* `America/Resolute` - America/Resolute\n* `America/Rio_Branco` - America/Rio_Branco\n* `America/Rosario` - America/Rosario\n* `America/Santa_Isabel` - America/Santa_Isabel\n* `America/Santarem` - America/Santarem\n* `America/Santiago` - America/Santiago\n* `America/Santo_Domingo` - America/Santo_Domingo\n* `America/Sao_Paulo` - America/Sao_Paulo\n* `America/Scoresbysund` - America/Scoresbysund\n* `America/Shiprock` - America/Shiprock\n* `America/Sitka` - America/Sitka\n* `America/St_Barthelemy` - America/St_Barthelemy\n* `America/St_Johns` - America/St_Johns\n* `America/St_Kitts` - America/St_Kitts\n* `America/St_Lucia` - America/St_Lucia\n* `America/St_Thomas` - America/St_Thomas\n* `America/St_Vincent` - America/St_Vincent\n* `America/Swift_Current` - America/Swift_Current\n* `America/Tegucigalpa` - America/Tegucigalpa\n* `America/Thule` - America/Thule\n* `America/Thunder_Bay` - America/Thunder_Bay\n* `America/Tijuana` - America/Tijuana\n* `America/Toronto` - America/Toronto\n* `America/Tortola` - America/Tortola\n* `America/Vancouver` - America/Vancouver\n* `America/Virgin` - America/Virgin\n* `America/Whitehorse` - America/Whitehorse\n* `America/Winnipeg` - America/Winnipeg\n* `America/Yakutat` - America/Yakutat\n* `America/Yellowknife` - America/Yellowknife\n* `Antarctica/Casey` - Antarctica/Casey\n* `Antarctica/Davis` - Antarctica/Davis\n* `Antarctica/DumontDUrville` - Antarctica/DumontDUrville\n* `Antarctica/Macquarie` - Antarctica/Macquarie\n* `Antarctica/Mawson` - Antarctica/Mawson\n* `Antarctica/McMurdo` - Antarctica/McMurdo\n* `Antarctica/Palmer` - Antarctica/Palmer\n* `Antarctica/Rothera` - Antarctica/Rothera\n* `Antarctica/South_Pole` - Antarctica/South_Pole\n* `Antarctica/Syowa` - Antarctica/Syowa\n* `Antarctica/Troll` - Antarctica/Troll\n* `Antarctica/Vostok` - Antarctica/Vostok\n* `Arctic/Longyearbyen` - Arctic/Longyearbyen\n* `Asia/Aden` - Asia/Aden\n* `Asia/Almaty` - Asia/Almaty\n* `Asia/Amman` - Asia/Amman\n* `Asia/Anadyr` - Asia/Anadyr\n* `Asia/Aqtau` - Asia/Aqtau\n* `Asia/Aqtobe` - Asia/Aqtobe\n* `Asia/Ashgabat` - Asia/Ashgabat\n* `Asia/Ashkhabad` - Asia/Ashkhabad\n* `Asia/Atyrau` - Asia/Atyrau\n* `Asia/Baghdad` - Asia/Baghdad\n* `Asia/Bahrain` - Asia/Bahrain\n* `Asia/Baku` - Asia/Baku\n* `Asia/Bangkok` - Asia/Bangkok\n* `Asia/Barnaul` - Asia/Barnaul\n* `Asia/Beirut` - Asia/Beirut\n* `Asia/Bishkek` - Asia/Bishkek\n* `Asia/Brunei` - Asia/Brunei\n* `Asia/Calcutta` - Asia/Calcutta\n* `Asia/Chita` - Asia/Chita\n* `Asia/Choibalsan` - Asia/Choibalsan\n* `Asia/Chongqing` - Asia/Chongqing\n* `Asia/Chungking` - Asia/Chungking\n* `Asia/Colombo` - Asia/Colombo\n* `Asia/Dacca` - Asia/Dacca\n* `Asia/Damascus` - Asia/Damascus\n* `Asia/Dhaka` - Asia/Dhaka\n* `Asia/Dili` - Asia/Dili\n* `Asia/Dubai` - Asia/Dubai\n* `Asia/Dushanbe` - Asia/Dushanbe\n* `Asia/Famagusta` - Asia/Famagusta\n* `Asia/Gaza` - Asia/Gaza\n* `Asia/Harbin` - Asia/Harbin\n* `Asia/Hebron` - Asia/Hebron\n* `Asia/Ho_Chi_Minh` - Asia/Ho_Chi_Minh\n* `Asia/Hong_Kong` - Asia/Hong_Kong\n* `Asia/Hovd` - Asia/Hovd\n* `Asia/Irkutsk` - Asia/Irkutsk\n* `Asia/Istanbul` - Asia/Istanbul\n* `Asia/Jakarta` - Asia/Jakarta\n* `Asia/Jayapura` - Asia/Jayapura\n* `Asia/Jerusalem` - Asia/Jerusalem\n* `Asia/Kabul` - Asia/Kabul\n* `Asia/Kamchatka` - Asia/Kamchatka\n* `Asia/Karachi` - Asia/Karachi\n* `Asia/Kashgar` - Asia/Kashgar\n* `Asia/Kathmandu` - Asia/Kathmandu\n* `Asia/Katmandu` - Asia/Katmandu\n* `Asia/Khandyga` - Asia/Khandyga\n* `Asia/Kolkata` - Asia/Kolkata\n* `Asia/Krasnoyarsk` - Asia/Krasnoyarsk\n* `Asia/Kuala_Lumpur` - Asia/Kuala_Lumpur\n* `Asia/Kuching` - Asia/Kuching\n* `Asia/Kuwait` - Asia/Kuwait\n* `Asia/Macao` - Asia/Macao\n* `Asia/Macau` - Asia/Macau\n* `Asia/Magadan` - Asia/Magadan\n* `Asia/Makassar` - Asia/Makassar\n* `Asia/Manila` - Asia/Manila\n* `Asia/Muscat` - Asia/Muscat\n* `Asia/Nicosia` - Asia/Nicosia\n* `Asia/Novokuznetsk` - Asia/Novokuznetsk\n* `Asia/Novosibirsk` - Asia/Novosibirsk\n* `Asia/Omsk` - Asia/Omsk\n* `Asia/Oral` - Asia/Oral\n* `Asia/Phnom_Penh` - Asia/Phnom_Penh\n* `Asia/Pontianak` - Asia/Pontianak\n* `Asia/Pyongyang` - Asia/Pyongyang\n* `Asia/Qatar` - Asia/Qatar\n* `Asia/Qostanay` - Asia/Qostanay\n* `Asia/Qyzylorda` - Asia/Qyzylorda\n* `Asia/Rangoon` - Asia/Rangoon\n* `Asia/Riyadh` - Asia/Riyadh\n* `Asia/Saigon` - Asia/Saigon\n* `Asia/Sakhalin` - Asia/Sakhalin\n* `Asia/Samarkand` - Asia/Samarkand\n* `Asia/Seoul` - Asia/Seoul\n* `Asia/Shanghai` - Asia/Shanghai\n* `Asia/Singapore` - Asia/Singapore\n* `Asia/Srednekolymsk` - Asia/Srednekolymsk\n* `Asia/Taipei` - Asia/Taipei\n* `Asia/Tashkent` - Asia/Tashkent\n* `Asia/Tbilisi` - Asia/Tbilisi\n* `Asia/Tehran` - Asia/Tehran\n* `Asia/Tel_Aviv` - Asia/Tel_Aviv\n* `Asia/Thimbu` - Asia/Thimbu\n* `Asia/Thimphu` - Asia/Thimphu\n* `Asia/Tokyo` - Asia/Tokyo\n* `Asia/Tomsk` - Asia/Tomsk\n* `Asia/Ujung_Pandang` - Asia/Ujung_Pandang\n* `Asia/Ulaanbaatar` - Asia/Ulaanbaatar\n* `Asia/Ulan_Bator` - Asia/Ulan_Bator\n* `Asia/Urumqi` - Asia/Urumqi\n* `Asia/Ust-Nera` - Asia/Ust-Nera\n* `Asia/Vientiane` - Asia/Vientiane\n* `Asia/Vladivostok` - Asia/Vladivostok\n* `Asia/Yakutsk` - Asia/Yakutsk\n* `Asia/Yangon` - Asia/Yangon\n* `Asia/Yekaterinburg` - Asia/Yekaterinburg\n* `Asia/Yerevan` - Asia/Yerevan\n* `Atlantic/Azores` - Atlantic/Azores\n* `Atlantic/Bermuda` - Atlantic/Bermuda\n* `Atlantic/Canary` - Atlantic/Canary\n* `Atlantic/Cape_Verde` - Atlantic/Cape_Verde\n* `Atlantic/Faeroe` - Atlantic/Faeroe\n* `Atlantic/Faroe` - Atlantic/Faroe\n* `Atlantic/Jan_Mayen` - Atlantic/Jan_Mayen\n* `Atlantic/Madeira` - Atlantic/Madeira\n* `Atlantic/Reykjavik` - Atlantic/Reykjavik\n* `Atlantic/South_Georgia` - Atlantic/South_Georgia\n* `Atlantic/St_Helena` - Atlantic/St_Helena\n* `Atlantic/Stanley` - Atlantic/Stanley\n* `Australia/ACT` - Australia/ACT\n* `Australia/Adelaide` - Australia/Adelaide\n* `Australia/Brisbane` - Australia/Brisbane\n* `Australia/Broken_Hill` - Australia/Broken_Hill\n* `Australia/Canberra` - Australia/Canberra\n* `Australia/Currie` - Australia/Currie\n* `Australia/Darwin` - Australia/Darwin\n* `Australia/Eucla` - Australia/Eucla\n* `Australia/Hobart` - Australia/Hobart\n* `Australia/LHI` - Australia/LHI\n* `Australia/Lindeman` - Australia/Lindeman\n* `Australia/Lord_Howe` - Australia/Lord_Howe\n* `Australia/Melbourne` - Australia/Melbourne\n* `Australia/NSW` - Australia/NSW\n* `Australia/North` - Australia/North\n* `Australia/Perth` - Australia/Perth\n* `Australia/Queensland` - Australia/Queensland\n* `Australia/South` - Australia/South\n* `Australia/Sydney` - Australia/Sydney\n* `Australia/Tasmania` - Australia/Tasmania\n* `Australia/Victoria` - Australia/Victoria\n* `Australia/West` - Australia/West\n* `Australia/Yancowinna` - Australia/Yancowinna\n* `Brazil/Acre` - Brazil/Acre\n* `Brazil/DeNoronha` - Brazil/DeNoronha\n* `Brazil/East` - Brazil/East\n* `Brazil/West` - Brazil/West\n* `CET` - CET\n* `CST6CDT` - CST6CDT\n* `Canada/Atlantic` - Canada/Atlantic\n* `Canada/Central` - Canada/Central\n* `Canada/Eastern` - Canada/Eastern\n* `Canada/Mountain` - Canada/Mountain\n* `Canada/Newfoundland` - Canada/Newfoundland\n* `Canada/Pacific` - Canada/Pacific\n* `Canada/Saskatchewan` - Canada/Saskatchewan\n* `Canada/Yukon` - Canada/Yukon\n* `Chile/Continental` - Chile/Continental\n* `Chile/EasterIsland` - Chile/EasterIsland\n* `Cuba` - Cuba\n* `EET` - EET\n* `EST` - EST\n* `EST5EDT` - EST5EDT\n* `Egypt` - Egypt\n* `Eire` - Eire\n* `Etc/GMT` - Etc/GMT\n* `Etc/GMT+0` - Etc/GMT+0\n* `Etc/GMT+1` - Etc/GMT+1\n* `Etc/GMT+10` - Etc/GMT+10\n* `Etc/GMT+11` - Etc/GMT+11\n* `Etc/GMT+12` - Etc/GMT+12\n* `Etc/GMT+2` - Etc/GMT+2\n* `Etc/GMT+3` - Etc/GMT+3\n* `Etc/GMT+4` - Etc/GMT+4\n* `Etc/GMT+5` - Etc/GMT+5\n* `Etc/GMT+6` - Etc/GMT+6\n* `Etc/GMT+7` - Etc/GMT+7\n* `Etc/GMT+8` - Etc/GMT+8\n* `Etc/GMT+9` - Etc/GMT+9\n* `Etc/GMT-0` - Etc/GMT-0\n* `Etc/GMT-1` - Etc/GMT-1\n* `Etc/GMT-10` - Etc/GMT-10\n* `Etc/GMT-11` - Etc/GMT-11\n* `Etc/GMT-12` - Etc/GMT-12\n* `Etc/GMT-13` - Etc/GMT-13\n* `Etc/GMT-14` - Etc/GMT-14\n* `Etc/GMT-2` - Etc/GMT-2\n* `Etc/GMT-3` - Etc/GMT-3\n* `Etc/GMT-4` - Etc/GMT-4\n* `Etc/GMT-5` - Etc/GMT-5\n* `Etc/GMT-6` - Etc/GMT-6\n* `Etc/GMT-7` - Etc/GMT-7\n* `Etc/GMT-8` - Etc/GMT-8\n* `Etc/GMT-9` - Etc/GMT-9\n* `Etc/GMT0` - Etc/GMT0\n* `Etc/Greenwich` - Etc/Greenwich\n* `Etc/UCT` - Etc/UCT\n* `Etc/UTC` - Etc/UTC\n* `Etc/Universal` - Etc/Universal\n* `Etc/Zulu` - Etc/Zulu\n* `Europe/Amsterdam` - Europe/Amsterdam\n* `Europe/Andorra` - Europe/Andorra\n* `Europe/Astrakhan` - Europe/Astrakhan\n* `Europe/Athens` - Europe/Athens\n* `Europe/Belfast` - Europe/Belfast\n* `Europe/Belgrade` - Europe/Belgrade\n* `Europe/Berlin` - Europe/Berlin\n* `Europe/Bratislava` - Europe/Bratislava\n* `Europe/Brussels` - Europe/Brussels\n* `Europe/Bucharest` - Europe/Bucharest\n* `Europe/Budapest` - Europe/Budapest\n* `Europe/Busingen` - Europe/Busingen\n* `Europe/Chisinau` - Europe/Chisinau\n* `Europe/Copenhagen` - Europe/Copenhagen\n* `Europe/Dublin` - Europe/Dublin\n* `Europe/Gibraltar` - Europe/Gibraltar\n* `Europe/Guernsey` - Europe/Guernsey\n* `Europe/Helsinki` - Europe/Helsinki\n* `Europe/Isle_of_Man` - Europe/Isle_of_Man\n* `Europe/Istanbul` - Europe/Istanbul\n* `Europe/Jersey` - Europe/Jersey\n* `Europe/Kaliningrad` - Europe/Kaliningrad\n* `Europe/Kiev` - Europe/Kiev\n* `Europe/Kirov` - Europe/Kirov\n* `Europe/Kyiv` - Europe/Kyiv\n* `Europe/Lisbon` - Europe/Lisbon\n* `Europe/Ljubljana` - Europe/Ljubljana\n* `Europe/London` - Europe/London\n* `Europe/Luxembourg` - Europe/Luxembourg\n* `Europe/Madrid` - Europe/Madrid\n* `Europe/Malta` - Europe/Malta\n* `Europe/Mariehamn` - Europe/Mariehamn\n* `Europe/Minsk` - Europe/Minsk\n* `Europe/Monaco` - Europe/Monaco\n* `Europe/Moscow` - Europe/Moscow\n* `Europe/Nicosia` - Europe/Nicosia\n* `Europe/Oslo` - Europe/Oslo\n* `Europe/Paris` - Europe/Paris\n* `Europe/Podgorica` - Europe/Podgorica\n* `Europe/Prague` - Europe/Prague\n* `Europe/Riga` - Europe/Riga\n* `Europe/Rome` - Europe/Rome\n* `Europe/Samara` - Europe/Samara\n* `Europe/San_Marino` - Europe/San_Marino\n* `Europe/Sarajevo` - Europe/Sarajevo\n* `Europe/Saratov` - Europe/Saratov\n* `Europe/Simferopol` - Europe/Simferopol\n* `Europe/Skopje` - Europe/Skopje\n* `Europe/Sofia` - Europe/Sofia\n* `Europe/Stockholm` - Europe/Stockholm\n* `Europe/Tallinn` - Europe/Tallinn\n* `Europe/Tirane` - Europe/Tirane\n* `Europe/Tiraspol` - Europe/Tiraspol\n* `Europe/Ulyanovsk` - Europe/Ulyanovsk\n* `Europe/Uzhgorod` - Europe/Uzhgorod\n* `Europe/Vaduz` - Europe/Vaduz\n* `Europe/Vatican` - Europe/Vatican\n* `Europe/Vienna` - Europe/Vienna\n* `Europe/Vilnius` - Europe/Vilnius\n* `Europe/Volgograd` - Europe/Volgograd\n* `Europe/Warsaw` - Europe/Warsaw\n* `Europe/Zagreb` - Europe/Zagreb\n* `Europe/Zaporozhye` - Europe/Zaporozhye\n* `Europe/Zurich` - Europe/Zurich\n* `GB` - GB\n* `GB-Eire` - GB-Eire\n* `GMT` - GMT\n* `GMT+0` - GMT+0\n* `GMT-0` - GMT-0\n* `GMT0` - GMT0\n* `Greenwich` - Greenwich\n* `HST` - HST\n* `Hongkong` - Hongkong\n* `Iceland` - Iceland\n* `Indian/Antananarivo` - Indian/Antananarivo\n* `Indian/Chagos` - Indian/Chagos\n* `Indian/Christmas` - Indian/Christmas\n* `Indian/Cocos` - Indian/Cocos\n* `Indian/Comoro` - Indian/Comoro\n* `Indian/Kerguelen` - Indian/Kerguelen\n* `Indian/Mahe` - Indian/Mahe\n* `Indian/Maldives` - Indian/Maldives\n* `Indian/Mauritius` - Indian/Mauritius\n* `Indian/Mayotte` - Indian/Mayotte\n* `Indian/Reunion` - Indian/Reunion\n* `Iran` - Iran\n* `Israel` - Israel\n* `Jamaica` - Jamaica\n* `Japan` - Japan\n* `Kwajalein` - Kwajalein\n* `Libya` - Libya\n* `MET` - MET\n* `MST` - MST\n* `MST7MDT` - MST7MDT\n* `Mexico/BajaNorte` - Mexico/BajaNorte\n* `Mexico/BajaSur` - Mexico/BajaSur\n* `Mexico/General` - Mexico/General\n* `NZ` - NZ\n* `NZ-CHAT` - NZ-CHAT\n* `Navajo` - Navajo\n* `PRC` - PRC\n* `PST8PDT` - PST8PDT\n* `Pacific/Apia` - Pacific/Apia\n* `Pacific/Auckland` - Pacific/Auckland\n* `Pacific/Bougainville` - Pacific/Bougainville\n* `Pacific/Chatham` - Pacific/Chatham\n* `Pacific/Chuuk` - Pacific/Chuuk\n* `Pacific/Easter` - Pacific/Easter\n* `Pacific/Efate` - Pacific/Efate\n* `Pacific/Enderbury` - Pacific/Enderbury\n* `Pacific/Fakaofo` - Pacific/Fakaofo\n* `Pacific/Fiji` - Pacific/Fiji\n* `Pacific/Funafuti` - Pacific/Funafuti\n* `Pacific/Galapagos` - Pacific/Galapagos\n* `Pacific/Gambier` - Pacific/Gambier\n* `Pacific/Guadalcanal` - Pacific/Guadalcanal\n* `Pacific/Guam` - Pacific/Guam\n* `Pacific/Honolulu` - Pacific/Honolulu\n* `Pacific/Johnston` - Pacific/Johnston\n* `Pacific/Kanton` - Pacific/Kanton\n* `Pacific/Kiritimati` - Pacific/Kiritimati\n* `Pacific/Kosrae` - Pacific/Kosrae\n* `Pacific/Kwajalein` - Pacific/Kwajalein\n* `Pacific/Majuro` - Pacific/Majuro\n* `Pacific/Marquesas` - Pacific/Marquesas\n* `Pacific/Midway` - Pacific/Midway\n* `Pacific/Nauru` - Pacific/Nauru\n* `Pacific/Niue` - Pacific/Niue\n* `Pacific/Norfolk` - Pacific/Norfolk\n* `Pacific/Noumea` - Pacific/Noumea\n* `Pacific/Pago_Pago` - Pacific/Pago_Pago\n* `Pacific/Palau` - Pacific/Palau\n* `Pacific/Pitcairn` - Pacific/Pitcairn\n* `Pacific/Pohnpei` - Pacific/Pohnpei\n* `Pacific/Ponape` - Pacific/Ponape\n* `Pacific/Port_Moresby` - Pacific/Port_Moresby\n* `Pacific/Rarotonga` - Pacific/Rarotonga\n* `Pacific/Saipan` - Pacific/Saipan\n* `Pacific/Samoa` - Pacific/Samoa\n* `Pacific/Tahiti` - Pacific/Tahiti\n* `Pacific/Tarawa` - Pacific/Tarawa\n* `Pacific/Tongatapu` - Pacific/Tongatapu\n* `Pacific/Truk` - Pacific/Truk\n* `Pacific/Wake` - Pacific/Wake\n* `Pacific/Wallis` - Pacific/Wallis\n* `Pacific/Yap` - Pacific/Yap\n* `Poland` - Poland\n* `Portugal` - Portugal\n* `ROC` - ROC\n* `ROK` - ROK\n* `Singapore` - Singapore\n* `Turkey` - Turkey\n* `UCT` - UCT\n* `US/Alaska` - US/Alaska\n* `US/Aleutian` - US/Aleutian\n* `US/Arizona` - US/Arizona\n* `US/Central` - US/Central\n* `US/East-Indiana` - US/East-Indiana\n* `US/Eastern` - US/Eastern\n* `US/Hawaii` - US/Hawaii\n* `US/Indiana-Starke` - US/Indiana-Starke\n* `US/Michigan` - US/Michigan\n* `US/Mountain` - US/Mountain\n* `US/Pacific` - US/Pacific\n* `US/Samoa` - US/Samoa\n* `UTC` - UTC\n* `Universal` - Universal\n* `W-SU` - W-SU\n* `WET` - WET\n* `Zulu` - Zulu",
             "oneOf": [
               {
                 "$ref": "#/components/schemas/TimezoneEnum"
@@ -90101,13 +90275,15 @@
             "type": "integer",
             "maximum": 6,
             "minimum": 0,
-            "nullable": true
+            "nullable": true,
+            "description": "Day-of-week offset for weekly intervals (0=Sunday, 6=Saturday). Only valid when interval is 'week'."
           },
           "offset_hour": {
             "type": "integer",
             "maximum": 23,
             "minimum": 0,
-            "nullable": true
+            "nullable": true,
+            "description": "Hour-of-day offset (0-23) for daily and weekly intervals. Only valid when interval is 'day' or 'week'."
           }
         },
         "required": [
@@ -90238,7 +90414,7 @@
       },
       "BatchExportDestination": {
         "type": "object",
-        "description": "Serializer for an BatchExportDestination model.",
+        "description": "Serializer for an BatchExportDestination model.\n\nThe `config` field is polymorphic and typed only for destinations that keep\ncredentials in the linked Integration (currently Databricks and AzureBlob).\nOther destination types accept the same JSON shape but without a typed\nOpenAPI schema. Secret fields are stripped from `config` on read.",
         "properties": {
           "type": {
             "allOf": [
@@ -90249,21 +90425,63 @@
             "description": "A choice of supported BatchExportDestination types.\n\n* `S3` - S3\n* `Snowflake` - Snowflake\n* `Postgres` - Postgres\n* `Redshift` - Redshift\n* `BigQuery` - Bigquery\n* `Databricks` - Databricks\n* `AzureBlob` - Azure Blob\n* `Workflows` - Workflows\n* `HTTP` - Http\n* `NoOp` - Noop\n* `FileDownload` - File Download"
           },
           "config": {
-            "description": "A JSON field to store all configuration parameters required to access a BatchExportDestination."
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/BatchExportDestinationConfig"
+              }
+            ],
+            "description": "Destination-specific configuration. Fields depend on `type`. Credentials for integration-backed destinations (Databricks, AzureBlob) are NOT stored here — they live in the linked Integration. Secret fields are stripped from responses."
           },
           "integration": {
             "type": "integer",
-            "nullable": true
+            "nullable": true,
+            "description": "The integration for this destination."
           },
           "integration_id": {
             "type": "integer",
             "writeOnly": true,
-            "nullable": true
+            "nullable": true,
+            "description": "ID of a team-scoped Integration providing credentials. Required for Databricks and AzureBlob destinations; optional for BigQuery; unused for other types."
           }
         },
         "required": [
+          "config",
           "type"
         ]
+      },
+      "BatchExportDestinationConfig": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/DatabricksDestinationConfig"
+          },
+          {
+            "$ref": "#/components/schemas/AzureBlobDestinationConfig"
+          }
+        ],
+        "discriminator": {
+          "propertyName": "type",
+          "mapping": {
+            "Databricks": "#/components/schemas/DatabricksDestinationConfig",
+            "AzureBlob": "#/components/schemas/AzureBlobDestinationConfig"
+          }
+        }
+      },
+      "BatchExportDestinationRequest": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/DatabricksDestinationRequest"
+          },
+          {
+            "$ref": "#/components/schemas/AzureBlobDestinationRequest"
+          }
+        ],
+        "discriminator": {
+          "propertyName": "type",
+          "mapping": {
+            "Databricks": "#/components/schemas/DatabricksDestinationRequest",
+            "AzureBlob": "#/components/schemas/AzureBlobDestinationRequest"
+          }
+        }
       },
       "BatchExportDestinationTypeEnum": {
         "enum": [
@@ -90281,6 +90499,75 @@
         ],
         "type": "string",
         "description": "* `S3` - S3\n* `Snowflake` - Snowflake\n* `Postgres` - Postgres\n* `Redshift` - Redshift\n* `BigQuery` - Bigquery\n* `Databricks` - Databricks\n* `AzureBlob` - Azure Blob\n* `Workflows` - Workflows\n* `HTTP` - Http\n* `NoOp` - Noop\n* `FileDownload` - File Download"
+      },
+      "BatchExportRequest": {
+        "type": "object",
+        "description": "Request body for create/partial_update on BatchExportViewSet.\n\nMirrors the writeable fields of `BatchExportSerializer` but uses a polymorphic\n`destination` schema so integration_id is marked required on the types that need\nit. Responses continue to use `BatchExportSerializer`.",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Human-readable name for the batch export."
+          },
+          "model": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ModelEnum"
+              }
+            ],
+            "description": "Which data model to export (events, persons, sessions).\n\n* `events` - Events\n* `persons` - Persons\n* `sessions` - Sessions"
+          },
+          "destination": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/BatchExportDestinationRequest"
+              }
+            ],
+            "description": "Destination configuration. Required integration_id is enforced per destination type."
+          },
+          "interval": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/IntervalEnum"
+              }
+            ],
+            "description": "How often the batch export should run.\n\n* `hour` - hour\n* `day` - day\n* `week` - week\n* `every 5 minutes` - every 5 minutes\n* `every 15 minutes` - every 15 minutes"
+          },
+          "paused": {
+            "type": "boolean",
+            "description": "Whether the batch export is paused."
+          },
+          "hogql_query": {
+            "type": "string",
+            "description": "Optional HogQL SELECT defining a custom model schema. Only recommended in advanced use cases."
+          },
+          "filters": {
+            "nullable": true
+          },
+          "timezone": {
+            "type": "string",
+            "nullable": true,
+            "description": "IANA timezone name (e.g. 'America/New_York', 'Europe/London', 'UTC') controlling daily and weekly interval boundaries."
+          },
+          "offset_day": {
+            "type": "integer",
+            "maximum": 6,
+            "minimum": 0,
+            "nullable": true,
+            "description": "Day-of-week offset for weekly intervals (0=Sunday, 6=Saturday)."
+          },
+          "offset_hour": {
+            "type": "integer",
+            "maximum": 23,
+            "minimum": 0,
+            "nullable": true,
+            "description": "Hour-of-day offset (0-23) for daily and weekly intervals."
+          }
+        },
+        "required": [
+          "destination",
+          "interval",
+          "name"
+        ]
       },
       "BatchExportRun": {
         "type": "object",
@@ -92387,6 +92674,28 @@
         "title": "ClickhouseQueryProgress",
         "type": "object"
       },
+      "ClusterSummary": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DiffCluster"
+            }
+          },
+          "total": {
+            "type": "integer"
+          },
+          "truncated": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "items",
+          "total",
+          "truncated"
+        ]
+      },
       "ClusteringJob": {
         "type": "object",
         "properties": {
@@ -93133,6 +93442,17 @@
         ],
         "title": "CompareItem",
         "type": "object"
+      },
+      "CompressionEnum": {
+        "enum": [
+          "brotli",
+          "gzip",
+          "lz4",
+          "snappy",
+          "zstd"
+        ],
+        "type": "string",
+        "description": "* `brotli` - brotli\n* `gzip` - gzip\n* `lz4` - lz4\n* `snappy` - snappy\n* `zstd` - zstd"
       },
       "ConclusionEnum": {
         "enum": [
@@ -98155,6 +98475,72 @@
         "title": "DatabaseSerializedFieldType",
         "type": "string"
       },
+      "DatabricksDestinationConfig": {
+        "type": "object",
+        "description": "Typed configuration for a Databricks batch-export destination.\n\nCredentials live in the linked Integration, not in this config. Mirrors\n`DatabricksBatchExportInputs` in `products/batch_exports/backend/service.py`.",
+        "properties": {
+          "http_path": {
+            "type": "string",
+            "description": "Databricks SQL warehouse HTTP path."
+          },
+          "catalog": {
+            "type": "string",
+            "description": "Unity Catalog name."
+          },
+          "schema": {
+            "type": "string",
+            "description": "Schema (database) name inside the catalog."
+          },
+          "table_name": {
+            "type": "string",
+            "description": "Destination table name."
+          },
+          "use_variant_type": {
+            "type": "boolean",
+            "default": true,
+            "description": "Whether to use the Databricks VARIANT type for JSON-like columns."
+          },
+          "use_automatic_schema_evolution": {
+            "type": "boolean",
+            "default": true,
+            "description": "Whether to let Databricks evolve the destination table schema automatically."
+          }
+        },
+        "required": [
+          "catalog",
+          "http_path",
+          "schema",
+          "table_name"
+        ]
+      },
+      "DatabricksDestinationRequest": {
+        "type": "object",
+        "description": "Request shape for creating or updating a Databricks batch-export destination.",
+        "properties": {
+          "type": {
+            "$ref": "#/components/schemas/DatabricksDestinationRequestTypeEnum"
+          },
+          "integration_id": {
+            "type": "integer",
+            "description": "ID of a databricks-kind Integration. Use the integrations-list MCP tool to find one."
+          },
+          "config": {
+            "$ref": "#/components/schemas/DatabricksDestinationConfig"
+          }
+        },
+        "required": [
+          "config",
+          "integration_id",
+          "type"
+        ]
+      },
+      "DatabricksDestinationRequestTypeEnum": {
+        "enum": [
+          "Databricks"
+        ],
+        "type": "string",
+        "description": "* `Databricks` - Databricks"
+      },
       "Dataset": {
         "type": "object",
         "properties": {
@@ -98730,6 +99116,43 @@
         ],
         "type": "string",
         "description": "* `Desktop` - Desktop\n* `Mobile` - Mobile\n* `Tablet` - Tablet"
+      },
+      "DiffCluster": {
+        "type": "object",
+        "properties": {
+          "x": {
+            "type": "integer"
+          },
+          "y": {
+            "type": "integer"
+          },
+          "width": {
+            "type": "integer"
+          },
+          "height": {
+            "type": "integer"
+          },
+          "pixel_count": {
+            "type": "integer"
+          },
+          "centroid_x": {
+            "type": "number",
+            "format": "double"
+          },
+          "centroid_y": {
+            "type": "number",
+            "format": "double"
+          }
+        },
+        "required": [
+          "centroid_x",
+          "centroid_y",
+          "height",
+          "pixel_count",
+          "width",
+          "x",
+          "y"
+        ]
       },
       "DirectionEnum": {
         "enum": [
@@ -109864,6 +110287,57 @@
           "user_access_level"
         ]
       },
+      "FeatureFlagConditionAnalysis": {
+        "type": "object",
+        "properties": {
+          "index": {
+            "type": "integer",
+            "description": "Index of this condition in the feature flag"
+          },
+          "matched": {
+            "type": "boolean",
+            "description": "True when this condition was the one that determined the flag's outcome. Use this to find the winning condition — at most one condition per flag is True."
+          },
+          "properties_matched": {
+            "type": "boolean",
+            "description": "True when every property in this condition evaluated to true, regardless of whether this condition was the eventual winner."
+          },
+          "explanation": {
+            "type": "string",
+            "description": "Human-readable explanation of why this condition matched/didn't match"
+          },
+          "rollout_percentage": {
+            "type": "number",
+            "format": "double",
+            "description": "Rollout percentage for this condition (0.0-100.0)"
+          },
+          "rollout_excluded": {
+            "type": "boolean",
+            "description": "Whether this condition matched properties but was excluded due to rollout"
+          },
+          "variant": {
+            "type": "string",
+            "nullable": true,
+            "description": "Variant associated with this condition"
+          },
+          "properties": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FeatureFlagConditionPropertyAnalysis"
+            },
+            "description": "Analysis of each property in this condition"
+          }
+        },
+        "required": [
+          "explanation",
+          "index",
+          "matched",
+          "properties",
+          "rollout_excluded",
+          "rollout_percentage",
+          "variant"
+        ]
+      },
       "FeatureFlagConditionGroupSchema": {
         "type": "object",
         "properties": {
@@ -109890,6 +110364,47 @@
             "description": "Group type index for this condition set. None means person-level aggregation."
           }
         }
+      },
+      "FeatureFlagConditionPropertyAnalysis": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string",
+            "description": "Property key"
+          },
+          "operator": {
+            "type": "string",
+            "description": "Comparison operator"
+          },
+          "value": {
+            "description": "Expected property value"
+          },
+          "type": {
+            "type": "string",
+            "description": "Property type (person, group, etc.)"
+          },
+          "actual_value": {
+            "nullable": true,
+            "description": "Actual property value from user"
+          },
+          "matched": {
+            "type": "boolean",
+            "description": "Whether this property condition matched"
+          },
+          "explanation": {
+            "type": "string",
+            "description": "Human-readable explanation of the match result"
+          }
+        },
+        "required": [
+          "actual_value",
+          "explanation",
+          "key",
+          "matched",
+          "operator",
+          "type",
+          "value"
+        ]
       },
       "FeatureFlagCreateRequestSchema": {
         "type": "object",
@@ -110556,6 +111071,80 @@
           "status"
         ]
       },
+      "FeatureFlagTestEvaluationRequest": {
+        "type": "object",
+        "properties": {
+          "distinct_id": {
+            "type": "string",
+            "description": "User distinct ID to test against (mutually exclusive with person_id)"
+          },
+          "person_id": {
+            "type": "string",
+            "description": "Person ID to test against (mutually exclusive with distinct_id)"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "description": "Optional point-in-time to evaluate the flag against — both flag conditions and person properties are reconstructed as they existed at that timestamp. ISO 8601 with timezone, e.g. ``2026-04-29T15:30:00Z`` or ``2026-04-29T15:30:00+00:00``. Naive timestamps (no timezone) are interpreted as UTC."
+          },
+          "groups": {
+            "description": "Groups for feature flag evaluation (JSON object, defaults to empty dict)"
+          }
+        }
+      },
+      "FeatureFlagTestEvaluationResponse": {
+        "type": "object",
+        "properties": {
+          "flag_key": {
+            "type": "string",
+            "description": "Feature flag key"
+          },
+          "result": {
+            "description": "The evaluated value of the feature flag (boolean or variant key string)"
+          },
+          "reason": {
+            "type": "string",
+            "description": "The reason for the evaluation result"
+          },
+          "condition_index": {
+            "type": "integer",
+            "nullable": true,
+            "description": "The index of the condition that matched, if applicable"
+          },
+          "payload": {
+            "nullable": true,
+            "description": "Payload associated with the flag result, if any"
+          },
+          "person_properties": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "Person properties at the time of evaluation (for historical evaluations)"
+          },
+          "evaluation_distinct_id": {
+            "type": "string",
+            "nullable": true,
+            "description": "The distinct_id used for rollout/variant bucketing. Echoes the caller-provided distinct_id when one was sent; null on the person_id path so the endpoint doesn't leak the person's other distinct_ids to a feature_flag:read-only token."
+          },
+          "conditions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FeatureFlagConditionAnalysis"
+            },
+            "description": "Detailed analysis of each condition in the feature flag"
+          }
+        },
+        "required": [
+          "condition_index",
+          "conditions",
+          "evaluation_distinct_id",
+          "flag_key",
+          "payload",
+          "person_properties",
+          "reason",
+          "result"
+        ]
+      },
       "FeatureFlagVersionResponse": {
         "type": "object",
         "description": "Feature flag state at a given version plus reconstruction metadata.",
@@ -110748,6 +111337,14 @@
         ],
         "title": "FeaturePropertyFilter",
         "type": "object"
+      },
+      "FileFormatEnum": {
+        "enum": [
+          "JSONLines",
+          "Parquet"
+        ],
+        "type": "string",
+        "description": "* `JSONLines` - JSONLines\n* `Parquet` - Parquet"
       },
       "FileSystem": {
         "type": "object",
@@ -122664,6 +123261,8 @@
           "channel",
           "source",
           "campaign",
+          "ad_group",
+          "ad",
           "medium",
           "content",
           "term"
@@ -129730,119 +130329,67 @@
           }
         }
       },
-      "PatchedBatchExport": {
+      "PatchedBatchExportRequest": {
         "type": "object",
-        "description": "Serializer for a BatchExport model.",
+        "description": "Request body for create/partial_update on BatchExportViewSet.\n\nMirrors the writeable fields of `BatchExportSerializer` but uses a polymorphic\n`destination` schema so integration_id is marked required on the types that need\nit. Responses continue to use `BatchExportSerializer`.",
         "properties": {
-          "id": {
-            "type": "string",
-            "format": "uuid",
-            "readOnly": true
-          },
-          "team_id": {
-            "type": "integer",
-            "description": "The team this belongs to.",
-            "readOnly": true
-          },
           "name": {
             "type": "string",
-            "description": "A human-readable name for this BatchExport."
+            "description": "Human-readable name for the batch export."
           },
           "model": {
-            "nullable": true,
-            "description": "Which model this BatchExport is exporting.\n\n* `events` - Events\n* `persons` - Persons\n* `sessions` - Sessions",
-            "oneOf": [
+            "allOf": [
               {
                 "$ref": "#/components/schemas/ModelEnum"
-              },
-              {
-                "$ref": "#/components/schemas/BlankEnum"
-              },
-              {
-                "$ref": "#/components/schemas/NullEnum"
               }
-            ]
+            ],
+            "description": "Which data model to export (events, persons, sessions).\n\n* `events` - Events\n* `persons` - Persons\n* `sessions` - Sessions"
           },
           "destination": {
-            "$ref": "#/components/schemas/BatchExportDestination"
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/BatchExportDestinationRequest"
+              }
+            ],
+            "description": "Destination configuration. Required integration_id is enforced per destination type."
           },
           "interval": {
-            "$ref": "#/components/schemas/IntervalEnum"
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/IntervalEnum"
+              }
+            ],
+            "description": "How often the batch export should run.\n\n* `hour` - hour\n* `day` - day\n* `week` - week\n* `every 5 minutes` - every 5 minutes\n* `every 15 minutes` - every 15 minutes"
           },
           "paused": {
             "type": "boolean",
-            "description": "Whether this BatchExport is paused or not."
-          },
-          "created_at": {
-            "type": "string",
-            "format": "date-time",
-            "readOnly": true,
-            "description": "The timestamp at which this BatchExport was created."
-          },
-          "last_updated_at": {
-            "type": "string",
-            "format": "date-time",
-            "readOnly": true,
-            "description": "The timestamp at which this BatchExport was last updated."
-          },
-          "last_paused_at": {
-            "type": "string",
-            "format": "date-time",
-            "nullable": true,
-            "description": "The timestamp at which this BatchExport was last paused."
-          },
-          "start_at": {
-            "type": "string",
-            "format": "date-time",
-            "nullable": true,
-            "description": "Time before which any Batch Export runs won't be triggered."
-          },
-          "end_at": {
-            "type": "string",
-            "format": "date-time",
-            "nullable": true,
-            "description": "Time after which any Batch Export runs won't be triggered."
-          },
-          "latest_runs": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/BatchExportRun"
-            },
-            "readOnly": true
+            "description": "Whether the batch export is paused."
           },
           "hogql_query": {
-            "type": "string"
-          },
-          "schema": {
-            "readOnly": true,
-            "nullable": true,
-            "description": "A schema of custom fields to select when exporting data."
+            "type": "string",
+            "description": "Optional HogQL SELECT defining a custom model schema. Only recommended in advanced use cases."
           },
           "filters": {
             "nullable": true
           },
           "timezone": {
+            "type": "string",
             "nullable": true,
-            "oneOf": [
-              {
-                "$ref": "#/components/schemas/TimezoneEnum"
-              },
-              {
-                "$ref": "#/components/schemas/NullEnum"
-              }
-            ]
+            "description": "IANA timezone name (e.g. 'America/New_York', 'Europe/London', 'UTC') controlling daily and weekly interval boundaries."
           },
           "offset_day": {
             "type": "integer",
             "maximum": 6,
             "minimum": 0,
-            "nullable": true
+            "nullable": true,
+            "description": "Day-of-week offset for weekly intervals (0=Sunday, 6=Saturday)."
           },
           "offset_hour": {
             "type": "integer",
             "maximum": 23,
             "minimum": 0,
-            "nullable": true
+            "nullable": true,
+            "description": "Hour-of-day offset (0-23) for daily and weekly intervals."
           }
         }
       },
@@ -135703,6 +136250,10 @@
             "type": "boolean",
             "description": "Set to true to soft-delete. Subscriptions cannot be hard-deleted."
           },
+          "enabled": {
+            "type": "boolean",
+            "description": "Whether the subscription is active. Set to false to pause delivery without deleting. Auto-set to false when the delivery integration becomes invalid."
+          },
           "title": {
             "type": "string",
             "nullable": true,
@@ -138132,43 +138683,6 @@
         "title": "PersonFilter",
         "type": "object"
       },
-      "PersonPropertiesAtTimeDebug": {
-        "type": "object",
-        "description": "Serializer for the debug information (only available to staff users).",
-        "properties": {
-          "query": {
-            "type": "string",
-            "description": "The ClickHouse query that was executed"
-          },
-          "params": {
-            "type": "object",
-            "additionalProperties": true,
-            "description": "The parameters passed to the query"
-          },
-          "events_found": {
-            "type": "integer",
-            "description": "Number of events found"
-          },
-          "events": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "additionalProperties": true
-            },
-            "description": "Raw events that were used to build the properties"
-          },
-          "error": {
-            "type": "string",
-            "description": "Error message if debug query failed"
-          }
-        },
-        "required": [
-          "events",
-          "events_found",
-          "params",
-          "query"
-        ]
-      },
       "PersonPropertiesAtTimeMetadata": {
         "type": "object",
         "description": "Serializer for the point-in-time query metadata.",
@@ -138267,14 +138781,6 @@
               }
             ],
             "description": "Metadata about the point-in-time query"
-          },
-          "debug": {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/PersonPropertiesAtTimeDebug"
-              }
-            ],
-            "description": "Debug information (only available when debug=true and DEBUG=True)"
           }
         },
         "required": [
@@ -152620,10 +153126,10 @@
           },
           "aggregationPropertyType": {
             "default": "event",
-            "description": "The type of property to aggregate on (event or person). Defaults to event.",
+            "description": "The type of property to aggregate on (event, person or data_warehouse). Defaults to event.",
             "allOf": [
               {
-                "$ref": "#/components/schemas/AggregationPropertyType"
+                "$ref": "#/components/schemas/AggregationPropertyType1"
               }
             ],
             "nullable": true
@@ -158028,12 +158534,13 @@
           "in_progress",
           "pending_input",
           "ready",
+          "resolved",
           "failed",
           "deleted",
           "suppressed"
         ],
         "type": "string",
-        "description": "* `potential` - Potential\n* `candidate` - Candidate\n* `in_progress` - In Progress\n* `pending_input` - Pending Input\n* `ready` - Ready\n* `failed` - Failed\n* `deleted` - Deleted\n* `suppressed` - Suppressed"
+        "description": "* `potential` - Potential\n* `candidate` - Candidate\n* `in_progress` - In Progress\n* `pending_input` - Pending Input\n* `ready` - Ready\n* `resolved` - Resolved\n* `failed` - Failed\n* `deleted` - Deleted\n* `suppressed` - Suppressed"
       },
       "SignalReportTaskRelationshipEnum": {
         "enum": [
@@ -158330,6 +158837,14 @@
             ],
             "nullable": true
           },
+          "cluster_summary": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ClusterSummary"
+              }
+            ],
+            "nullable": true
+          },
           "id": {
             "type": "string",
             "format": "uuid"
@@ -158374,6 +158889,17 @@
           "metadata": {
             "type": "object",
             "additionalProperties": true
+          },
+          "ssim_score": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "change_kind": {
+            "type": "string"
+          },
+          "size_mismatch": {
+            "type": "boolean"
           }
         },
         "required": [
@@ -158431,6 +158957,17 @@
           },
           "review_state": {
             "type": "string"
+          },
+          "ssim_score": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "change_kind": {
+            "type": "string"
+          },
+          "size_mismatch": {
+            "type": "boolean"
           }
         },
         "required": [
@@ -159386,6 +159923,10 @@
           "deleted": {
             "type": "boolean",
             "description": "Set to true to soft-delete. Subscriptions cannot be hard-deleted."
+          },
+          "enabled": {
+            "type": "boolean",
+            "description": "Whether the subscription is active. Set to false to pause delivery without deleting. Auto-set to false when the delivery integration becomes invalid."
           },
           "title": {
             "type": "string",
