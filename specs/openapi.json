@@ -14318,7 +14318,7 @@
     "/api/environments/{environment_id}/insights/{id}/activity/": {
       "get": {
         "operationId": "environments_insights_activity_retrieve",
-        "description": "DRF ViewSet mixin that gates coalesced responses behind permission checks.\n\nThe QueryCoalescingMiddleware attaches cached response data to\nrequest.META[\"_coalesced_response\"] for followers. This mixin runs DRF's\ninitial() (auth + permissions + throttling) before returning the\ncached response, ensuring the request is authorized.",
+        "description": "Audit trail for a single insight — every change made to it, by whom, and when. Use this when you want the change history of a specific insight; use the project-wide activity endpoint for a broader view.",
         "parameters": [
           {
             "$ref": "#/components/parameters/EnvironmentIdPath"
@@ -14342,6 +14342,22 @@
             },
             "description": "A unique integer value identifying this insight.",
             "required": true
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Page size. Defaults to 10."
+          },
+          {
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "1-indexed page number. Defaults to 1."
           }
         ],
         "tags": [
@@ -14357,7 +14373,19 @@
         ],
         "responses": {
           "200": {
-            "description": "No response body"
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActivityLogPaginatedResponse"
+                }
+              },
+              "text/csv": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActivityLogPaginatedResponse"
+                }
+              }
+            },
+            "description": ""
           }
         },
         "deprecated": true,
@@ -14508,7 +14536,7 @@
     "/api/environments/{environment_id}/insights/activity/": {
       "get": {
         "operationId": "environments_insights_all_activity_retrieve",
-        "description": "DRF ViewSet mixin that gates coalesced responses behind permission checks.\n\nThe QueryCoalescingMiddleware attaches cached response data to\nrequest.META[\"_coalesced_response\"] for followers. This mixin runs DRF's\ninitial() (auth + permissions + throttling) before returning the\ncached response, ensuring the request is authorized.",
+        "description": "Project-wide audit trail across all insights — who created, edited, deleted, or restored insights, what changed (with before/after diffs), and when. Useful for surfacing what people (or agents) have been working on recently.",
         "parameters": [
           {
             "$ref": "#/components/parameters/EnvironmentIdPath"
@@ -14523,6 +14551,22 @@
                 "json"
               ]
             }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Page size. Defaults to 10."
+          },
+          {
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "1-indexed page number. Defaults to 1."
           }
         ],
         "tags": [
@@ -14538,7 +14582,19 @@
         ],
         "responses": {
           "200": {
-            "description": "No response body"
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActivityLogPaginatedResponse"
+                }
+              },
+              "text/csv": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActivityLogPaginatedResponse"
+                }
+              }
+            },
+            "description": ""
           }
         },
         "deprecated": true,
@@ -14737,8 +14793,16 @@
     "/api/environments/{environment_id}/insights/trending/": {
       "get": {
         "operationId": "environments_insights_trending_retrieve",
-        "description": "Returns trending insights based on view count in the last N days (default 7).\nDefaults to returning top 10 insights.",
+        "description": "Returns insights ranked by view count over the last N days (default 7), highest first. Each result includes the same metadata as the standard insights list, plus a `view_count` and up to 3 recent `viewers`. Useful for surfacing the most-used insights in a project.",
         "parameters": [
+          {
+            "in": "query",
+            "name": "days",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Time window in days to compute view counts over. Defaults to 7. Larger windows surface consistently popular insights; smaller windows surface what's hot right now."
+          },
           {
             "$ref": "#/components/parameters/EnvironmentIdPath"
           },
@@ -14752,15 +14816,51 @@
                 "json"
               ]
             }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Maximum number of insights to return. Defaults to 10. Capped at 100."
+          },
+          {
+            "name": "offset",
+            "required": false,
+            "in": "query",
+            "description": "The initial index from which to return the results.",
+            "schema": {
+              "type": "integer"
+            }
           }
         ],
         "tags": [
           "product_analytics",
           "insights"
         ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "insight:read"
+            ]
+          }
+        ],
         "responses": {
           "200": {
-            "description": "No response body"
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedTrendingInsightList"
+                }
+              },
+              "text/csv": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedTrendingInsightList"
+                }
+              }
+            },
+            "description": ""
           }
         },
         "deprecated": true,
@@ -28318,6 +28418,185 @@
         ]
       }
     },
+    "/api/environments/{project_id}/error_tracking/query/issue/": {
+      "post": {
+        "operationId": "error_tracking_query_issue_create",
+        "description": "Fetch one error tracking issue with impact counts, top in_app frame, latest release, and optional sparkline.",
+        "summary": "Get compact error tracking issue details",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "error_tracking",
+          "error_tracking"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ErrorTrackingIssueQueryRequest"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/ErrorTrackingIssueQueryRequest"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/ErrorTrackingIssueQueryRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "error_tracking:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorTrackingIssueDetail"
+                }
+              }
+            },
+            "description": ""
+          },
+          "404": {
+            "description": "Issue not found"
+          }
+        },
+        "x-explicit-tags": [
+          "error_tracking"
+        ]
+      }
+    },
+    "/api/environments/{project_id}/error_tracking/query/issue_events/": {
+      "post": {
+        "operationId": "error_tracking_query_issue_events_create",
+        "description": "Fetch sampled exception events, stack traces, browser/SDK context, URL, and $session_id values for one issue.",
+        "summary": "List sampled exception events for an error tracking issue",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "error_tracking",
+          "error_tracking"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ErrorTrackingIssueEventsQueryRequest"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/ErrorTrackingIssueEventsQueryRequest"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/ErrorTrackingIssueEventsQueryRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "error_tracking:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorTrackingIssueEventsResponse"
+                }
+              }
+            },
+            "description": ""
+          },
+          "404": {
+            "description": "Issue not found"
+          }
+        },
+        "x-explicit-tags": [
+          "error_tracking"
+        ]
+      }
+    },
+    "/api/environments/{project_id}/error_tracking/query/issues/": {
+      "post": {
+        "operationId": "error_tracking_query_issues_list_create",
+        "description": "List error tracking issues with typed filters and compact aggregate counts.",
+        "summary": "List compact error tracking issues",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "error_tracking",
+          "error_tracking"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ErrorTrackingIssuesListQueryRequest"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/ErrorTrackingIssuesListQueryRequest"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/ErrorTrackingIssuesListQueryRequest"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "error_tracking:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorTrackingIssuesListResponse"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-explicit-tags": [
+          "error_tracking"
+        ]
+      }
+    },
     "/api/environments/{project_id}/error_tracking/recommendations/": {
       "get": {
         "operationId": "error_tracking_recommendations_list",
@@ -31273,6 +31552,85 @@
         ]
       }
     },
+    "/api/environments/{project_id}/llm_analytics/offline_evaluations/experiment_items/": {
+      "post": {
+        "operationId": "llm_analytics_offline_evaluations_experiment_items_create",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "LLM Analytics",
+          "llm_analytics"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OfflineExperimentItemsRequest"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/OfflineExperimentItemsRequest"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/OfflineExperimentItemsRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "llm_analytics:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OfflineExperimentItemsResponse"
+                }
+              }
+            },
+            "description": ""
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true
+                }
+              }
+            },
+            "description": ""
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-explicit-tags": [
+          "LLM Analytics",
+          "llm_analytics"
+        ]
+      }
+    },
     "/api/environments/{project_id}/llm_analytics/provider_key_validations/": {
       "post": {
         "operationId": "llm_analytics_provider_key_validations_create",
@@ -32714,6 +33072,13 @@
           },
           "required": true
         },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "llm_analytics:write"
+            ]
+          }
+        ],
         "responses": {
           "200": {
             "content": {
@@ -32813,7 +33178,6 @@
     "/api/environments/{project_id}/llm_analytics/sentiment/generations/": {
       "post": {
         "operationId": "llm_analytics_sentiment_generations_create",
-        "description": "Fetch the recent $ai_generation events for the sentiment tab.\n\nBacked by `_SENTIMENT_GENERATIONS_SQL` reading `posthog.ai_events` through\n`execute_with_ai_events_fallback`, so heavy `input` values survive the\npost-cutover strip on `events.properties.$ai_input`. Frontend callers\npass the same `HogQLFilters` payload they previously passed to\n`api.query({kind: HogQLQuery, filters: ...})`.",
         "parameters": [
           {
             "$ref": "#/components/parameters/ProjectIdPath"
@@ -38715,6 +39079,201 @@
         "deprecated": true
       }
     },
+    "/api/organizations/{organization_id}/cimd_verification_tokens/": {
+      "get": {
+        "operationId": "cimd_verification_tokens_list",
+        "description": "Manage CIMD verification tokens for an organization.\n\nA partner embeds the plaintext token in their CIMD metadata document under\n`posthog_verification_token`. When PostHog fetches the metadata, matching\nthe token links the partner app to this organization and grants a higher\ndefault rate limit for account provisioning.\n\nThe plaintext value is only available on creation; we store a hash.",
+        "parameters": [
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Number of results to return per page.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "offset",
+            "required": false,
+            "in": "query",
+            "description": "The initial index from which to return the results.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/OrganizationIdPath"
+          }
+        ],
+        "tags": [
+          "core",
+          "cimd_verification_tokens"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "organization:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedCIMDVerificationTokenList"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-explicit-tags": [
+          "core"
+        ]
+      },
+      "post": {
+        "operationId": "cimd_verification_tokens_create",
+        "description": "Manage CIMD verification tokens for an organization.\n\nA partner embeds the plaintext token in their CIMD metadata document under\n`posthog_verification_token`. When PostHog fetches the metadata, matching\nthe token links the partner app to this organization and grants a higher\ndefault rate limit for account provisioning.\n\nThe plaintext value is only available on creation; we store a hash.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/OrganizationIdPath"
+          }
+        ],
+        "tags": [
+          "core",
+          "cimd_verification_tokens"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CIMDVerificationToken"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/CIMDVerificationToken"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/CIMDVerificationToken"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "organization:write"
+            ]
+          }
+        ],
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CIMDVerificationTokenWithValue"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-explicit-tags": [
+          "core"
+        ]
+      }
+    },
+    "/api/organizations/{organization_id}/cimd_verification_tokens/{id}/": {
+      "get": {
+        "operationId": "cimd_verification_tokens_retrieve",
+        "description": "Manage CIMD verification tokens for an organization.\n\nA partner embeds the plaintext token in their CIMD metadata document under\n`posthog_verification_token`. When PostHog fetches the metadata, matching\nthe token links the partner app to this organization and grants a higher\ndefault rate limit for account provisioning.\n\nThe plaintext value is only available on creation; we store a hash.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "A UUID string identifying this CIMD Verification Token.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/OrganizationIdPath"
+          }
+        ],
+        "tags": [
+          "core",
+          "cimd_verification_tokens"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "organization:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CIMDVerificationToken"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-explicit-tags": [
+          "core"
+        ]
+      },
+      "delete": {
+        "operationId": "cimd_verification_tokens_destroy",
+        "description": "Manage CIMD verification tokens for an organization.\n\nA partner embeds the plaintext token in their CIMD metadata document under\n`posthog_verification_token`. When PostHog fetches the metadata, matching\nthe token links the partner app to this organization and grants a higher\ndefault rate limit for account provisioning.\n\nThe plaintext value is only available on creation; we store a hash.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "A UUID string identifying this CIMD Verification Token.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/OrganizationIdPath"
+          }
+        ],
+        "tags": [
+          "core",
+          "cimd_verification_tokens"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "organization:write"
+            ]
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No response body"
+          }
+        },
+        "x-explicit-tags": [
+          "core"
+        ]
+      }
+    },
     "/api/organizations/{organization_id}/domains/": {
       "get": {
         "operationId": "domains_list",
@@ -41189,6 +41748,46 @@
         "responses": {
           "204": {
             "description": "No response body"
+          }
+        },
+        "x-explicit-tags": [
+          "reverse_proxy"
+        ]
+      }
+    },
+    "/api/organizations/{organization_id}/proxy_records/{id}/diagnose/": {
+      "post": {
+        "operationId": "proxy_records_diagnose_create",
+        "description": "Run a deep diagnostic on a reverse proxy. Inspects DNS CNAME alignment, the certificate provider's hostname state, CAA records walked up the customer's DNS tree, HTTP-01 challenge reachability, a live event probe, and certificate expiry. Returns a structured report with each check's status and concrete remediation steps (e.g. exact DNS records to add). Use this to debug why a proxy is stuck or erroring.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "A UUID string identifying this proxy record.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/OrganizationIdPath"
+          }
+        ],
+        "tags": [
+          "reverse_proxy",
+          "proxy_records"
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DiagnosticReport"
+                }
+              }
+            },
+            "description": ""
           }
         },
         "x-explicit-tags": [
@@ -65542,7 +66141,7 @@
     "/api/projects/{project_id}/insights/{id}/activity/": {
       "get": {
         "operationId": "insights_activity_retrieve",
-        "description": "DRF ViewSet mixin that gates coalesced responses behind permission checks.\n\nThe QueryCoalescingMiddleware attaches cached response data to\nrequest.META[\"_coalesced_response\"] for followers. This mixin runs DRF's\ninitial() (auth + permissions + throttling) before returning the\ncached response, ensuring the request is authorized.",
+        "description": "Audit trail for a single insight — every change made to it, by whom, and when. Use this when you want the change history of a specific insight; use the project-wide activity endpoint for a broader view.",
         "parameters": [
           {
             "in": "query",
@@ -65565,6 +66164,22 @@
             "required": true
           },
           {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Page size. Defaults to 10."
+          },
+          {
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "1-indexed page number. Defaults to 1."
+          },
+          {
             "$ref": "#/components/parameters/ProjectIdPath"
           }
         ],
@@ -65581,7 +66196,19 @@
         ],
         "responses": {
           "200": {
-            "description": "No response body"
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActivityLogPaginatedResponse"
+                }
+              },
+              "text/csv": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActivityLogPaginatedResponse"
+                }
+              }
+            },
+            "description": ""
           }
         },
         "x-explicit-tags": [
@@ -65728,7 +66355,7 @@
     "/api/projects/{project_id}/insights/activity/": {
       "get": {
         "operationId": "insights_all_activity_retrieve",
-        "description": "DRF ViewSet mixin that gates coalesced responses behind permission checks.\n\nThe QueryCoalescingMiddleware attaches cached response data to\nrequest.META[\"_coalesced_response\"] for followers. This mixin runs DRF's\ninitial() (auth + permissions + throttling) before returning the\ncached response, ensuring the request is authorized.",
+        "description": "Project-wide audit trail across all insights — who created, edited, deleted, or restored insights, what changed (with before/after diffs), and when. Useful for surfacing what people (or agents) have been working on recently.",
         "parameters": [
           {
             "in": "query",
@@ -65740,6 +66367,22 @@
                 "json"
               ]
             }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Page size. Defaults to 10."
+          },
+          {
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "1-indexed page number. Defaults to 1."
           },
           {
             "$ref": "#/components/parameters/ProjectIdPath"
@@ -65758,7 +66401,19 @@
         ],
         "responses": {
           "200": {
-            "description": "No response body"
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActivityLogPaginatedResponse"
+                }
+              },
+              "text/csv": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActivityLogPaginatedResponse"
+                }
+              }
+            },
+            "description": ""
           }
         },
         "x-explicit-tags": [
@@ -65952,8 +66607,16 @@
     "/api/projects/{project_id}/insights/trending/": {
       "get": {
         "operationId": "insights_trending_retrieve",
-        "description": "Returns trending insights based on view count in the last N days (default 7).\nDefaults to returning top 10 insights.",
+        "description": "Returns insights ranked by view count over the last N days (default 7), highest first. Each result includes the same metadata as the standard insights list, plus a `view_count` and up to 3 recent `viewers`. Useful for surfacing the most-used insights in a project.",
         "parameters": [
+          {
+            "in": "query",
+            "name": "days",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Time window in days to compute view counts over. Defaults to 7. Larger windows surface consistently popular insights; smaller windows surface what's hot right now."
+          },
           {
             "in": "query",
             "name": "format",
@@ -65966,6 +66629,23 @@
             }
           },
           {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Maximum number of insights to return. Defaults to 10. Capped at 100."
+          },
+          {
+            "name": "offset",
+            "required": false,
+            "in": "query",
+            "description": "The initial index from which to return the results.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
             "$ref": "#/components/parameters/ProjectIdPath"
           }
         ],
@@ -65973,9 +66653,28 @@
           "product_analytics",
           "insights"
         ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "insight:read"
+            ]
+          }
+        ],
         "responses": {
           "200": {
-            "description": "No response body"
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedTrendingInsightList"
+                }
+              },
+              "text/csv": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedTrendingInsightList"
+                }
+              }
+            },
+            "description": ""
           }
         },
         "x-explicit-tags": [
@@ -80572,8 +81271,8 @@
     "/api/projects/{project_id}/tasks/{task_id}/runs/{id}/command/": {
       "post": {
         "operationId": "tasks_runs_command_create",
-        "description": "Forward a JSON-RPC command to the agent server running in the sandbox. Supports user_message, cancel, close, permission_response, and set_config_option commands.",
-        "summary": "Send command to agent server",
+        "description": "Queue user_message JSON-RPC commands through the task workflow and forward sandbox control commands to the agent server. Supports user_message, cancel, close, permission_response, and set_config_option commands.",
+        "summary": "Send command to task run",
         "parameters": [
           {
             "in": "path",
@@ -91464,6 +92163,105 @@
         "type": "string",
         "description": "* `monday` - Monday\n* `tuesday` - Tuesday\n* `wednesday` - Wednesday\n* `thursday` - Thursday\n* `friday` - Friday\n* `saturday` - Saturday\n* `sunday` - Sunday"
       },
+      "CIMDVerificationToken": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "readOnly": true
+          },
+          "label": {
+            "type": "string",
+            "maxLength": 40
+          },
+          "mask_value": {
+            "type": "string",
+            "readOnly": true,
+            "nullable": true
+          },
+          "created_by": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/UserBasic"
+              }
+            ],
+            "readOnly": true
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          },
+          "last_used_at": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true,
+            "nullable": true
+          }
+        },
+        "required": [
+          "created_at",
+          "created_by",
+          "id",
+          "label",
+          "last_used_at",
+          "mask_value"
+        ]
+      },
+      "CIMDVerificationTokenWithValue": {
+        "type": "object",
+        "description": "Create-response variant that includes the plaintext token.\n\nOnly emitted from the create endpoint - storage-side we only persist the\nhash, so subsequent reads use the base serializer.",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "readOnly": true
+          },
+          "label": {
+            "type": "string",
+            "maxLength": 40
+          },
+          "mask_value": {
+            "type": "string",
+            "readOnly": true,
+            "nullable": true
+          },
+          "created_by": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/UserBasic"
+              }
+            ],
+            "readOnly": true
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          },
+          "last_used_at": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true,
+            "nullable": true
+          },
+          "value": {
+            "type": "string",
+            "readOnly": true,
+            "description": "Plaintext token, only returned on creation"
+          }
+        },
+        "required": [
+          "created_at",
+          "created_by",
+          "id",
+          "label",
+          "last_used_at",
+          "mask_value",
+          "value"
+        ]
+      },
       "COPODDetectorConfig": {
         "additionalProperties": false,
         "properties": {
@@ -96471,6 +97269,13 @@
             ],
             "nullable": true
           },
+          "showAbsoluteTime": {
+            "default": null,
+            "description": "Render date-time columns (timestamp, created_at, last_seen, last_seen_at, session_start, session_end) as absolute date+time instead of relative (\"X ago\"). The toggle is exposed in the column header menu only on EventsQuery / ActorsQuery sources.",
+            "title": "Showabsolutetime",
+            "type": "boolean",
+            "nullable": true
+          },
           "showActions": {
             "default": null,
             "description": "Show the kebab menu at the end of the row",
@@ -99117,6 +99922,184 @@
         "type": "string",
         "description": "* `Desktop` - Desktop\n* `Mobile` - Mobile\n* `Tablet` - Tablet"
       },
+      "DiagnosticCheckResult": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Stable identifier for the check (e.g. cname, cloudflare, caa, http_challenge, live_event, cert_expiry)."
+          },
+          "name": {
+            "type": "string",
+            "description": "Human-readable check name."
+          },
+          "status": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/DiagnosticCheckResultStatusEnum"
+              }
+            ],
+            "description": "passed: ok. warned: degraded but not blocking. failed: blocking. skipped: not run for this state.\n\n* `passed` - passed\n* `warned` - warned\n* `failed` - failed\n* `skipped` - skipped"
+          },
+          "detail": {
+            "type": "string",
+            "description": "Customer-facing explanation of the check's outcome."
+          },
+          "remediation": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/DiagnosticRemediation"
+              }
+            ],
+            "nullable": true,
+            "description": "Concrete remediation steps when the check failed; null when there's nothing actionable."
+          }
+        },
+        "required": [
+          "detail",
+          "id",
+          "name",
+          "status"
+        ]
+      },
+      "DiagnosticCheckResultStatusEnum": {
+        "enum": [
+          "passed",
+          "warned",
+          "failed",
+          "skipped"
+        ],
+        "type": "string",
+        "description": "* `passed` - passed\n* `warned` - warned\n* `failed` - failed\n* `skipped` - skipped"
+      },
+      "DiagnosticDnsRecord": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "DNS record name (the hostname the record is set on)."
+          },
+          "type": {
+            "type": "string",
+            "description": "DNS record type, e.g. CNAME, CAA, A."
+          },
+          "value": {
+            "type": "string",
+            "description": "DNS record value to set."
+          }
+        },
+        "required": [
+          "name",
+          "type",
+          "value"
+        ]
+      },
+      "DiagnosticRemediation": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/DiagnosticRemediationTypeEnum"
+              }
+            ],
+            "description": "Category of fix. dns: customer must change DNS records. config: customer must adjust their server config (e.g. allow port 80). wait: no action — the system will resolve on its own. retry: hit Retry.\n\n* `dns` - dns\n* `config` - config\n* `wait` - wait\n* `retry` - retry"
+          },
+          "summary": {
+            "type": "string",
+            "description": "One-line, action-oriented summary of what to do."
+          },
+          "records": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DiagnosticDnsRecord"
+            },
+            "description": "DNS records the customer should add (empty when remediation is not DNS-based)."
+          }
+        },
+        "required": [
+          "records",
+          "summary",
+          "type"
+        ]
+      },
+      "DiagnosticRemediationTypeEnum": {
+        "enum": [
+          "dns",
+          "config",
+          "wait",
+          "retry"
+        ],
+        "type": "string",
+        "description": "* `dns` - dns\n* `config` - config\n* `wait` - wait\n* `retry` - retry"
+      },
+      "DiagnosticReport": {
+        "type": "object",
+        "properties": {
+          "ran_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When this diagnostic report was generated (UTC)."
+          },
+          "summary": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/DiagnosticReportSummary"
+              }
+            ],
+            "description": "Top-level outcome and recommended next action."
+          },
+          "checks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DiagnosticCheckResult"
+            },
+            "description": "Per-check results in execution order."
+          }
+        },
+        "required": [
+          "checks",
+          "ran_at",
+          "summary"
+        ]
+      },
+      "DiagnosticReportSummary": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/DiagnosticReportSummaryStatusEnum"
+              }
+            ],
+            "description": "Overall outcome: healthy if the proxy is serving requests, warn for non-blocking issues, fail otherwise.\n\n* `healthy` - healthy\n* `warn` - warn\n* `fail` - fail"
+          },
+          "primary_issue": {
+            "type": "string",
+            "nullable": true,
+            "description": "Check id of the most actionable failure, if any. Null when status is healthy."
+          },
+          "next_action": {
+            "type": "string",
+            "nullable": true,
+            "description": "One-sentence next action the customer should take. Null when nothing's wrong."
+          }
+        },
+        "required": [
+          "next_action",
+          "primary_issue",
+          "status"
+        ]
+      },
+      "DiagnosticReportSummaryStatusEnum": {
+        "enum": [
+          "healthy",
+          "warn",
+          "fail"
+        ],
+        "type": "string",
+        "description": "* `healthy` - healthy\n* `warn` - warn\n* `fail` - fail"
+      },
       "DiffCluster": {
         "type": "object",
         "properties": {
@@ -101525,6 +102508,91 @@
           "error"
         ]
       },
+      "ErrorTrackingAggregations": {
+        "type": "object",
+        "properties": {
+          "occurrences": {
+            "type": "number",
+            "format": "double",
+            "description": "Exception occurrence count."
+          },
+          "users": {
+            "type": "number",
+            "format": "double",
+            "description": "Unique user count."
+          },
+          "sessions": {
+            "type": "number",
+            "format": "double",
+            "description": "Unique session count."
+          },
+          "volumeRange": {
+            "type": "array",
+            "items": {
+              "type": "number",
+              "format": "double"
+            },
+            "description": "Occurrence counts per volume bucket."
+          },
+          "volume_buckets": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ErrorTrackingVolumeBucket"
+            },
+            "description": "Labeled volume buckets."
+          }
+        }
+      },
+      "ErrorTrackingAssignee": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "description": "User ID or role UUID to filter by."
+          },
+          "type": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/AssigneeTypeEnum"
+              }
+            ],
+            "description": "Assignee target type: user or role.\n\n* `user` - user\n* `role` - role"
+          }
+        },
+        "required": [
+          "id",
+          "type"
+        ]
+      },
+      "ErrorTrackingAssigneeResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "nullable": true,
+            "description": "Assignee user ID or role UUID."
+          },
+          "type": {
+            "type": "string",
+            "nullable": true,
+            "description": "Assignee type."
+          }
+        }
+      },
       "ErrorTrackingAssignmentRule": {
         "type": "object",
         "properties": {
@@ -101910,6 +102978,43 @@
         "title": "ErrorTrackingCorrelatedIssue",
         "type": "object"
       },
+      "ErrorTrackingDateRange": {
+        "type": "object",
+        "properties": {
+          "date_from": {
+            "type": "string",
+            "description": "Start of the date range as an ISO timestamp or relative date such as -7d. Defaults to -7d."
+          },
+          "date_to": {
+            "type": "string",
+            "nullable": true,
+            "description": "End of the date range as an ISO timestamp or relative date. Defaults to now when omitted."
+          }
+        }
+      },
+      "ErrorTrackingEvent": {
+        "type": "object",
+        "properties": {
+          "uuid": {
+            "type": "string",
+            "description": "Event UUID."
+          },
+          "distinct_id": {
+            "type": "string",
+            "description": "Event distinct ID."
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Event timestamp."
+          },
+          "properties": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "Normalized sampled exception event properties."
+          }
+        }
+      },
       "ErrorTrackingExternalReference": {
         "additionalProperties": false,
         "properties": {
@@ -102198,6 +103303,26 @@
         "required": [
           "results"
         ]
+      },
+      "ErrorTrackingImpact": {
+        "type": "object",
+        "properties": {
+          "occurrences": {
+            "type": "number",
+            "format": "double",
+            "description": "Exception occurrence count."
+          },
+          "users": {
+            "type": "number",
+            "format": "double",
+            "description": "Unique user count."
+          },
+          "sessions": {
+            "type": "number",
+            "format": "double",
+            "description": "Unique session count."
+          }
+        }
       },
       "ErrorTrackingIssue": {
         "additionalProperties": false,
@@ -102589,6 +103714,218 @@
         "title": "ErrorTrackingIssueCorrelationQueryResponse",
         "type": "object"
       },
+      "ErrorTrackingIssueDetail": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Error tracking issue ID."
+          },
+          "name": {
+            "type": "string",
+            "nullable": true,
+            "description": "Issue name."
+          },
+          "description": {
+            "type": "string",
+            "nullable": true,
+            "description": "Issue description."
+          },
+          "status": {
+            "type": "string",
+            "description": "Issue status."
+          },
+          "first_seen": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "description": "First seen timestamp."
+          },
+          "last_seen": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "description": "Last seen timestamp."
+          },
+          "library": {
+            "type": "string",
+            "nullable": true,
+            "description": "SDK/library associated with the issue."
+          },
+          "source": {
+            "type": "string",
+            "nullable": true,
+            "description": "Top source/file associated with the issue."
+          },
+          "assignee": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ErrorTrackingAssigneeResponse"
+              }
+            ],
+            "nullable": true,
+            "description": "Issue assignee."
+          },
+          "aggregations": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ErrorTrackingAggregations"
+              }
+            ],
+            "nullable": true,
+            "description": "Aggregate counts."
+          },
+          "function": {
+            "type": "string",
+            "nullable": true,
+            "description": "Top function associated with the issue."
+          },
+          "top_in_app_frame": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ErrorTrackingTopFrame"
+              }
+            ],
+            "description": "Top in_app application frame."
+          },
+          "latest_release": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ErrorTrackingLatestRelease"
+              }
+            ],
+            "description": "Latest release metadata."
+          },
+          "impact": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ErrorTrackingImpact"
+              }
+            ],
+            "description": "Compact impact counts."
+          },
+          "sparkline": {
+            "type": "array",
+            "items": {
+              "type": "number",
+              "format": "double"
+            },
+            "description": "Optional compact occurrence sparkline."
+          }
+        },
+        "required": [
+          "id"
+        ]
+      },
+      "ErrorTrackingIssueEventsQueryRequest": {
+        "type": "object",
+        "properties": {
+          "issueId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Error tracking issue ID."
+          },
+          "dateRange": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ErrorTrackingDateRange"
+              }
+            ],
+            "description": "Date range for sampled exception events. Defaults to the last 7 days."
+          },
+          "filterTestAccounts": {
+            "type": "boolean",
+            "default": true,
+            "description": "When true, exclude internal/test account data from results. Defaults to true."
+          },
+          "filterGroup": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PropertyItem"
+            },
+            "description": "Advanced flat AND property filters applied to sampled events. HogQL filters are rejected."
+          },
+          "searchQuery": {
+            "type": "string",
+            "description": "Search exception types, exception values, and current URL among sampled events.",
+            "maxLength": 500
+          },
+          "orderDirection": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/OrderDirectionEnum"
+              }
+            ],
+            "default": "DESC",
+            "description": "Timestamp sort direction. Defaults to DESC.\n\n* `ASC` - ASC\n* `DESC` - DESC"
+          },
+          "limit": {
+            "type": "integer",
+            "maximum": 20,
+            "minimum": 1,
+            "default": 1,
+            "description": "Page size."
+          },
+          "offset": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 0,
+            "description": "Pagination offset."
+          },
+          "verbosity": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/VerbosityEnum"
+              }
+            ],
+            "default": "summary",
+            "description": "Controls exception detail size: summary, stack, or raw. Defaults to summary.\n\n* `summary` - summary\n* `stack` - stack\n* `raw` - raw"
+          },
+          "onlyAppFrames": {
+            "type": "boolean",
+            "default": true,
+            "description": "When true, include only stack frames marked in_app. Defaults to true."
+          }
+        },
+        "required": [
+          "issueId"
+        ]
+      },
+      "ErrorTrackingIssueEventsResponse": {
+        "type": "object",
+        "properties": {
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ErrorTrackingEvent"
+            },
+            "description": "Sampled exception events."
+          },
+          "hasMore": {
+            "type": "boolean",
+            "description": "Whether more results are available."
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Page size."
+          },
+          "offset": {
+            "type": "integer",
+            "description": "Current offset."
+          },
+          "nextOffset": {
+            "type": "integer",
+            "description": "Offset to fetch the next page when hasMore is true."
+          }
+        },
+        "required": [
+          "hasMore",
+          "limit",
+          "offset",
+          "results"
+        ]
+      },
       "ErrorTrackingIssueFilter": {
         "additionalProperties": false,
         "properties": {
@@ -102718,6 +104055,73 @@
         "type": "string",
         "description": "* `archived` - Archived\n* `active` - Active\n* `resolved` - Resolved\n* `pending_release` - Pending release\n* `suppressed` - Suppressed"
       },
+      "ErrorTrackingIssueListItem": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Error tracking issue ID."
+          },
+          "name": {
+            "type": "string",
+            "nullable": true,
+            "description": "Issue name."
+          },
+          "description": {
+            "type": "string",
+            "nullable": true,
+            "description": "Issue description."
+          },
+          "status": {
+            "type": "string",
+            "description": "Issue status."
+          },
+          "first_seen": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "description": "First seen timestamp."
+          },
+          "last_seen": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "description": "Last seen timestamp."
+          },
+          "library": {
+            "type": "string",
+            "nullable": true,
+            "description": "SDK/library associated with the issue."
+          },
+          "source": {
+            "type": "string",
+            "nullable": true,
+            "description": "Top source/file associated with the issue."
+          },
+          "assignee": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ErrorTrackingAssigneeResponse"
+              }
+            ],
+            "nullable": true,
+            "description": "Issue assignee."
+          },
+          "aggregations": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ErrorTrackingAggregations"
+              }
+            ],
+            "nullable": true,
+            "description": "Aggregate counts."
+          }
+        },
+        "required": [
+          "id"
+        ]
+      },
       "ErrorTrackingIssueMergeRequest": {
         "type": "object",
         "properties": {
@@ -102744,6 +104148,55 @@
         },
         "required": [
           "success"
+        ]
+      },
+      "ErrorTrackingIssueOrderByEnum": {
+        "enum": [
+          "last_seen",
+          "first_seen",
+          "occurrences",
+          "users",
+          "sessions"
+        ],
+        "type": "string",
+        "description": "* `last_seen` - last_seen\n* `first_seen` - first_seen\n* `occurrences` - occurrences\n* `users` - users\n* `sessions` - sessions"
+      },
+      "ErrorTrackingIssueQueryRequest": {
+        "type": "object",
+        "properties": {
+          "issueId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Error tracking issue ID."
+          },
+          "dateRange": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ErrorTrackingDateRange"
+              }
+            ],
+            "description": "Date range for issue impact and latest-event metadata. Defaults to the last 7 days."
+          },
+          "filterTestAccounts": {
+            "type": "boolean",
+            "default": true,
+            "description": "When true, exclude internal/test account data from results. Defaults to true."
+          },
+          "volumeResolution": {
+            "type": "integer",
+            "maximum": 200,
+            "minimum": 0,
+            "default": 0,
+            "description": "Volume buckets. Maximum 200."
+          },
+          "includeSparkline": {
+            "type": "boolean",
+            "default": false,
+            "description": "Set true to include a compact numeric occurrence sparkline. Defaults to false."
+          }
+        },
+        "required": [
+          "issueId"
         ]
       },
       "ErrorTrackingIssueSplitFingerprint": {
@@ -102809,6 +104262,222 @@
         ],
         "title": "ErrorTrackingIssueStatus",
         "type": "string"
+      },
+      "ErrorTrackingIssuesListQueryRequest": {
+        "type": "object",
+        "properties": {
+          "dateRange": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ErrorTrackingDateRange"
+              }
+            ],
+            "description": "Date range for issue aggregates. Defaults to the last 7 days."
+          },
+          "status": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ErrorTrackingIssuesListQueryRequestStatusEnum"
+              }
+            ],
+            "default": "active",
+            "description": "Filter by issue status. Defaults to active.\n\n* `archived` - archived\n* `active` - active\n* `resolved` - resolved\n* `pending_release` - pending_release\n* `suppressed` - suppressed\n* `all` - all"
+          },
+          "assignee": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ErrorTrackingAssignee"
+              }
+            ],
+            "nullable": true,
+            "description": "Filter by issue assignee. Omit to include all assignees."
+          },
+          "filterTestAccounts": {
+            "type": "boolean",
+            "default": true,
+            "description": "When true, exclude internal/test account data from results. Defaults to true."
+          },
+          "searchQuery": {
+            "type": "string",
+            "description": "Free-text search across exception types, values, stack frames, and email fields.",
+            "maxLength": 500
+          },
+          "filterGroup": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PropertyItem"
+            },
+            "description": "Advanced flat AND property filters. Prefer typed shortcut fields when they fit. HogQL filters are rejected."
+          },
+          "orderBy": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ErrorTrackingIssueOrderByEnum"
+              }
+            ],
+            "default": "occurrences",
+            "description": "Field used to sort issues. Defaults to occurrences.\n\n* `last_seen` - last_seen\n* `first_seen` - first_seen\n* `occurrences` - occurrences\n* `users` - users\n* `sessions` - sessions"
+          },
+          "orderDirection": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/OrderDirectionEnum"
+              }
+            ],
+            "default": "DESC",
+            "description": "Sort direction. Defaults to DESC.\n\n* `ASC` - ASC\n* `DESC` - DESC"
+          },
+          "limit": {
+            "type": "integer",
+            "maximum": 100,
+            "minimum": 1,
+            "default": 25,
+            "description": "Page size."
+          },
+          "offset": {
+            "type": "integer",
+            "minimum": 0,
+            "default": 0,
+            "description": "Pagination offset."
+          },
+          "volumeResolution": {
+            "type": "integer",
+            "maximum": 200,
+            "minimum": 0,
+            "default": 0,
+            "description": "Number of volume buckets. Defaults to 0 for compact aggregate counts."
+          },
+          "library": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "minItems": 1
+              }
+            ],
+            "description": "Filter by SDK/library value from event $lib, for example posthog-js."
+          },
+          "release": {
+            "type": "string",
+            "description": "Filter by exact release ID, version, or git commit ID captured in $exception_releases.",
+            "maxLength": 500
+          },
+          "fingerprint": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "minItems": 1
+              }
+            ],
+            "description": "Filter by exact exception fingerprint hash, not fuzzy search."
+          },
+          "user": {
+            "type": "string",
+            "description": "Search user/email text.",
+            "maxLength": 500
+          },
+          "personId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Filter by exact PostHog person UUID."
+          },
+          "url": {
+            "type": "string",
+            "description": "Filter by current URL substring.",
+            "maxLength": 1000
+          },
+          "filePath": {
+            "type": "string",
+            "description": "Search stack-frame source/file path text.",
+            "maxLength": 1000
+          }
+        }
+      },
+      "ErrorTrackingIssuesListQueryRequestStatusEnum": {
+        "enum": [
+          "archived",
+          "active",
+          "resolved",
+          "pending_release",
+          "suppressed",
+          "all"
+        ],
+        "type": "string",
+        "description": "* `archived` - archived\n* `active` - active\n* `resolved` - resolved\n* `pending_release` - pending_release\n* `suppressed` - suppressed\n* `all` - all"
+      },
+      "ErrorTrackingIssuesListResponse": {
+        "type": "object",
+        "properties": {
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ErrorTrackingIssueListItem"
+            },
+            "description": "Issue rows."
+          },
+          "hasMore": {
+            "type": "boolean",
+            "description": "Whether more results are available."
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Page size."
+          },
+          "offset": {
+            "type": "integer",
+            "description": "Current offset."
+          },
+          "nextOffset": {
+            "type": "integer",
+            "description": "Offset to fetch the next page when hasMore is true."
+          }
+        },
+        "required": [
+          "hasMore",
+          "limit",
+          "offset",
+          "results"
+        ]
+      },
+      "ErrorTrackingLatestRelease": {
+        "type": "object",
+        "properties": {
+          "version": {
+            "type": "string",
+            "description": "Release version."
+          },
+          "project": {
+            "type": "string",
+            "description": "Release project/library."
+          },
+          "timestamp": {
+            "type": "string",
+            "description": "Release timestamp."
+          },
+          "commit_id": {
+            "type": "string",
+            "description": "Git commit ID."
+          },
+          "branch": {
+            "type": "string",
+            "description": "Git branch."
+          },
+          "repo_name": {
+            "type": "string",
+            "description": "Git repository name."
+          }
+        }
       },
       "ErrorTrackingOrderBy": {
         "enum": [
@@ -103855,6 +105524,49 @@
         },
         "required": [
           "chunk_id"
+        ]
+      },
+      "ErrorTrackingTopFrame": {
+        "type": "object",
+        "properties": {
+          "function": {
+            "type": "string",
+            "description": "Frame function name."
+          },
+          "source": {
+            "type": "string",
+            "description": "Frame source, filename, or module."
+          },
+          "line": {
+            "type": "integer",
+            "description": "Line number."
+          },
+          "column": {
+            "type": "integer",
+            "description": "Column number."
+          },
+          "in_app": {
+            "type": "boolean",
+            "description": "Whether the frame is an application frame."
+          }
+        }
+      },
+      "ErrorTrackingVolumeBucket": {
+        "type": "object",
+        "properties": {
+          "label": {
+            "type": "string",
+            "description": "Bucket timestamp label."
+          },
+          "value": {
+            "type": "number",
+            "format": "double",
+            "nullable": true,
+            "description": "Occurrence count for the bucket."
+          }
+        },
+        "required": [
+          "label"
         ]
       },
       "Evaluation": {
@@ -106374,7 +108086,8 @@
           "allow_unknown_events": {
             "type": "boolean",
             "writeOnly": true,
-            "default": false
+            "default": false,
+            "description": "Suppresses the validation that rejects metrics referencing events not yet ingested by this project. REQUIRES explicit user confirmation before being set to true — never flip this silently to retry a failed call. The default validation catches typo'd event names and missing instrumentation. Set this to true only when the user has confirmed the event is intentional (e.g. they are about to instrument it)."
           },
           "_create_in_folder": {
             "type": "string",
@@ -108055,7 +109768,7 @@
         "properties": {
           "feature_flag_variants": {
             "default": null,
-            "description": "Experiment variants. If not specified, defaults to a 50/50 control/test split.",
+            "description": "Experiment variants. If specified, must include a variant with key 'control' (lowercase). Defaults to a 50/50 control/test split when omitted. Minimum 2, maximum 20.",
             "title": "Feature Flag Variants",
             "items": {
               "$ref": "#/components/schemas/ExperimentVariant"
@@ -109031,7 +110744,7 @@
         "additionalProperties": false,
         "properties": {
           "key": {
-            "description": "Variant key, e.g. 'control', 'test', 'variant_a'.",
+            "description": "Variant key. Exactly one variant in feature_flag_variants must use key 'control' (lowercase, exactly) — that is the baseline used for analysis and the special key the experiment runtime expects. Other variants use keys like 'test', 'variant_a', 'variant_b'. Map natural-language names ('original', 'A', 'baseline') to 'control'.",
             "title": "Key",
             "type": "string"
           },
@@ -124051,10 +125764,6 @@
             "type": "boolean",
             "nullable": true
           },
-          "has_encrypted_payloads": {
-            "type": "boolean",
-            "nullable": true
-          },
           "version": {
             "type": "integer",
             "maximum": 2147483647,
@@ -125084,6 +126793,44 @@
           "updated_at"
         ]
       },
+      "OfflineExperimentItemsRequest": {
+        "type": "object",
+        "properties": {
+          "experiment_id": {
+            "type": "string",
+            "description": "`$ai_experiment_id` whose offline-evaluation items to return."
+          },
+          "date_from": {
+            "type": "string",
+            "nullable": true,
+            "description": "Lower bound on `timestamp` (ISO-8601). Omit to leave the lower bound open."
+          },
+          "date_to": {
+            "type": "string",
+            "nullable": true,
+            "description": "Upper bound on `timestamp` (ISO-8601). Omit to leave the upper bound open."
+          }
+        },
+        "required": [
+          "experiment_id"
+        ]
+      },
+      "OfflineExperimentItemsResponse": {
+        "type": "object",
+        "properties": {
+          "results": {
+            "type": "array",
+            "items": {
+              "type": "array",
+              "items": {}
+            },
+            "description": "Tuple-positional rows; positions match `RawOfflineExperimentMetricRow` in the frontend."
+          }
+        },
+        "required": [
+          "results"
+        ]
+      },
       "OnErrorEnum": {
         "enum": [
           "continue",
@@ -125156,6 +126903,14 @@
         ],
         "title": "OrderDirection2",
         "type": "string"
+      },
+      "OrderDirectionEnum": {
+        "enum": [
+          "ASC",
+          "DESC"
+        ],
+        "type": "string",
+        "description": "* `ASC` - ASC\n* `DESC` - DESC"
       },
       "Organization": {
         "type": "object",
@@ -126133,6 +127888,37 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/BatchExportRun"
+            }
+          }
+        }
+      },
+      "PaginatedCIMDVerificationTokenList": {
+        "type": "object",
+        "required": [
+          "count",
+          "results"
+        ],
+        "properties": {
+          "count": {
+            "type": "integer",
+            "example": 123
+          },
+          "next": {
+            "type": "string",
+            "nullable": true,
+            "format": "uri",
+            "example": "http://api.example.org/accounts/?offset=400&limit=100"
+          },
+          "previous": {
+            "type": "string",
+            "nullable": true,
+            "format": "uri",
+            "example": "http://api.example.org/accounts/?offset=200&limit=100"
+          },
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CIMDVerificationToken"
             }
           }
         }
@@ -129757,6 +131543,37 @@
           }
         }
       },
+      "PaginatedTrendingInsightList": {
+        "type": "object",
+        "required": [
+          "count",
+          "results"
+        ],
+        "properties": {
+          "count": {
+            "type": "integer",
+            "example": 123
+          },
+          "next": {
+            "type": "string",
+            "nullable": true,
+            "format": "uri",
+            "example": "http://api.example.org/accounts/?offset=400&limit=100"
+          },
+          "previous": {
+            "type": "string",
+            "nullable": true,
+            "format": "uri",
+            "example": "http://api.example.org/accounts/?offset=200&limit=100"
+          },
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TrendingInsight"
+            }
+          }
+        }
+      },
       "PaginatedUserGitHubIntegrationListResponseList": {
         "type": "object",
         "required": [
@@ -132691,7 +134508,8 @@
           "allow_unknown_events": {
             "type": "boolean",
             "writeOnly": true,
-            "default": false
+            "default": false,
+            "description": "Suppresses the validation that rejects metrics referencing events not yet ingested by this project. REQUIRES explicit user confirmation before being set to true — never flip this silently to retry a failed call. The default validation catches typo'd event names and missing instrumentation. Set this to true only when the user has confirmed the event is intentional (e.g. they are about to instrument it)."
           },
           "_create_in_folder": {
             "type": "string",
@@ -136101,6 +137919,13 @@
             "type": "string",
             "description": "Free-form description of the team's product, used to tailor AI-generated single-session replay summaries. Injected into the system prompt of every summary generated for this team via the replay page.",
             "maxLength": 10000
+          },
+          "custom_tags": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "description": "Team-defined tags layered on top of the fixed taxonomy, as a {name: description} map. Names must be lowercase snake_case (max 60 chars), descriptions max 200 chars, max 15 entries."
           }
         }
       },
@@ -155739,6 +157564,13 @@
             "title": "Shortid",
             "type": "string"
           },
+          "showAbsoluteTime": {
+            "default": null,
+            "description": "Render date-time columns (timestamp, created_at, last_seen, last_seen_at, session_start, session_end) as absolute date+time instead of relative (\"X ago\"). The toggle is exposed in the column header menu only on EventsQuery / ActorsQuery sources.",
+            "title": "Showabsolutetime",
+            "type": "boolean",
+            "nullable": true
+          },
           "showActions": {
             "default": null,
             "description": "Show the kebab menu at the end of the row",
@@ -156198,6 +158030,13 @@
             "readOnly": true,
             "description": "Current immutable configuration version number."
           },
+          "current_version_id": {
+            "type": "string",
+            "format": "uuid",
+            "readOnly": true,
+            "nullable": true,
+            "description": "UUID of the current version row. Matches `system.score_definitions.current_version_id` in HogQL."
+          },
           "config": {
             "allOf": [
               {
@@ -156239,6 +158078,7 @@
           "created_at",
           "created_by",
           "current_version",
+          "current_version_id",
           "description",
           "id",
           "kind",
@@ -156311,6 +158151,11 @@
               }
             ],
             "description": "Next immutable scorer configuration."
+          },
+          "base_version": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Version number the caller observed before requesting this bump. If provided and it does not match the scorer's current version, the request fails with 409. Omit to skip the optimistic-concurrency check."
           }
         },
         "required": [
@@ -157645,6 +159490,13 @@
             "type": "string",
             "description": "Free-form description of the team's product, used to tailor AI-generated single-session replay summaries. Injected into the system prompt of every summary generated for this team via the replay page.",
             "maxLength": 10000
+          },
+          "custom_tags": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "description": "Team-defined tags layered on top of the fixed taxonomy, as a {name: description} map. Names must be lowercase snake_case (max 60 chars), descriptions max 200 chars, max 15 entries."
           }
         }
       },
@@ -166888,6 +168740,142 @@
           "text"
         ]
       },
+      "TrendingInsight": {
+        "type": "object",
+        "description": "Insight enriched with view-count and recent-viewer fields, used by the trending action.",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "readOnly": true
+          },
+          "short_id": {
+            "type": "string",
+            "readOnly": true
+          },
+          "name": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 400
+          },
+          "derived_name": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 400
+          },
+          "query": {
+            "nullable": true
+          },
+          "dashboards": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            },
+            "readOnly": true
+          },
+          "dashboard_tiles": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DashboardTileBasic"
+            },
+            "readOnly": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true,
+            "maxLength": 400
+          },
+          "last_refresh": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true,
+            "nullable": true
+          },
+          "refreshing": {
+            "type": "boolean",
+            "readOnly": true
+          },
+          "tags": {
+            "type": "array",
+            "items": {}
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          },
+          "created_by": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/UserBasic"
+              }
+            ],
+            "readOnly": true
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true,
+            "nullable": true
+          },
+          "last_modified_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "favorited": {
+            "type": "boolean"
+          },
+          "user_access_level": {
+            "type": "string",
+            "nullable": true,
+            "readOnly": true,
+            "description": "The effective access level the user has for this object"
+          },
+          "last_viewed_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "readOnly": true
+          },
+          "view_count": {
+            "type": "integer",
+            "readOnly": true,
+            "description": "Number of distinct viewers in the time window. Higher values indicate insights that more people in the project actively look at, which is a strong proxy for which insights matter."
+          },
+          "viewers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UserBasic"
+            },
+            "readOnly": true,
+            "description": "Up to 3 of the most recent users who viewed this insight in the time window."
+          },
+          "last_modified_by": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/UserBasic"
+              }
+            ],
+            "readOnly": true,
+            "description": "User who last modified this insight, or null if never modified after creation."
+          }
+        },
+        "required": [
+          "created_at",
+          "created_by",
+          "dashboard_tiles",
+          "dashboards",
+          "id",
+          "last_modified_by",
+          "last_refresh",
+          "last_viewed_at",
+          "refreshing",
+          "short_id",
+          "updated_at",
+          "user_access_level",
+          "view_count",
+          "viewers"
+        ]
+      },
       "TrendsAlertConfig": {
         "additionalProperties": false,
         "properties": {
@@ -168590,6 +170578,15 @@
         ],
         "title": "VectorSearchResponseItem",
         "type": "object"
+      },
+      "VerbosityEnum": {
+        "enum": [
+          "summary",
+          "stack",
+          "raw"
+        ],
+        "type": "string",
+        "description": "* `summary` - summary\n* `stack` - stack\n* `raw` - raw"
       },
       "ViewLink": {
         "type": "object",
@@ -173453,6 +175450,9 @@
       "name": "change_requests"
     },
     {
+      "name": "cimd_verification_tokens"
+    },
+    {
       "name": "code"
     },
     {
@@ -173843,6 +175843,7 @@
         "batch_exports",
         "cdp",
         "change_requests",
+        "cimd_verification_tokens",
         "code",
         "code-invites",
         "cohorts",
