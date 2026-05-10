@@ -37827,6 +37827,498 @@
         ]
       }
     },
+    "/api/environments/{project_id}/vision/lenses/": {
+      "get": {
+        "operationId": "vision_lenses_list",
+        "description": "CRUD for Replay Vision lenses.",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "emits_signals",
+            "schema": {
+              "type": "boolean"
+            },
+            "description": "Filter to lenses that emit Signals."
+          },
+          {
+            "in": "query",
+            "name": "enabled",
+            "schema": {
+              "type": "boolean"
+            },
+            "description": "Filter to enabled vs disabled lenses."
+          },
+          {
+            "in": "query",
+            "name": "lens_type",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "classifier",
+                "indexer",
+                "monitor",
+                "scorer",
+                "summarizer"
+              ]
+            },
+            "description": "Filter by lens type (monitor, classifier, scorer, summarizer, indexer).\n\n* `monitor` - Monitor\n* `classifier` - Classifier\n* `scorer` - Scorer\n* `summarizer` - Summarizer\n* `indexer` - Indexer"
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Number of results to return per page.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "offset",
+            "required": false,
+            "in": "query",
+            "description": "The initial index from which to return the results.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "order_by",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "-created_at",
+                  "-lens_type",
+                  "-name",
+                  "-updated_at",
+                  "created_at",
+                  "lens_type",
+                  "name",
+                  "updated_at"
+                ]
+              }
+            },
+            "description": "Sort lenses by name, created_at, updated_at, or lens_type. Prefix with `-` for descending.\n\n* `name` - Name\n* `-name` - Name (descending)\n* `created_at` - Created at\n* `-created_at` - Created at (descending)\n* `updated_at` - Updated at\n* `-updated_at` - Updated at (descending)\n* `lens_type` - Lens type\n* `-lens_type` - Lens type (descending)",
+            "explode": false,
+            "style": "form"
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "replay_vision",
+          "vision"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "replay_lens:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedReplayLensList"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-explicit-tags": [
+          "replay_vision"
+        ]
+      },
+      "post": {
+        "operationId": "vision_lenses_create",
+        "description": "CRUD for Replay Vision lenses.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "replay_vision",
+          "vision"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReplayLens"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/ReplayLens"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/ReplayLens"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "replay_lens:write"
+            ]
+          }
+        ],
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReplayLens"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-explicit-tags": [
+          "replay_vision"
+        ]
+      }
+    },
+    "/api/environments/{project_id}/vision/lenses/{lens_id}/observations/": {
+      "get": {
+        "operationId": "vision_lenses_observations_list",
+        "description": "Read-only access to observations produced by a lens.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "lens_id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "required": true
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Number of results to return per page.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "offset",
+            "required": false,
+            "in": "query",
+            "description": "The initial index from which to return the results.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "order_by",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "-completed_at",
+                  "-created_at",
+                  "-started_at",
+                  "-status",
+                  "completed_at",
+                  "created_at",
+                  "started_at",
+                  "status"
+                ]
+              }
+            },
+            "description": "Sort observations by created_at, started_at, completed_at, or status. Prefix with `-` for descending.\n\n* `created_at` - Created at\n* `-created_at` - Created at (descending)\n* `started_at` - Started at\n* `-started_at` - Started at (descending)\n* `completed_at` - Completed at\n* `-completed_at` - Completed at (descending)\n* `status` - Status\n* `-status` - Status (descending)",
+            "explode": false,
+            "style": "form"
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          },
+          {
+            "in": "query",
+            "name": "session_id",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter to observations of a specific session recording."
+          },
+          {
+            "in": "query",
+            "name": "status",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "failed",
+                "pending",
+                "running",
+                "succeeded"
+              ]
+            },
+            "description": "Filter by observation status.\n\n* `pending` - Pending\n* `running` - Running\n* `succeeded` - Succeeded\n* `failed` - Failed"
+          },
+          {
+            "in": "query",
+            "name": "triggered_by",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "on_demand",
+                "schedule"
+              ]
+            },
+            "description": "Filter by trigger source (schedule or on_demand).\n\n* `schedule` - Schedule\n* `on_demand` - On demand"
+          }
+        ],
+        "tags": [
+          "replay_vision",
+          "vision"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "replay_lens:read",
+              "session_recording:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedReplayObservationList"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-explicit-tags": [
+          "replay_vision"
+        ]
+      }
+    },
+    "/api/environments/{project_id}/vision/lenses/{lens_id}/observations/{id}/": {
+      "get": {
+        "operationId": "vision_lenses_observations_retrieve",
+        "description": "Read-only access to observations produced by a lens.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "A UUID string identifying this replay observation.",
+            "required": true
+          },
+          {
+            "in": "path",
+            "name": "lens_id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "replay_vision",
+          "vision"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "replay_lens:read",
+              "session_recording:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReplayObservation"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-explicit-tags": [
+          "replay_vision"
+        ]
+      }
+    },
+    "/api/environments/{project_id}/vision/lenses/{id}/": {
+      "get": {
+        "operationId": "vision_lenses_retrieve",
+        "description": "CRUD for Replay Vision lenses.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "A UUID string identifying this replay lens.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "replay_vision",
+          "vision"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "replay_lens:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReplayLens"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-explicit-tags": [
+          "replay_vision"
+        ]
+      },
+      "patch": {
+        "operationId": "vision_lenses_partial_update",
+        "description": "CRUD for Replay Vision lenses.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "A UUID string identifying this replay lens.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "replay_vision",
+          "vision"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchedReplayLens"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchedReplayLens"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchedReplayLens"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "replay_lens:write"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReplayLens"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-explicit-tags": [
+          "replay_vision"
+        ]
+      },
+      "delete": {
+        "operationId": "vision_lenses_destroy",
+        "description": "CRUD for Replay Vision lenses.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "A UUID string identifying this replay lens.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "replay_vision",
+          "vision"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "replay_lens:write"
+            ]
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No response body"
+          }
+        },
+        "x-explicit-tags": [
+          "replay_vision"
+        ]
+      }
+    },
     "/api/environments/{project_id}/web_analytics/weekly_digest/": {
       "get": {
         "operationId": "web_analytics_weekly_digest",
@@ -128284,6 +128776,32 @@
           "status"
         ]
       },
+      "LensModelEnum": {
+        "enum": [
+          "gemini-3-flash",
+          "gemini-3-flash-lite"
+        ],
+        "type": "string",
+        "description": "* `gemini-3-flash` - Gemini 3 Flash\n* `gemini-3-flash-lite` - Gemini 3 Flash Lite"
+      },
+      "LensProviderEnum": {
+        "enum": [
+          "google"
+        ],
+        "type": "string",
+        "description": "* `google` - Google"
+      },
+      "LensTypeEnum": {
+        "enum": [
+          "monitor",
+          "classifier",
+          "scorer",
+          "summarizer",
+          "indexer"
+        ],
+        "type": "string",
+        "description": "* `monitor` - Monitor\n* `classifier` - Classifier\n* `scorer` - Scorer\n* `summarizer` - Summarizer\n* `indexer` - Indexer"
+      },
       "LifecycleDataWarehouseNode": {
         "additionalProperties": false,
         "properties": {
@@ -133898,6 +134416,24 @@
           "updated_at"
         ]
       },
+      "ObservationStatusEnum": {
+        "enum": [
+          "pending",
+          "running",
+          "succeeded",
+          "failed"
+        ],
+        "type": "string",
+        "description": "* `pending` - Pending\n* `running` - Running\n* `succeeded` - Succeeded\n* `failed` - Failed"
+      },
+      "ObservationTriggerEnum": {
+        "enum": [
+          "schedule",
+          "on_demand"
+        ],
+        "type": "string",
+        "description": "* `schedule` - Schedule\n* `on_demand` - On demand"
+      },
       "OfflineExperimentItemsRequest": {
         "type": "object",
         "properties": {
@@ -138069,6 +138605,76 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/QuarantinedIdentifierEntry"
+            }
+          }
+        }
+      },
+      "PaginatedReplayLensList": {
+        "type": "object",
+        "required": [
+          "count",
+          "results"
+        ],
+        "properties": {
+          "count": {
+            "type": "integer",
+            "example": 123
+          },
+          "next": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uri",
+            "example": "http://api.example.org/accounts/?offset=400&limit=100"
+          },
+          "previous": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uri",
+            "example": "http://api.example.org/accounts/?offset=200&limit=100"
+          },
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ReplayLens"
+            }
+          }
+        }
+      },
+      "PaginatedReplayObservationList": {
+        "type": "object",
+        "required": [
+          "count",
+          "results"
+        ],
+        "properties": {
+          "count": {
+            "type": "integer",
+            "example": 123
+          },
+          "next": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uri",
+            "example": "http://api.example.org/accounts/?offset=400&limit=100"
+          },
+          "previous": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uri",
+            "example": "http://api.example.org/accounts/?offset=200&limit=100"
+          },
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ReplayObservation"
             }
           }
         }
@@ -145544,6 +146150,103 @@
             "type": "string",
             "format": "uuid",
             "description": "Person UUID to remove from the cohort"
+          }
+        }
+      },
+      "PatchedReplayLens": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "readOnly": true
+          },
+          "name": {
+            "type": "string",
+            "description": "Human-readable lens name. Unique within the team.",
+            "maxLength": 255
+          },
+          "description": {
+            "type": "string",
+            "description": "Free-form description shown in the lens management UI."
+          },
+          "lens_type": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/LensTypeEnum"
+              }
+            ],
+            "description": "What the lens does: monitor, classifier, scorer, summarizer, or indexer.\n\n* `monitor` - Monitor\n* `classifier` - Classifier\n* `scorer` - Scorer\n* `summarizer` - Summarizer\n* `indexer` - Indexer"
+          },
+          "lens_config": {
+            "description": "Type-specific configuration. Always includes `prompt`; classifiers add `tags`, scorers add `scale`, etc."
+          },
+          "query": {
+            "description": "Persisted `RecordingsQuery` shape used to pick candidate sessions. `date_from`/`date_to` are stripped on save — the schedule controls time, not the user."
+          },
+          "sampling_rate": {
+            "type": "number",
+            "format": "double",
+            "maximum": 1,
+            "minimum": 0,
+            "description": "0..1 random downsample applied after the query matches. Defaults to 1.0 (no downsampling)."
+          },
+          "provider": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/LensProviderEnum"
+              }
+            ],
+            "description": "LLM provider. v1 is Google-only.\n\n* `google` - Google"
+          },
+          "model": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/LensModelEnum"
+              }
+            ],
+            "description": "Concrete model to use for this lens.\n\n* `gemini-3-flash` - Gemini 3 Flash\n* `gemini-3-flash-lite` - Gemini 3 Flash Lite"
+          },
+          "enabled": {
+            "type": "boolean",
+            "description": "When false, the reconciler removes the lens's Temporal schedule. On-demand triggers still work."
+          },
+          "emits_signals": {
+            "type": "boolean",
+            "description": "When true, the prompt is augmented with the Signal side mission and the lens emits PostHog Signals."
+          },
+          "lens_version": {
+            "type": "integer",
+            "readOnly": true,
+            "description": "Increments on every config-changing save. Observations snapshot this value."
+          },
+          "last_swept_at": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true,
+            "description": "Watermark for the lens's last scheduled fire. Mirrors Temporal schedule state for recovery."
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          },
+          "created_by": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/UserBasic"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "readOnly": true,
+            "description": "User who created the lens."
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
           }
         }
       },
@@ -164080,6 +164783,229 @@
         },
         "required": [
           "tile_order"
+        ]
+      },
+      "ReplayLens": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "readOnly": true
+          },
+          "name": {
+            "type": "string",
+            "description": "Human-readable lens name. Unique within the team.",
+            "maxLength": 255
+          },
+          "description": {
+            "type": "string",
+            "description": "Free-form description shown in the lens management UI."
+          },
+          "lens_type": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/LensTypeEnum"
+              }
+            ],
+            "description": "What the lens does: monitor, classifier, scorer, summarizer, or indexer.\n\n* `monitor` - Monitor\n* `classifier` - Classifier\n* `scorer` - Scorer\n* `summarizer` - Summarizer\n* `indexer` - Indexer"
+          },
+          "lens_config": {
+            "description": "Type-specific configuration. Always includes `prompt`; classifiers add `tags`, scorers add `scale`, etc."
+          },
+          "query": {
+            "description": "Persisted `RecordingsQuery` shape used to pick candidate sessions. `date_from`/`date_to` are stripped on save — the schedule controls time, not the user."
+          },
+          "sampling_rate": {
+            "type": "number",
+            "format": "double",
+            "maximum": 1,
+            "minimum": 0,
+            "description": "0..1 random downsample applied after the query matches. Defaults to 1.0 (no downsampling)."
+          },
+          "provider": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/LensProviderEnum"
+              }
+            ],
+            "description": "LLM provider. v1 is Google-only.\n\n* `google` - Google"
+          },
+          "model": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/LensModelEnum"
+              }
+            ],
+            "description": "Concrete model to use for this lens.\n\n* `gemini-3-flash` - Gemini 3 Flash\n* `gemini-3-flash-lite` - Gemini 3 Flash Lite"
+          },
+          "enabled": {
+            "type": "boolean",
+            "description": "When false, the reconciler removes the lens's Temporal schedule. On-demand triggers still work."
+          },
+          "emits_signals": {
+            "type": "boolean",
+            "description": "When true, the prompt is augmented with the Signal side mission and the lens emits PostHog Signals."
+          },
+          "lens_version": {
+            "type": "integer",
+            "readOnly": true,
+            "description": "Increments on every config-changing save. Observations snapshot this value."
+          },
+          "last_swept_at": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true,
+            "description": "Watermark for the lens's last scheduled fire. Mirrors Temporal schedule state for recovery."
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          },
+          "created_by": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/UserBasic"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "readOnly": true,
+            "description": "User who created the lens."
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          }
+        },
+        "required": [
+          "created_at",
+          "created_by",
+          "id",
+          "last_swept_at",
+          "lens_config",
+          "lens_type",
+          "lens_version",
+          "model",
+          "name",
+          "updated_at"
+        ]
+      },
+      "ReplayObservation": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "readOnly": true
+          },
+          "lens_id": {
+            "type": "string",
+            "format": "uuid",
+            "readOnly": true,
+            "description": "The lens that produced this observation."
+          },
+          "session_id": {
+            "type": "string",
+            "readOnly": true,
+            "description": "Session recording id this lens was applied to."
+          },
+          "status": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ObservationStatusEnum"
+              }
+            ],
+            "readOnly": true,
+            "description": "Observation status (pending, running, succeeded, failed).\n\n* `pending` - Pending\n* `running` - Running\n* `succeeded` - Succeeded\n* `failed` - Failed"
+          },
+          "error_reason": {
+            "type": "string",
+            "readOnly": true,
+            "description": "Populated on failure. Includes the malformed model response when validation fails."
+          },
+          "workflow_id": {
+            "type": "string",
+            "readOnly": true,
+            "description": "Temporal workflow id for progress queries and debugging. Empty until the workflow starts."
+          },
+          "lens_version": {
+            "type": "integer",
+            "readOnly": true,
+            "description": "The `ReplayLens.lens_version` value at the moment the workflow ran."
+          },
+          "lens_config_snapshot": {
+            "readOnly": true,
+            "description": "Snapshot of `ReplayLens.lens_config` at run time. Lens edits do not retroactively mutate observations."
+          },
+          "model_used": {
+            "type": "string",
+            "readOnly": true,
+            "description": "Concrete model that ran the observation."
+          },
+          "provider_used": {
+            "type": "string",
+            "readOnly": true,
+            "description": "Concrete provider that ran the observation."
+          },
+          "triggered_by": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ObservationTriggerEnum"
+              }
+            ],
+            "readOnly": true,
+            "description": "Whether this observation came from the schedule or an on-demand request.\n\n* `schedule` - Schedule\n* `on_demand` - On demand"
+          },
+          "triggered_by_user": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/UserBasic"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "readOnly": true,
+            "description": "User who triggered an on-demand observation. Null for scheduled observations."
+          },
+          "started_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "completed_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          }
+        },
+        "required": [
+          "created_at",
+          "error_reason",
+          "id",
+          "lens_config_snapshot",
+          "lens_id",
+          "lens_version",
+          "model_used",
+          "provider_used",
+          "session_id",
+          "status",
+          "triggered_by",
+          "triggered_by_user",
+          "workflow_id"
         ]
       },
       "Repo": {
@@ -192952,6 +193878,9 @@
       "name": "replay"
     },
     {
+      "name": "replay_vision"
+    },
+    {
       "name": "reverse_proxy"
     },
     {
@@ -193028,6 +193957,9 @@
     },
     {
       "name": "users"
+    },
+    {
+      "name": "vision"
     },
     {
       "name": "visual_review"
@@ -193171,6 +194103,7 @@
         "public_hog_function_templates",
         "query",
         "replay",
+        "replay_vision",
         "reverse_proxy",
         "role_external_references",
         "roles",
@@ -193197,6 +194130,7 @@
         "user_home_settings",
         "user_interviews",
         "users",
+        "vision",
         "visual_review",
         "warehouse_dag",
         "warehouse_model_paths",
