@@ -30192,6 +30192,35 @@
         "x-explicit-tags": []
       }
     },
+    "/api/environments/{project_id}/health_issues/refresh/": {
+      "post": {
+        "operationId": "health_issues_refresh_create",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "health_issues"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "health_issue:write"
+            ]
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Health check refresh jobs scheduled for the team."
+          },
+          "429": {
+            "description": "Refresh was triggered recently; try again later."
+          }
+        },
+        "x-explicit-tags": []
+      }
+    },
     "/api/environments/{project_id}/health_issues/summary/": {
       "get": {
         "operationId": "health_issues_summary_retrieve",
@@ -37231,13 +37260,13 @@
             "name": "attribute_type",
             "schema": {
               "enum": [
-                "span",
-                "resource"
+                "span_attribute",
+                "span_resource_attribute"
               ],
               "type": "string",
               "minLength": 1
             },
-            "description": "Type of attributes: \"span\" for span attributes, \"resource\" for resource attributes.\n\n* `span` - span\n* `resource` - resource"
+            "description": "Type of attributes: \"span_attribute\" for span-level attributes, \"span_resource_attribute\" for resource-level attributes.\n\n* `span_attribute` - span_attribute\n* `span_resource_attribute` - span_resource_attribute"
           },
           {
             "in": "query",
@@ -37553,12 +37582,13 @@
             "schema": {
               "enum": [
                 "span",
-                "resource"
+                "span_attribute",
+                "span_resource_attribute"
               ],
               "type": "string",
               "minLength": 1
             },
-            "description": "Type of attribute: \"span\" or \"resource\".\n\n* `span` - span\n* `resource` - resource"
+            "description": "Type of attribute: \"span\" for built-in span fields (e.g. name), \"span_attribute\" for span-level attributes, \"span_resource_attribute\" for resource-level attributes.\n\n* `span` - span\n* `span_attribute` - span_attribute\n* `span_resource_attribute` - span_resource_attribute"
           },
           {
             "in": "query",
@@ -37623,6 +37653,339 @@
         ]
       }
     },
+    "/api/environments/{project_id}/user_interview_topics/": {
+      "get": {
+        "operationId": "user_interview_topics_list",
+        "description": "Planned user interview topics: who we want to target (cohort) and what we want to ask about.",
+        "parameters": [
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Number of results to return per page.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "offset",
+            "required": false,
+            "in": "query",
+            "description": "The initial index from which to return the results.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "description": "A search term.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "tags": [
+          "user_interviews",
+          "user_interview_topics"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "user_interview:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedUserInterviewTopicList"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-explicit-tags": [
+          "user_interviews"
+        ]
+      },
+      "post": {
+        "operationId": "user_interview_topics_create",
+        "description": "Planned user interview topics: who we want to target (cohort) and what we want to ask about.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "user_interviews",
+          "user_interview_topics"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserInterviewTopic"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/UserInterviewTopic"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/UserInterviewTopic"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "user_interview:write"
+            ]
+          }
+        ],
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserInterviewTopic"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-explicit-tags": [
+          "user_interviews"
+        ]
+      }
+    },
+    "/api/environments/{project_id}/user_interview_topics/{id}/": {
+      "get": {
+        "operationId": "user_interview_topics_retrieve",
+        "description": "Planned user interview topics: who we want to target (cohort) and what we want to ask about.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "A UUID string identifying this user interview topic.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "user_interviews",
+          "user_interview_topics"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "user_interview:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserInterviewTopic"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-explicit-tags": [
+          "user_interviews"
+        ]
+      },
+      "put": {
+        "operationId": "user_interview_topics_update",
+        "description": "Planned user interview topics: who we want to target (cohort) and what we want to ask about.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "A UUID string identifying this user interview topic.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "user_interviews",
+          "user_interview_topics"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserInterviewTopic"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/UserInterviewTopic"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/UserInterviewTopic"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "user_interview:write"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserInterviewTopic"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-explicit-tags": [
+          "user_interviews"
+        ]
+      },
+      "patch": {
+        "operationId": "user_interview_topics_partial_update",
+        "description": "Planned user interview topics: who we want to target (cohort) and what we want to ask about.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "A UUID string identifying this user interview topic.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "user_interviews",
+          "user_interview_topics"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchedUserInterviewTopic"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchedUserInterviewTopic"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchedUserInterviewTopic"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "user_interview:write"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserInterviewTopic"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-explicit-tags": [
+          "user_interviews"
+        ]
+      },
+      "delete": {
+        "operationId": "user_interview_topics_destroy",
+        "description": "Planned user interview topics: who we want to target (cohort) and what we want to ask about.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "A UUID string identifying this user interview topic.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "user_interviews",
+          "user_interview_topics"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "user_interview:write"
+            ]
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No response body"
+          }
+        },
+        "x-explicit-tags": [
+          "user_interviews"
+        ]
+      }
+    },
     "/api/environments/{project_id}/user_interviews/": {
       "get": {
         "operationId": "user_interviews_list",
@@ -37656,7 +38019,7 @@
         "security": [
           {
             "PersonalAPIKeyAuth": [
-              "user_interview_DO_NOT_USE:read"
+              "user_interview:read"
             ]
           }
         ],
@@ -37705,7 +38068,7 @@
         "security": [
           {
             "PersonalAPIKeyAuth": [
-              "user_interview_DO_NOT_USE:write"
+              "user_interview:write"
             ]
           }
         ],
@@ -37751,7 +38114,7 @@
         "security": [
           {
             "PersonalAPIKeyAuth": [
-              "user_interview_DO_NOT_USE:read"
+              "user_interview:read"
             ]
           }
         ],
@@ -37810,7 +38173,7 @@
         "security": [
           {
             "PersonalAPIKeyAuth": [
-              "user_interview_DO_NOT_USE:write"
+              "user_interview:write"
             ]
           }
         ],
@@ -37868,7 +38231,7 @@
         "security": [
           {
             "PersonalAPIKeyAuth": [
-              "user_interview_DO_NOT_USE:write"
+              "user_interview:write"
             ]
           }
         ],
@@ -37912,7 +38275,7 @@
         "security": [
           {
             "PersonalAPIKeyAuth": [
-              "user_interview_DO_NOT_USE:write"
+              "user_interview:write"
             ]
           }
         ],
@@ -38411,6 +38774,74 @@
         "responses": {
           "204": {
             "description": "No response body"
+          }
+        },
+        "x-explicit-tags": [
+          "replay_vision"
+        ]
+      }
+    },
+    "/api/environments/{project_id}/vision/lenses/{id}/observe/": {
+      "post": {
+        "operationId": "vision_lenses_observe_create",
+        "description": "Apply this lens to one specific session, on demand. Returns 202 with the workflow handle.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "A UUID string identifying this replay lens.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "replay_vision",
+          "vision"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ObserveRequest"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/ObserveRequest"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/ObserveRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "replay_lens:write",
+              "session_recording:read"
+            ]
+          }
+        ],
+        "responses": {
+          "202": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ObserveResponse"
+                }
+              }
+            },
+            "description": ""
           }
         },
         "x-explicit-tags": [
@@ -51892,6 +52323,228 @@
         },
         "x-explicit-tags": [
           "llm_analytics"
+        ]
+      }
+    },
+    "/api/projects/{project_id}/deployments/": {
+      "get": {
+        "operationId": "deployments_list",
+        "description": "Read-only viewset for the Deployments product.\n\n`list` and `retrieve` are wired against the model queryset. The\n`@action` stubs (`redeploy`, `rollback`, `refresh_preview`) intentionally\nreturn 501 — they exist so OpenAPI / MCP can discover the surface area\nwhile behavior lands in follow-up commits.",
+        "parameters": [
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Number of results to return per page.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "offset",
+            "required": false,
+            "in": "query",
+            "description": "The initial index from which to return the results.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "deployments",
+          "deployments"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "deployment:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedDeploymentList"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-explicit-tags": [
+          "deployments"
+        ]
+      }
+    },
+    "/api/projects/{project_id}/deployments/{id}/": {
+      "get": {
+        "operationId": "deployments_retrieve",
+        "description": "Read-only viewset for the Deployments product.\n\n`list` and `retrieve` are wired against the model queryset. The\n`@action` stubs (`redeploy`, `rollback`, `refresh_preview`) intentionally\nreturn 501 — they exist so OpenAPI / MCP can discover the surface area\nwhile behavior lands in follow-up commits.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "A UUID string identifying this deployment.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "deployments",
+          "deployments"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "deployment:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Deployment"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-explicit-tags": [
+          "deployments"
+        ]
+      }
+    },
+    "/api/projects/{project_id}/deployments/{id}/redeploy/": {
+      "post": {
+        "operationId": "deployments_redeploy_create",
+        "description": "Read-only viewset for the Deployments product.\n\n`list` and `retrieve` are wired against the model queryset. The\n`@action` stubs (`redeploy`, `rollback`, `refresh_preview`) intentionally\nreturn 501 — they exist so OpenAPI / MCP can discover the surface area\nwhile behavior lands in follow-up commits.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "A UUID string identifying this deployment.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "deployments",
+          "deployments"
+        ],
+        "responses": {
+          "501": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeploymentActionResponse"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-explicit-tags": [
+          "deployments"
+        ]
+      }
+    },
+    "/api/projects/{project_id}/deployments/{id}/refresh-preview/": {
+      "post": {
+        "operationId": "deployments_refresh_preview_create",
+        "description": "Read-only viewset for the Deployments product.\n\n`list` and `retrieve` are wired against the model queryset. The\n`@action` stubs (`redeploy`, `rollback`, `refresh_preview`) intentionally\nreturn 501 — they exist so OpenAPI / MCP can discover the surface area\nwhile behavior lands in follow-up commits.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "A UUID string identifying this deployment.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "deployments",
+          "deployments"
+        ],
+        "responses": {
+          "501": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeploymentActionResponse"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-explicit-tags": [
+          "deployments"
+        ]
+      }
+    },
+    "/api/projects/{project_id}/deployments/{id}/rollback/": {
+      "post": {
+        "operationId": "deployments_rollback_create",
+        "description": "Read-only viewset for the Deployments product.\n\n`list` and `retrieve` are wired against the model queryset. The\n`@action` stubs (`redeploy`, `rollback`, `refresh_preview`) intentionally\nreturn 501 — they exist so OpenAPI / MCP can discover the surface area\nwhile behavior lands in follow-up commits.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "A UUID string identifying this deployment.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "deployments",
+          "deployments"
+        ],
+        "responses": {
+          "501": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeploymentActionResponse"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-explicit-tags": [
+          "deployments"
         ]
       }
     },
@@ -102456,6 +103109,150 @@
           "name"
         ]
       },
+      "Deployment": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "readOnly": true,
+            "description": "Unique identifier for the deployment."
+          },
+          "status": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/DeploymentStatusEnum"
+              }
+            ],
+            "description": "Current pipeline stage for the deployment. Valid values: queued, initializing, building, ready, error, cancelled.\n\n* `queued` - Queued\n* `initializing` - Initializing\n* `building` - Building\n* `ready` - Ready\n* `error` - Error\n* `cancelled` - Cancelled"
+          },
+          "started_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time",
+            "description": "Timestamp when the pipeline started building. Null while still queued."
+          },
+          "finished_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time",
+            "description": "Timestamp when the pipeline finished (regardless of outcome). Null while still running."
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true,
+            "description": "Timestamp when the deployment row was created."
+          },
+          "commit_sha": {
+            "type": "string",
+            "description": "Git commit SHA the deployment was built from. Empty for non-git triggers.",
+            "maxLength": 64
+          },
+          "commit_message": {
+            "type": "string",
+            "description": "Commit message associated with the commit SHA."
+          },
+          "commit_author_name": {
+            "type": "string",
+            "description": "Display name of the commit author.",
+            "maxLength": 255
+          },
+          "commit_author_email": {
+            "type": "string",
+            "description": "Email address of the commit author.",
+            "maxLength": 255
+          },
+          "repo_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "HTTPS URL of the source repository this deployment came from.",
+            "maxLength": 1024
+          },
+          "branch": {
+            "type": "string",
+            "description": "Source branch the deployment was built from.",
+            "maxLength": 255
+          },
+          "deployment_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "Public URL where the built site is served once the deployment is ready.",
+            "maxLength": 1024
+          },
+          "preview_image_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "URL of a screenshot capture of the deployed site, used in the list view.",
+            "maxLength": 1024
+          },
+          "triggered_by_deployment": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uuid",
+            "readOnly": true,
+            "description": "The deployment this one was triggered from (e.g. for rollbacks/redeploys)."
+          },
+          "trigger_kind": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/TriggerKindEnum"
+              }
+            ],
+            "description": "What caused this deployment to start. One of: git, redeploy, rollback, seed.\n\n* `git` - Git\n* `redeploy` - Redeploy\n* `rollback` - Rollback\n* `seed` - Seed"
+          },
+          "is_current": {
+            "type": "boolean",
+            "readOnly": true,
+            "description": "Whether this deployment is the team's currently-serving production deployment."
+          },
+          "duration_seconds": {
+            "type": "integer",
+            "readOnly": true,
+            "description": "Build duration in seconds (finished_at - started_at). 0 while still running."
+          }
+        },
+        "required": [
+          "created_at",
+          "duration_seconds",
+          "id",
+          "is_current",
+          "status",
+          "trigger_kind",
+          "triggered_by_deployment"
+        ]
+      },
+      "DeploymentActionResponse": {
+        "type": "object",
+        "description": "Response shape for the redeploy/rollback/refresh-preview stubs.",
+        "properties": {
+          "detail": {
+            "type": "string",
+            "description": "Human-readable explanation of the stub response."
+          }
+        },
+        "required": [
+          "detail"
+        ]
+      },
+      "DeploymentStatusEnum": {
+        "enum": [
+          "queued",
+          "initializing",
+          "building",
+          "ready",
+          "error",
+          "cancelled"
+        ],
+        "type": "string",
+        "description": "* `queued` - Queued\n* `initializing` - Initializing\n* `building` - Building\n* `ready` - Ready\n* `error` - Error\n* `cancelled` - Cancelled"
+      },
       "DeprovisionWarehouseResponse": {
         "type": "object",
         "properties": {
@@ -135158,6 +135955,33 @@
         "type": "string",
         "description": "* `schedule` - Schedule\n* `on_demand` - On demand"
       },
+      "ObserveRequest": {
+        "type": "object",
+        "description": "Body of POST /vision/lenses/{id}/observe/.",
+        "properties": {
+          "session_id": {
+            "type": "string",
+            "description": "ID of the session recording to apply the lens to.",
+            "maxLength": 128
+          }
+        },
+        "required": [
+          "session_id"
+        ]
+      },
+      "ObserveResponse": {
+        "type": "object",
+        "description": "Async-accepted response for POST /vision/lenses/{id}/observe/.",
+        "properties": {
+          "workflow_id": {
+            "type": "string",
+            "description": "Temporal workflow id for this lens application. Look up the resulting ReplayObservation via GET /vision/lenses/{id}/observations/?session_id=<session_id>."
+          }
+        },
+        "required": [
+          "workflow_id"
+        ]
+      },
       "OfflineExperimentItemsRequest": {
         "type": "object",
         "properties": {
@@ -136918,6 +137742,41 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/Dataset"
+            }
+          }
+        }
+      },
+      "PaginatedDeploymentList": {
+        "type": "object",
+        "required": [
+          "count",
+          "results"
+        ],
+        "properties": {
+          "count": {
+            "type": "integer",
+            "example": 123
+          },
+          "next": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uri",
+            "example": "http://api.example.org/accounts/?offset=400&limit=100"
+          },
+          "previous": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uri",
+            "example": "http://api.example.org/accounts/?offset=200&limit=100"
+          },
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Deployment"
             }
           }
         }
@@ -140654,6 +141513,41 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/UserInterview"
+            }
+          }
+        }
+      },
+      "PaginatedUserInterviewTopicList": {
+        "type": "object",
+        "required": [
+          "count",
+          "results"
+        ],
+        "properties": {
+          "count": {
+            "type": "integer",
+            "example": 123
+          },
+          "next": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uri",
+            "example": "http://api.example.org/accounts/?offset=400&limit=100"
+          },
+          "previous": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uri",
+            "example": "http://api.example.org/accounts/?offset=200&limit=100"
+          },
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UserInterviewTopic"
             }
           }
         }
@@ -147682,7 +148576,7 @@
                 "$ref": "#/components/schemas/SubscriptionFrequencyEnum"
               }
             ],
-            "description": "How often to deliver: daily, weekly, monthly, or yearly.\n\n* `daily` - Daily\n* `weekly` - Weekly\n* `monthly` - Monthly\n* `yearly` - Yearly"
+            "description": "How often to deliver: hourly, daily, weekly, monthly, or yearly. Hourly is feature-flagged and limited to one active subscription per organization.\n\n* `hourly` - Hourly\n* `daily` - Daily\n* `weekly` - Weekly\n* `monthly` - Monthly\n* `yearly` - Yearly"
           },
           "interval": {
             "type": "integer",
@@ -149563,6 +150457,67 @@
             "type": "string",
             "format": "uri",
             "writeOnly": true
+          }
+        }
+      },
+      "PatchedUserInterviewTopic": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "readOnly": true
+          },
+          "created_by": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/UserBasic"
+              }
+            ],
+            "readOnly": true
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          },
+          "interviewee_cohort": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "description": "Optional cohort ID identifying who to target. Not enforced as a foreign key."
+          },
+          "interviewee_emails": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 254
+            },
+            "description": "Email addresses of people to interview. May be combined with interviewee_cohort and interviewee_distinct_ids."
+          },
+          "interviewee_distinct_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 400
+            },
+            "description": "PostHog distinct IDs of people to interview. May be combined with interviewee_cohort and interviewee_emails."
+          },
+          "topic": {
+            "type": "string",
+            "description": "The product, feature, or idea you want to ask interviewees about."
+          },
+          "agent_context": {
+            "type": "string",
+            "description": "Optional additional system prompt for the voice agent — extra background, tone, or constraints."
+          },
+          "questions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Ordered list of questions the voice agent should work through during the interview."
           }
         }
       },
@@ -178261,7 +179216,7 @@
                 "$ref": "#/components/schemas/SubscriptionFrequencyEnum"
               }
             ],
-            "description": "How often to deliver: daily, weekly, monthly, or yearly.\n\n* `daily` - Daily\n* `weekly` - Weekly\n* `monthly` - Monthly\n* `yearly` - Yearly"
+            "description": "How often to deliver: hourly, daily, weekly, monthly, or yearly. Hourly is feature-flagged and limited to one active subscription per organization.\n\n* `hourly` - Hourly\n* `daily` - Daily\n* `weekly` - Weekly\n* `monthly` - Monthly\n* `yearly` - Yearly"
           },
           "interval": {
             "type": "integer",
@@ -178539,13 +179494,14 @@
       },
       "SubscriptionFrequencyEnum": {
         "enum": [
+          "hourly",
           "daily",
           "weekly",
           "monthly",
           "yearly"
         ],
         "type": "string",
-        "description": "* `daily` - Daily\n* `weekly` - Weekly\n* `monthly` - Monthly\n* `yearly` - Yearly"
+        "description": "* `hourly` - Hourly\n* `daily` - Daily\n* `weekly` - Weekly\n* `monthly` - Monthly\n* `yearly` - Yearly"
       },
       "SuggestReplyError": {
         "type": "object",
@@ -187846,6 +188802,16 @@
           "payload"
         ]
       },
+      "TriggerKindEnum": {
+        "enum": [
+          "git",
+          "redeploy",
+          "rollback",
+          "seed"
+        ],
+        "type": "string",
+        "description": "* `git` - Git\n* `redeploy` - Redeploy\n* `rollback` - Rollback\n* `seed` - Seed"
+      },
       "UploadTarget": {
         "type": "object",
         "properties": {
@@ -188870,6 +189836,73 @@
           "created_by",
           "id",
           "transcript"
+        ]
+      },
+      "UserInterviewTopic": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "readOnly": true
+          },
+          "created_by": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/UserBasic"
+              }
+            ],
+            "readOnly": true
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          },
+          "interviewee_cohort": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "description": "Optional cohort ID identifying who to target. Not enforced as a foreign key."
+          },
+          "interviewee_emails": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 254
+            },
+            "description": "Email addresses of people to interview. May be combined with interviewee_cohort and interviewee_distinct_ids."
+          },
+          "interviewee_distinct_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 400
+            },
+            "description": "PostHog distinct IDs of people to interview. May be combined with interviewee_cohort and interviewee_emails."
+          },
+          "topic": {
+            "type": "string",
+            "description": "The product, feature, or idea you want to ask interviewees about."
+          },
+          "agent_context": {
+            "type": "string",
+            "description": "Optional additional system prompt for the voice agent — extra background, tone, or constraints."
+          },
+          "questions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Ordered list of questions the voice agent should work through during the interview."
+          }
+        },
+        "required": [
+          "created_at",
+          "created_by",
+          "id",
+          "topic"
         ]
       },
       "ValidationStatusEnum": {
@@ -195333,6 +196366,9 @@
       "name": "datasets"
     },
     {
+      "name": "deployments"
+    },
+    {
       "name": "desktop_recordings"
     },
     {
@@ -195618,6 +196654,9 @@
       "name": "user_home_settings"
     },
     {
+      "name": "user_interview_topics"
+    },
+    {
       "name": "user_interviews"
     },
     {
@@ -195699,6 +196738,7 @@
         "data_warehouse",
         "dataset_items",
         "datasets",
+        "deployments",
         "desktop_recordings",
         "docs",
         "domains",
@@ -195794,6 +196834,7 @@
         "tracing",
         "uploaded_media",
         "user_home_settings",
+        "user_interview_topics",
         "user_interviews",
         "users",
         "vision",
