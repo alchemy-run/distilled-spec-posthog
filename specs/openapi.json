@@ -10939,47 +10939,6 @@
         ]
       }
     },
-    "/api/environments/{environment_id}/hog_flows/{id}/blocked_runs/": {
-      "get": {
-        "operationId": "environments_hog_flows_blocked_runs_retrieve",
-        "description": "List workflow runs that were blocked by the dedup bug.",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/EnvironmentIdPath"
-          },
-          {
-            "in": "path",
-            "name": "id",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            },
-            "description": "A UUID string identifying this hog flow.",
-            "required": true
-          }
-        ],
-        "tags": [
-          "workflows",
-          "hog_flows"
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HogFlow"
-                }
-              }
-            },
-            "description": ""
-          }
-        },
-        "deprecated": true,
-        "x-explicit-tags": [
-          "workflows"
-        ]
-      }
-    },
     "/api/environments/{environment_id}/hog_flows/{id}/invocations/": {
       "post": {
         "operationId": "environments_hog_flows_invocations_create",
@@ -11368,128 +11327,6 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/AppMetricsTotalsResponse"
-                }
-              }
-            },
-            "description": ""
-          }
-        },
-        "deprecated": true,
-        "x-explicit-tags": [
-          "workflows"
-        ]
-      }
-    },
-    "/api/environments/{environment_id}/hog_flows/{id}/replay_all_blocked_runs/": {
-      "post": {
-        "operationId": "environments_hog_flows_replay_all_blocked_runs_create",
-        "description": "Replay all blocked runs in a single bulk call to Node.",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/EnvironmentIdPath"
-          },
-          {
-            "in": "path",
-            "name": "id",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            },
-            "description": "A UUID string identifying this hog flow.",
-            "required": true
-          }
-        ],
-        "tags": [
-          "workflows",
-          "hog_flows"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/HogFlow"
-              }
-            },
-            "application/x-www-form-urlencoded": {
-              "schema": {
-                "$ref": "#/components/schemas/HogFlow"
-              }
-            },
-            "multipart/form-data": {
-              "schema": {
-                "$ref": "#/components/schemas/HogFlow"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HogFlow"
-                }
-              }
-            },
-            "description": ""
-          }
-        },
-        "deprecated": true,
-        "x-explicit-tags": [
-          "workflows"
-        ]
-      }
-    },
-    "/api/environments/{environment_id}/hog_flows/{id}/replay_blocked_run/": {
-      "post": {
-        "operationId": "environments_hog_flows_replay_blocked_run_create",
-        "description": "Replay a single blocked run. Django fetches the event, Node creates the invocation and writes the log.",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/EnvironmentIdPath"
-          },
-          {
-            "in": "path",
-            "name": "id",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            },
-            "description": "A UUID string identifying this hog flow.",
-            "required": true
-          }
-        ],
-        "tags": [
-          "workflows",
-          "hog_flows"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/HogFlow"
-              }
-            },
-            "application/x-www-form-urlencoded": {
-              "schema": {
-                "$ref": "#/components/schemas/HogFlow"
-              }
-            },
-            "multipart/form-data": {
-              "schema": {
-                "$ref": "#/components/schemas/HogFlow"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HogFlow"
                 }
               }
             },
@@ -59880,7 +59717,7 @@
     "/api/projects/{project_id}/experiments/{id}/ship_variant/": {
       "post": {
         "operationId": "experiments_ship_variant_create",
-        "description": "Ship a variant to 100% of users and (optionally) end the experiment.\n\nRewrites the feature flag so that the selected variant is served to everyone.\nExisting release conditions (flag groups) are preserved so the change can be\nrolled back by deleting the auto-added release condition in the feature flag UI.\n\nCan be called on both running and stopped experiments. If the experiment is\nstill running, it will also be ended (end_date set and status marked as stopped).\nIf the experiment has already ended, only the flag is rewritten - this supports\nthe \"end first, ship later\" workflow.\n\nIf an approval policy requires review before changes on the flag take effect,\nthe API returns 409 with a change_request_id. The experiment is NOT ended until\nthe change request is approved and the user retries.\n\nReturns 400 if the experiment is in draft state, the variant_key is not found\non the flag, or the experiment has no linked feature flag.",
+        "description": "Ship a variant and (optionally) end the experiment.\n\nUpdates the feature flag so the selected variant gets 100% of the variant\ndistribution. By default, existing release conditions on the flag are preserved\nuntouched — the variant is served only to users who already match them. Pass\n``release_to_everyone: true`` to also prepend a catch-all release condition\nthat rolls the variant out to 100% of users (overrides any existing release\nconditions on the flag).\n\nCan be called on both running and stopped experiments. If the experiment is\nstill running, it will also be ended (end_date set and status marked as stopped).\nIf the experiment has already ended, only the flag is rewritten - this supports\nthe \"end first, ship later\" workflow.\n\nIf an approval policy requires review before changes on the flag take effect,\nthe API returns 409 with a change_request_id. The experiment is NOT ended until\nthe change request is approved and the user retries.\n\nReturns 400 if the experiment is in draft state, the variant_key is not found\non the flag, or the experiment has no linked feature flag.",
         "parameters": [
           {
             "in": "path",
@@ -66018,46 +65855,6 @@
         ]
       }
     },
-    "/api/projects/{project_id}/hog_flows/{id}/blocked_runs/": {
-      "get": {
-        "operationId": "hog_flows_blocked_runs_retrieve",
-        "description": "List workflow runs that were blocked by the dedup bug.",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "id",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            },
-            "description": "A UUID string identifying this hog flow.",
-            "required": true
-          },
-          {
-            "$ref": "#/components/parameters/ProjectIdPath"
-          }
-        ],
-        "tags": [
-          "workflows",
-          "hog_flows"
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HogFlow"
-                }
-              }
-            },
-            "description": ""
-          }
-        },
-        "x-explicit-tags": [
-          "workflows"
-        ]
-      }
-    },
     "/api/projects/{project_id}/hog_flows/{id}/invocations/": {
       "post": {
         "operationId": "hog_flows_invocations_create",
@@ -66443,126 +66240,6 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/AppMetricsTotalsResponse"
-                }
-              }
-            },
-            "description": ""
-          }
-        },
-        "x-explicit-tags": [
-          "workflows"
-        ]
-      }
-    },
-    "/api/projects/{project_id}/hog_flows/{id}/replay_all_blocked_runs/": {
-      "post": {
-        "operationId": "hog_flows_replay_all_blocked_runs_create",
-        "description": "Replay all blocked runs in a single bulk call to Node.",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "id",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            },
-            "description": "A UUID string identifying this hog flow.",
-            "required": true
-          },
-          {
-            "$ref": "#/components/parameters/ProjectIdPath"
-          }
-        ],
-        "tags": [
-          "workflows",
-          "hog_flows"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/HogFlow"
-              }
-            },
-            "application/x-www-form-urlencoded": {
-              "schema": {
-                "$ref": "#/components/schemas/HogFlow"
-              }
-            },
-            "multipart/form-data": {
-              "schema": {
-                "$ref": "#/components/schemas/HogFlow"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HogFlow"
-                }
-              }
-            },
-            "description": ""
-          }
-        },
-        "x-explicit-tags": [
-          "workflows"
-        ]
-      }
-    },
-    "/api/projects/{project_id}/hog_flows/{id}/replay_blocked_run/": {
-      "post": {
-        "operationId": "hog_flows_replay_blocked_run_create",
-        "description": "Replay a single blocked run. Django fetches the event, Node creates the invocation and writes the log.",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "id",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            },
-            "description": "A UUID string identifying this hog flow.",
-            "required": true
-          },
-          {
-            "$ref": "#/components/parameters/ProjectIdPath"
-          }
-        ],
-        "tags": [
-          "workflows",
-          "hog_flows"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/HogFlow"
-              }
-            },
-            "application/x-www-form-urlencoded": {
-              "schema": {
-                "$ref": "#/components/schemas/HogFlow"
-              }
-            },
-            "multipart/form-data": {
-              "schema": {
-                "$ref": "#/components/schemas/HogFlow"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HogFlow"
                 }
               }
             },
@@ -77436,6 +77113,15 @@
               "default": false
             },
             "description": "Whether to exclude properties marked as hidden"
+          },
+          {
+            "in": "query",
+            "name": "exclude_restricted",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            },
+            "description": "Whether to exclude properties that the current user does not have read access to via field-level access control"
           },
           {
             "in": "query",
@@ -118437,6 +118123,7 @@
           },
           "name": {
             "type": "string",
+            "description": "Name of the shared metric. Must be unique within the project (case-insensitive).",
             "maxLength": 400
           },
           "description": {
@@ -118444,9 +118131,12 @@
               "string",
               "null"
             ],
+            "description": "Short description of what the metric measures.",
             "maxLength": 400
           },
-          "query": {},
+          "query": {
+            "description": "ExperimentMetric JSON. Must have kind='ExperimentMetric' and a metric_type: 'mean' (set source to an EventsNode with an event name), 'funnel' (set series to an array of EventsNode steps), 'ratio' (set numerator and denominator EventsNode entries), or 'retention' (set start_event and completion_event). Legacy kinds (ExperimentTrendsQuery, ExperimentFunnelsQuery) are rejected for new shared metrics."
+          },
           "created_by": {
             "allOf": [
               {
@@ -119869,12 +119559,15 @@
             "readOnly": true
           },
           "created_via": {
-            "allOf": [
+            "description": "How this source was created. Defaults to `api` on create when omitted. `web` for the in-app UI, `api` for direct API callers, `mcp` for agent/MCP tool calls. Ignored on update.\n\n* `web` - web\n* `api` - api\n* `mcp` - mcp",
+            "oneOf": [
               {
                 "$ref": "#/components/schemas/CreatedViaEnum"
+              },
+              {
+                "$ref": "#/components/schemas/NullEnum"
               }
-            ],
-            "description": "How this source was created. Defaults to `api` on create when omitted. `web` for the in-app UI, `api` for direct API callers, `mcp` for agent/MCP tool calls. Ignored on update.\n\n* `web` - web\n* `api` - api\n* `mcp` - mcp"
+            ]
           },
           "status": {
             "type": "string",
@@ -134724,10 +134417,11 @@
           "disable",
           "snooze",
           "unsnooze",
-          "threshold_change"
+          "threshold_change",
+          "broken_config"
         ],
         "type": "string",
-        "description": "* `check` - Check\n* `reset` - Reset\n* `enable` - Enable\n* `disable` - Disable\n* `snooze` - Snooze\n* `unsnooze` - Unsnooze\n* `threshold_change` - Threshold change"
+        "description": "* `check` - Check\n* `reset` - Reset\n* `enable` - Enable\n* `disable` - Disable\n* `snooze` - Snooze\n* `unsnooze` - Unsnooze\n* `threshold_change` - Threshold change\n* `broken_config` - Broken config"
       },
       "LogsAlertSimulateBucket": {
         "type": "object",
@@ -147474,6 +147168,7 @@
           },
           "name": {
             "type": "string",
+            "description": "Name of the shared metric. Must be unique within the project (case-insensitive).",
             "maxLength": 400
           },
           "description": {
@@ -147481,9 +147176,12 @@
               "string",
               "null"
             ],
+            "description": "Short description of what the metric measures.",
             "maxLength": 400
           },
-          "query": {},
+          "query": {
+            "description": "ExperimentMetric JSON. Must have kind='ExperimentMetric' and a metric_type: 'mean' (set source to an EventsNode with an event name), 'funnel' (set series to an array of EventsNode steps), 'ratio' (set numerator and denominator EventsNode entries), or 'retention' (set start_event and completion_event). Legacy kinds (ExperimentTrendsQuery, ExperimentFunnelsQuery) are rejected for new shared metrics."
+          },
           "created_by": {
             "allOf": [
               {
@@ -147685,12 +147383,15 @@
             "readOnly": true
           },
           "created_via": {
-            "allOf": [
+            "description": "How this source was created. Defaults to `api` on create when omitted. `web` for the in-app UI, `api` for direct API callers, `mcp` for agent/MCP tool calls. Ignored on update.\n\n* `web` - web\n* `api` - api\n* `mcp` - mcp",
+            "oneOf": [
               {
                 "$ref": "#/components/schemas/CreatedViaEnum"
+              },
+              {
+                "$ref": "#/components/schemas/NullEnum"
               }
-            ],
-            "description": "How this source was created. Defaults to `api` on create when omitted. `web` for the in-app UI, `api` for direct API callers, `mcp` for agent/MCP tool calls. Ignored on update.\n\n* `web` - web\n* `api` - api\n* `mcp` - mcp"
+            ]
           },
           "status": {
             "type": "string",
@@ -152199,7 +151900,9 @@
           "completed_snippet_onboarding": {
             "type": "boolean"
           },
-          "test_account_filters": {},
+          "test_account_filters": {
+            "description": "Filters used to identify internal/test users. Each entry is a property filter.\n\n            Supported entry types and the exact shape each accepts:\n\n            # Person property — match (or exclude) by a person property\n            {\"key\": \"email\", \"type\": \"person\", \"value\": \"@example.com\", \"operator\": \"icontains\"}\n\n            # Event property — match by an event property\n            {\"key\": \"$host\", \"type\": \"event\", \"value\": \"localhost\", \"operator\": \"icontains\"}\n\n            # Cohort membership — match (or exclude) members of a cohort.\n            # Use operator \"in\" for inclusion and \"not_in\" for exclusion. Do NOT use a\n            # `negation` field here — `negation` is specific to cohort *definitions*\n            # (the inner sub-filters that build a cohort) and is rejected by the\n            # property-filter schema.\n            {\"key\": \"id\", \"type\": \"cohort\", \"value\": 8814, \"operator\": \"not_in\"}\n\n            Common operators: \"exact\", \"is_not\", \"icontains\", \"not_icontains\", \"regex\",\n            \"not_regex\", \"gt\", \"lt\", \"gte\", \"lte\", \"is_set\", \"is_not_set\", \"in\", \"not_in\"."
+          },
           "test_account_filters_default_checked": {
             "type": [
               "boolean",
@@ -180259,7 +179962,12 @@
           },
           "variant_key": {
             "type": "string",
-            "description": "The key of the variant to ship to 100% of users."
+            "description": "The key of the variant to ship."
+          },
+          "release_to_everyone": {
+            "type": "boolean",
+            "default": false,
+            "description": "If true, prepend a release condition to the feature flag that rolls the variant out to 100% of users, overriding any existing release conditions on the flag. If false (default), only update the variant distribution — existing release conditions are preserved and the variant is served only to users who already match them."
           }
         },
         "required": [
@@ -186093,7 +185801,9 @@
           "completed_snippet_onboarding": {
             "type": "boolean"
           },
-          "test_account_filters": {},
+          "test_account_filters": {
+            "description": "Filters used to identify internal/test users. Each entry is a property filter.\n\n            Supported entry types and the exact shape each accepts:\n\n            # Person property — match (or exclude) by a person property\n            {\"key\": \"email\", \"type\": \"person\", \"value\": \"@example.com\", \"operator\": \"icontains\"}\n\n            # Event property — match by an event property\n            {\"key\": \"$host\", \"type\": \"event\", \"value\": \"localhost\", \"operator\": \"icontains\"}\n\n            # Cohort membership — match (or exclude) members of a cohort.\n            # Use operator \"in\" for inclusion and \"not_in\" for exclusion. Do NOT use a\n            # `negation` field here — `negation` is specific to cohort *definitions*\n            # (the inner sub-filters that build a cohort) and is rejected by the\n            # property-filter schema.\n            {\"key\": \"id\", \"type\": \"cohort\", \"value\": 8814, \"operator\": \"not_in\"}\n\n            Common operators: \"exact\", \"is_not\", \"icontains\", \"not_icontains\", \"regex\",\n            \"not_regex\", \"gt\", \"lt\", \"gte\", \"lte\", \"is_set\", \"is_not_set\", \"in\", \"not_in\"."
+          },
           "test_account_filters_default_checked": {
             "type": [
               "boolean",
@@ -186545,11 +186255,28 @@
       "TeamCustomerAnalyticsConfig": {
         "type": "object",
         "properties": {
-          "activity_event": {},
-          "signup_pageview_event": {},
-          "signup_event": {},
-          "subscription_event": {},
-          "payment_event": {}
+          "activity_event": {
+            "description": "Event used as the activity signal (DAU/WAU/MAU)."
+          },
+          "signup_pageview_event": {
+            "description": "Event used to count signup pageviews on dashboards."
+          },
+          "signup_event": {
+            "description": "Event used to count signups on dashboards."
+          },
+          "subscription_event": {
+            "description": "Event used to count subscriptions on dashboards."
+          },
+          "payment_event": {
+            "description": "Event used to count payments on dashboards."
+          },
+          "account_group_type_index": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "description": "Index of the group type to treat as an Account in customer analytics. Must reference an existing group type configured for the project."
+          }
         }
       },
       "TeamMarketingAnalyticsConfig": {
@@ -189914,6 +189641,11 @@
             ],
             "default": null
           },
+          "serviceName": {
+            "description": "Service name that scopes the returned tree. Applied to the spans CTE so the call-tree only contains spans from this service, even when matched traces span multiple services.",
+            "title": "Servicename",
+            "type": "string"
+          },
           "serviceNames": {
             "anyOf": [
               {
@@ -189961,6 +189693,7 @@
         },
         "required": [
           "dateRange",
+          "serviceName",
           "spanName"
         ],
         "title": "TraceSpansTreeQuery",
@@ -198973,6 +198706,10 @@
             "type": "string",
             "description": "Span name to scope the matched trace set. Required because the (trace_id, parent_span_id) self-join is unsafe without bounding the matched traces."
           },
+          "serviceName": {
+            "type": "string",
+            "description": "Service name that scopes the returned tree. Applied to the spans CTE so the call-tree only contains spans from this service, even when matched traces span multiple services."
+          },
           "dateRange": {
             "allOf": [
               {
@@ -199006,6 +198743,7 @@
           }
         },
         "required": [
+          "serviceName",
           "spanName"
         ]
       },
