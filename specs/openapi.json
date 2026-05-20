@@ -23999,6 +23999,324 @@
         ]
       }
     },
+    "/api/environments/{project_id}/accounts/": {
+      "get": {
+        "operationId": "accounts_list",
+        "parameters": [
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Number of results to return per page.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "offset",
+            "required": false,
+            "in": "query",
+            "description": "The initial index from which to return the results.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "customer_analytics",
+          "accounts"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "account:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedAccountList"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-explicit-tags": [
+          "customer_analytics"
+        ]
+      },
+      "post": {
+        "operationId": "accounts_create",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "customer_analytics",
+          "accounts"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Account"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/Account"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Account"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "account:write"
+            ]
+          }
+        ],
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Account"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-explicit-tags": [
+          "customer_analytics"
+        ]
+      }
+    },
+    "/api/environments/{project_id}/accounts/{id}/": {
+      "get": {
+        "operationId": "accounts_retrieve",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "A UUID string identifying this account.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "customer_analytics",
+          "accounts"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "account:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Account"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-explicit-tags": [
+          "customer_analytics"
+        ]
+      },
+      "put": {
+        "operationId": "accounts_update",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "A UUID string identifying this account.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "customer_analytics",
+          "accounts"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Account"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/Account"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Account"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "account:write"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Account"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-explicit-tags": [
+          "customer_analytics"
+        ]
+      },
+      "patch": {
+        "operationId": "accounts_partial_update",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "A UUID string identifying this account.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "customer_analytics",
+          "accounts"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchedAccount"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchedAccount"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchedAccount"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "account:write"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Account"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-explicit-tags": [
+          "customer_analytics"
+        ]
+      },
+      "delete": {
+        "operationId": "accounts_destroy",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "A UUID string identifying this account.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "customer_analytics",
+          "accounts"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "account:write"
+            ]
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No response body"
+          }
+        },
+        "x-explicit-tags": [
+          "customer_analytics"
+        ]
+      }
+    },
     "/api/environments/{project_id}/approval_policies/": {
       "get": {
         "operationId": "approval_policies_list",
@@ -36317,6 +36635,157 @@
         "x-explicit-tags": [
           "docs",
           "posthog_ai"
+        ]
+      }
+    },
+    "/api/environments/{project_id}/property_access_controls/": {
+      "get": {
+        "operationId": "property_access_controls_retrieve",
+        "description": "Get all property access control rules for a property definition.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          },
+          {
+            "in": "query",
+            "name": "property_definition_id",
+            "schema": {
+              "type": "string"
+            },
+            "description": "The property definition ID to fetch access control rules for.",
+            "required": true
+          }
+        ],
+        "tags": [
+          "property_access_controls"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "access_control:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PropertyAccessControlState"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-explicit-tags": [
+          "access_control"
+        ]
+      },
+      "post": {
+        "operationId": "property_access_controls_create",
+        "description": "Create or update a property access control rule.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "property_access_controls"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PropertyAccessControlUpdate"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/PropertyAccessControlUpdate"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/PropertyAccessControlUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "access_control:write"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PropertyAccessControlRule"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-explicit-tags": [
+          "access_control"
+        ]
+      },
+      "delete": {
+        "operationId": "property_access_controls_destroy",
+        "description": "Delete a property access control rule. The rule is identified by `property_definition_id` plus an optional `organization_member` or `role` query parameter. Omitting both targets deletes the default rule.",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "organization_member",
+            "schema": {
+              "type": "string"
+            },
+            "description": "The organization member UUID whose override should be deleted."
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          },
+          {
+            "in": "query",
+            "name": "property_definition_id",
+            "schema": {
+              "type": "string"
+            },
+            "description": "The property definition ID the rule applies to.",
+            "required": true
+          },
+          {
+            "in": "query",
+            "name": "role",
+            "schema": {
+              "type": "string"
+            },
+            "description": "The role UUID whose override should be deleted."
+          }
+        ],
+        "tags": [
+          "property_access_controls"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "access_control:write"
+            ]
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No response body"
+          }
+        },
+        "x-explicit-tags": [
+          "access_control"
         ]
       }
     },
@@ -82046,6 +82515,43 @@
         ]
       }
     },
+    "/api/projects/{project_id}/surveys/question_labels/": {
+      "get": {
+        "operationId": "surveys_question_labels",
+        "description": "Return a slim list of question labels for the team's surveys. Used by the frontend to resolve `$survey_response_<question_id>` property keys into human-readable question text without loading the full survey payload.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "surveys",
+          "surveys"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "survey:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SurveyQuestionLabelsResponse"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-explicit-tags": [
+          "surveys"
+        ]
+      }
+    },
     "/api/projects/{project_id}/surveys/responses_count/": {
       "get": {
         "operationId": "surveys_responses_count_retrieve",
@@ -91000,6 +91506,15 @@
         "title": "AIEventType",
         "type": "string"
       },
+      "AccessLevelEnum": {
+        "enum": [
+          "read_write",
+          "read",
+          "none"
+        ],
+        "type": "string",
+        "description": "* `read_write` - read_write\n* `read` - read\n* `none` - none"
+      },
       "AccessMethodEnum": {
         "enum": [
           "warehouse",
@@ -91007,6 +91522,120 @@
         ],
         "type": "string",
         "description": "* `warehouse` - warehouse\n* `direct` - direct"
+      },
+      "Account": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "readOnly": true
+          },
+          "name": {
+            "type": "string",
+            "description": "Human-readable name of the account.",
+            "maxLength": 400
+          },
+          "external_id": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Identifier for the account in an external system (e.g. CRM ID). Optional.",
+            "maxLength": 400
+          },
+          "properties": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "csm": {
+                "type": [
+                  "object",
+                  "null"
+                ],
+                "properties": {
+                  "id": {
+                    "type": "integer"
+                  },
+                  "email": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "id",
+                  "email"
+                ]
+              },
+              "account_executive": {
+                "type": [
+                  "object",
+                  "null"
+                ],
+                "properties": {
+                  "id": {
+                    "type": "integer"
+                  },
+                  "email": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "id",
+                  "email"
+                ]
+              },
+              "account_owner": {
+                "type": [
+                  "object",
+                  "null"
+                ],
+                "properties": {
+                  "id": {
+                    "type": "integer"
+                  },
+                  "email": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "id",
+                  "email"
+                ]
+              }
+            },
+            "description": "Typed account properties: assignment fields (csm, account_executive, account_owner). Defaults to an empty object. Unknown keys are rejected."
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          },
+          "created_by": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "readOnly": true
+          },
+          "updated_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time",
+            "readOnly": true
+          }
+        },
+        "required": [
+          "created_at",
+          "created_by",
+          "id",
+          "name",
+          "updated_at"
+        ]
       },
       "Action": {
         "type": "object",
@@ -96809,6 +97438,22 @@
               }
             ],
             "default": null
+          },
+          "resultCustomizations": {
+            "anyOf": [
+              {
+                "additionalProperties": {
+                  "$ref": "#/components/schemas/ResultCustomizationByValue"
+                },
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Per-breakdown-value color customizations. Keyed by the raw breakdown column value.",
+            "title": "Resultcustomizations"
           },
           "rightYAxisSettings": {
             "anyOf": [
@@ -132453,6 +133098,78 @@
         "type": "string",
         "description": "* `google` - Google"
       },
+      "LensResult": {
+        "type": "object",
+        "description": "Mirrors `temporal.types.LensResult` for OpenAPI generation.",
+        "properties": {
+          "model_output": {
+            "description": "Validated lens output. Shape depends on `lens_snapshot.lens_type`; always carries `confidence` and `lens_type`."
+          },
+          "signals_count": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Number of PostHog Signals emitted from this observation."
+          }
+        },
+        "required": [
+          "model_output",
+          "signals_count"
+        ]
+      },
+      "LensSnapshot": {
+        "type": "object",
+        "description": "Mirrors `temporal.types.LensSnapshot` for OpenAPI generation.",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Lens name at run time."
+          },
+          "lens_type": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/LensTypeEnum"
+              }
+            ],
+            "description": "Lens type (monitor, classifier, scorer, summarizer, indexer) at run time.\n\n* `monitor` - Monitor\n* `classifier` - Classifier\n* `scorer` - Scorer\n* `summarizer` - Summarizer\n* `indexer` - Indexer"
+          },
+          "lens_version": {
+            "type": "integer",
+            "description": "The `ReplayLens.lens_version` value at the moment the workflow ran."
+          },
+          "model": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/LensModelEnum"
+              }
+            ],
+            "description": "Concrete model that ran the observation.\n\n* `gemini-3-flash` - Gemini 3 Flash\n* `gemini-3-flash-lite` - Gemini 3 Flash Lite"
+          },
+          "provider": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/LensProviderEnum"
+              }
+            ],
+            "description": "Concrete provider that ran the observation.\n\n* `google` - Google"
+          },
+          "emits_signals": {
+            "type": "boolean",
+            "description": "Whether the observation was run with Signal emission enabled."
+          },
+          "lens_config": {
+            "description": "Lens-type-specific configuration at run time (prompt, tags, scale, etc.)."
+          }
+        },
+        "required": [
+          "emits_signals",
+          "lens_config",
+          "lens_type",
+          "lens_version",
+          "model",
+          "name",
+          "provider"
+        ]
+      },
       "LensTypeEnum": {
         "enum": [
           "monitor",
@@ -134095,6 +134812,11 @@
             "description": "Whether the alert is actively being evaluated. Disabling resets the state to not_firing."
           },
           "filters": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/LogsAlertFilters"
+              }
+            ],
             "description": "Filter criteria — subset of LogsViewerFilters. Must contain at least one of: severityLevels (list of severity strings), serviceNames (list of service name strings), or filterGroup (property filter group object). May be empty on draft alerts (enabled=false)."
           },
           "threshold_count": {
@@ -134423,6 +135145,54 @@
         "type": "string",
         "description": "* `check` - Check\n* `reset` - Reset\n* `enable` - Enable\n* `disable` - Disable\n* `snooze` - Snooze\n* `unsnooze` - Unsnooze\n* `threshold_change` - Threshold change\n* `broken_config` - Broken config"
       },
+      "LogsAlertFilters": {
+        "additionalProperties": false,
+        "properties": {
+          "filterGroup": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PropertyGroupFilter"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "serviceNames": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Servicenames"
+          },
+          "severityLevels": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/LogSeverityLevel"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Severitylevels"
+          }
+        },
+        "title": "LogsAlertFilters",
+        "type": "object"
+      },
       "LogsAlertSimulateBucket": {
         "type": "object",
         "properties": {
@@ -134465,6 +135235,11 @@
         "type": "object",
         "properties": {
           "filters": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/LogsAlertFilters"
+              }
+            ],
             "description": "Filter criteria — same format as LogsAlertConfiguration.filters."
           },
           "threshold_count": {
@@ -135002,7 +135777,7 @@
             "description": "Optional list of predicates over string attributes, e.g. [{\"key\":\"http.route\",\"op\":\"eq\",\"value\":\"/api\"}]."
           },
           "config": {
-            "description": "Type-specific JSON. For path_drop: object with required `patterns` (list of regex strings) and optional `match_attribute_key` (string). When `match_attribute_key` is omitted or empty, patterns match the same virtual path string as ingestion (url.path, http.path, http.route, path). When set, each pattern is tested only against that string attribute on the log record. For severity_sampling: object with `actions` per severity level and optional `always_keep`. For rate_limit: object with required `logs_per_second` (integer 1–1000000) and optional `burst_logs` (integer ≥ logs_per_second, max 60000000); rate_limit rules require non-null `scope_service` matching `service.name` on each log line."
+            "description": "Type-specific JSON. For path_drop: object with optional `filter_group` (PropertyGroupFilter shape — AND/OR tree of property predicates evaluated per record) and/or legacy `patterns` (list of regex strings) + `match_attribute_key` (string). When both are present a record is dropped if EITHER matches. Filter group example: `{\"type\":\"AND\",\"values\":[{\"type\":\"AND\",\"values\":[{\"key\":\"service.name\",\"operator\":\"exact\",\"value\":\"api\"}]}]}`. For severity_sampling: object with `actions` per severity level and optional `always_keep`. For rate_limit: object with required `logs_per_second` (integer 1–1000000) and optional `burst_logs` (integer ≥ logs_per_second, max 60000000); rate_limit rules require non-null `scope_service` matching `service.name` on each log line."
           },
           "version": {
             "type": "integer",
@@ -139027,6 +139802,41 @@
         ],
         "title": "PageURL",
         "type": "object"
+      },
+      "PaginatedAccountList": {
+        "type": "object",
+        "required": [
+          "count",
+          "results"
+        ],
+        "properties": {
+          "count": {
+            "type": "integer",
+            "example": 123
+          },
+          "next": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uri",
+            "example": "http://api.example.org/accounts/?offset=400&limit=100"
+          },
+          "previous": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uri",
+            "example": "http://api.example.org/accounts/?offset=200&limit=100"
+          },
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Account"
+            }
+          }
+        }
       },
       "PaginatedActionList": {
         "type": "object",
@@ -143984,6 +144794,113 @@
           }
         }
       },
+      "PatchedAccount": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "readOnly": true
+          },
+          "name": {
+            "type": "string",
+            "description": "Human-readable name of the account.",
+            "maxLength": 400
+          },
+          "external_id": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Identifier for the account in an external system (e.g. CRM ID). Optional.",
+            "maxLength": 400
+          },
+          "properties": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "csm": {
+                "type": [
+                  "object",
+                  "null"
+                ],
+                "properties": {
+                  "id": {
+                    "type": "integer"
+                  },
+                  "email": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "id",
+                  "email"
+                ]
+              },
+              "account_executive": {
+                "type": [
+                  "object",
+                  "null"
+                ],
+                "properties": {
+                  "id": {
+                    "type": "integer"
+                  },
+                  "email": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "id",
+                  "email"
+                ]
+              },
+              "account_owner": {
+                "type": [
+                  "object",
+                  "null"
+                ],
+                "properties": {
+                  "id": {
+                    "type": "integer"
+                  },
+                  "email": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "id",
+                  "email"
+                ]
+              }
+            },
+            "description": "Typed account properties: assignment fields (csm, account_executive, account_owner). Defaults to an empty object. Unknown keys are rejected."
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          },
+          "created_by": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "readOnly": true
+          },
+          "updated_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time",
+            "readOnly": true
+          }
+        }
+      },
       "PatchedAction": {
         "type": "object",
         "description": "Serializer mixin that handles tags for objects.",
@@ -148774,6 +149691,11 @@
             "description": "Whether the alert is actively being evaluated. Disabling resets the state to not_firing."
           },
           "filters": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/LogsAlertFilters"
+              }
+            ],
             "description": "Filter criteria — subset of LogsViewerFilters. Must contain at least one of: severityLevels (list of severity strings), serviceNames (list of service name strings), or filterGroup (property filter group object). May be empty on draft alerts (enabled=false)."
           },
           "threshold_count": {
@@ -148988,7 +149910,7 @@
             "description": "Optional list of predicates over string attributes, e.g. [{\"key\":\"http.route\",\"op\":\"eq\",\"value\":\"/api\"}]."
           },
           "config": {
-            "description": "Type-specific JSON. For path_drop: object with required `patterns` (list of regex strings) and optional `match_attribute_key` (string). When `match_attribute_key` is omitted or empty, patterns match the same virtual path string as ingestion (url.path, http.path, http.route, path). When set, each pattern is tested only against that string attribute on the log record. For severity_sampling: object with `actions` per severity level and optional `always_keep`. For rate_limit: object with required `logs_per_second` (integer 1–1000000) and optional `burst_logs` (integer ≥ logs_per_second, max 60000000); rate_limit rules require non-null `scope_service` matching `service.name` on each log line."
+            "description": "Type-specific JSON. For path_drop: object with optional `filter_group` (PropertyGroupFilter shape — AND/OR tree of property predicates evaluated per record) and/or legacy `patterns` (list of regex strings) + `match_attribute_key` (string). When both are present a record is dropped if EITHER matches. Filter group example: `{\"type\":\"AND\",\"values\":[{\"type\":\"AND\",\"values\":[{\"key\":\"service.name\",\"operator\":\"exact\",\"value\":\"api\"}]}]}`. For severity_sampling: object with `actions` per severity level and optional `always_keep`. For rate_limit: object with required `logs_per_second` (integer 1–1000000) and optional `burst_logs` (integer ≥ logs_per_second, max 60000000); rate_limit rules require non-null `scope_service` matching `service.name` on each log line."
           },
           "version": {
             "type": "integer",
@@ -151004,7 +151926,7 @@
                 "$ref": "#/components/schemas/SubscriptionFrequencyEnum"
               }
             ],
-            "description": "How often to deliver: hourly, daily, weekly, monthly, or yearly. Hourly is feature-flagged and limited to one active subscription per organization.\n\n* `hourly` - Hourly\n* `daily` - Daily\n* `weekly` - Weekly\n* `monthly` - Monthly\n* `yearly` - Yearly"
+            "description": "How often to deliver: daily, weekly, monthly, or yearly.\n\n* `daily` - Daily\n* `weekly` - Weekly\n* `monthly` - Monthly\n* `yearly` - Yearly"
           },
           "interval": {
             "type": "integer",
@@ -155696,6 +156618,134 @@
         },
         "required": [
           "values"
+        ]
+      },
+      "PropertyAccessControlRule": {
+        "type": "object",
+        "description": "Serializes a single access control rule DTO.",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "readOnly": true
+          },
+          "access_level": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/AccessLevelEnum"
+              }
+            ],
+            "description": "The access level for this rule.\n\n* `read_write` - read_write\n* `read` - read\n* `none` - none"
+          },
+          "organization_member": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uuid",
+            "description": "The organization member UUID this rule applies to, if any."
+          },
+          "role": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uuid",
+            "description": "The role UUID this rule applies to, if any."
+          },
+          "created_by": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "readOnly": true
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          }
+        },
+        "required": [
+          "access_level",
+          "created_at",
+          "created_by",
+          "id",
+          "organization_member",
+          "role",
+          "updated_at"
+        ]
+      },
+      "PropertyAccessControlState": {
+        "type": "object",
+        "description": "Serializes the aggregate state for a property definition.\n\nPreserves the existing API shape: ``access_controls`` is the list\nof rules, plus the available levels and the computed default.",
+        "properties": {
+          "access_controls": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PropertyAccessControlRule"
+            },
+            "description": "List of all access control rules for this property definition."
+          },
+          "available_access_levels": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Available access levels that can be assigned."
+          },
+          "default_access_level": {
+            "type": "string",
+            "description": "The default access level when no rules match."
+          }
+        },
+        "required": [
+          "access_controls",
+          "available_access_levels",
+          "default_access_level"
+        ]
+      },
+      "PropertyAccessControlUpdate": {
+        "type": "object",
+        "description": "Request body for upserting a rule (create or update).",
+        "properties": {
+          "property_definition_id": {
+            "type": "string",
+            "description": "The property definition ID this rule applies to."
+          },
+          "access_level": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/AccessLevelEnum"
+              }
+            ],
+            "description": "The access level to set for this rule.\n\n* `read_write` - read_write\n* `read` - read\n* `none` - none"
+          },
+          "organization_member": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uuid",
+            "description": "The organization member UUID to set an override for."
+          },
+          "role": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uuid",
+            "description": "The role UUID to set an override for."
+          }
+        },
+        "required": [
+          "access_level",
+          "property_definition_id"
         ]
       },
       "PropertyDefinitionTypeEnum": {
@@ -169363,31 +170413,36 @@
           "error_reason": {
             "type": "string",
             "readOnly": true,
-            "description": "Populated on failure. Includes the malformed model response when validation fails."
+            "description": "Populated on failure; includes the malformed model response when validation fails."
           },
           "workflow_id": {
             "type": "string",
             "readOnly": true,
             "description": "Temporal workflow id for progress queries and debugging. Empty until the workflow starts."
           },
-          "lens_version": {
-            "type": "integer",
+          "lens_snapshot": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/LensSnapshot"
+              },
+              {
+                "type": "null"
+              }
+            ],
             "readOnly": true,
-            "description": "The `ReplayLens.lens_version` value at the moment the workflow ran."
+            "description": "Frozen view of the lens at run time; lens edits do not retroactively mutate this observation."
           },
-          "lens_config_snapshot": {
+          "lens_result": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/LensResult"
+              },
+              {
+                "type": "null"
+              }
+            ],
             "readOnly": true,
-            "description": "Snapshot of `ReplayLens.lens_config` at run time. Lens edits do not retroactively mutate observations."
-          },
-          "model_used": {
-            "type": "string",
-            "readOnly": true,
-            "description": "Concrete model that ran the observation."
-          },
-          "provider_used": {
-            "type": "string",
-            "readOnly": true,
-            "description": "Concrete provider that ran the observation."
+            "description": "Result data persisted on success; null until the observation succeeds."
           },
           "triggered_by": {
             "allOf": [
@@ -169408,7 +170463,7 @@
               }
             ],
             "readOnly": true,
-            "description": "User who triggered an on-demand observation. Null for scheduled observations."
+            "description": "User who triggered an on-demand observation; null for scheduled observations."
           },
           "started_at": {
             "type": [
@@ -169434,11 +170489,9 @@
           "created_at",
           "error_reason",
           "id",
-          "lens_config_snapshot",
           "lens_id",
-          "lens_version",
-          "model_used",
-          "provider_used",
+          "lens_result",
+          "lens_snapshot",
           "session_id",
           "status",
           "triggered_by",
@@ -181698,7 +182751,7 @@
                 "$ref": "#/components/schemas/SubscriptionFrequencyEnum"
               }
             ],
-            "description": "How often to deliver: hourly, daily, weekly, monthly, or yearly. Hourly is feature-flagged and limited to one active subscription per organization.\n\n* `hourly` - Hourly\n* `daily` - Daily\n* `weekly` - Weekly\n* `monthly` - Monthly\n* `yearly` - Yearly"
+            "description": "How often to deliver: daily, weekly, monthly, or yearly.\n\n* `daily` - Daily\n* `weekly` - Weekly\n* `monthly` - Monthly\n* `yearly` - Yearly"
           },
           "interval": {
             "type": "integer",
@@ -181976,14 +183029,13 @@
       },
       "SubscriptionFrequencyEnum": {
         "enum": [
-          "hourly",
           "daily",
           "weekly",
           "monthly",
           "yearly"
         ],
         "type": "string",
-        "description": "* `hourly` - Hourly\n* `daily` - Daily\n* `weekly` - Weekly\n* `monthly` - Monthly\n* `yearly` - Yearly"
+        "description": "* `daily` - Daily\n* `weekly` - Weekly\n* `monthly` - Monthly\n* `yearly` - Yearly"
       },
       "SuggestReplyError": {
         "type": "object",
@@ -182882,6 +183934,53 @@
           {
             "$ref": "#/components/schemas/SurveyMultipleChoiceQuestionSchema"
           }
+        ]
+      },
+      "SurveyQuestionLabel": {
+        "type": "object",
+        "properties": {
+          "question_id": {
+            "type": "string",
+            "description": "UUID assigned to the survey question."
+          },
+          "question_text": {
+            "type": "string",
+            "description": "Untranslated question text as configured by the survey author."
+          },
+          "question_index": {
+            "type": "integer",
+            "description": "Zero-based index of the question within the survey."
+          },
+          "survey_id": {
+            "type": "string",
+            "description": "UUID of the survey this question belongs to."
+          },
+          "survey_name": {
+            "type": "string",
+            "description": "Display name of the survey."
+          }
+        },
+        "required": [
+          "question_id",
+          "question_index",
+          "question_text",
+          "survey_id",
+          "survey_name"
+        ]
+      },
+      "SurveyQuestionLabelsResponse": {
+        "type": "object",
+        "properties": {
+          "labels": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SurveyQuestionLabel"
+            },
+            "description": "One entry per question that has an ID assigned, across all the team's surveys."
+          }
+        },
+        "required": [
+          "labels"
         ]
       },
       "SurveyRatingQuestionSchema": {
@@ -198971,6 +200070,9 @@
       "name": "LLM Analytics"
     },
     {
+      "name": "accounts"
+    },
+    {
       "name": "actions"
     },
     {
@@ -199256,6 +200358,9 @@
       "name": "projects"
     },
     {
+      "name": "property_access_controls"
+    },
+    {
       "name": "property_definitions"
     },
     {
@@ -199402,6 +200507,7 @@
       "name": "All endpoints",
       "tags": [
         "LLM Analytics",
+        "accounts",
         "actions",
         "activity_log",
         "activity_logs",
@@ -199497,6 +200603,7 @@
         "product_tours",
         "project_secret_api_keys",
         "projects",
+        "property_access_controls",
         "property_definitions",
         "proxy_records",
         "public_hog_function_templates",
