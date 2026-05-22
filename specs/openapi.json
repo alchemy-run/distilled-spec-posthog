@@ -125,7 +125,9 @@
           }
         },
         "deprecated": true,
-        "x-explicit-tags": []
+        "x-explicit-tags": [
+          "alerts"
+        ]
       },
       "post": {
         "operationId": "environments_alerts_create",
@@ -177,7 +179,9 @@
           }
         },
         "deprecated": true,
-        "x-explicit-tags": []
+        "x-explicit-tags": [
+          "alerts"
+        ]
       }
     },
     "/api/environments/{environment_id}/alerts/{id}/": {
@@ -466,7 +470,9 @@
           }
         },
         "deprecated": true,
-        "x-explicit-tags": []
+        "x-explicit-tags": [
+          "alerts"
+        ]
       }
     },
     "/api/environments/{environment_id}/batch_exports/": {
@@ -13585,7 +13591,9 @@
           }
         },
         "deprecated": true,
-        "x-explicit-tags": []
+        "x-explicit-tags": [
+          "alerts"
+        ]
       }
     },
     "/api/environments/{environment_id}/insights/{insight_id}/thresholds/{id}/": {
@@ -24099,6 +24107,14 @@
           },
           {
             "$ref": "#/components/parameters/ProjectIdPath"
+          },
+          {
+            "in": "query",
+            "name": "tags",
+            "schema": {
+              "type": "string"
+            },
+            "description": "JSON-encoded array of tag names to filter by, e.g. `[\"enterprise\",\"priority\"]`. Returns accounts that have any of the listed tags."
           }
         ],
         "tags": [
@@ -27550,21 +27566,20 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/ErrorTrackingGroupingRule"
+                "$ref": "#/components/schemas/ErrorTrackingGroupingRuleUpdateRequest"
               }
             },
             "application/x-www-form-urlencoded": {
               "schema": {
-                "$ref": "#/components/schemas/ErrorTrackingGroupingRule"
+                "$ref": "#/components/schemas/ErrorTrackingGroupingRuleUpdateRequest"
               }
             },
             "multipart/form-data": {
               "schema": {
-                "$ref": "#/components/schemas/ErrorTrackingGroupingRule"
+                "$ref": "#/components/schemas/ErrorTrackingGroupingRuleUpdateRequest"
               }
             }
-          },
-          "required": true
+          }
         },
         "security": [
           {
@@ -27574,15 +27589,8 @@
           }
         ],
         "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorTrackingGroupingRule"
-                }
-              }
-            },
-            "description": ""
+          "204": {
+            "description": "No response body"
           }
         },
         "x-explicit-tags": []
@@ -27611,17 +27619,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/PatchedErrorTrackingGroupingRule"
+                "$ref": "#/components/schemas/PatchedErrorTrackingGroupingRuleUpdateRequest"
               }
             },
             "application/x-www-form-urlencoded": {
               "schema": {
-                "$ref": "#/components/schemas/PatchedErrorTrackingGroupingRule"
+                "$ref": "#/components/schemas/PatchedErrorTrackingGroupingRuleUpdateRequest"
               }
             },
             "multipart/form-data": {
               "schema": {
-                "$ref": "#/components/schemas/PatchedErrorTrackingGroupingRule"
+                "$ref": "#/components/schemas/PatchedErrorTrackingGroupingRuleUpdateRequest"
               }
             }
           }
@@ -27634,15 +27642,8 @@
           }
         ],
         "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorTrackingGroupingRule"
-                }
-              }
-            },
-            "description": ""
+          "204": {
+            "description": "No response body"
           }
         },
         "x-explicit-tags": []
@@ -29404,21 +29405,20 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/ErrorTrackingSuppressionRule"
+                "$ref": "#/components/schemas/ErrorTrackingSuppressionRuleUpdateRequest"
               }
             },
             "application/x-www-form-urlencoded": {
               "schema": {
-                "$ref": "#/components/schemas/ErrorTrackingSuppressionRule"
+                "$ref": "#/components/schemas/ErrorTrackingSuppressionRuleUpdateRequest"
               }
             },
             "multipart/form-data": {
               "schema": {
-                "$ref": "#/components/schemas/ErrorTrackingSuppressionRule"
+                "$ref": "#/components/schemas/ErrorTrackingSuppressionRuleUpdateRequest"
               }
             }
-          },
-          "required": true
+          }
         },
         "security": [
           {
@@ -29428,15 +29428,8 @@
           }
         ],
         "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorTrackingSuppressionRule"
-                }
-              }
-            },
-            "description": ""
+          "204": {
+            "description": "No response body"
           }
         },
         "x-explicit-tags": []
@@ -29465,17 +29458,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/PatchedErrorTrackingSuppressionRule"
+                "$ref": "#/components/schemas/PatchedErrorTrackingSuppressionRuleUpdateRequest"
               }
             },
             "application/x-www-form-urlencoded": {
               "schema": {
-                "$ref": "#/components/schemas/PatchedErrorTrackingSuppressionRule"
+                "$ref": "#/components/schemas/PatchedErrorTrackingSuppressionRuleUpdateRequest"
               }
             },
             "multipart/form-data": {
               "schema": {
-                "$ref": "#/components/schemas/PatchedErrorTrackingSuppressionRule"
+                "$ref": "#/components/schemas/PatchedErrorTrackingSuppressionRuleUpdateRequest"
               }
             }
           }
@@ -29488,15 +29481,8 @@
           }
         ],
         "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorTrackingSuppressionRule"
-                }
-              }
-            },
-            "description": ""
+          "204": {
+            "description": "No response body"
           }
         },
         "x-explicit-tags": []
@@ -31421,7 +31407,7 @@
           }
         ],
         "tags": [
-          "LLM Analytics",
+          "AI observability",
           "llm_analytics"
         ],
         "requestBody": {
@@ -31559,7 +31545,7 @@
           }
         },
         "x-explicit-tags": [
-          "LLM Analytics",
+          "AI observability",
           "llm_analytics"
         ]
       }
@@ -31636,7 +31622,7 @@
           }
         ],
         "tags": [
-          "LLM Analytics",
+          "AI observability",
           "llm_analytics"
         ],
         "requestBody": {
@@ -31701,7 +31687,7 @@
           }
         },
         "x-explicit-tags": [
-          "LLM Analytics",
+          "AI observability",
           "llm_analytics"
         ]
       }
@@ -33180,7 +33166,7 @@
           }
         ],
         "tags": [
-          "LLM Analytics",
+          "AI observability",
           "llm_analytics"
         ],
         "requestBody": {
@@ -33245,7 +33231,7 @@
           }
         },
         "x-explicit-tags": [
-          "LLM Analytics",
+          "AI observability",
           "llm_analytics"
         ]
       }
@@ -33259,7 +33245,7 @@
           }
         ],
         "tags": [
-          "LLM Analytics",
+          "AI observability",
           "llm_analytics"
         ],
         "requestBody": {
@@ -33316,7 +33302,7 @@
           }
         },
         "x-explicit-tags": [
-          "LLM Analytics",
+          "AI observability",
           "llm_analytics"
         ]
       }
@@ -33331,7 +33317,7 @@
           }
         ],
         "tags": [
-          "LLM Analytics",
+          "AI observability",
           "llm_analytics"
         ],
         "requestBody": {
@@ -33489,7 +33475,7 @@
           }
         },
         "x-explicit-tags": [
-          "LLM Analytics",
+          "AI observability",
           "llm_analytics"
         ]
       }
@@ -33504,7 +33490,7 @@
           }
         ],
         "tags": [
-          "LLM Analytics",
+          "AI observability",
           "llm_analytics"
         ],
         "requestBody": {
@@ -33562,7 +33548,7 @@
           }
         },
         "x-explicit-tags": [
-          "LLM Analytics",
+          "AI observability",
           "llm_analytics"
         ]
       }
@@ -33570,14 +33556,14 @@
     "/api/environments/{project_id}/llm_analytics/text_repr/": {
       "post": {
         "operationId": "llm_analytics_text_repr_create",
-        "description": "\nGenerate a human-readable text representation of an LLM trace event.\n\nThis endpoint converts LLM analytics events ($ai_generation, $ai_span, $ai_embedding, or $ai_trace)\ninto formatted text representations suitable for display, logging, or analysis.\n\n**Supported Event Types:**\n- `$ai_generation`: Individual LLM API calls with input/output messages\n- `$ai_span`: Logical spans with state transitions\n- `$ai_embedding`: Embedding generation events (text input → vector)\n- `$ai_trace`: Full traces with hierarchical structure\n\n**Options:**\n- `max_length`: Maximum character count (default: 2000000)\n- `truncated`: Enable middle-content truncation within events (default: true)\n- `truncate_buffer`: Characters at start/end when truncating (default: 1000)\n- `include_markers`: Use interactive markers vs plain text indicators (default: true)\n  - Frontend: set true for `<<<TRUNCATED|base64|...>>>` markers\n  - Backend/LLM: set false for `... (X chars truncated) ...` text\n- `collapsed`: Show summary vs full trace tree (default: false)\n- `include_hierarchy`: Include tree structure for traces (default: true)\n- `max_depth`: Maximum depth for hierarchical rendering (default: unlimited)\n- `tools_collapse_threshold`: Number of tools before auto-collapsing list (default: 5)\n  - Tool lists >5 items show `<<<TOOLS_EXPANDABLE|...>>>` marker for frontend\n  - Or `[+] AVAILABLE TOOLS: N` for backend when `include_markers: false`\n- `include_line_numbers`: Prefix each line with line number like L001:, L010: (default: false)\n\n**Use Cases:**\n- Frontend display: `truncated: true, include_markers: true, include_line_numbers: true`\n- Backend LLM context (summary): `truncated: true, include_markers: false, collapsed: true`\n- Backend LLM context (full): `truncated: false`\n\nThe response includes the formatted text and metadata about the rendering.\n        ",
+        "description": "\nGenerate a human-readable text representation of an LLM trace event.\n\nThis endpoint converts AI observability events ($ai_generation, $ai_span, $ai_embedding, or $ai_trace)\ninto formatted text representations suitable for display, logging, or analysis.\n\n**Supported Event Types:**\n- `$ai_generation`: Individual LLM API calls with input/output messages\n- `$ai_span`: Logical spans with state transitions\n- `$ai_embedding`: Embedding generation events (text input → vector)\n- `$ai_trace`: Full traces with hierarchical structure\n\n**Options:**\n- `max_length`: Maximum character count (default: 2000000)\n- `truncated`: Enable middle-content truncation within events (default: true)\n- `truncate_buffer`: Characters at start/end when truncating (default: 1000)\n- `include_markers`: Use interactive markers vs plain text indicators (default: true)\n  - Frontend: set true for `<<<TRUNCATED|base64|...>>>` markers\n  - Backend/LLM: set false for `... (X chars truncated) ...` text\n- `collapsed`: Show summary vs full trace tree (default: false)\n- `include_hierarchy`: Include tree structure for traces (default: true)\n- `max_depth`: Maximum depth for hierarchical rendering (default: unlimited)\n- `tools_collapse_threshold`: Number of tools before auto-collapsing list (default: 5)\n  - Tool lists >5 items show `<<<TOOLS_EXPANDABLE|...>>>` marker for frontend\n  - Or `[+] AVAILABLE TOOLS: N` for backend when `include_markers: false`\n- `include_line_numbers`: Prefix each line with line number like L001:, L010: (default: false)\n\n**Use Cases:**\n- Frontend display: `truncated: true, include_markers: true, include_line_numbers: true`\n- Backend LLM context (summary): `truncated: true, include_markers: false, collapsed: true`\n- Backend LLM context (full): `truncated: false`\n\nThe response includes the formatted text and metadata about the rendering.\n        ",
         "parameters": [
           {
             "$ref": "#/components/parameters/ProjectIdPath"
           }
         ],
         "tags": [
-          "LLM Analytics",
+          "AI observability",
           "llm_analytics"
         ],
         "requestBody": {
@@ -33719,7 +33705,7 @@
           }
         },
         "x-explicit-tags": [
-          "LLM Analytics",
+          "AI observability",
           "llm_analytics"
         ]
       }
@@ -45984,7 +45970,9 @@
             "description": ""
           }
         },
-        "x-explicit-tags": []
+        "x-explicit-tags": [
+          "alerts"
+        ]
       },
       "post": {
         "operationId": "alerts_create",
@@ -46035,7 +46023,9 @@
             "description": ""
           }
         },
-        "x-explicit-tags": []
+        "x-explicit-tags": [
+          "alerts"
+        ]
       }
     },
     "/api/projects/{project_id}/alerts/{id}/": {
@@ -46319,7 +46309,9 @@
             "description": ""
           }
         },
-        "x-explicit-tags": []
+        "x-explicit-tags": [
+          "alerts"
+        ]
       }
     },
     "/api/projects/{project_id}/annotations/": {
@@ -69315,7 +69307,9 @@
             "description": ""
           }
         },
-        "x-explicit-tags": []
+        "x-explicit-tags": [
+          "alerts"
+        ]
       }
     },
     "/api/projects/{project_id}/insights/{insight_id}/thresholds/{id}/": {
@@ -83405,6 +83399,20 @@
         "parameters": [
           {
             "in": "query",
+            "name": "archived",
+            "schema": {
+              "enum": [
+                "true",
+                "false",
+                "all"
+              ],
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "Filter by archived state. Defaults to excluding archived tasks. Use 'true' to list only archived tasks, 'false' for the default, or 'all' to include both.\n\n* `true` - true\n* `false` - false\n* `all` - all"
+          },
+          {
+            "in": "query",
             "name": "created_by",
             "schema": {
               "type": "integer"
@@ -90690,6 +90698,35 @@
         ]
       }
     },
+    "/api/users/{uuid}/credentials_review_complete/": {
+      "post": {
+        "operationId": "users_credentials_review_complete_create",
+        "description": "Mark the user as having reviewed their existing credentials. Idempotent. Flips `requires_credential_review` to False so the post-login interstitial isn't shown again. Does not modify any credentials; the user revokes individual Personal API Keys via the existing PAT endpoints from the same screen.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "uuid",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "required": true
+          }
+        ],
+        "tags": [
+          "core",
+          "users"
+        ],
+        "responses": {
+          "204": {
+            "description": "No response body"
+          }
+        },
+        "x-explicit-tags": [
+          "core"
+        ]
+      }
+    },
     "/api/users/{uuid}/github_login/": {
       "get": {
         "operationId": "users_github_login_retrieve",
@@ -91147,7 +91184,7 @@
     "/api/users/{uuid}/integrations/github/start/": {
       "post": {
         "operationId": "users_integrations_github_start_create",
-        "description": "Start GitHub linking: either full App install or OAuth-only (user-to-server).\n\n``**_kwargs`` absorbs ``parent_lookup_uuid`` from the nested\n``/api/users/{uuid}/integrations/`` router (same pattern as ``local_evaluation``\nunder projects).\n\nUsually returns ``install_url`` pointing at ``/installations/new`` so the\nuser can pick any GitHub org (new or already connected).  GitHub's install\npage handles both cases: orgs where the app is installed show \"Configure\"\n(no admin needed), orgs where it isn't show \"Install\" (needs admin).\n\n**PostHog Code fast path:** when ``connect_from`` is ``\"posthog_code\"``,\nthe current project already has a team-level GitHub installation, and the\nuser has no ``UserIntegration`` for that installation yet, we skip the org\npicker and redirect straight to ``/login/oauth/authorize`` so the user\nonly authorizes themselves and returns to PostHog Code immediately.\n\nIn both cases the response key is ``install_url`` for compatibility with callers.",
+        "description": "Start GitHub linking: either full App install or OAuth-only (user-to-server).\n\n``**_kwargs`` absorbs ``parent_lookup_uuid`` from the nested\n``/api/users/{uuid}/integrations/`` router (same pattern as ``local_evaluation``\nunder projects).\n\nUsually returns ``install_url`` pointing at ``/installations/new`` so the\nuser can pick any GitHub org (new or already connected).  GitHub's install\npage handles both cases: orgs where the app is installed show \"Configure\"\n(no admin needed), orgs where it isn't show \"Install\" (needs admin).\n\n**First-party app fast path:** when ``connect_from`` is one of\n``APP_CONNECT_FROM_VALUES`` (e.g. ``\"posthog_code\"`` or ``\"posthog_mobile\"``),\nthe current project already has a team-level GitHub installation, and the\nuser has no ``UserIntegration`` for that installation yet, we skip the org\npicker and redirect straight to ``/login/oauth/authorize`` so the user\nonly authorizes themselves and returns to the originating client immediately.\n\nIn both cases the response key is ``install_url`` for compatibility with callers.",
         "summary": "Start GitHub personal integration linking",
         "parameters": [
           {
@@ -91864,6 +91901,7 @@
       },
       "Account": {
         "type": "object",
+        "description": "A Customer Analytics account — a logical grouping used to assign customer-success ownership.",
         "properties": {
           "id": {
             "type": "string",
@@ -91976,6 +92014,13 @@
               }
             },
             "description": "Typed account properties: assignment fields (csm, account_executive, account_owner) and external system identifiers (stripe_customer_id, hubspot_deal_id, billing_id, sfdc_id, zendesk_id). Defaults to an empty object. Unknown keys are rejected."
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Tag names attached to the account. Pass a list to replace existing tags."
           },
           "created_at": {
             "type": "string",
@@ -93772,7 +93817,7 @@
                 "$ref": "#/components/schemas/CalculationIntervalEnum"
               }
             ],
-            "description": "How often the alert is checked: hourly, daily, weekly, or monthly.\n\n* `every_15_minutes` - every_15_minutes\n* `hourly` - hourly\n* `daily` - daily\n* `weekly` - weekly\n* `monthly` - monthly"
+            "description": "How often the alert is checked: every 15 minutes (Boost+), hourly, daily, weekly, or monthly.\n\n* `every_15_minutes` - every_15_minutes\n* `hourly` - hourly\n* `daily` - daily\n* `weekly` - weekly\n* `monthly` - monthly"
           },
           "snoozed_until": {
             "type": [
@@ -104082,7 +104127,23 @@
             "maxLength": 128
           },
           "query": {
-            "description": "HogQL query definition as a JSON object with a \"query\" key containing the SQL string and a \"kind\" key containing the query type. Example: {\"query\": \"SELECT * FROM events LIMIT 100\", \"kind\": \"HogQLQuery\"}"
+            "type": "object",
+            "properties": {
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "HogQLQuery"
+                ],
+                "default": "HogQLQuery"
+              },
+              "query": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "query"
+            ],
+            "description": "HogQL query definition as a JSON object with a \"query\" key containing the SQL string and a \"kind\" key (always \"HogQLQuery\"). Example: {\"kind\": \"HogQLQuery\", \"query\": \"SELECT * FROM events LIMIT 100\"}"
           },
           "created_by": {
             "allOf": [
@@ -104249,6 +104310,7 @@
           "managed_viewset_kind",
           "name",
           "origin",
+          "query",
           "status",
           "sync_frequency",
           "user_access_level"
@@ -110719,6 +110781,22 @@
           "results"
         ]
       },
+      "ErrorTrackingGroupingRuleUpdateRequest": {
+        "type": "object",
+        "properties": {
+          "filters": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/PropertyGroupFilterValue"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Property-group filters that define which exceptions should be grouped into the same issue. Omit to preserve the existing filters."
+          }
+        }
+      },
       "ErrorTrackingImpact": {
         "type": "object",
         "properties": {
@@ -113223,7 +113301,27 @@
             "maximum": 1,
             "minimum": 0,
             "default": 1,
-            "description": "Fraction of matching events to suppress. Use `1.0` to suppress all matching events."
+            "description": "Probability that a matching event is dropped. `1.0` drops every match (default); `0.0` drops none; `0.5` drops half. Higher values suppress more."
+          }
+        }
+      },
+      "ErrorTrackingSuppressionRuleUpdateRequest": {
+        "type": "object",
+        "properties": {
+          "filters": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/PropertyGroupFilterValue"
+              }
+            ],
+            "description": "Property-group filters that define which incoming error events should be suppressed. Provide an empty `values` array to convert the rule into a match-all suppression. Omit to preserve the existing filters."
+          },
+          "sampling_rate": {
+            "type": "number",
+            "format": "double",
+            "maximum": 1,
+            "minimum": 0,
+            "description": "Probability that a matching event is dropped. `1.0` drops every match; `0.0` drops none; `0.5` drops half. Higher values suppress more. Omit to preserve the existing rate."
           }
         }
       },
@@ -113354,6 +113452,11 @@
             "type": "boolean",
             "default": false,
             "description": "Whether to overwrite uploaded symbol sets whose content hash changed."
+          },
+          "skip_on_conflict": {
+            "type": "boolean",
+            "default": false,
+            "description": "Whether to skip uploaded symbol sets whose content hash changed instead of failing."
           }
         }
       },
@@ -117864,7 +117967,15 @@
           },
           "series": {
             "items": {
-              "anyOf": [
+              "discriminator": {
+                "mapping": {
+                  "ActionsNode": "#/components/schemas/ActionsNode",
+                  "EventsNode": "#/components/schemas/EventsNode",
+                  "ExperimentDataWarehouseNode": "#/components/schemas/ExperimentDataWarehouseNode"
+                },
+                "propertyName": "kind"
+              },
+              "oneOf": [
                 {
                   "$ref": "#/components/schemas/EventsNode"
                 },
@@ -118401,7 +118512,15 @@
             "title": "Sharedmetricid"
           },
           "source": {
-            "anyOf": [
+            "discriminator": {
+              "mapping": {
+                "ActionsNode": "#/components/schemas/ActionsNode",
+                "EventsNode": "#/components/schemas/EventsNode",
+                "ExperimentDataWarehouseNode": "#/components/schemas/ExperimentDataWarehouseNode"
+              },
+              "propertyName": "kind"
+            },
+            "oneOf": [
               {
                 "$ref": "#/components/schemas/EventsNode"
               },
@@ -118960,7 +119079,15 @@
             "default": null
           },
           "denominator": {
-            "anyOf": [
+            "discriminator": {
+              "mapping": {
+                "ActionsNode": "#/components/schemas/ActionsNode",
+                "EventsNode": "#/components/schemas/EventsNode",
+                "ExperimentDataWarehouseNode": "#/components/schemas/ExperimentDataWarehouseNode"
+              },
+              "propertyName": "kind"
+            },
+            "oneOf": [
               {
                 "$ref": "#/components/schemas/EventsNode"
               },
@@ -119033,7 +119160,15 @@
             "title": "Name"
           },
           "numerator": {
-            "anyOf": [
+            "discriminator": {
+              "mapping": {
+                "ActionsNode": "#/components/schemas/ActionsNode",
+                "EventsNode": "#/components/schemas/EventsNode",
+                "ExperimentDataWarehouseNode": "#/components/schemas/ExperimentDataWarehouseNode"
+              },
+              "propertyName": "kind"
+            },
+            "oneOf": [
               {
                 "$ref": "#/components/schemas/EventsNode"
               },
@@ -119119,7 +119254,15 @@
             "default": null
           },
           "completion_event": {
-            "anyOf": [
+            "discriminator": {
+              "mapping": {
+                "ActionsNode": "#/components/schemas/ActionsNode",
+                "EventsNode": "#/components/schemas/EventsNode",
+                "ExperimentDataWarehouseNode": "#/components/schemas/ExperimentDataWarehouseNode"
+              },
+              "propertyName": "kind"
+            },
+            "oneOf": [
               {
                 "$ref": "#/components/schemas/EventsNode"
               },
@@ -119251,7 +119394,15 @@
             "title": "Sharedmetricid"
           },
           "start_event": {
-            "anyOf": [
+            "discriminator": {
+              "mapping": {
+                "ActionsNode": "#/components/schemas/ActionsNode",
+                "EventsNode": "#/components/schemas/EventsNode",
+                "ExperimentDataWarehouseNode": "#/components/schemas/ExperimentDataWarehouseNode"
+              },
+              "propertyName": "kind"
+            },
+            "oneOf": [
               {
                 "$ref": "#/components/schemas/EventsNode"
               },
@@ -125325,8 +125476,7 @@
           },
           "source_language": {
             "type": "string",
-            "default": "en",
-            "description": "Source language code for the existing survey copy."
+            "description": "Optional override for the source language code. Defaults to the survey's `base_language` (or 'en' if unset)."
           },
           "overwrite": {
             "type": "boolean",
@@ -133717,11 +133867,11 @@
       },
       "LensModelEnum": {
         "enum": [
-          "gemini-3-flash",
-          "gemini-3-flash-lite"
+          "gemini-3-flash-preview",
+          "gemini-3.1-flash-lite-preview"
         ],
         "type": "string",
-        "description": "* `gemini-3-flash` - Gemini 3 Flash\n* `gemini-3-flash-lite` - Gemini 3 Flash Lite"
+        "description": "* `gemini-3-flash-preview` - Gemini 3 Flash\n* `gemini-3.1-flash-lite-preview` - Gemini 3 Flash Lite"
       },
       "LensProviderEnum": {
         "enum": [
@@ -133741,9 +133891,15 @@
             "type": "integer",
             "minimum": 0,
             "description": "Number of PostHog Signals emitted from this observation."
+          },
+          "event_id_mapping": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "Maps the short `event_id` the LLM cites in `model_output.reasoning` to citation metadata: `{uuid, timestamp_ms}`. Only includes hashes the LLM actually cited."
           }
         },
         "required": [
+          "event_id_mapping",
           "model_output",
           "signals_count"
         ]
@@ -133774,7 +133930,7 @@
                 "$ref": "#/components/schemas/LensModelEnum"
               }
             ],
-            "description": "Concrete model that ran the observation.\n\n* `gemini-3-flash` - Gemini 3 Flash\n* `gemini-3-flash-lite` - Gemini 3 Flash Lite"
+            "description": "Concrete model that ran the observation.\n\n* `gemini-3-flash-preview` - Gemini 3 Flash\n* `gemini-3.1-flash-lite-preview` - Gemini 3 Flash Lite"
           },
           "provider": {
             "allOf": [
@@ -136382,14 +136538,14 @@
                 "$ref": "#/components/schemas/RuleTypeEnum"
               }
             ],
-            "description": "Rule kind: severity_sampling, path_drop, or rate_limit (caps logs/sec for scope_service at ingestion).\n\n* `severity_sampling` - Severity-based reduction\n* `path_drop` - Path exclusion\n* `rate_limit` - Rate limit"
+            "description": "Rule kind: severity_sampling, path_drop, or rate_limit (caps matching log volume at ingestion).\n\n* `severity_sampling` - Severity-based reduction\n* `path_drop` - Path exclusion\n* `rate_limit` - Rate limit"
           },
           "scope_service": {
             "type": [
               "string",
               "null"
             ],
-            "description": "If set, the rule applies only to this service name; null means all services.",
+            "description": "Optional legacy service-name scope; new rules use `config.filter_group` for matching instead.",
             "maxLength": 512
           },
           "scope_path_pattern": {
@@ -136409,7 +136565,7 @@
             "description": "Optional list of predicates over string attributes, e.g. [{\"key\":\"http.route\",\"op\":\"eq\",\"value\":\"/api\"}]."
           },
           "config": {
-            "description": "Type-specific JSON. For path_drop: object with optional `filter_group` (PropertyGroupFilter shape — AND/OR tree of property predicates evaluated per record) and/or legacy `patterns` (list of regex strings) + `match_attribute_key` (string). When both are present a record is dropped if EITHER matches. Filter group example: `{\"type\":\"AND\",\"values\":[{\"type\":\"AND\",\"values\":[{\"key\":\"service.name\",\"operator\":\"exact\",\"value\":\"api\"}]}]}`. For severity_sampling: object with `actions` per severity level and optional `always_keep`. For rate_limit: object with required `logs_per_second` (integer 1–1000000) and optional `burst_logs` (integer ≥ logs_per_second, max 60000000); rate_limit rules require non-null `scope_service` matching `service.name` on each log line."
+            "description": "Type-specific JSON. For path_drop: object with optional `filter_group` (PropertyGroupFilter shape — AND/OR tree of property predicates evaluated per record) and/or legacy `patterns` (list of regex strings) + `match_attribute_key` (string). When both are present a record is dropped if EITHER matches. Filter group example: `{\"type\":\"AND\",\"values\":[{\"type\":\"AND\",\"values\":[{\"key\":\"service.name\",\"operator\":\"exact\",\"value\":\"api\"}]}]}`. For severity_sampling: object with `actions` per severity level and optional `always_keep`. For rate_limit: object with EITHER `logs_per_second` (integer 1–1000000, optional `burst_logs` integer ≥ logs_per_second, max 10000000) OR `kb_per_second` (integer 1–1000000 = 1 GB/s, optional `burst_kb` integer ≥ kb_per_second, max 10000000) — not both. Plus optional `filter_group` to narrow which logs the cap applies to. KB-mode charges each log its own uncompressed byte size, matching how billing measures ingested bytes."
           },
           "version": {
             "type": "integer",
@@ -139775,6 +139931,36 @@
               "null"
             ]
           },
+          "is_ai_training_opted_in": {
+            "type": [
+              "boolean",
+              "null"
+            ],
+            "description": "When True, this organization allows its data to be used to train PostHog AI models."
+          },
+          "is_ai_training_locked": {
+            "type": [
+              "boolean",
+              "null"
+            ],
+            "readOnly": true,
+            "description": "When True, the AI training opt-out setting cannot be modified through the UI or API."
+          },
+          "is_ai_training_cta_shown": {
+            "type": [
+              "boolean",
+              "null"
+            ],
+            "readOnly": true,
+            "description": "When True, in-app callouts inviting members to enable AI training are shown."
+          },
+          "is_hipaa": {
+            "type": [
+              "boolean",
+              "null"
+            ],
+            "readOnly": true
+          },
           "default_experiment_stats_method": {
             "description": "Default statistical method for new experiments in this organization.\n\n* `bayesian` - Bayesian\n* `frequentist` - Frequentist",
             "oneOf": [
@@ -139833,6 +140019,9 @@
           "customer_id",
           "id",
           "is_active",
+          "is_ai_training_cta_shown",
+          "is_ai_training_locked",
+          "is_hipaa",
           "is_member_join_email_enabled",
           "is_not_active_reason",
           "is_pending_deletion",
@@ -145428,6 +145617,7 @@
       },
       "PatchedAccount": {
         "type": "object",
+        "description": "A Customer Analytics account — a logical grouping used to assign customer-success ownership.",
         "properties": {
           "id": {
             "type": "string",
@@ -145540,6 +145730,13 @@
               }
             },
             "description": "Typed account properties: assignment fields (csm, account_executive, account_owner) and external system identifiers (stripe_customer_id, hubspot_deal_id, billing_id, sfdc_id, zendesk_id). Defaults to an empty object. Unknown keys are rejected."
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Tag names attached to the account. Pass a list to replace existing tags."
           },
           "created_at": {
             "type": "string",
@@ -145817,7 +146014,7 @@
                 "$ref": "#/components/schemas/CalculationIntervalEnum"
               }
             ],
-            "description": "How often the alert is checked: hourly, daily, weekly, or monthly.\n\n* `every_15_minutes` - every_15_minutes\n* `hourly` - hourly\n* `daily` - daily\n* `weekly` - weekly\n* `monthly` - monthly"
+            "description": "How often the alert is checked: every 15 minutes (Boost+), hourly, daily, weekly, or monthly.\n\n* `every_15_minutes` - every_15_minutes\n* `hourly` - hourly\n* `daily` - daily\n* `weekly` - weekly\n* `monthly` - monthly"
           },
           "snoozed_until": {
             "type": [
@@ -146904,7 +147101,23 @@
             "maxLength": 128
           },
           "query": {
-            "description": "HogQL query definition as a JSON object with a \"query\" key containing the SQL string and a \"kind\" key containing the query type. Example: {\"query\": \"SELECT * FROM events LIMIT 100\", \"kind\": \"HogQLQuery\"}"
+            "type": "object",
+            "properties": {
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "HogQLQuery"
+                ],
+                "default": "HogQLQuery"
+              },
+              "query": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "query"
+            ],
+            "description": "HogQL query definition as a JSON object with a \"query\" key containing the SQL string and a \"kind\" key (always \"HogQLQuery\"). Example: {\"kind\": \"HogQLQuery\", \"query\": \"SELECT * FROM events LIMIT 100\"}"
           },
           "created_by": {
             "allOf": [
@@ -148013,6 +148226,22 @@
           }
         }
       },
+      "PatchedErrorTrackingGroupingRuleUpdateRequest": {
+        "type": "object",
+        "properties": {
+          "filters": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/PropertyGroupFilterValue"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Property-group filters that define which exceptions should be grouped into the same issue. Omit to preserve the existing filters."
+          }
+        }
+      },
       "PatchedErrorTrackingIssueFull": {
         "type": "object",
         "properties": {
@@ -148180,6 +148409,26 @@
             "type": "string",
             "format": "date-time",
             "readOnly": true
+          }
+        }
+      },
+      "PatchedErrorTrackingSuppressionRuleUpdateRequest": {
+        "type": "object",
+        "properties": {
+          "filters": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/PropertyGroupFilterValue"
+              }
+            ],
+            "description": "Property-group filters that define which incoming error events should be suppressed. Provide an empty `values` array to convert the rule into a match-all suppression. Omit to preserve the existing filters."
+          },
+          "sampling_rate": {
+            "type": "number",
+            "format": "double",
+            "maximum": 1,
+            "minimum": 0,
+            "description": "Probability that a matching event is dropped. `1.0` drops every match; `0.0` drops none; `0.5` drops half. Higher values suppress more. Omit to preserve the existing rate."
           }
         }
       },
@@ -150577,14 +150826,14 @@
                 "$ref": "#/components/schemas/RuleTypeEnum"
               }
             ],
-            "description": "Rule kind: severity_sampling, path_drop, or rate_limit (caps logs/sec for scope_service at ingestion).\n\n* `severity_sampling` - Severity-based reduction\n* `path_drop` - Path exclusion\n* `rate_limit` - Rate limit"
+            "description": "Rule kind: severity_sampling, path_drop, or rate_limit (caps matching log volume at ingestion).\n\n* `severity_sampling` - Severity-based reduction\n* `path_drop` - Path exclusion\n* `rate_limit` - Rate limit"
           },
           "scope_service": {
             "type": [
               "string",
               "null"
             ],
-            "description": "If set, the rule applies only to this service name; null means all services.",
+            "description": "Optional legacy service-name scope; new rules use `config.filter_group` for matching instead.",
             "maxLength": 512
           },
           "scope_path_pattern": {
@@ -150604,7 +150853,7 @@
             "description": "Optional list of predicates over string attributes, e.g. [{\"key\":\"http.route\",\"op\":\"eq\",\"value\":\"/api\"}]."
           },
           "config": {
-            "description": "Type-specific JSON. For path_drop: object with optional `filter_group` (PropertyGroupFilter shape — AND/OR tree of property predicates evaluated per record) and/or legacy `patterns` (list of regex strings) + `match_attribute_key` (string). When both are present a record is dropped if EITHER matches. Filter group example: `{\"type\":\"AND\",\"values\":[{\"type\":\"AND\",\"values\":[{\"key\":\"service.name\",\"operator\":\"exact\",\"value\":\"api\"}]}]}`. For severity_sampling: object with `actions` per severity level and optional `always_keep`. For rate_limit: object with required `logs_per_second` (integer 1–1000000) and optional `burst_logs` (integer ≥ logs_per_second, max 60000000); rate_limit rules require non-null `scope_service` matching `service.name` on each log line."
+            "description": "Type-specific JSON. For path_drop: object with optional `filter_group` (PropertyGroupFilter shape — AND/OR tree of property predicates evaluated per record) and/or legacy `patterns` (list of regex strings) + `match_attribute_key` (string). When both are present a record is dropped if EITHER matches. Filter group example: `{\"type\":\"AND\",\"values\":[{\"type\":\"AND\",\"values\":[{\"key\":\"service.name\",\"operator\":\"exact\",\"value\":\"api\"}]}]}`. For severity_sampling: object with `actions` per severity level and optional `always_keep`. For rate_limit: object with EITHER `logs_per_second` (integer 1–1000000, optional `burst_logs` integer ≥ logs_per_second, max 10000000) OR `kb_per_second` (integer 1–1000000 = 1 GB/s, optional `burst_kb` integer ≥ kb_per_second, max 10000000) — not both. Plus optional `filter_group` to narrow which logs the cap applies to. KB-mode charges each log its own uncompressed byte size, matching how billing measures ingested bytes."
           },
           "version": {
             "type": "integer",
@@ -150951,6 +151200,36 @@
               "boolean",
               "null"
             ]
+          },
+          "is_ai_training_opted_in": {
+            "type": [
+              "boolean",
+              "null"
+            ],
+            "description": "When True, this organization allows its data to be used to train PostHog AI models."
+          },
+          "is_ai_training_locked": {
+            "type": [
+              "boolean",
+              "null"
+            ],
+            "readOnly": true,
+            "description": "When True, the AI training opt-out setting cannot be modified through the UI or API."
+          },
+          "is_ai_training_cta_shown": {
+            "type": [
+              "boolean",
+              "null"
+            ],
+            "readOnly": true,
+            "description": "When True, in-app callouts inviting members to enable AI training are shown."
+          },
+          "is_hipaa": {
+            "type": [
+              "boolean",
+              "null"
+            ],
+            "readOnly": true
           },
           "default_experiment_stats_method": {
             "description": "Default statistical method for new experiments in this organization.\n\n* `bayesian` - Bayesian\n* `frequentist` - Frequentist",
@@ -151375,7 +151654,7 @@
       },
       "PatchedProjectBackwardCompat": {
         "type": "object",
-        "description": "Like `ProjectBasicSerializer`, but also works as a drop-in replacement for `TeamBasicSerializer` by way of\npassthrough fields. This allows the meaning of `Team` to change from \"project\" to \"environment\" without breaking\nbackward compatibility of the REST API.\nDo not use this in greenfield endpoints!",
+        "description": "Mixin for serializers to add user access control fields",
         "properties": {
           "id": {
             "type": "integer",
@@ -151810,9 +152089,10 @@
             "readOnly": true
           },
           "created_by": {
-            "type": [
-              "integer",
-              "null"
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/UserBasic"
+              }
             ],
             "readOnly": true
           },
@@ -151876,7 +152156,7 @@
             "description": "What the lens does: monitor, classifier, scorer, summarizer, or indexer.\n\n* `monitor` - Monitor\n* `classifier` - Classifier\n* `scorer` - Scorer\n* `summarizer` - Summarizer\n* `indexer` - Indexer"
           },
           "lens_config": {
-            "description": "Type-specific configuration. Always includes `prompt`; classifiers add `tags`, scorers add `scale`, etc."
+            "description": "Type-specific configuration. Monitor/classifier/scorer/summarizer require `prompt`; classifiers add `tags`, scorers add `scale`. Indexer is fixed-task and rejects `prompt`."
           },
           "query": {
             "description": "Persisted `RecordingsQuery` shape used to pick candidate sessions. `date_from`/`date_to` are stripped on save — the schedule controls time, not the user."
@@ -151902,7 +152182,7 @@
                 "$ref": "#/components/schemas/LensModelEnum"
               }
             ],
-            "description": "Concrete model to use for this lens.\n\n* `gemini-3-flash` - Gemini 3 Flash\n* `gemini-3-flash-lite` - Gemini 3 Flash Lite"
+            "description": "Concrete model to use for this lens.\n\n* `gemini-3-flash-preview` - Gemini 3 Flash\n* `gemini-3.1-flash-lite-preview` - Gemini 3 Flash Lite"
           },
           "enabled": {
             "type": "boolean",
@@ -152853,7 +153133,7 @@
             "items": {
               "$ref": "#/components/schemas/SurveyQuestionInputSchema"
             },
-            "description": "\n        The `array` of questions included in the survey. Each question must conform to one of the defined question types: Basic, Link, Rating, or Multiple Choice.\n\n        Basic (open-ended question)\n        - `id`: The question ID\n        - `type`: `open`\n        - `question`: The text of the question.\n        - `description`: Optional description of the question.\n        - `descriptionContentType`: Content type of the description (`html` or `text`).\n        - `optional`: Whether the question is optional (`boolean`).\n        - `buttonText`: Text displayed on the submit button.\n        - `branching`: Branching logic for the question. See branching types below for details.\n\n        Link (a question with a link)\n        - `id`: The question ID\n        - `type`: `link`\n        - `question`: The text of the question.\n        - `description`: Optional description of the question.\n        - `descriptionContentType`: Content type of the description (`html` or `text`).\n        - `optional`: Whether the question is optional (`boolean`).\n        - `buttonText`: Text displayed on the submit button.\n        - `link`: The URL associated with the question.\n        - `branching`: Branching logic for the question. See branching types below for details.\n\n        Rating (a question with a rating scale)\n        - `id`: The question ID\n        - `type`: `rating`\n        - `question`: The text of the question.\n        - `description`: Optional description of the question.\n        - `descriptionContentType`: Content type of the description (`html` or `text`).\n        - `optional`: Whether the question is optional (`boolean`).\n        - `buttonText`: Text displayed on the submit button.\n        - `display`: Display style of the rating (`number` or `emoji`).\n        - `scale`: The scale of the rating (`number`).\n        - `lowerBoundLabel`: Label for the lower bound of the scale.\n        - `upperBoundLabel`: Label for the upper bound of the scale.\n        - `isNpsQuestion`: Whether the question is an NPS rating.\n        - `branching`: Branching logic for the question. See branching types below for details.\n\n        Multiple choice\n        - `id`: The question ID\n        - `type`: `single_choice` or `multiple_choice`\n        - `question`: The text of the question.\n        - `description`: Optional description of the question.\n        - `descriptionContentType`: Content type of the description (`html` or `text`).\n        - `optional`: Whether the question is optional (`boolean`).\n        - `buttonText`: Text displayed on the submit button.\n        - `choices`: An array of choices for the question.\n        - `shuffleOptions`: Whether to shuffle the order of the choices (`boolean`).\n        - `hasOpenChoice`: Whether the question allows an open-ended response (`boolean`).\n        - `branching`: Branching logic for the question. See branching types below for details.\n\n        Branching logic can be one of the following types:\n\n        Next question: Proceeds to the next question\n        ```json\n        {\n            \"type\": \"next_question\"\n        }\n        ```\n\n        End: Ends the survey, optionally displaying a confirmation message.\n        ```json\n        {\n            \"type\": \"end\"\n        }\n        ```\n\n        Response-based: Branches based on the response values. Available for the `rating` and `single_choice` question types.\n        ```json\n        {\n            \"type\": \"response_based\",\n            \"responseValues\": {\n                \"responseKey\": \"value\"\n            }\n        }\n        ```\n\n        Specific question: Proceeds to a specific question by index.\n        ```json\n        {\n            \"type\": \"specific_question\",\n            \"index\": 2\n        }\n        ```\n\n        Translations: Each question can include inline translations.\n        - `translations`: Object mapping language codes to translated fields.\n        - Language codes: Any string - allows customers to use their own language keys (e.g., \"es\", \"es-MX\", \"english\", \"french\")\n        - Translatable fields: `question`, `description`, `buttonText`, `choices`, `lowerBoundLabel`, `upperBoundLabel`, `link`\n\n        Example with translations:\n        ```json\n        {\n            \"id\": \"uuid\",\n            \"type\": \"rating\",\n            \"question\": \"How satisfied are you?\",\n            \"lowerBoundLabel\": \"Not satisfied\",\n            \"upperBoundLabel\": \"Very satisfied\",\n            \"translations\": {\n                \"es\": {\n                    \"question\": \"¿Qué tan satisfecho estás?\",\n                    \"lowerBoundLabel\": \"No satisfecho\",\n                    \"upperBoundLabel\": \"Muy satisfecho\"\n                },\n                \"fr\": {\n                    \"question\": \"Dans quelle mesure êtes-vous satisfait?\"\n                }\n            }\n        }\n        ```\n        "
+            "description": "\n        The `array` of questions included in the survey. Each question must conform to one of the defined question types: Basic, Link, Rating, or Multiple Choice.\n\n        Basic (open-ended question)\n        - `id`: The question ID\n        - `type`: `open`\n        - `question`: The text of the question.\n        - `description`: Optional description of the question.\n        - `descriptionContentType`: Content type of the description (`html` or `text`).\n        - `optional`: Whether the question is optional (`boolean`).\n        - `buttonText`: Text displayed on the submit button.\n        - `branching`: Branching logic for the question. See branching types below for details.\n\n        Link (a question with a link)\n        - `id`: The question ID\n        - `type`: `link`\n        - `question`: The text of the question.\n        - `description`: Optional description of the question.\n        - `descriptionContentType`: Content type of the description (`html` or `text`).\n        - `optional`: Whether the question is optional (`boolean`).\n        - `buttonText`: Text displayed on the submit button.\n        - `link`: The URL associated with the question.\n        - `branching`: Branching logic for the question. See branching types below for details.\n\n        Rating (a question with a rating scale)\n        - `id`: The question ID\n        - `type`: `rating`\n        - `question`: The text of the question.\n        - `description`: Optional description of the question.\n        - `descriptionContentType`: Content type of the description (`html` or `text`).\n        - `optional`: Whether the question is optional (`boolean`).\n        - `buttonText`: Text displayed on the submit button.\n        - `display`: Display style of the rating (`number` or `emoji`).\n        - `scale`: The scale of the rating (`number`).\n        - `lowerBoundLabel`: Label for the lower bound of the scale.\n        - `upperBoundLabel`: Label for the upper bound of the scale.\n        - `isNpsQuestion`: Whether the question is an NPS rating.\n        - `branching`: Branching logic for the question. See branching types below for details.\n\n        Multiple choice\n        - `id`: The question ID\n        - `type`: `single_choice` or `multiple_choice`\n        - `question`: The text of the question.\n        - `description`: Optional description of the question.\n        - `descriptionContentType`: Content type of the description (`html` or `text`).\n        - `optional`: Whether the question is optional (`boolean`).\n        - `buttonText`: Text displayed on the submit button.\n        - `choices`: An array of choices for the question.\n        - `shuffleOptions`: Whether to shuffle the order of the choices (`boolean`).\n        - `hasOpenChoice`: Whether the question allows an open-ended response (`boolean`).\n        - `branching`: Branching logic for the question. See branching types below for details.\n\n        Branching logic can be one of the following types:\n\n        Next question: Proceeds to the next question\n        ```json\n        {\n            \"type\": \"next_question\"\n        }\n        ```\n\n        End: Ends the survey, optionally displaying a confirmation message.\n        ```json\n        {\n            \"type\": \"end\"\n        }\n        ```\n\n        Response-based: Branches based on the response values. Available for the `rating` and `single_choice` question types.\n        ```json\n        {\n            \"type\": \"response_based\",\n            \"responseValues\": {\n                \"responseKey\": \"value\"\n            }\n        }\n        ```\n\n        Specific question: Proceeds to a specific question by index.\n        ```json\n        {\n            \"type\": \"specific_question\",\n            \"index\": 2\n        }\n        ```\n\n        Translations: Each question can include inline translations.\n        - `translations`: Object mapping language codes to translated fields.\n        - Language codes: Canonical BCP-47-ish strings (e.g., \"es\", \"es-MX\", \"zh-CN\"). Aliases like \"english\" or \"default\" are rejected. The survey's `base_language` (default \"en\") declares the language of the untranslated text and cannot also appear as a translation key.\n        - Translatable fields: `question`, `description`, `buttonText`, `choices`, `lowerBoundLabel`, `upperBoundLabel`, `link`\n\n        Example with translations:\n        ```json\n        {\n            \"id\": \"uuid\",\n            \"type\": \"rating\",\n            \"question\": \"How satisfied are you?\",\n            \"lowerBoundLabel\": \"Not satisfied\",\n            \"upperBoundLabel\": \"Very satisfied\",\n            \"translations\": {\n                \"es\": {\n                    \"question\": \"¿Qué tan satisfecho estás?\",\n                    \"lowerBoundLabel\": \"No satisfecho\",\n                    \"upperBoundLabel\": \"Muy satisfecho\"\n                },\n                \"fr\": {\n                    \"question\": \"Dans quelle mesure êtes-vous satisfait?\"\n                }\n            }\n        }\n        ```\n        "
           },
           "conditions": {
             "oneOf": [
@@ -153012,6 +153292,11 @@
               "boolean",
               "null"
             ]
+          },
+          "base_language": {
+            "type": "string",
+            "description": "BCP-47 language code (e.g. 'en', 'es', 'es-MX') describing the language of the survey's untranslated text. Defaults to 'en'. Cannot also appear as a key in `translations`.",
+            "maxLength": 20
           },
           "translations": {},
           "_create_in_folder": {
@@ -153228,6 +153513,18 @@
           "internal": {
             "type": "boolean",
             "description": "If true, this task is for internal use and should not be exposed to end users."
+          },
+          "archived": {
+            "type": "boolean",
+            "description": "If true, the task is hidden from default list responses. Used by PostHog Code clients to share archive state across desktop and mobile."
+          },
+          "archived_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time",
+            "readOnly": true
           },
           "latest_run": {
             "type": [
@@ -154465,6 +154762,11 @@
               "$ref": "#/components/schemas/PendingInvite"
             },
             "readOnly": true
+          },
+          "requires_credential_review": {
+            "type": "boolean",
+            "readOnly": true,
+            "description": "True if the user has at least one Personal API Key and has not yet acknowledged their existing credentials. Used to gate a one-shot review screen on first post-provisioning login. Becomes False once the user POSTs to `/api/users/@me/credentials_review_complete/`. Read-only."
           }
         }
       },
@@ -156732,7 +157034,7 @@
       },
       "ProjectBackwardCompat": {
         "type": "object",
-        "description": "Like `ProjectBasicSerializer`, but also works as a drop-in replacement for `TeamBasicSerializer` by way of\npassthrough fields. This allows the meaning of `Team` to change from \"project\" to \"environment\" without breaking\nbackward compatibility of the REST API.\nDo not use this in greenfield endpoints!",
+        "description": "Mixin for serializers to add user access control fields",
         "properties": {
           "id": {
             "type": "integer",
@@ -157254,9 +157556,10 @@
             "readOnly": true
           },
           "created_by": {
-            "type": [
-              "integer",
-              "null"
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/UserBasic"
+              }
             ],
             "readOnly": true
           },
@@ -160768,6 +161071,18 @@
             "description": "Measured timings for different parts of the query generation process",
             "title": "Timings"
           },
+          "usedLazyPrecompute": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Usedlazyprecompute"
+          },
           "usedPreAggregatedTables": {
             "anyOf": [
               {
@@ -163503,6 +163818,18 @@
             "default": null,
             "description": "Measured timings for different parts of the query generation process",
             "title": "Timings"
+          },
+          "usedLazyPrecompute": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Usedlazyprecompute"
           },
           "usedPreAggregatedTables": {
             "anyOf": [
@@ -171049,7 +171376,7 @@
             "description": "What the lens does: monitor, classifier, scorer, summarizer, or indexer.\n\n* `monitor` - Monitor\n* `classifier` - Classifier\n* `scorer` - Scorer\n* `summarizer` - Summarizer\n* `indexer` - Indexer"
           },
           "lens_config": {
-            "description": "Type-specific configuration. Always includes `prompt`; classifiers add `tags`, scorers add `scale`, etc."
+            "description": "Type-specific configuration. Monitor/classifier/scorer/summarizer require `prompt`; classifiers add `tags`, scorers add `scale`. Indexer is fixed-task and rejects `prompt`."
           },
           "query": {
             "description": "Persisted `RecordingsQuery` shape used to pick candidate sessions. `date_from`/`date_to` are stripped on save — the schedule controls time, not the user."
@@ -171075,7 +171402,7 @@
                 "$ref": "#/components/schemas/LensModelEnum"
               }
             ],
-            "description": "Concrete model to use for this lens.\n\n* `gemini-3-flash` - Gemini 3 Flash\n* `gemini-3-flash-lite` - Gemini 3 Flash Lite"
+            "description": "Concrete model to use for this lens.\n\n* `gemini-3-flash-preview` - Gemini 3 Flash\n* `gemini-3.1-flash-lite-preview` - Gemini 3 Flash Lite"
           },
           "enabled": {
             "type": "boolean",
@@ -174215,6 +174542,18 @@
             "default": null,
             "description": "Measured timings for different parts of the query generation process",
             "title": "Timings"
+          },
+          "usedLazyPrecompute": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Usedlazyprecompute"
           },
           "usedPreAggregatedTables": {
             "anyOf": [
@@ -184089,7 +184428,7 @@
             "readOnly": true
           },
           "questions": {
-            "description": "\n        The `array` of questions included in the survey. Each question must conform to one of the defined question types: Basic, Link, Rating, or Multiple Choice.\n\n        Basic (open-ended question)\n        - `id`: The question ID\n        - `type`: `open`\n        - `question`: The text of the question.\n        - `description`: Optional description of the question.\n        - `descriptionContentType`: Content type of the description (`html` or `text`).\n        - `optional`: Whether the question is optional (`boolean`).\n        - `buttonText`: Text displayed on the submit button.\n        - `branching`: Branching logic for the question. See branching types below for details.\n\n        Link (a question with a link)\n        - `id`: The question ID\n        - `type`: `link`\n        - `question`: The text of the question.\n        - `description`: Optional description of the question.\n        - `descriptionContentType`: Content type of the description (`html` or `text`).\n        - `optional`: Whether the question is optional (`boolean`).\n        - `buttonText`: Text displayed on the submit button.\n        - `link`: The URL associated with the question.\n        - `branching`: Branching logic for the question. See branching types below for details.\n\n        Rating (a question with a rating scale)\n        - `id`: The question ID\n        - `type`: `rating`\n        - `question`: The text of the question.\n        - `description`: Optional description of the question.\n        - `descriptionContentType`: Content type of the description (`html` or `text`).\n        - `optional`: Whether the question is optional (`boolean`).\n        - `buttonText`: Text displayed on the submit button.\n        - `display`: Display style of the rating (`number` or `emoji`).\n        - `scale`: The scale of the rating (`number`).\n        - `lowerBoundLabel`: Label for the lower bound of the scale.\n        - `upperBoundLabel`: Label for the upper bound of the scale.\n        - `isNpsQuestion`: Whether the question is an NPS rating.\n        - `branching`: Branching logic for the question. See branching types below for details.\n\n        Multiple choice\n        - `id`: The question ID\n        - `type`: `single_choice` or `multiple_choice`\n        - `question`: The text of the question.\n        - `description`: Optional description of the question.\n        - `descriptionContentType`: Content type of the description (`html` or `text`).\n        - `optional`: Whether the question is optional (`boolean`).\n        - `buttonText`: Text displayed on the submit button.\n        - `choices`: An array of choices for the question.\n        - `shuffleOptions`: Whether to shuffle the order of the choices (`boolean`).\n        - `hasOpenChoice`: Whether the question allows an open-ended response (`boolean`).\n        - `branching`: Branching logic for the question. See branching types below for details.\n\n        Branching logic can be one of the following types:\n\n        Next question: Proceeds to the next question\n        ```json\n        {\n            \"type\": \"next_question\"\n        }\n        ```\n\n        End: Ends the survey, optionally displaying a confirmation message.\n        ```json\n        {\n            \"type\": \"end\"\n        }\n        ```\n\n        Response-based: Branches based on the response values. Available for the `rating` and `single_choice` question types.\n        ```json\n        {\n            \"type\": \"response_based\",\n            \"responseValues\": {\n                \"responseKey\": \"value\"\n            }\n        }\n        ```\n\n        Specific question: Proceeds to a specific question by index.\n        ```json\n        {\n            \"type\": \"specific_question\",\n            \"index\": 2\n        }\n        ```\n\n        Translations: Each question can include inline translations.\n        - `translations`: Object mapping language codes to translated fields.\n        - Language codes: Any string - allows customers to use their own language keys (e.g., \"es\", \"es-MX\", \"english\", \"french\")\n        - Translatable fields: `question`, `description`, `buttonText`, `choices`, `lowerBoundLabel`, `upperBoundLabel`, `link`\n\n        Example with translations:\n        ```json\n        {\n            \"id\": \"uuid\",\n            \"type\": \"rating\",\n            \"question\": \"How satisfied are you?\",\n            \"lowerBoundLabel\": \"Not satisfied\",\n            \"upperBoundLabel\": \"Very satisfied\",\n            \"translations\": {\n                \"es\": {\n                    \"question\": \"¿Qué tan satisfecho estás?\",\n                    \"lowerBoundLabel\": \"No satisfecho\",\n                    \"upperBoundLabel\": \"Muy satisfecho\"\n                },\n                \"fr\": {\n                    \"question\": \"Dans quelle mesure êtes-vous satisfait?\"\n                }\n            }\n        }\n        ```\n        "
+            "description": "\n        The `array` of questions included in the survey. Each question must conform to one of the defined question types: Basic, Link, Rating, or Multiple Choice.\n\n        Basic (open-ended question)\n        - `id`: The question ID\n        - `type`: `open`\n        - `question`: The text of the question.\n        - `description`: Optional description of the question.\n        - `descriptionContentType`: Content type of the description (`html` or `text`).\n        - `optional`: Whether the question is optional (`boolean`).\n        - `buttonText`: Text displayed on the submit button.\n        - `branching`: Branching logic for the question. See branching types below for details.\n\n        Link (a question with a link)\n        - `id`: The question ID\n        - `type`: `link`\n        - `question`: The text of the question.\n        - `description`: Optional description of the question.\n        - `descriptionContentType`: Content type of the description (`html` or `text`).\n        - `optional`: Whether the question is optional (`boolean`).\n        - `buttonText`: Text displayed on the submit button.\n        - `link`: The URL associated with the question.\n        - `branching`: Branching logic for the question. See branching types below for details.\n\n        Rating (a question with a rating scale)\n        - `id`: The question ID\n        - `type`: `rating`\n        - `question`: The text of the question.\n        - `description`: Optional description of the question.\n        - `descriptionContentType`: Content type of the description (`html` or `text`).\n        - `optional`: Whether the question is optional (`boolean`).\n        - `buttonText`: Text displayed on the submit button.\n        - `display`: Display style of the rating (`number` or `emoji`).\n        - `scale`: The scale of the rating (`number`).\n        - `lowerBoundLabel`: Label for the lower bound of the scale.\n        - `upperBoundLabel`: Label for the upper bound of the scale.\n        - `isNpsQuestion`: Whether the question is an NPS rating.\n        - `branching`: Branching logic for the question. See branching types below for details.\n\n        Multiple choice\n        - `id`: The question ID\n        - `type`: `single_choice` or `multiple_choice`\n        - `question`: The text of the question.\n        - `description`: Optional description of the question.\n        - `descriptionContentType`: Content type of the description (`html` or `text`).\n        - `optional`: Whether the question is optional (`boolean`).\n        - `buttonText`: Text displayed on the submit button.\n        - `choices`: An array of choices for the question.\n        - `shuffleOptions`: Whether to shuffle the order of the choices (`boolean`).\n        - `hasOpenChoice`: Whether the question allows an open-ended response (`boolean`).\n        - `branching`: Branching logic for the question. See branching types below for details.\n\n        Branching logic can be one of the following types:\n\n        Next question: Proceeds to the next question\n        ```json\n        {\n            \"type\": \"next_question\"\n        }\n        ```\n\n        End: Ends the survey, optionally displaying a confirmation message.\n        ```json\n        {\n            \"type\": \"end\"\n        }\n        ```\n\n        Response-based: Branches based on the response values. Available for the `rating` and `single_choice` question types.\n        ```json\n        {\n            \"type\": \"response_based\",\n            \"responseValues\": {\n                \"responseKey\": \"value\"\n            }\n        }\n        ```\n\n        Specific question: Proceeds to a specific question by index.\n        ```json\n        {\n            \"type\": \"specific_question\",\n            \"index\": 2\n        }\n        ```\n\n        Translations: Each question can include inline translations.\n        - `translations`: Object mapping language codes to translated fields.\n        - Language codes: Canonical BCP-47-ish strings (e.g., \"es\", \"es-MX\", \"zh-CN\"). Aliases like \"english\" or \"default\" are rejected. The survey's `base_language` (default \"en\") declares the language of the untranslated text and cannot also appear as a translation key.\n        - Translatable fields: `question`, `description`, `buttonText`, `choices`, `lowerBoundLabel`, `upperBoundLabel`, `link`\n\n        Example with translations:\n        ```json\n        {\n            \"id\": \"uuid\",\n            \"type\": \"rating\",\n            \"question\": \"How satisfied are you?\",\n            \"lowerBoundLabel\": \"Not satisfied\",\n            \"upperBoundLabel\": \"Very satisfied\",\n            \"translations\": {\n                \"es\": {\n                    \"question\": \"¿Qué tan satisfecho estás?\",\n                    \"lowerBoundLabel\": \"No satisfecho\",\n                    \"upperBoundLabel\": \"Muy satisfecho\"\n                },\n                \"fr\": {\n                    \"question\": \"Dans quelle mesure êtes-vous satisfait?\"\n                }\n            }\n        }\n        ```\n        "
           },
           "conditions": {
             "type": [
@@ -184243,6 +184582,11 @@
               "boolean",
               "null"
             ]
+          },
+          "base_language": {
+            "type": "string",
+            "description": "BCP-47 language code (e.g. 'en', 'es', 'es-MX') describing the language of the survey's untranslated text. Defaults to 'en'. Cannot also appear as a key in `translations`.",
+            "maxLength": 20
           },
           "translations": {},
           "user_access_level": {
@@ -184935,7 +185279,7 @@
             "writeOnly": true
           },
           "questions": {
-            "description": "\n        The `array` of questions included in the survey. Each question must conform to one of the defined question types: Basic, Link, Rating, or Multiple Choice.\n\n        Basic (open-ended question)\n        - `id`: The question ID\n        - `type`: `open`\n        - `question`: The text of the question.\n        - `description`: Optional description of the question.\n        - `descriptionContentType`: Content type of the description (`html` or `text`).\n        - `optional`: Whether the question is optional (`boolean`).\n        - `buttonText`: Text displayed on the submit button.\n        - `branching`: Branching logic for the question. See branching types below for details.\n\n        Link (a question with a link)\n        - `id`: The question ID\n        - `type`: `link`\n        - `question`: The text of the question.\n        - `description`: Optional description of the question.\n        - `descriptionContentType`: Content type of the description (`html` or `text`).\n        - `optional`: Whether the question is optional (`boolean`).\n        - `buttonText`: Text displayed on the submit button.\n        - `link`: The URL associated with the question.\n        - `branching`: Branching logic for the question. See branching types below for details.\n\n        Rating (a question with a rating scale)\n        - `id`: The question ID\n        - `type`: `rating`\n        - `question`: The text of the question.\n        - `description`: Optional description of the question.\n        - `descriptionContentType`: Content type of the description (`html` or `text`).\n        - `optional`: Whether the question is optional (`boolean`).\n        - `buttonText`: Text displayed on the submit button.\n        - `display`: Display style of the rating (`number` or `emoji`).\n        - `scale`: The scale of the rating (`number`).\n        - `lowerBoundLabel`: Label for the lower bound of the scale.\n        - `upperBoundLabel`: Label for the upper bound of the scale.\n        - `isNpsQuestion`: Whether the question is an NPS rating.\n        - `branching`: Branching logic for the question. See branching types below for details.\n\n        Multiple choice\n        - `id`: The question ID\n        - `type`: `single_choice` or `multiple_choice`\n        - `question`: The text of the question.\n        - `description`: Optional description of the question.\n        - `descriptionContentType`: Content type of the description (`html` or `text`).\n        - `optional`: Whether the question is optional (`boolean`).\n        - `buttonText`: Text displayed on the submit button.\n        - `choices`: An array of choices for the question.\n        - `shuffleOptions`: Whether to shuffle the order of the choices (`boolean`).\n        - `hasOpenChoice`: Whether the question allows an open-ended response (`boolean`).\n        - `branching`: Branching logic for the question. See branching types below for details.\n\n        Branching logic can be one of the following types:\n\n        Next question: Proceeds to the next question\n        ```json\n        {\n            \"type\": \"next_question\"\n        }\n        ```\n\n        End: Ends the survey, optionally displaying a confirmation message.\n        ```json\n        {\n            \"type\": \"end\"\n        }\n        ```\n\n        Response-based: Branches based on the response values. Available for the `rating` and `single_choice` question types.\n        ```json\n        {\n            \"type\": \"response_based\",\n            \"responseValues\": {\n                \"responseKey\": \"value\"\n            }\n        }\n        ```\n\n        Specific question: Proceeds to a specific question by index.\n        ```json\n        {\n            \"type\": \"specific_question\",\n            \"index\": 2\n        }\n        ```\n\n        Translations: Each question can include inline translations.\n        - `translations`: Object mapping language codes to translated fields.\n        - Language codes: Any string - allows customers to use their own language keys (e.g., \"es\", \"es-MX\", \"english\", \"french\")\n        - Translatable fields: `question`, `description`, `buttonText`, `choices`, `lowerBoundLabel`, `upperBoundLabel`, `link`\n\n        Example with translations:\n        ```json\n        {\n            \"id\": \"uuid\",\n            \"type\": \"rating\",\n            \"question\": \"How satisfied are you?\",\n            \"lowerBoundLabel\": \"Not satisfied\",\n            \"upperBoundLabel\": \"Very satisfied\",\n            \"translations\": {\n                \"es\": {\n                    \"question\": \"¿Qué tan satisfecho estás?\",\n                    \"lowerBoundLabel\": \"No satisfecho\",\n                    \"upperBoundLabel\": \"Muy satisfecho\"\n                },\n                \"fr\": {\n                    \"question\": \"Dans quelle mesure êtes-vous satisfait?\"\n                }\n            }\n        }\n        ```\n        "
+            "description": "\n        The `array` of questions included in the survey. Each question must conform to one of the defined question types: Basic, Link, Rating, or Multiple Choice.\n\n        Basic (open-ended question)\n        - `id`: The question ID\n        - `type`: `open`\n        - `question`: The text of the question.\n        - `description`: Optional description of the question.\n        - `descriptionContentType`: Content type of the description (`html` or `text`).\n        - `optional`: Whether the question is optional (`boolean`).\n        - `buttonText`: Text displayed on the submit button.\n        - `branching`: Branching logic for the question. See branching types below for details.\n\n        Link (a question with a link)\n        - `id`: The question ID\n        - `type`: `link`\n        - `question`: The text of the question.\n        - `description`: Optional description of the question.\n        - `descriptionContentType`: Content type of the description (`html` or `text`).\n        - `optional`: Whether the question is optional (`boolean`).\n        - `buttonText`: Text displayed on the submit button.\n        - `link`: The URL associated with the question.\n        - `branching`: Branching logic for the question. See branching types below for details.\n\n        Rating (a question with a rating scale)\n        - `id`: The question ID\n        - `type`: `rating`\n        - `question`: The text of the question.\n        - `description`: Optional description of the question.\n        - `descriptionContentType`: Content type of the description (`html` or `text`).\n        - `optional`: Whether the question is optional (`boolean`).\n        - `buttonText`: Text displayed on the submit button.\n        - `display`: Display style of the rating (`number` or `emoji`).\n        - `scale`: The scale of the rating (`number`).\n        - `lowerBoundLabel`: Label for the lower bound of the scale.\n        - `upperBoundLabel`: Label for the upper bound of the scale.\n        - `isNpsQuestion`: Whether the question is an NPS rating.\n        - `branching`: Branching logic for the question. See branching types below for details.\n\n        Multiple choice\n        - `id`: The question ID\n        - `type`: `single_choice` or `multiple_choice`\n        - `question`: The text of the question.\n        - `description`: Optional description of the question.\n        - `descriptionContentType`: Content type of the description (`html` or `text`).\n        - `optional`: Whether the question is optional (`boolean`).\n        - `buttonText`: Text displayed on the submit button.\n        - `choices`: An array of choices for the question.\n        - `shuffleOptions`: Whether to shuffle the order of the choices (`boolean`).\n        - `hasOpenChoice`: Whether the question allows an open-ended response (`boolean`).\n        - `branching`: Branching logic for the question. See branching types below for details.\n\n        Branching logic can be one of the following types:\n\n        Next question: Proceeds to the next question\n        ```json\n        {\n            \"type\": \"next_question\"\n        }\n        ```\n\n        End: Ends the survey, optionally displaying a confirmation message.\n        ```json\n        {\n            \"type\": \"end\"\n        }\n        ```\n\n        Response-based: Branches based on the response values. Available for the `rating` and `single_choice` question types.\n        ```json\n        {\n            \"type\": \"response_based\",\n            \"responseValues\": {\n                \"responseKey\": \"value\"\n            }\n        }\n        ```\n\n        Specific question: Proceeds to a specific question by index.\n        ```json\n        {\n            \"type\": \"specific_question\",\n            \"index\": 2\n        }\n        ```\n\n        Translations: Each question can include inline translations.\n        - `translations`: Object mapping language codes to translated fields.\n        - Language codes: Canonical BCP-47-ish strings (e.g., \"es\", \"es-MX\", \"zh-CN\"). Aliases like \"english\" or \"default\" are rejected. The survey's `base_language` (default \"en\") declares the language of the untranslated text and cannot also appear as a translation key.\n        - Translatable fields: `question`, `description`, `buttonText`, `choices`, `lowerBoundLabel`, `upperBoundLabel`, `link`\n\n        Example with translations:\n        ```json\n        {\n            \"id\": \"uuid\",\n            \"type\": \"rating\",\n            \"question\": \"How satisfied are you?\",\n            \"lowerBoundLabel\": \"Not satisfied\",\n            \"upperBoundLabel\": \"Very satisfied\",\n            \"translations\": {\n                \"es\": {\n                    \"question\": \"¿Qué tan satisfecho estás?\",\n                    \"lowerBoundLabel\": \"No satisfecho\",\n                    \"upperBoundLabel\": \"Muy satisfecho\"\n                },\n                \"fr\": {\n                    \"question\": \"Dans quelle mesure êtes-vous satisfait?\"\n                }\n            }\n        }\n        ```\n        "
           },
           "conditions": {},
           "appearance": {},
@@ -185070,6 +185414,11 @@
               "null"
             ]
           },
+          "base_language": {
+            "type": "string",
+            "description": "BCP-47 language code (e.g. 'en', 'es', 'es-MX') describing the language of the survey's untranslated text. Defaults to 'en'. Cannot also appear as a key in `translations`.",
+            "maxLength": 20
+          },
           "translations": {},
           "_create_in_folder": {
             "type": "string",
@@ -185198,7 +185547,7 @@
             "items": {
               "$ref": "#/components/schemas/SurveyQuestionInputSchema"
             },
-            "description": "\n        The `array` of questions included in the survey. Each question must conform to one of the defined question types: Basic, Link, Rating, or Multiple Choice.\n\n        Basic (open-ended question)\n        - `id`: The question ID\n        - `type`: `open`\n        - `question`: The text of the question.\n        - `description`: Optional description of the question.\n        - `descriptionContentType`: Content type of the description (`html` or `text`).\n        - `optional`: Whether the question is optional (`boolean`).\n        - `buttonText`: Text displayed on the submit button.\n        - `branching`: Branching logic for the question. See branching types below for details.\n\n        Link (a question with a link)\n        - `id`: The question ID\n        - `type`: `link`\n        - `question`: The text of the question.\n        - `description`: Optional description of the question.\n        - `descriptionContentType`: Content type of the description (`html` or `text`).\n        - `optional`: Whether the question is optional (`boolean`).\n        - `buttonText`: Text displayed on the submit button.\n        - `link`: The URL associated with the question.\n        - `branching`: Branching logic for the question. See branching types below for details.\n\n        Rating (a question with a rating scale)\n        - `id`: The question ID\n        - `type`: `rating`\n        - `question`: The text of the question.\n        - `description`: Optional description of the question.\n        - `descriptionContentType`: Content type of the description (`html` or `text`).\n        - `optional`: Whether the question is optional (`boolean`).\n        - `buttonText`: Text displayed on the submit button.\n        - `display`: Display style of the rating (`number` or `emoji`).\n        - `scale`: The scale of the rating (`number`).\n        - `lowerBoundLabel`: Label for the lower bound of the scale.\n        - `upperBoundLabel`: Label for the upper bound of the scale.\n        - `isNpsQuestion`: Whether the question is an NPS rating.\n        - `branching`: Branching logic for the question. See branching types below for details.\n\n        Multiple choice\n        - `id`: The question ID\n        - `type`: `single_choice` or `multiple_choice`\n        - `question`: The text of the question.\n        - `description`: Optional description of the question.\n        - `descriptionContentType`: Content type of the description (`html` or `text`).\n        - `optional`: Whether the question is optional (`boolean`).\n        - `buttonText`: Text displayed on the submit button.\n        - `choices`: An array of choices for the question.\n        - `shuffleOptions`: Whether to shuffle the order of the choices (`boolean`).\n        - `hasOpenChoice`: Whether the question allows an open-ended response (`boolean`).\n        - `branching`: Branching logic for the question. See branching types below for details.\n\n        Branching logic can be one of the following types:\n\n        Next question: Proceeds to the next question\n        ```json\n        {\n            \"type\": \"next_question\"\n        }\n        ```\n\n        End: Ends the survey, optionally displaying a confirmation message.\n        ```json\n        {\n            \"type\": \"end\"\n        }\n        ```\n\n        Response-based: Branches based on the response values. Available for the `rating` and `single_choice` question types.\n        ```json\n        {\n            \"type\": \"response_based\",\n            \"responseValues\": {\n                \"responseKey\": \"value\"\n            }\n        }\n        ```\n\n        Specific question: Proceeds to a specific question by index.\n        ```json\n        {\n            \"type\": \"specific_question\",\n            \"index\": 2\n        }\n        ```\n\n        Translations: Each question can include inline translations.\n        - `translations`: Object mapping language codes to translated fields.\n        - Language codes: Any string - allows customers to use their own language keys (e.g., \"es\", \"es-MX\", \"english\", \"french\")\n        - Translatable fields: `question`, `description`, `buttonText`, `choices`, `lowerBoundLabel`, `upperBoundLabel`, `link`\n\n        Example with translations:\n        ```json\n        {\n            \"id\": \"uuid\",\n            \"type\": \"rating\",\n            \"question\": \"How satisfied are you?\",\n            \"lowerBoundLabel\": \"Not satisfied\",\n            \"upperBoundLabel\": \"Very satisfied\",\n            \"translations\": {\n                \"es\": {\n                    \"question\": \"¿Qué tan satisfecho estás?\",\n                    \"lowerBoundLabel\": \"No satisfecho\",\n                    \"upperBoundLabel\": \"Muy satisfecho\"\n                },\n                \"fr\": {\n                    \"question\": \"Dans quelle mesure êtes-vous satisfait?\"\n                }\n            }\n        }\n        ```\n        "
+            "description": "\n        The `array` of questions included in the survey. Each question must conform to one of the defined question types: Basic, Link, Rating, or Multiple Choice.\n\n        Basic (open-ended question)\n        - `id`: The question ID\n        - `type`: `open`\n        - `question`: The text of the question.\n        - `description`: Optional description of the question.\n        - `descriptionContentType`: Content type of the description (`html` or `text`).\n        - `optional`: Whether the question is optional (`boolean`).\n        - `buttonText`: Text displayed on the submit button.\n        - `branching`: Branching logic for the question. See branching types below for details.\n\n        Link (a question with a link)\n        - `id`: The question ID\n        - `type`: `link`\n        - `question`: The text of the question.\n        - `description`: Optional description of the question.\n        - `descriptionContentType`: Content type of the description (`html` or `text`).\n        - `optional`: Whether the question is optional (`boolean`).\n        - `buttonText`: Text displayed on the submit button.\n        - `link`: The URL associated with the question.\n        - `branching`: Branching logic for the question. See branching types below for details.\n\n        Rating (a question with a rating scale)\n        - `id`: The question ID\n        - `type`: `rating`\n        - `question`: The text of the question.\n        - `description`: Optional description of the question.\n        - `descriptionContentType`: Content type of the description (`html` or `text`).\n        - `optional`: Whether the question is optional (`boolean`).\n        - `buttonText`: Text displayed on the submit button.\n        - `display`: Display style of the rating (`number` or `emoji`).\n        - `scale`: The scale of the rating (`number`).\n        - `lowerBoundLabel`: Label for the lower bound of the scale.\n        - `upperBoundLabel`: Label for the upper bound of the scale.\n        - `isNpsQuestion`: Whether the question is an NPS rating.\n        - `branching`: Branching logic for the question. See branching types below for details.\n\n        Multiple choice\n        - `id`: The question ID\n        - `type`: `single_choice` or `multiple_choice`\n        - `question`: The text of the question.\n        - `description`: Optional description of the question.\n        - `descriptionContentType`: Content type of the description (`html` or `text`).\n        - `optional`: Whether the question is optional (`boolean`).\n        - `buttonText`: Text displayed on the submit button.\n        - `choices`: An array of choices for the question.\n        - `shuffleOptions`: Whether to shuffle the order of the choices (`boolean`).\n        - `hasOpenChoice`: Whether the question allows an open-ended response (`boolean`).\n        - `branching`: Branching logic for the question. See branching types below for details.\n\n        Branching logic can be one of the following types:\n\n        Next question: Proceeds to the next question\n        ```json\n        {\n            \"type\": \"next_question\"\n        }\n        ```\n\n        End: Ends the survey, optionally displaying a confirmation message.\n        ```json\n        {\n            \"type\": \"end\"\n        }\n        ```\n\n        Response-based: Branches based on the response values. Available for the `rating` and `single_choice` question types.\n        ```json\n        {\n            \"type\": \"response_based\",\n            \"responseValues\": {\n                \"responseKey\": \"value\"\n            }\n        }\n        ```\n\n        Specific question: Proceeds to a specific question by index.\n        ```json\n        {\n            \"type\": \"specific_question\",\n            \"index\": 2\n        }\n        ```\n\n        Translations: Each question can include inline translations.\n        - `translations`: Object mapping language codes to translated fields.\n        - Language codes: Canonical BCP-47-ish strings (e.g., \"es\", \"es-MX\", \"zh-CN\"). Aliases like \"english\" or \"default\" are rejected. The survey's `base_language` (default \"en\") declares the language of the untranslated text and cannot also appear as a translation key.\n        - Translatable fields: `question`, `description`, `buttonText`, `choices`, `lowerBoundLabel`, `upperBoundLabel`, `link`\n\n        Example with translations:\n        ```json\n        {\n            \"id\": \"uuid\",\n            \"type\": \"rating\",\n            \"question\": \"How satisfied are you?\",\n            \"lowerBoundLabel\": \"Not satisfied\",\n            \"upperBoundLabel\": \"Very satisfied\",\n            \"translations\": {\n                \"es\": {\n                    \"question\": \"¿Qué tan satisfecho estás?\",\n                    \"lowerBoundLabel\": \"No satisfecho\",\n                    \"upperBoundLabel\": \"Muy satisfecho\"\n                },\n                \"fr\": {\n                    \"question\": \"Dans quelle mesure êtes-vous satisfait?\"\n                }\n            }\n        }\n        ```\n        "
           },
           "conditions": {
             "oneOf": [
@@ -185357,6 +185706,11 @@
               "boolean",
               "null"
             ]
+          },
+          "base_language": {
+            "type": "string",
+            "description": "BCP-47 language code (e.g. 'en', 'es', 'es-MX') describing the language of the survey's untranslated text. Defaults to 'en'. Cannot also appear as a key in `translations`.",
+            "maxLength": 20
           },
           "translations": {},
           "_create_in_folder": {
@@ -186134,6 +186488,18 @@
             "type": "boolean",
             "description": "If true, this task is for internal use and should not be exposed to end users."
           },
+          "archived": {
+            "type": "boolean",
+            "description": "If true, the task is hidden from default list responses. Used by PostHog Code clients to share archive state across desktop and mobile."
+          },
+          "archived_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time",
+            "readOnly": true
+          },
           "latest_run": {
             "type": [
               "object",
@@ -186170,6 +186536,7 @@
           }
         },
         "required": [
+          "archived_at",
           "created_at",
           "created_by",
           "id",
@@ -193814,6 +194181,11 @@
               "$ref": "#/components/schemas/PendingInvite"
             },
             "readOnly": true
+          },
+          "requires_credential_review": {
+            "type": "boolean",
+            "readOnly": true,
+            "description": "True if the user has at least one Personal API Key and has not yet acknowledged their existing credentials. Used to gate a one-shot review screen on first post-provisioning login. Becomes False once the user POSTs to `/api/users/@me/credentials_review_complete/`. Read-only."
           }
         },
         "required": [
@@ -193842,6 +194214,7 @@
           "password",
           "pending_email",
           "pending_invites",
+          "requires_credential_review",
           "scene_personalisation",
           "sensitive_session_expires_at",
           "team",
@@ -196650,6 +197023,19 @@
             "default": null,
             "title": "Usesessionstable"
           },
+          "useWebAnalyticsPrecompute": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Opt this specific query into the web_overview_query precompute path. Requires the `web-analytics-precompute-toggle` PostHog feature flag to be on for the team's organization for the gate to pass. *",
+            "title": "Usewebanalyticsprecompute"
+          },
           "version": {
             "anyOf": [
               {
@@ -196792,6 +197178,18 @@
             "default": null,
             "description": "Measured timings for different parts of the query generation process",
             "title": "Timings"
+          },
+          "usedLazyPrecompute": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Usedlazyprecompute"
           },
           "usedPreAggregatedTables": {
             "anyOf": [
@@ -200268,6 +200666,10 @@
           },
           "count": {
             "type": "integer"
+          },
+          "bytes_uncompressed": {
+            "type": "integer",
+            "description": "Sum of uncompressed bytes for the bucket."
           }
         },
         "required": [
@@ -200831,7 +201233,7 @@
   },
   "tags": [
     {
-      "name": "LLM Analytics"
+      "name": "AI observability"
     },
     {
       "name": "accounts"
@@ -201270,7 +201672,7 @@
     {
       "name": "All endpoints",
       "tags": [
-        "LLM Analytics",
+        "AI observability",
         "accounts",
         "actions",
         "activity_log",
