@@ -38805,6 +38805,54 @@
         ]
       }
     },
+    "/api/environments/{project_id}/user_interview_topics/{id}/links_csv/": {
+      "post": {
+        "operationId": "user_interview_topics_links_csv_create",
+        "description": "Same materialization as generate_links, returned as a downloadable CSV. Intended for users who want to mail-merge the per-person interview links into their own email tooling.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "A UUID string identifying this user interview topic.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "user_interviews",
+          "user_interview_topics"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "user_interview:write"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "text/csv": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            },
+            "description": "CSV with columns: interviewee_identifier, interviewee_email, user_name, interview_url. One row per targeted interviewee."
+          }
+        },
+        "x-explicit-tags": [
+          "user_interviews"
+        ]
+      }
+    },
     "/api/environments/{project_id}/user_interview_topics/{id}/remove_interviewee/": {
       "post": {
         "operationId": "user_interview_topics_remove_interviewee_create",
@@ -40402,6 +40450,149 @@
           }
         },
         "x-explicit-tags": []
+      }
+    },
+    "/api/llm_analytics/@me/spend/": {
+      "get": {
+        "operationId": "llm_analytics_personal_spend_list",
+        "description": "Return a structured personal LLM spend analysis for the requesting user. Pass `date_from` / `date_to` (absolute like `2026-04-23` or relative like `-7d`) to bound the window — defaults to the last 30 days, max 90 days. Pass `product=<ai_product>` to scope the tool / model / trace breakdowns to a single product (e.g. `posthog_code`); omit it for an aggregate view. `by_product` is always returned for cross-product visibility. Use `refresh=true` to bypass the 5-minute response cache.",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "date_from",
+            "schema": {
+              "type": "string",
+              "default": "-30d",
+              "maxLength": 32,
+              "minLength": 1
+            },
+            "description": "Start of the spend window. Accepts absolute dates (`2026-04-23`) or relative strings (`-7d`, `-1m`, etc.) — same parser used elsewhere in PostHog. Defaults to `-30d`. The window between `date_from` and `date_to` cannot exceed 90 days."
+          },
+          {
+            "in": "query",
+            "name": "date_to",
+            "schema": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "maxLength": 32
+            },
+            "description": "End of the spend window. Accepts the same formats as `date_from`. Defaults to `now` when omitted."
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer",
+              "maximum": 200,
+              "minimum": 1,
+              "default": 50
+            },
+            "description": "Maximum number of rows to return per breakdown (1-200, defaults to 50). Each breakdown returns up to this many rows ordered by cost descending. Per-breakdown `truncated: true` indicates more rows exist beyond the limit."
+          },
+          {
+            "in": "query",
+            "name": "product",
+            "schema": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "maxLength": 64
+            },
+            "description": "Optional `ai_product` key to scope the tool / model / trace breakdowns to a single product (e.g. `posthog_code`, `background_agents`). When omitted, those breakdowns aggregate across every product captured for the user."
+          },
+          {
+            "in": "query",
+            "name": "refresh",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            },
+            "description": "If true, bypass the result cache and re-run the underlying queries against ClickHouse."
+          }
+        ],
+        "tags": [
+          "LLM Analytics",
+          "llm_analytics"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "user:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PersonalSpendAnalysisResponse"
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/_ErrorResponse"
+                }
+              }
+            },
+            "description": ""
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/_ErrorResponse"
+                }
+              }
+            },
+            "description": ""
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/_ErrorResponse"
+                }
+              }
+            },
+            "description": ""
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/_ErrorResponse"
+                }
+              }
+            },
+            "description": ""
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/_ErrorResponse"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-explicit-tags": [
+          "LLM Analytics",
+          "llm_analytics"
+        ]
       }
     },
     "/api/organizations/": {
@@ -157316,6 +157507,59 @@
           "value"
         ]
       },
+      "PersonalSpendAnalysisResponse": {
+        "type": "object",
+        "description": "Structured personal LLM spend analysis for the requesting user.",
+        "properties": {
+          "summary": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/_Summary"
+              }
+            ],
+            "description": "High-level totals for the lookback window."
+          },
+          "by_product": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/_ProductBreakdown"
+              }
+            ],
+            "description": "Spend grouped by the `ai_product` property — always across all products, never filtered."
+          },
+          "by_tool": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/_ToolBreakdown"
+              }
+            ],
+            "description": "Spend grouped by tool. Scoped to `product` when set."
+          },
+          "by_model": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/_ModelBreakdown"
+              }
+            ],
+            "description": "Spend grouped by `$ai_model`. Scoped to `product` when set."
+          },
+          "top_traces": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/_TopTraces"
+              }
+            ],
+            "description": "Most expensive trace IDs (sessions) in the window. Scoped to `product` when set."
+          }
+        },
+        "required": [
+          "by_model",
+          "by_product",
+          "by_tool",
+          "summary",
+          "top_traces"
+        ]
+      },
       "PersonsArgMaxVersion": {
         "enum": [
           "auto",
@@ -201220,6 +201464,19 @@
           }
         }
       },
+      "_ErrorResponse": {
+        "type": "object",
+        "description": "DRF's default error envelope — `{ \"detail\": str }` — typed for the OpenAPI schema.",
+        "properties": {
+          "detail": {
+            "type": "string",
+            "description": "Human-readable error description from DRF."
+          }
+        },
+        "required": [
+          "detail"
+        ]
+      },
       "_ExperimentApiMetricsList": {
         "description": "List wrapper for OpenAPI schema generation — the field stores an array of metrics.",
         "items": {
@@ -202082,6 +202339,108 @@
           "results"
         ]
       },
+      "_ModelBreakdown": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/_ModelBreakdownRow"
+            },
+            "description": "Rows of spend by model, ordered by cost descending."
+          },
+          "truncated": {
+            "type": "boolean",
+            "description": "True when more rows exist beyond the requested `limit`. Re-request with a larger `limit` to retrieve them."
+          }
+        },
+        "required": [
+          "items",
+          "truncated"
+        ]
+      },
+      "_ModelBreakdownRow": {
+        "type": "object",
+        "properties": {
+          "model": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Value of the `$ai_model` property."
+          },
+          "generation_count": {
+            "type": "integer",
+            "description": "Number of $ai_generation + $ai_embedding events."
+          },
+          "cost_usd": {
+            "type": "number",
+            "format": "double",
+            "description": "Total cost in USD for this model."
+          },
+          "input_tokens": {
+            "type": "integer",
+            "description": "Sum of `$ai_input_tokens` for this model."
+          },
+          "output_tokens": {
+            "type": "integer",
+            "description": "Sum of `$ai_output_tokens` for this model."
+          }
+        },
+        "required": [
+          "cost_usd",
+          "generation_count",
+          "input_tokens",
+          "model",
+          "output_tokens"
+        ]
+      },
+      "_ProductBreakdown": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/_ProductBreakdownRow"
+            },
+            "description": "Rows of spend by product, ordered by cost descending."
+          },
+          "truncated": {
+            "type": "boolean",
+            "description": "True when more rows exist beyond the requested `limit`. Re-request with a larger `limit` to retrieve them."
+          }
+        },
+        "required": [
+          "items",
+          "truncated"
+        ]
+      },
+      "_ProductBreakdownRow": {
+        "type": "object",
+        "properties": {
+          "product": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Value of the `ai_product` property on the event (e.g. `posthog_code`, `background_agents`). Null when unset."
+          },
+          "event_count": {
+            "type": "integer",
+            "description": "Number of $ai_generation + $ai_embedding events for this product."
+          },
+          "cost_usd": {
+            "type": "number",
+            "format": "double",
+            "description": "Total cost in USD for this product over the lookback window."
+          }
+        },
+        "required": [
+          "cost_usd",
+          "event_count",
+          "product"
+        ]
+      },
       "_SpanPropertyFilter": {
         "type": "object",
         "properties": {
@@ -202140,6 +202499,55 @@
         "type": "string",
         "description": "* `span` - span\n* `span_attribute` - span_attribute\n* `span_resource_attribute` - span_resource_attribute"
       },
+      "_Summary": {
+        "type": "object",
+        "properties": {
+          "date_from": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Inclusive UTC start of the spend window resolved from the request."
+          },
+          "date_to": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Exclusive UTC end of the spend window resolved from the request."
+          },
+          "product": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The `ai_product` filter applied to tool / model / trace breakdowns. Null when unfiltered."
+          },
+          "total_cost_usd": {
+            "type": "number",
+            "format": "double",
+            "description": "Total LLM cost in USD across every `ai_product` for the user — independent of the `product` filter."
+          },
+          "event_count": {
+            "type": "integer",
+            "description": "Total $ai_generation + $ai_embedding events captured across every product."
+          },
+          "scoped_cost_usd": {
+            "type": "number",
+            "format": "double",
+            "description": "Total cost in USD for the product filter (or all products when unfiltered). Matches the cost summed across `by_tool` / `by_model` for the scoped slice."
+          },
+          "scoped_event_count": {
+            "type": "integer",
+            "description": "Total $ai_generation + $ai_embedding events for the scoped slice."
+          }
+        },
+        "required": [
+          "date_from",
+          "date_to",
+          "event_count",
+          "product",
+          "scoped_cost_usd",
+          "scoped_event_count",
+          "total_cost_usd"
+        ]
+      },
       "_SymbolSetDownloadResponse": {
         "type": "object",
         "properties": {
@@ -202151,6 +202559,119 @@
         },
         "required": [
           "url"
+        ]
+      },
+      "_ToolBreakdown": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/_ToolBreakdownRow"
+            },
+            "description": "Rows of spend by tool, ordered by cost descending."
+          },
+          "truncated": {
+            "type": "boolean",
+            "description": "True when more rows exist beyond the requested `limit`. Re-request with a larger `limit` to retrieve them."
+          }
+        },
+        "required": [
+          "items",
+          "truncated"
+        ]
+      },
+      "_ToolBreakdownRow": {
+        "type": "object",
+        "properties": {
+          "tool": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Individual tool name from `$ai_tools_called` (split on `,` since multi-tool generations store a comma-separated list). Null = pure text response with no tool call."
+          },
+          "generation_count": {
+            "type": "integer",
+            "description": "Number of $ai_generation events whose tool list includes this tool."
+          },
+          "cost_usd": {
+            "type": "number",
+            "format": "double",
+            "description": "Sum of `$ai_total_cost_usd` for generations whose tool list includes this tool. Multi-tool generations contribute their full cost to every tool they invoked, so this sum can exceed `summary.scoped_cost_usd`. Prefer `share_of_scoped` for headline percentages — it's computed per row and doesn't require the totals to reconcile."
+          },
+          "share_of_scoped": {
+            "type": "number",
+            "format": "double",
+            "description": "This tool's share of `summary.scoped_cost_usd`, expressed as a float in `[0, 1]`. Independent per row, so co-occurring tools can each show a substantial share — the headline number to present (e.g. `'Bash drove 47% of your spend'`)."
+          },
+          "avg_input_tokens": {
+            "type": "number",
+            "format": "double",
+            "description": "Average `$ai_input_tokens` across these generations — high values signal context bloat per call."
+          }
+        },
+        "required": [
+          "avg_input_tokens",
+          "cost_usd",
+          "generation_count",
+          "share_of_scoped",
+          "tool"
+        ]
+      },
+      "_TopTraceRow": {
+        "type": "object",
+        "properties": {
+          "trace_id": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "`$ai_trace_id` of the session — opaque string scoped to the originating product. Format is not stable: most are UUIDs but some SDK wrappers emit JSON-shaped strings like `{\"device_id\":\"...\",\"session_id\":\"...\"}`. Callers should treat this as an opaque identifier (URL-encode before linking to a trace view)."
+          },
+          "generation_count": {
+            "type": "integer",
+            "description": "Number of $ai_generation events in this trace."
+          },
+          "cost_usd": {
+            "type": "number",
+            "format": "double",
+            "description": "Total cost in USD for this trace."
+          },
+          "started_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time",
+            "description": "Timestamp of the earliest event in this trace."
+          }
+        },
+        "required": [
+          "cost_usd",
+          "generation_count",
+          "started_at",
+          "trace_id"
+        ]
+      },
+      "_TopTraces": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/_TopTraceRow"
+            },
+            "description": "Rows of top traces by cost, ordered by cost descending."
+          },
+          "truncated": {
+            "type": "boolean",
+            "description": "True when more rows exist beyond the requested `limit`. Re-request with a larger `limit` to retrieve them."
+          }
+        },
+        "required": [
+          "items",
+          "truncated"
         ]
       },
       "_TracingAggregationQueryBody": {
@@ -202588,6 +203109,9 @@
   "tags": [
     {
       "name": "AI observability"
+    },
+    {
+      "name": "LLM Analytics"
     },
     {
       "name": "accounts"
@@ -203030,6 +203554,7 @@
       "name": "All endpoints",
       "tags": [
         "AI observability",
+        "LLM Analytics",
         "accounts",
         "actions",
         "activity_log",
