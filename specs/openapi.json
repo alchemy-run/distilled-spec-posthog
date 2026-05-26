@@ -24451,7 +24451,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "JSON-encoded array of tag names to filter by, e.g. `[\"enterprise\",\"priority\"]`. Returns accounts that have any of the listed tags."
+            "description": "JSON-encoded array of tag names to filter by, e.g. `[\"enterprise\",\"priority\"]`. Returns accounts that have any of the listed tags. Malformed values (not a JSON-encoded list of strings) return a 400."
           }
         ],
         "tags": [
@@ -24529,6 +24529,232 @@
               }
             },
             "description": ""
+          }
+        },
+        "x-explicit-tags": [
+          "customer_analytics"
+        ]
+      }
+    },
+    "/api/environments/{project_id}/accounts/{account_id}/notebooks/": {
+      "get": {
+        "operationId": "accounts_notebooks_list",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "account_id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "UUID of the parent account.",
+            "required": true
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Number of results to return per page.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "offset",
+            "required": false,
+            "in": "query",
+            "description": "The initial index from which to return the results.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "customer_analytics",
+          "accounts"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "account:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedAccountNotebookList"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-explicit-tags": [
+          "customer_analytics"
+        ]
+      },
+      "post": {
+        "operationId": "accounts_notebooks_create",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "account_id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "UUID of the parent account.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "customer_analytics",
+          "accounts"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AccountNotebook"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/AccountNotebook"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/AccountNotebook"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "account:write"
+            ]
+          }
+        ],
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountNotebook"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-explicit-tags": [
+          "customer_analytics"
+        ]
+      }
+    },
+    "/api/environments/{project_id}/accounts/{account_id}/notebooks/{short_id}/": {
+      "get": {
+        "operationId": "accounts_notebooks_retrieve",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "account_id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "UUID of the parent account.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          },
+          {
+            "in": "path",
+            "name": "short_id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "tags": [
+          "customer_analytics",
+          "accounts"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "account:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AccountNotebook"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-explicit-tags": [
+          "customer_analytics"
+        ]
+      },
+      "delete": {
+        "operationId": "accounts_notebooks_destroy",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "account_id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "UUID of the parent account.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          },
+          {
+            "in": "path",
+            "name": "short_id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "tags": [
+          "customer_analytics",
+          "accounts"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "account:write"
+            ]
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No response body"
           }
         },
         "x-explicit-tags": [
@@ -38986,6 +39212,53 @@
         ]
       }
     },
+    "/api/environments/{project_id}/user_interview_topics/{id}/test_link/": {
+      "get": {
+        "operationId": "user_interview_topics_test_link_retrieve",
+        "description": "Return the calling user's personal dogfood interview link for this topic, plus the latest test interview they have recorded against it. Lazily get-or-creates a per-caller IntervieweeContext + enabled SharingConfiguration the first time it's called, then returns the same stable URL on subsequent calls. The caller's identifier is intentionally not added to the topic's targeting arrays — each user dogfoods under their own row, so test calls never mint a public share token on someone else's behalf.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "A UUID string identifying this user interview topic.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "user_interviews",
+          "user_interview_topics"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "user_interview:write"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TestInterviewLink"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-explicit-tags": [
+          "user_interviews"
+        ]
+      }
+    },
     "/api/environments/{project_id}/user_interview_topics/{topic_id}/interviewees/": {
       "get": {
         "operationId": "user_interview_topics_interviewees_list",
@@ -40455,7 +40728,7 @@
     "/api/llm_analytics/@me/spend/": {
       "get": {
         "operationId": "llm_analytics_personal_spend_list",
-        "description": "Return a structured personal LLM spend analysis for the requesting user. Pass `date_from` / `date_to` (absolute like `2026-04-23` or relative like `-7d`) to bound the window — defaults to the last 30 days, max 90 days. Pass `product=<ai_product>` to scope the tool / model / trace breakdowns to a single product (e.g. `posthog_code`); omit it for an aggregate view. `by_product` is always returned for cross-product visibility. Use `refresh=true` to bypass the 5-minute response cache.",
+        "description": "Return a structured personal LLM spend analysis for the requesting user. Pass `date_from` / `date_to` (absolute like `2026-04-23` or relative like `-7d`) to bound the window — defaults to the last 30 days, max 90 days. The `product=<ai_product>` query param is required and scopes the tool / model / trace breakdowns to a single product; supported values: posthog_code. `by_product` is always returned for cross-product visibility. Use `refresh=true` to bypass the 5-minute response cache.",
         "parameters": [
           {
             "in": "query",
@@ -40495,13 +40768,12 @@
             "in": "query",
             "name": "product",
             "schema": {
-              "type": [
-                "string",
-                "null"
-              ],
-              "maxLength": 64
+              "type": "string",
+              "maxLength": 64,
+              "minLength": 1
             },
-            "description": "Optional `ai_product` key to scope the tool / model / trace breakdowns to a single product (e.g. `posthog_code`, `background_agents`). When omitted, those breakdowns aggregate across every product captured for the user."
+            "description": "Required `ai_product` key to scope the tool / model / trace breakdowns to a single product. Only the following products are currently supported: posthog_code.",
+            "required": true
           },
           {
             "in": "query",
@@ -58243,6 +58515,22 @@
       "get": {
         "operationId": "event_definitions_list",
         "parameters": [
+          {
+            "in": "query",
+            "name": "exclude_hidden",
+            "schema": {
+              "type": "boolean"
+            },
+            "description": "When true, omit events that have been explicitly hidden by a team admin (Enterprise only)."
+          },
+          {
+            "in": "query",
+            "name": "exclude_stale",
+            "schema": {
+              "type": "boolean"
+            },
+            "description": "When true, omit events whose last ingested occurrence is older than 30 days. Events that have never been seen (`last_seen_at` is null) are kept so newly-defined events remain discoverable. Default false. If a search returns zero results with this filter on, retry with `exclude_stale=false` and tell the user the matches are stale."
+          },
           {
             "name": "limit",
             "required": false,
@@ -92991,6 +93279,14 @@
             },
             "description": "Tag names attached to the account. Pass a list to replace existing tags."
           },
+          "notebooks": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "readOnly": true,
+            "description": "Short IDs of the internal notebooks linked to this account, used to persist investigations, call notes, and other free-form context. Empty list if no notebooks have been created for the account."
+          },
           "created_at": {
             "type": "string",
             "format": "date-time",
@@ -93017,7 +93313,74 @@
           "created_by",
           "id",
           "name",
+          "notebooks",
           "updated_at"
+        ]
+      },
+      "AccountNotebook": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "readOnly": true
+          },
+          "short_id": {
+            "type": "string",
+            "readOnly": true
+          },
+          "title": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Human-readable title of the account notebook.",
+            "maxLength": 256
+          },
+          "content": {
+            "description": "Notebook content as a ProseMirror JSON document structure."
+          },
+          "text_content": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Plain text representation of the notebook content for search."
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          },
+          "created_by": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/UserBasic"
+              }
+            ],
+            "readOnly": true
+          },
+          "last_modified_at": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          },
+          "last_modified_by": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/UserBasic"
+              }
+            ],
+            "readOnly": true
+          }
+        },
+        "required": [
+          "created_at",
+          "created_by",
+          "id",
+          "last_modified_at",
+          "last_modified_by",
+          "short_id"
         ]
       },
       "Action": {
@@ -135165,6 +135528,29 @@
         "type": "string",
         "description": "* `success` - Success\n* `not_modified` - Not modified\n* `error` - Error"
       },
+      "LatestTestInterview": {
+        "type": "object",
+        "properties": {
+          "completed_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When the test interview was completed."
+          },
+          "transcript": {
+            "type": "string",
+            "description": "Full transcript of the test call, if Vapi delivered one. May be empty."
+          },
+          "summary": {
+            "type": "string",
+            "description": "AI-generated summary of the test call, if Vapi delivered one. May be empty."
+          }
+        },
+        "required": [
+          "completed_at",
+          "summary",
+          "transcript"
+        ]
+      },
       "LegalDocumentCreator": {
         "type": "object",
         "properties": {
@@ -141915,6 +142301,41 @@
           }
         }
       },
+      "PaginatedAccountNotebookList": {
+        "type": "object",
+        "required": [
+          "count",
+          "results"
+        ],
+        "properties": {
+          "count": {
+            "type": "integer",
+            "example": 123
+          },
+          "next": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uri",
+            "example": "http://api.example.org/accounts/?offset=400&limit=100"
+          },
+          "previous": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uri",
+            "example": "http://api.example.org/accounts/?offset=200&limit=100"
+          },
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AccountNotebook"
+            }
+          }
+        }
+      },
       "PaginatedActionList": {
         "type": "object",
         "required": [
@@ -147005,6 +147426,14 @@
               "type": "string"
             },
             "description": "Tag names attached to the account. Pass a list to replace existing tags."
+          },
+          "notebooks": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "readOnly": true,
+            "description": "Short IDs of the internal notebooks linked to this account, used to persist investigations, call notes, and other free-form context. Empty list if no notebooks have been created for the account."
           },
           "created_at": {
             "type": "string",
@@ -157549,7 +157978,7 @@
                 "$ref": "#/components/schemas/_TopTraces"
               }
             ],
-            "description": "Most expensive trace IDs (sessions) in the window. Scoped to `product` when set."
+            "description": "Deprecated — always returns `{items: [], truncated: false}`. Trace IDs are opaque strings that aren't actionable in the UI. Kept in the response shape so existing consumers don't crash; remove your rendering of this field and we'll drop it from the response entirely in a follow-up."
           }
         },
         "required": [
@@ -162582,6 +163011,18 @@
             "default": null,
             "title": "Types"
           },
+          "usedLazyPrecompute": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Usedlazyprecompute"
+          },
           "usedPreAggregatedTables": {
             "anyOf": [
               {
@@ -165329,6 +165770,18 @@
             ],
             "default": null,
             "title": "Types"
+          },
+          "usedLazyPrecompute": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Usedlazyprecompute"
           },
           "usedPreAggregatedTables": {
             "anyOf": [
@@ -176053,6 +176506,18 @@
             ],
             "default": null,
             "title": "Types"
+          },
+          "usedLazyPrecompute": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Usedlazyprecompute"
           },
           "usedPreAggregatedTables": {
             "anyOf": [
@@ -187774,7 +188239,8 @@
             "maxLength": 100
           },
           "rollout_percentage": {
-            "type": "integer",
+            "type": "number",
+            "format": "double",
             "maximum": 100,
             "minimum": 0,
             "default": 100,
@@ -190586,6 +191052,31 @@
         },
         "required": [
           "name"
+        ]
+      },
+      "TestInterviewLink": {
+        "type": "object",
+        "properties": {
+          "interview_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "Public, unauthenticated URL the topic author opens to dogfood the voice interview themselves — does not count against the targeted interviewees."
+          },
+          "latest_test_interview": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/LatestTestInterview"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Most recent test interview completed by the topic author, or null if none yet."
+          }
+        },
+        "required": [
+          "interview_url",
+          "latest_test_interview"
         ]
       },
       "TextMatching": {
@@ -199553,6 +200044,19 @@
             "default": null,
             "title": "Usesessionstable"
           },
+          "useWebAnalyticsPrecompute": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Opt this specific query into the web stats table precompute path. Requires the `web-analytics-precompute-toggle` PostHog feature flag to be on for the team's organization for the gate to pass. *",
+            "title": "Usewebanalyticsprecompute"
+          },
           "version": {
             "anyOf": [
               {
@@ -199732,6 +200236,18 @@
             ],
             "default": null,
             "title": "Types"
+          },
+          "usedLazyPrecompute": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Usedlazyprecompute"
           },
           "usedPreAggregatedTables": {
             "anyOf": [
@@ -202513,11 +203029,8 @@
             "description": "Exclusive UTC end of the spend window resolved from the request."
           },
           "product": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "description": "The `ai_product` filter applied to tool / model / trace breakdowns. Null when unfiltered."
+            "type": "string",
+            "description": "The `ai_product` filter applied to tool / model / trace breakdowns — echoes the request `product`."
           },
           "total_cost_usd": {
             "type": "number",
@@ -202531,7 +203044,7 @@
           "scoped_cost_usd": {
             "type": "number",
             "format": "double",
-            "description": "Total cost in USD for the product filter (or all products when unfiltered). Matches the cost summed across `by_tool` / `by_model` for the scoped slice."
+            "description": "Total cost in USD for the product filter. Matches the cost summed across `by_tool` / `by_model` for the scoped slice."
           },
           "scoped_event_count": {
             "type": "integer",
