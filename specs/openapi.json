@@ -8991,6 +8991,67 @@
         ]
       }
     },
+    "/api/environments/{environment_id}/file_download_batch_exports/{id}/cancel/": {
+      "post": {
+        "operationId": "environments_file_download_batch_exports_cancel_create",
+        "description": "Cancel an ongoing file-download batch export.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/EnvironmentIdPath"
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "A UUID string identifying this batch export run.",
+            "required": true
+          }
+        ],
+        "tags": [
+          "batch_exports",
+          "file_download_batch_exports"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FileDownloadBatchExportOnDemand"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/FileDownloadBatchExportOnDemand"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/FileDownloadBatchExportOnDemand"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "batch_export:write"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response body"
+          }
+        },
+        "deprecated": true,
+        "x-explicit-tags": [
+          "batch_exports"
+        ]
+      }
+    },
     "/api/environments/{environment_id}/file_download_batch_exports/{id}/download/": {
       "get": {
         "operationId": "environments_file_download_batch_exports_download_retrieve",
@@ -25782,6 +25843,44 @@
         "x-explicit-tags": [
           "max"
         ]
+      },
+      "delete": {
+        "operationId": "conversations_destroy",
+        "description": "Delete a conversation.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "conversation",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "A UUID string identifying this conversation.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "max",
+          "conversations"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "conversation:write"
+            ]
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No response body"
+          }
+        },
+        "x-explicit-tags": [
+          "max"
+        ]
       }
     },
     "/api/environments/{project_id}/conversations/{conversation}/append_message/": {
@@ -40065,6 +40164,119 @@
         ]
       }
     },
+    "/api/environments/{project_id}/vision/observations/": {
+      "get": {
+        "operationId": "vision_observations_list",
+        "description": "Read-only access to a session's observations across every scanner the caller can read, for the replay-page dock.",
+        "parameters": [
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Number of results to return per page.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "offset",
+            "required": false,
+            "in": "query",
+            "description": "The initial index from which to return the results.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          },
+          {
+            "in": "query",
+            "name": "session_id",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Session recording id to return observations for.",
+            "required": true
+          }
+        ],
+        "tags": [
+          "replay_vision",
+          "vision"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "replay_scanner:read",
+              "session_recording:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedReplayObservationList"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-explicit-tags": [
+          "replay_vision"
+        ]
+      }
+    },
+    "/api/environments/{project_id}/vision/observations/{id}/": {
+      "get": {
+        "operationId": "vision_observations_retrieve",
+        "description": "Read-only access to a session's observations across every scanner the caller can read, for the replay-page dock.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "A UUID string identifying this replay observation.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "replay_vision",
+          "vision"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "replay_scanner:read",
+              "session_recording:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReplayObservation"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-explicit-tags": [
+          "replay_vision"
+        ]
+      }
+    },
     "/api/environments/{project_id}/vision/scanners/": {
       "get": {
         "operationId": "vision_scanners_list",
@@ -40519,12 +40731,13 @@
               "type": "string",
               "enum": [
                 "failed",
+                "ineligible",
                 "pending",
                 "running",
                 "succeeded"
               ]
             },
-            "description": "Filter by observation status.\n\n* `pending` - Pending\n* `running` - Running\n* `succeeded` - Succeeded\n* `failed` - Failed"
+            "description": "Filter by observation status.\n\n* `pending` - Pending\n* `running` - Running\n* `succeeded` - Succeeded\n* `failed` - Failed\n* `ineligible` - Ineligible"
           },
           {
             "in": "query",
@@ -40614,6 +40827,63 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ReplayObservation"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-explicit-tags": [
+          "replay_vision"
+        ]
+      }
+    },
+    "/api/environments/{project_id}/vision/scanners/estimate/": {
+      "post": {
+        "operationId": "vision_scanners_estimate_create",
+        "description": "Estimate the observation volume a proposed scanner would generate, for the pre-save cost preview.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "replay_vision",
+          "vision"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EstimateRequest"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/EstimateRequest"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/EstimateRequest"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "replay_scanner:read",
+              "session_recording:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EstimateResponse"
                 }
               }
             },
@@ -46326,12 +46596,13 @@
                 "LogsAlertConfiguration",
                 "LogsExclusionRule",
                 "ProductTour",
-                "Ticket"
+                "Ticket",
+                "InstanceSetting"
               ],
               "type": "string",
               "minLength": 1
             },
-            "description": "Filter by a single activity scope, e.g. \"FeatureFlag\", \"Insight\", \"Dashboard\", \"Experiment\".\n\n* `Cohort` - Cohort\n* `FeatureFlag` - FeatureFlag\n* `Person` - Person\n* `Group` - Group\n* `Insight` - Insight\n* `Plugin` - Plugin\n* `PluginConfig` - PluginConfig\n* `HogFunction` - HogFunction\n* `HogFlow` - HogFlow\n* `DataManagement` - DataManagement\n* `EventDefinition` - EventDefinition\n* `PropertyDefinition` - PropertyDefinition\n* `Notebook` - Notebook\n* `Endpoint` - Endpoint\n* `EndpointVersion` - EndpointVersion\n* `Dashboard` - Dashboard\n* `Replay` - Replay\n* `Experiment` - Experiment\n* `ExperimentHoldout` - ExperimentHoldout\n* `ExperimentSavedMetric` - ExperimentSavedMetric\n* `Survey` - Survey\n* `EarlyAccessFeature` - EarlyAccessFeature\n* `SessionRecordingPlaylist` - SessionRecordingPlaylist\n* `Comment` - Comment\n* `Team` - Team\n* `Project` - Project\n* `ErrorTrackingIssue` - ErrorTrackingIssue\n* `DataWarehouseSavedQuery` - DataWarehouseSavedQuery\n* `LegalDocument` - LegalDocument\n* `Organization` - Organization\n* `OrganizationDomain` - OrganizationDomain\n* `OrganizationMembership` - OrganizationMembership\n* `Role` - Role\n* `UserGroup` - UserGroup\n* `BatchExport` - BatchExport\n* `BatchImport` - BatchImport\n* `Integration` - Integration\n* `Annotation` - Annotation\n* `Tag` - Tag\n* `TaggedItem` - TaggedItem\n* `Subscription` - Subscription\n* `PersonalAPIKey` - PersonalAPIKey\n* `ProjectSecretAPIKey` - ProjectSecretAPIKey\n* `User` - User\n* `Action` - Action\n* `AlertConfiguration` - AlertConfiguration\n* `Threshold` - Threshold\n* `AlertSubscription` - AlertSubscription\n* `ExternalDataSource` - ExternalDataSource\n* `ExternalDataSchema` - ExternalDataSchema\n* `Evaluation` - Evaluation\n* `LLMTrace` - LLMTrace\n* `WebAnalyticsFilterPreset` - WebAnalyticsFilterPreset\n* `CustomerProfileConfig` - CustomerProfileConfig\n* `Log` - Log\n* `LogsAlertConfiguration` - LogsAlertConfiguration\n* `LogsExclusionRule` - LogsExclusionRule\n* `ProductTour` - ProductTour\n* `Ticket` - Ticket"
+            "description": "Filter by a single activity scope, e.g. \"FeatureFlag\", \"Insight\", \"Dashboard\", \"Experiment\".\n\n* `Cohort` - Cohort\n* `FeatureFlag` - FeatureFlag\n* `Person` - Person\n* `Group` - Group\n* `Insight` - Insight\n* `Plugin` - Plugin\n* `PluginConfig` - PluginConfig\n* `HogFunction` - HogFunction\n* `HogFlow` - HogFlow\n* `DataManagement` - DataManagement\n* `EventDefinition` - EventDefinition\n* `PropertyDefinition` - PropertyDefinition\n* `Notebook` - Notebook\n* `Endpoint` - Endpoint\n* `EndpointVersion` - EndpointVersion\n* `Dashboard` - Dashboard\n* `Replay` - Replay\n* `Experiment` - Experiment\n* `ExperimentHoldout` - ExperimentHoldout\n* `ExperimentSavedMetric` - ExperimentSavedMetric\n* `Survey` - Survey\n* `EarlyAccessFeature` - EarlyAccessFeature\n* `SessionRecordingPlaylist` - SessionRecordingPlaylist\n* `Comment` - Comment\n* `Team` - Team\n* `Project` - Project\n* `ErrorTrackingIssue` - ErrorTrackingIssue\n* `DataWarehouseSavedQuery` - DataWarehouseSavedQuery\n* `LegalDocument` - LegalDocument\n* `Organization` - Organization\n* `OrganizationDomain` - OrganizationDomain\n* `OrganizationMembership` - OrganizationMembership\n* `Role` - Role\n* `UserGroup` - UserGroup\n* `BatchExport` - BatchExport\n* `BatchImport` - BatchImport\n* `Integration` - Integration\n* `Annotation` - Annotation\n* `Tag` - Tag\n* `TaggedItem` - TaggedItem\n* `Subscription` - Subscription\n* `PersonalAPIKey` - PersonalAPIKey\n* `ProjectSecretAPIKey` - ProjectSecretAPIKey\n* `User` - User\n* `Action` - Action\n* `AlertConfiguration` - AlertConfiguration\n* `Threshold` - Threshold\n* `AlertSubscription` - AlertSubscription\n* `ExternalDataSource` - ExternalDataSource\n* `ExternalDataSchema` - ExternalDataSchema\n* `Evaluation` - Evaluation\n* `LLMTrace` - LLMTrace\n* `WebAnalyticsFilterPreset` - WebAnalyticsFilterPreset\n* `CustomerProfileConfig` - CustomerProfileConfig\n* `Log` - Log\n* `LogsAlertConfiguration` - LogsAlertConfiguration\n* `LogsExclusionRule` - LogsExclusionRule\n* `ProductTour` - ProductTour\n* `Ticket` - Ticket\n* `InstanceSetting` - InstanceSetting"
           },
           {
             "in": "query",
@@ -46398,10 +46669,11 @@
                   "LogsAlertConfiguration",
                   "LogsExclusionRule",
                   "ProductTour",
-                  "Ticket"
+                  "Ticket",
+                  "InstanceSetting"
                 ],
                 "type": "string",
-                "description": "* `Cohort` - Cohort\n* `FeatureFlag` - FeatureFlag\n* `Person` - Person\n* `Group` - Group\n* `Insight` - Insight\n* `Plugin` - Plugin\n* `PluginConfig` - PluginConfig\n* `HogFunction` - HogFunction\n* `HogFlow` - HogFlow\n* `DataManagement` - DataManagement\n* `EventDefinition` - EventDefinition\n* `PropertyDefinition` - PropertyDefinition\n* `Notebook` - Notebook\n* `Endpoint` - Endpoint\n* `EndpointVersion` - EndpointVersion\n* `Dashboard` - Dashboard\n* `Replay` - Replay\n* `Experiment` - Experiment\n* `ExperimentHoldout` - ExperimentHoldout\n* `ExperimentSavedMetric` - ExperimentSavedMetric\n* `Survey` - Survey\n* `EarlyAccessFeature` - EarlyAccessFeature\n* `SessionRecordingPlaylist` - SessionRecordingPlaylist\n* `Comment` - Comment\n* `Team` - Team\n* `Project` - Project\n* `ErrorTrackingIssue` - ErrorTrackingIssue\n* `DataWarehouseSavedQuery` - DataWarehouseSavedQuery\n* `LegalDocument` - LegalDocument\n* `Organization` - Organization\n* `OrganizationDomain` - OrganizationDomain\n* `OrganizationMembership` - OrganizationMembership\n* `Role` - Role\n* `UserGroup` - UserGroup\n* `BatchExport` - BatchExport\n* `BatchImport` - BatchImport\n* `Integration` - Integration\n* `Annotation` - Annotation\n* `Tag` - Tag\n* `TaggedItem` - TaggedItem\n* `Subscription` - Subscription\n* `PersonalAPIKey` - PersonalAPIKey\n* `ProjectSecretAPIKey` - ProjectSecretAPIKey\n* `User` - User\n* `Action` - Action\n* `AlertConfiguration` - AlertConfiguration\n* `Threshold` - Threshold\n* `AlertSubscription` - AlertSubscription\n* `ExternalDataSource` - ExternalDataSource\n* `ExternalDataSchema` - ExternalDataSchema\n* `Evaluation` - Evaluation\n* `LLMTrace` - LLMTrace\n* `WebAnalyticsFilterPreset` - WebAnalyticsFilterPreset\n* `CustomerProfileConfig` - CustomerProfileConfig\n* `Log` - Log\n* `LogsAlertConfiguration` - LogsAlertConfiguration\n* `LogsExclusionRule` - LogsExclusionRule\n* `ProductTour` - ProductTour\n* `Ticket` - Ticket"
+                "description": "* `Cohort` - Cohort\n* `FeatureFlag` - FeatureFlag\n* `Person` - Person\n* `Group` - Group\n* `Insight` - Insight\n* `Plugin` - Plugin\n* `PluginConfig` - PluginConfig\n* `HogFunction` - HogFunction\n* `HogFlow` - HogFlow\n* `DataManagement` - DataManagement\n* `EventDefinition` - EventDefinition\n* `PropertyDefinition` - PropertyDefinition\n* `Notebook` - Notebook\n* `Endpoint` - Endpoint\n* `EndpointVersion` - EndpointVersion\n* `Dashboard` - Dashboard\n* `Replay` - Replay\n* `Experiment` - Experiment\n* `ExperimentHoldout` - ExperimentHoldout\n* `ExperimentSavedMetric` - ExperimentSavedMetric\n* `Survey` - Survey\n* `EarlyAccessFeature` - EarlyAccessFeature\n* `SessionRecordingPlaylist` - SessionRecordingPlaylist\n* `Comment` - Comment\n* `Team` - Team\n* `Project` - Project\n* `ErrorTrackingIssue` - ErrorTrackingIssue\n* `DataWarehouseSavedQuery` - DataWarehouseSavedQuery\n* `LegalDocument` - LegalDocument\n* `Organization` - Organization\n* `OrganizationDomain` - OrganizationDomain\n* `OrganizationMembership` - OrganizationMembership\n* `Role` - Role\n* `UserGroup` - UserGroup\n* `BatchExport` - BatchExport\n* `BatchImport` - BatchImport\n* `Integration` - Integration\n* `Annotation` - Annotation\n* `Tag` - Tag\n* `TaggedItem` - TaggedItem\n* `Subscription` - Subscription\n* `PersonalAPIKey` - PersonalAPIKey\n* `ProjectSecretAPIKey` - ProjectSecretAPIKey\n* `User` - User\n* `Action` - Action\n* `AlertConfiguration` - AlertConfiguration\n* `Threshold` - Threshold\n* `AlertSubscription` - AlertSubscription\n* `ExternalDataSource` - ExternalDataSource\n* `ExternalDataSchema` - ExternalDataSchema\n* `Evaluation` - Evaluation\n* `LLMTrace` - LLMTrace\n* `WebAnalyticsFilterPreset` - WebAnalyticsFilterPreset\n* `CustomerProfileConfig` - CustomerProfileConfig\n* `Log` - Log\n* `LogsAlertConfiguration` - LogsAlertConfiguration\n* `LogsExclusionRule` - LogsExclusionRule\n* `ProductTour` - ProductTour\n* `Ticket` - Ticket\n* `InstanceSetting` - InstanceSetting"
               }
             },
             "description": "Filter by multiple activity scopes, comma-separated. Values must be valid ActivityScope enum values. E.g. \"FeatureFlag,Insight\"."
@@ -64917,6 +65189,66 @@
               }
             },
             "description": ""
+          }
+        },
+        "x-explicit-tags": [
+          "batch_exports"
+        ]
+      }
+    },
+    "/api/projects/{project_id}/file_download_batch_exports/{id}/cancel/": {
+      "post": {
+        "operationId": "file_download_batch_exports_cancel_create",
+        "description": "Cancel an ongoing file-download batch export.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "A UUID string identifying this batch export run.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "batch_exports",
+          "file_download_batch_exports"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FileDownloadBatchExportOnDemand"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/FileDownloadBatchExportOnDemand"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/FileDownloadBatchExportOnDemand"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "batch_export:write"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response body"
           }
         },
         "x-explicit-tags": [
@@ -91387,6 +91719,188 @@
         "x-explicit-tags": []
       }
     },
+    "/api/projects/{project_id}/wizard/sessions/": {
+      "get": {
+        "operationId": "wizard_sessions_list",
+        "description": "List wizard sessions for the project, ordered by started_at desc. This should only be called by the PostHog Wizard. Optional filters: ?workflow_id=<id> and ?skill_id=<id>.",
+        "parameters": [
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Number of results to return per page.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "offset",
+            "required": false,
+            "in": "query",
+            "description": "The initial index from which to return the results.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          },
+          {
+            "in": "query",
+            "name": "skill_id",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter to a single skill within the workflow (e.g. 'nextjs')."
+          },
+          {
+            "in": "query",
+            "name": "workflow_id",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter to a single workflow (e.g. 'onboarding')."
+          }
+        ],
+        "tags": [
+          "wizard"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "wizard_session:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedWizardSessionDTOList"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-explicit-tags": [
+          "wizard"
+        ]
+      },
+      "post": {
+        "operationId": "wizard_sessions_create",
+        "description": "Upsert a wizard session. The `session_id` key is the idempotency anchor — reposting the same `session_id` replaces the existing row. Returns 201 on create, 200 on update.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "wizard"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpsertWizardSessionRequest"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/UpsertWizardSessionRequest"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/UpsertWizardSessionRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "wizard_session:write"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WizardSessionDTO"
+                }
+              }
+            },
+            "description": ""
+          },
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WizardSessionDTO"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-explicit-tags": [
+          "wizard"
+        ]
+      }
+    },
+    "/api/projects/{project_id}/wizard/sessions/{session_id}/": {
+      "get": {
+        "operationId": "wizard_sessions_retrieve",
+        "description": "Retrieve a single wizard session by its session_id.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          },
+          {
+            "in": "path",
+            "name": "session_id",
+            "schema": {
+              "type": "string",
+              "pattern": "^[^/]+$"
+            },
+            "required": true
+          }
+        ],
+        "tags": [
+          "wizard"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "wizard_session:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WizardSessionDTO"
+                }
+              }
+            },
+            "description": ""
+          },
+          "404": {
+            "description": "No session with that id for this project."
+          }
+        },
+        "x-explicit-tags": [
+          "wizard"
+        ]
+      }
+    },
     "/api/public_hog_function_templates/": {
       "get": {
         "operationId": "public_hog_function_templates_list",
@@ -95009,13 +95523,13 @@
         "title": "AggregationAxisFormat",
         "type": "string"
       },
-      "AggregationPropertyType1": {
+      "AggregationPropertyType": {
         "enum": [
           "event",
           "person",
           "data_warehouse"
         ],
-        "title": "AggregationPropertyType1",
+        "title": "AggregationPropertyType",
         "type": "string"
       },
       "AggregationType": {
@@ -95803,13 +96317,18 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/ApproveSnapshotInput"
-            }
+            },
+            "description": "Specific snapshots to approve, each with `identifier` and `new_hash`. Ignored when `approve_all` is true."
           },
           "approve_all": {
-            "type": "boolean"
+            "type": "boolean",
+            "default": false,
+            "description": "Approve every changed and new snapshot in the run. Mutually exclusive with `snapshots` — pass one or the other."
           },
           "commit_to_github": {
-            "type": "boolean"
+            "type": "boolean",
+            "default": true,
+            "description": "Whether to commit the updated baseline YAML to the PR branch on GitHub. Set to false to record the approval without pushing a commit."
           }
         }
       },
@@ -95817,10 +96336,12 @@
         "type": "object",
         "properties": {
           "identifier": {
-            "type": "string"
+            "type": "string",
+            "description": "The snapshot identifier to approve (e.g. Storybook story id plus theme)."
           },
           "new_hash": {
-            "type": "string"
+            "type": "string",
+            "description": "The content hash of the new baseline image to record for this identifier."
           }
         },
         "required": [
@@ -98677,17 +99198,18 @@
       "CalendarHeatmapFilter": {
         "additionalProperties": false,
         "properties": {
-          "dummy": {
+          "bucketBySessionStart": {
             "anyOf": [
               {
-                "type": "string"
+                "type": "boolean"
               },
               {
                 "type": "null"
               }
             ],
-            "default": null,
-            "title": "Dummy"
+            "default": false,
+            "description": "When true and the series math is `dau`/`unique_users`, each user contributes to the (day-of-week, hour) bucket of their session's first event only — matching the web overview session-start attribution. When false (default), the user contributes to every bucket they have any event in. No effect on `total` math (event counts are unchanged either way).",
+            "title": "Bucketbysessionstart"
           }
         },
         "title": "CalendarHeatmapFilter",
@@ -104474,6 +104996,9 @@
                 "$ref": "#/components/schemas/Response6"
               },
               {
+                "$ref": "#/components/schemas/Response7"
+              },
+              {
                 "$ref": "#/components/schemas/Response8"
               },
               {
@@ -109745,6 +110270,16 @@
               "null"
             ],
             "description": "Set to true to soft-delete this endpoint."
+          },
+          "tags": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "description": "List of tag names to associate with this endpoint. Replaces any existing tags."
           }
         }
       },
@@ -109873,6 +110408,13 @@
               "$ref": "#/components/schemas/EndpointColumn"
             },
             "description": "Column names and types from the query's SELECT clause."
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Tag names associated with this endpoint."
           }
         },
         "required": [
@@ -109892,6 +110434,7 @@
           "materialization",
           "name",
           "query",
+          "tags",
           "ui_url",
           "updated_at",
           "url",
@@ -110165,6 +110708,13 @@
             },
             "description": "Column names and types from the query's SELECT clause."
           },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Tag names associated with this endpoint."
+          },
           "version": {
             "type": "integer",
             "description": "Version number."
@@ -110220,6 +110770,7 @@
           "materialization",
           "name",
           "query",
+          "tags",
           "ui_url",
           "updated_at",
           "url",
@@ -115107,6 +115658,52 @@
         },
         "required": [
           "label"
+        ]
+      },
+      "EstimateRequest": {
+        "type": "object",
+        "description": "Body of POST /vision/scanners/estimate/ — a proposed, unsaved scanner config.",
+        "properties": {
+          "query": {
+            "description": "Proposed `RecordingsQuery` for the candidate filter. `date_from`/`date_to` are ignored — the estimate always uses a fixed 30-day lookback. Omit to estimate against all recordings."
+          },
+          "sampling_rate": {
+            "type": "number",
+            "format": "double",
+            "maximum": 1,
+            "minimum": 0,
+            "default": 1,
+            "description": "0..1 downsample applied to matched sessions. Defaults to 1.0 (no downsampling)."
+          }
+        }
+      },
+      "EstimateResponse": {
+        "type": "object",
+        "description": "Forward-looking observation-volume estimate for a proposed scanner. Pricing-agnostic.",
+        "properties": {
+          "matched_sessions_in_window": {
+            "type": "integer",
+            "description": "Distinct sessions matching the query within the 30-day lookback, before sampling."
+          },
+          "window_days": {
+            "type": "integer",
+            "description": "Lookback window the estimate is based on. Normally 30; smaller when the team has fewer days of recordings."
+          },
+          "estimated_observations_per_month": {
+            "type": "integer",
+            "description": "Projected monthly observations: matched sessions scaled to 30 days, times sampling_rate."
+          },
+          "sampling_rate": {
+            "type": "number",
+            "format": "double",
+            "description": "Sampling rate applied to the projection. Echoed from the request."
+          }
+        },
+        "required": [
+          "estimated_observations_per_month",
+          "matched_sessions_in_window",
+          "sampling_rate",
+          "window_days"
         ]
       },
       "Evaluation": {
@@ -124207,6 +124804,53 @@
         ],
         "title": "FeaturePropertyFilter",
         "type": "object"
+      },
+      "FileDownloadBatchExportOnDemand": {
+        "type": "object",
+        "description": "Request shape for a FileDownload batch export on demand.",
+        "properties": {
+          "file": {
+            "$ref": "#/components/schemas/FileDownloadDestinationFileConfig"
+          },
+          "model": {
+            "$ref": "#/components/schemas/FileDownloadBatchExportOnDemandModelEnum"
+          },
+          "include": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "exclude": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "data_interval_start": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "data_interval_end": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "data_interval_end",
+          "data_interval_start",
+          "file",
+          "model"
+        ]
+      },
+      "FileDownloadBatchExportOnDemandModelEnum": {
+        "enum": [
+          "events",
+          "persons",
+          "sessions"
+        ],
+        "type": "string",
+        "description": "* `events` - events\n* `persons` - persons\n* `sessions` - sessions"
       },
       "FileDownloadDestinationFileConfig": {
         "type": "object",
@@ -138631,7 +139275,8 @@
         "properties": {
           "snapshot_id": {
             "type": "string",
-            "format": "uuid"
+            "format": "uuid",
+            "description": "UUID of the changed snapshot to mark as a known tolerated alternate. Future runs that produce the same alternate hash for this identifier will not be flagged as changes."
           }
         },
         "required": [
@@ -141289,10 +141934,11 @@
           "pending",
           "running",
           "succeeded",
-          "failed"
+          "failed",
+          "ineligible"
         ],
         "type": "string",
-        "description": "* `pending` - Pending\n* `running` - Running\n* `succeeded` - Succeeded\n* `failed` - Failed"
+        "description": "* `pending` - Pending\n* `running` - Running\n* `succeeded` - Succeeded\n* `failed` - Failed\n* `ineligible` - Ineligible"
       },
       "ObservationTriggerEnum": {
         "enum": [
@@ -147292,6 +147938,41 @@
           }
         }
       },
+      "PaginatedWizardSessionDTOList": {
+        "type": "object",
+        "required": [
+          "count",
+          "results"
+        ],
+        "properties": {
+          "count": {
+            "type": "integer",
+            "example": 123
+          },
+          "next": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uri",
+            "example": "http://api.example.org/accounts/?offset=400&limit=100"
+          },
+          "previous": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uri",
+            "example": "http://api.example.org/accounts/?offset=200&limit=100"
+          },
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WizardSessionDTO"
+            }
+          }
+        }
+      },
       "ParserMode": {
         "enum": [
           "cpp_only",
@@ -149538,6 +150219,16 @@
               "null"
             ],
             "description": "Set to true to soft-delete this endpoint."
+          },
+          "tags": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "description": "List of tag names to associate with this endpoint. Replaces any existing tags."
           }
         }
       },
@@ -160881,6 +161572,9 @@
             "$ref": "#/components/schemas/QueryResponseAlternative25"
           },
           {
+            "$ref": "#/components/schemas/QueryResponseAlternative26"
+          },
+          {
             "$ref": "#/components/schemas/QueryResponseAlternative27"
           },
           {
@@ -160937,6 +161631,9 @@
           },
           {
             "$ref": "#/components/schemas/QueryResponseAlternative45"
+          },
+          {
+            "$ref": "#/components/schemas/QueryResponseAlternative46"
           },
           {
             "$ref": "#/components/schemas/QueryResponseAlternative47"
@@ -163208,6 +163905,198 @@
         "title": "QueryResponseAlternative25",
         "type": "object"
       },
+      "QueryResponseAlternative26": {
+        "additionalProperties": false,
+        "properties": {
+          "columns": {
+            "anyOf": [
+              {
+                "items": {},
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Columns"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Query error. Returned only if 'explain' or `modifiers.debug` is true. Throws an error otherwise.",
+            "title": "Error"
+          },
+          "hasMore": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Hasmore"
+          },
+          "hogql": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Generated HogQL query.",
+            "title": "Hogql"
+          },
+          "limit": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Limit"
+          },
+          "modifiers": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/HogQLQueryModifiers"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Modifiers used when performing the query"
+          },
+          "offset": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Offset"
+          },
+          "query_status": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/QueryStatus"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Query status indicates whether next to the provided data, a query is still running."
+          },
+          "resolved_date_range": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ResolvedDateRangeResponse"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "The date range used for the query"
+          },
+          "results": {
+            "items": {},
+            "title": "Results",
+            "type": "array"
+          },
+          "samplingRate": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/SamplingRate"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "timings": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/QueryTiming"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Measured timings for different parts of the query generation process",
+            "title": "Timings"
+          },
+          "types": {
+            "anyOf": [
+              {
+                "items": {},
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Types"
+          },
+          "usedLazyPrecompute": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Whether the response was served from the lazy precompute path.",
+            "title": "Usedlazyprecompute"
+          },
+          "usedPreAggregatedTables": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Whether the response was served from a precomputed table.",
+            "title": "Usedpreaggregatedtables"
+          }
+        },
+        "required": [
+          "results"
+        ],
+        "title": "QueryResponseAlternative26",
+        "type": "object"
+      },
       "QueryResponseAlternative27": {
         "additionalProperties": false,
         "properties": {
@@ -163297,6 +164186,18 @@
             "default": null,
             "description": "Measured timings for different parts of the query generation process",
             "title": "Timings"
+          },
+          "usedLazyPrecompute": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Usedlazyprecompute"
           }
         },
         "required": [
@@ -165968,6 +166869,198 @@
         "title": "QueryResponseAlternative45",
         "type": "object"
       },
+      "QueryResponseAlternative46": {
+        "additionalProperties": false,
+        "properties": {
+          "columns": {
+            "anyOf": [
+              {
+                "items": {},
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Columns"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Query error. Returned only if 'explain' or `modifiers.debug` is true. Throws an error otherwise.",
+            "title": "Error"
+          },
+          "hasMore": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Hasmore"
+          },
+          "hogql": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Generated HogQL query.",
+            "title": "Hogql"
+          },
+          "limit": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Limit"
+          },
+          "modifiers": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/HogQLQueryModifiers"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Modifiers used when performing the query"
+          },
+          "offset": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Offset"
+          },
+          "query_status": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/QueryStatus"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Query status indicates whether next to the provided data, a query is still running."
+          },
+          "resolved_date_range": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ResolvedDateRangeResponse"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "The date range used for the query"
+          },
+          "results": {
+            "items": {},
+            "title": "Results",
+            "type": "array"
+          },
+          "samplingRate": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/SamplingRate"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "timings": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/QueryTiming"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Measured timings for different parts of the query generation process",
+            "title": "Timings"
+          },
+          "types": {
+            "anyOf": [
+              {
+                "items": {},
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Types"
+          },
+          "usedLazyPrecompute": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Whether the response was served from the lazy precompute path.",
+            "title": "Usedlazyprecompute"
+          },
+          "usedPreAggregatedTables": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Whether the response was served from a precomputed table.",
+            "title": "Usedpreaggregatedtables"
+          }
+        },
+        "required": [
+          "results"
+        ],
+        "title": "QueryResponseAlternative46",
+        "type": "object"
+      },
       "QueryResponseAlternative47": {
         "additionalProperties": false,
         "properties": {
@@ -166057,6 +167150,18 @@
             "default": null,
             "description": "Measured timings for different parts of the query generation process",
             "title": "Timings"
+          },
+          "usedLazyPrecompute": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Usedlazyprecompute"
           }
         },
         "required": [
@@ -173150,12 +174255,12 @@
               }
             ],
             "readOnly": true,
-            "description": "Observation status (pending, running, succeeded, failed).\n\n* `pending` - Pending\n* `running` - Running\n* `succeeded` - Succeeded\n* `failed` - Failed"
+            "description": "Observation status (pending, running, succeeded, failed, ineligible).\n\n* `pending` - Pending\n* `running` - Running\n* `succeeded` - Succeeded\n* `failed` - Failed\n* `ineligible` - Ineligible"
           },
           "error_reason": {
             "type": "string",
             "readOnly": true,
-            "description": "Populated on failure; includes the malformed model response when validation fails."
+            "description": "Populated on terminal non-success statuses; formatted as `kind:human-readable message`. For `ineligible`, kind is one of no_recording / too_short / too_inactive / too_long / no_events. For `failed`, kind is one of provider_transient / provider_rejected / rasterization_failed / validation_failed / internal_error."
           },
           "workflow_id": {
             "type": "string",
@@ -176704,6 +177809,198 @@
         "title": "Response6",
         "type": "object"
       },
+      "Response7": {
+        "additionalProperties": false,
+        "properties": {
+          "columns": {
+            "anyOf": [
+              {
+                "items": {},
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Columns"
+          },
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Query error. Returned only if 'explain' or `modifiers.debug` is true. Throws an error otherwise.",
+            "title": "Error"
+          },
+          "hasMore": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Hasmore"
+          },
+          "hogql": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Generated HogQL query.",
+            "title": "Hogql"
+          },
+          "limit": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Limit"
+          },
+          "modifiers": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/HogQLQueryModifiers"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Modifiers used when performing the query"
+          },
+          "offset": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Offset"
+          },
+          "query_status": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/QueryStatus"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Query status indicates whether next to the provided data, a query is still running."
+          },
+          "resolved_date_range": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ResolvedDateRangeResponse"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "The date range used for the query"
+          },
+          "results": {
+            "items": {},
+            "title": "Results",
+            "type": "array"
+          },
+          "samplingRate": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/SamplingRate"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "timings": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/QueryTiming"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Measured timings for different parts of the query generation process",
+            "title": "Timings"
+          },
+          "types": {
+            "anyOf": [
+              {
+                "items": {},
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Types"
+          },
+          "usedLazyPrecompute": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Whether the response was served from the lazy precompute path.",
+            "title": "Usedlazyprecompute"
+          },
+          "usedPreAggregatedTables": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Whether the response was served from a precomputed table.",
+            "title": "Usedpreaggregatedtables"
+          }
+        },
+        "required": [
+          "results"
+        ],
+        "title": "Response7",
+        "type": "object"
+      },
       "Response8": {
         "additionalProperties": false,
         "properties": {
@@ -176793,6 +178090,18 @@
             "default": null,
             "description": "Measured timings for different parts of the query generation process",
             "title": "Timings"
+          },
+          "usedLazyPrecompute": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Usedlazyprecompute"
           }
         },
         "required": [
@@ -177317,7 +178626,7 @@
           "aggregationPropertyType": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/AggregationPropertyType1"
+                "$ref": "#/components/schemas/AggregationPropertyType"
               },
               {
                 "type": "null"
@@ -180226,6 +181535,16 @@
         "required": [
           "results"
         ]
+      },
+      "RunPhaseEnum": {
+        "enum": [
+          "idle",
+          "running",
+          "completed",
+          "error"
+        ],
+        "type": "string",
+        "description": "* `idle` - IDLE\n* `running` - RUNNING\n* `completed` - COMPLETED\n* `error` - ERROR"
       },
       "RunSourceEnum": {
         "enum": [
@@ -184639,6 +185958,10 @@
             "type": "string",
             "format": "uuid"
           },
+          "run_id": {
+            "type": "string",
+            "format": "uuid"
+          },
           "identifier": {
             "type": "string"
           },
@@ -184711,7 +186034,8 @@
           "identifier",
           "result",
           "review_state",
-          "reviewed_at"
+          "reviewed_at",
+          "run_id"
         ]
       },
       "SnapshotHistoryEntry": {
@@ -195148,6 +196472,32 @@
             "default": 1,
             "title": "Smoothingintervals"
           },
+          "xAxisLabel": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Custom label rendered under the X axis.",
+            "title": "Xaxislabel"
+          },
+          "yAxisLabel": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Custom label rendered alongside the Y axis.",
+            "title": "Yaxislabel"
+          },
           "yAxisScaleType": {
             "anyOf": [
               {
@@ -195217,6 +196567,18 @@
             ],
             "default": null,
             "description": "Breakdown of the events and actions"
+          },
+          "calendarHeatmapFilter": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/CalendarHeatmapFilter"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Properties specific to the calendar heatmap display variant. Only consulted when `trendsFilter.display === ChartDisplayType.CalendarHeatmap`; ignored otherwise."
           },
           "compareFilter": {
             "anyOf": [
@@ -195659,6 +197021,70 @@
           "content_hash",
           "fields",
           "url"
+        ]
+      },
+      "UpsertWizardSessionRequest": {
+        "type": "object",
+        "description": "Input: validates the JSON the wizard CLI posts. team_id is derived from URL.",
+        "properties": {
+          "session_id": {
+            "type": "string",
+            "description": "Stable identifier the wizard mints for this run (format: '{workflow_id}-{skill_id}-{started_at_iso}'). Reposting with the same session_id upserts the existing row.",
+            "maxLength": 255
+          },
+          "workflow_id": {
+            "type": "string",
+            "description": "High-level workflow being run, e.g. 'onboarding', 'migration', 'audit'.",
+            "maxLength": 255
+          },
+          "skill_id": {
+            "type": "string",
+            "description": "Specific skill within the workflow, e.g. 'nextjs', 'django', 'laravel'.",
+            "maxLength": 255
+          },
+          "started_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "UTC timestamp when the wizard started this run. Matches the timestamp encoded in session_id."
+          },
+          "run_phase": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/RunPhaseEnum"
+              }
+            ],
+            "description": "Lifecycle stage of the wizard run.\n\n* `idle` - IDLE\n* `running` - RUNNING\n* `completed` - COMPLETED\n* `error` - ERROR"
+          },
+          "tasks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WizardTaskDTO"
+            }
+          },
+          "event_plan": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "additionalProperties": true,
+            "description": "Optional structured plan of events the wizard intends to instrument. Schema is workflow-specific."
+          },
+          "error": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "additionalProperties": true,
+            "description": "Populated when run_phase='error'. Shape: { type: string, message: string }."
+          }
+        },
+        "required": [
+          "run_phase",
+          "session_id",
+          "skill_id",
+          "started_at",
+          "tasks",
+          "workflow_id"
         ]
       },
       "UrlMatching": {
@@ -198190,6 +199616,19 @@
             "default": null,
             "title": "Usesessionstable"
           },
+          "useWebAnalyticsPrecompute": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Opt this specific query into the web_goals_query precompute path. Requires the `web-analytics-precompute-toggle` PostHog feature flag to be on for the team's organization for the gate to pass. *",
+            "title": "Usewebanalyticsprecompute"
+          },
           "version": {
             "anyOf": [
               {
@@ -198368,6 +199807,32 @@
             ],
             "default": null,
             "title": "Types"
+          },
+          "usedLazyPrecompute": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Whether the response was served from the lazy precompute path.",
+            "title": "Usedlazyprecompute"
+          },
+          "usedPreAggregatedTables": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Whether the response was served from a precomputed table.",
+            "title": "Usedpreaggregatedtables"
           }
         },
         "required": [
@@ -201068,6 +202533,19 @@
             "default": null,
             "title": "Usesessionstable"
           },
+          "useWebAnalyticsPrecompute": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Opt this specific query into the web vitals path breakdown precompute path. Requires the `web-analytics-precompute-toggle` PostHog feature flag to be on for the team's organization for the gate to pass. *",
+            "title": "Usewebanalyticsprecompute"
+          },
           "version": {
             "anyOf": [
               {
@@ -201180,6 +202658,18 @@
             "default": null,
             "description": "Measured timings for different parts of the query generation process",
             "title": "Timings"
+          },
+          "usedLazyPrecompute": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Usedlazyprecompute"
           }
         },
         "required": [
@@ -201703,6 +203193,106 @@
         ],
         "type": "string",
         "description": "* `button` - button\n* `tab` - tab\n* `selector` - selector"
+      },
+      "WizardSessionDTO": {
+        "type": "object",
+        "description": "Output: serialises a WizardSessionDTO returned by the facade.",
+        "properties": {
+          "session_id": {
+            "type": "string"
+          },
+          "team_id": {
+            "type": "integer"
+          },
+          "workflow_id": {
+            "type": "string"
+          },
+          "skill_id": {
+            "type": "string"
+          },
+          "started_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "run_phase": {
+            "$ref": "#/components/schemas/RunPhaseEnum"
+          },
+          "tasks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WizardTaskDTO"
+            }
+          },
+          "event_plan": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "additionalProperties": true
+          },
+          "error": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "additionalProperties": true
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "is_stale": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "created_at",
+          "error",
+          "event_plan",
+          "is_stale",
+          "run_phase",
+          "session_id",
+          "skill_id",
+          "started_at",
+          "tasks",
+          "team_id",
+          "updated_at",
+          "workflow_id"
+        ]
+      },
+      "WizardTaskDTO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/WizardTaskDTOStatusEnum"
+          }
+        },
+        "required": [
+          "id",
+          "status",
+          "title"
+        ]
+      },
+      "WizardTaskDTOStatusEnum": {
+        "enum": [
+          "pending",
+          "in_progress",
+          "completed",
+          "failed",
+          "canceled"
+        ],
+        "type": "string",
+        "description": "* `pending` - PENDING\n* `in_progress` - IN_PROGRESS\n* `completed` - COMPLETED\n* `failed` - FAILED\n* `canceled` - CANCELED"
       },
       "WoWChange": {
         "type": "object",
@@ -204059,6 +205649,9 @@
       "name": "welcome"
     },
     {
+      "name": "wizard"
+    },
+    {
       "name": "workflows"
     }
   ],
@@ -204212,6 +205805,7 @@
         "web_experiments",
         "web_vitals",
         "welcome",
+        "wizard",
         "workflows"
       ]
     }
