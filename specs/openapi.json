@@ -6775,6 +6775,14 @@
           },
           {
             "in": "query",
+            "name": "include_person",
+            "schema": {
+              "type": "boolean"
+            },
+            "description": "Include person details for each event. Default: false."
+          },
+          {
+            "in": "query",
             "name": "limit",
             "schema": {
               "type": "integer"
@@ -6888,6 +6896,14 @@
               "type": "string"
             },
             "required": true
+          },
+          {
+            "in": "query",
+            "name": "include_person",
+            "schema": {
+              "type": "boolean"
+            },
+            "description": "Include person details for the event. Default: false."
           }
         ],
         "tags": [
@@ -8887,6 +8903,59 @@
       }
     },
     "/api/environments/{environment_id}/file_download_batch_exports/": {
+      "get": {
+        "operationId": "environments_file_download_batch_exports_list",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/EnvironmentIdPath"
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Number of results to return per page.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "offset",
+            "required": false,
+            "in": "query",
+            "description": "The initial index from which to return the results.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "tags": [
+          "batch_exports",
+          "file_download_batch_exports"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "batch_export:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedListOutputList"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "deprecated": true,
+        "x-explicit-tags": [
+          "batch_exports"
+        ]
+      },
       "post": {
         "operationId": "environments_file_download_batch_exports_create",
         "description": "Create and start a batch export on demand run to download a file.",
@@ -8946,7 +9015,7 @@
     "/api/environments/{environment_id}/file_download_batch_exports/{id}/": {
       "get": {
         "operationId": "environments_file_download_batch_exports_retrieve",
-        "description": "Get a run of a batch export on demand.\n\nIf the underlying batch export run has completed, we return keys to the\ngenerated file downloads so that users may download them by making a request\nto /download.",
+        "description": "Get a batch export on demand run.\n\nIf the underlying batch export run has completed, we return keys to the\ngenerated file downloads so that users may download them by making a request\nto /download.",
         "parameters": [
           {
             "$ref": "#/components/parameters/EnvironmentIdPath"
@@ -13049,7 +13118,8 @@
         },
         "deprecated": true,
         "x-explicit-tags": [
-          "data_warehouse"
+          "data_warehouse",
+          "product_analytics"
         ]
       },
       "post": {
@@ -13104,7 +13174,8 @@
         },
         "deprecated": true,
         "x-explicit-tags": [
-          "data_warehouse"
+          "data_warehouse",
+          "product_analytics"
         ]
       }
     },
@@ -59691,6 +59762,14 @@
           },
           {
             "in": "query",
+            "name": "include_person",
+            "schema": {
+              "type": "boolean"
+            },
+            "description": "Include person details for each event. Default: false."
+          },
+          {
+            "in": "query",
             "name": "limit",
             "schema": {
               "type": "integer"
@@ -59803,6 +59882,14 @@
               "type": "string"
             },
             "required": true
+          },
+          {
+            "in": "query",
+            "name": "include_person",
+            "schema": {
+              "type": "boolean"
+            },
+            "description": "Include person details for the event. Default: false."
           },
           {
             "$ref": "#/components/parameters/ProjectIdPath"
@@ -65094,6 +65181,58 @@
       }
     },
     "/api/projects/{project_id}/file_download_batch_exports/": {
+      "get": {
+        "operationId": "file_download_batch_exports_list",
+        "parameters": [
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Number of results to return per page.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "offset",
+            "required": false,
+            "in": "query",
+            "description": "The initial index from which to return the results.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "batch_exports",
+          "file_download_batch_exports"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "batch_export:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedListOutputList"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-explicit-tags": [
+          "batch_exports"
+        ]
+      },
       "post": {
         "operationId": "file_download_batch_exports_create",
         "description": "Create and start a batch export on demand run to download a file.",
@@ -65152,7 +65291,7 @@
     "/api/projects/{project_id}/file_download_batch_exports/{id}/": {
       "get": {
         "operationId": "file_download_batch_exports_retrieve",
-        "description": "Get a run of a batch export on demand.\n\nIf the underlying batch export run has completed, we return keys to the\ngenerated file downloads so that users may download them by making a request\nto /download.",
+        "description": "Get a batch export on demand run.\n\nIf the underlying batch export run has completed, we return keys to the\ngenerated file downloads so that users may download them by making a request\nto /download.",
         "parameters": [
           {
             "in": "path",
@@ -66422,7 +66561,9 @@
             "description": "Not found"
           }
         },
-        "x-explicit-tags": []
+        "x-explicit-tags": [
+          "feature_flags"
+        ]
       }
     },
     "/api/projects/{project_id}/groups/": {
@@ -69908,7 +70049,8 @@
           }
         },
         "x-explicit-tags": [
-          "data_warehouse"
+          "data_warehouse",
+          "product_analytics"
         ]
       },
       "post": {
@@ -69962,7 +70104,8 @@
           }
         },
         "x-explicit-tags": [
-          "data_warehouse"
+          "data_warehouse",
+          "product_analytics"
         ]
       }
     },
@@ -80114,6 +80257,47 @@
           }
         },
         "x-explicit-tags": []
+      }
+    },
+    "/api/projects/{project_id}/quota_limits/": {
+      "get": {
+        "operationId": "quota_limits_list",
+        "description": "Return the current quota-limit state for the team identified in the URL, keyed by `QuotaResource` value. Used by the LLM gateway to gate billable products on AI credits exhaustion.",
+        "summary": "Get a team's quota-limit state",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "quota_limits",
+          "quota_limits"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "project:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/QuotaLimitsResponse"
+                  }
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-explicit-tags": [
+          "quota_limits"
+        ]
       }
     },
     "/api/projects/{project_id}/sandbox_environments/": {
@@ -91866,7 +92050,7 @@
             "name": "session_id",
             "schema": {
               "type": "string",
-              "pattern": "^[^/]+$"
+              "pattern": "^(?!stream$)[^/]+$"
             },
             "required": true
           }
@@ -91894,6 +92078,58 @@
           },
           "404": {
             "description": "No session with that id for this project."
+          }
+        },
+        "x-explicit-tags": [
+          "wizard"
+        ]
+      }
+    },
+    "/api/projects/{project_id}/wizard/sessions/stream/": {
+      "get": {
+        "operationId": "wizard_sessions_stream_retrieve",
+        "description": "Server-Sent Events stream of wizard session updates for a (workflow_id, skill_id) pair. On connect, the current latest session (if any) is emitted as the first event; subsequent upserts are streamed in real time. The server closes the connection after 1800 seconds with an `event: end` line so the client (EventSource) can reconnect.\n\n**SDK consumers**: do not call the generated fetch wrapper for this path — it will buffer the entire infinite stream. Use the URL builder (`getWizardSessionsStreamRetrieveUrl`) with the browser's `EventSource` API instead.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          },
+          {
+            "in": "query",
+            "name": "skill_id",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "workflow_id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "tags": [
+          "wizard"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "wizard_session:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "text/event-stream": {
+                "schema": {
+                  "type": "string",
+                  "description": "SSE stream of WizardSession events."
+                }
+              }
+            },
+            "description": ""
           }
         },
         "x-explicit-tags": [
@@ -106616,6 +106852,45 @@
           "user_access_level"
         ]
       },
+      "DataWarehouseSyncWarning": {
+        "additionalProperties": false,
+        "properties": {
+          "message": {
+            "description": "Human-readable warning shown to the user",
+            "title": "Message",
+            "type": "string"
+          },
+          "schema_name": {
+            "description": "Name of the ExternalDataSchema responsible for syncing the table",
+            "title": "Schema Name",
+            "type": "string"
+          },
+          "source_type": {
+            "description": "Source type, e.g. \"Stripe\", \"Hubspot\"",
+            "title": "Source Type",
+            "type": "string"
+          },
+          "status": {
+            "description": "Sync status that triggered the warning, e.g. \"Failed\", \"Paused\", \"BillingLimitReached\"",
+            "title": "Status",
+            "type": "string"
+          },
+          "table_name": {
+            "description": "Name of the warehouse table the warning refers to",
+            "title": "Table Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "message",
+          "schema_name",
+          "source_type",
+          "status",
+          "table_name"
+        ],
+        "title": "DataWarehouseSyncWarning",
+        "type": "object"
+      },
       "DataWarehouseViewLink": {
         "additionalProperties": false,
         "properties": {
@@ -118947,6 +119222,56 @@
           "kind": {
             "$ref": "#/components/schemas/Kind"
           },
+          "math": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ExperimentMetricMathType"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "How to aggregate this source. Defaults to 'total' (event count). Use 'sum' together with math_property to aggregate a numeric property — e.g. a ratio numerator of revenue per order. Other options: 'avg', 'min', 'max', 'unique_session', 'dau', 'unique_group', 'hogql'."
+          },
+          "math_group_type_index": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/MathGroupTypeIndex"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Group type index to aggregate over. Required when math is 'unique_group'."
+          },
+          "math_hogql": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "HogQL aggregation expression. Required when math is 'hogql' — without it the metric silently falls back to a plain count/sum.",
+            "title": "Math Hogql"
+          },
+          "math_property": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Numeric event property to aggregate when math is 'sum', 'avg', 'min', or 'max' (e.g. 'revenue').",
+            "title": "Math Property"
+          },
           "properties": {
             "anyOf": [
               {
@@ -119070,6 +119395,18 @@
             "default": null,
             "description": "For ratio metrics: denominator source."
           },
+          "denominator_outlier_handling": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ExperimentMetricOutlierHandling"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "For ratio metrics: winsorization applied to the denominator aggregate. Leave unset for a binomial-style denominator, which is never clamped."
+          },
           "goal": {
             "anyOf": [
               {
@@ -119082,11 +119419,39 @@
             "default": null,
             "description": "Whether higher or lower values indicate success."
           },
+          "ignore_zeros": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "For mean metrics: exclude zero values when computing the winsorization percentile thresholds.",
+            "title": "Ignore Zeros"
+          },
           "kind": {
             "const": "ExperimentMetric",
             "default": "ExperimentMetric",
             "title": "Kind",
             "type": "string"
+          },
+          "lower_bound_percentile": {
+            "anyOf": [
+              {
+                "maximum": 1,
+                "minimum": 0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "For mean metrics: winsorization lower percentile bound, as a fraction in [0, 1] (e.g. 0.01 for the 1st percentile). Per-user values below this percentile are clamped to it before aggregation.",
+            "title": "Lower Bound Percentile"
           },
           "metric_type": {
             "$ref": "#/components/schemas/ExperimentMetricType"
@@ -119115,6 +119480,18 @@
             ],
             "default": null,
             "description": "For ratio metrics: numerator source."
+          },
+          "numerator_outlier_handling": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ExperimentMetricOutlierHandling"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "For ratio metrics: winsorization applied to the numerator aggregate, independently of the denominator and each with its own percentile thresholds."
           },
           "retention_window_end": {
             "anyOf": [
@@ -119201,6 +119578,21 @@
               }
             ],
             "default": null
+          },
+          "upper_bound_percentile": {
+            "anyOf": [
+              {
+                "maximum": 1,
+                "minimum": 0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "For mean metrics: winsorization upper percentile bound, as a fraction in [0, 1] (e.g. 0.99 for the 99th percentile). Per-user values above this percentile are clamped to it before aggregation.",
+            "title": "Upper Bound Percentile"
           },
           "uuid": {
             "anyOf": [
@@ -120622,6 +121014,8 @@
           "lower_bound_percentile": {
             "anyOf": [
               {
+                "maximum": 1,
+                "minimum": 0,
                 "type": "number"
               },
               {
@@ -120629,6 +121023,7 @@
               }
             ],
             "default": null,
+            "description": "Winsorization lower percentile bound, as a fraction in [0, 1] (e.g. 0.01 for the 1st percentile).",
             "title": "Lower Bound Percentile"
           },
           "metric_type": {
@@ -120699,6 +121094,8 @@
           "upper_bound_percentile": {
             "anyOf": [
               {
+                "maximum": 1,
+                "minimum": 0,
                 "type": "number"
               },
               {
@@ -120706,6 +121103,7 @@
               }
             ],
             "default": null,
+            "description": "Winsorization upper percentile bound, as a fraction in [0, 1] (e.g. 0.99 for the 99th percentile).",
             "title": "Upper Bound Percentile"
           },
           "uuid": {
@@ -120771,6 +121169,55 @@
         ],
         "title": "ExperimentMetricMathType",
         "type": "string"
+      },
+      "ExperimentMetricOutlierHandling": {
+        "additionalProperties": false,
+        "properties": {
+          "ignore_zeros": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Ignore Zeros"
+          },
+          "lower_bound_percentile": {
+            "anyOf": [
+              {
+                "maximum": 1,
+                "minimum": 0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Winsorization lower percentile bound, as a fraction in [0, 1] (e.g. 0.01 for the 1st percentile).",
+            "title": "Lower Bound Percentile"
+          },
+          "upper_bound_percentile": {
+            "anyOf": [
+              {
+                "maximum": 1,
+                "minimum": 0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Winsorization upper percentile bound, as a fraction in [0, 1] (e.g. 0.99 for the 99th percentile).",
+            "title": "Upper Bound Percentile"
+          }
+        },
+        "title": "ExperimentMetricOutlierHandling",
+        "type": "object"
       },
       "ExperimentMetricType": {
         "enum": [
@@ -121263,6 +121710,17 @@
             ],
             "title": "Denominator"
           },
+          "denominator_outlier_handling": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ExperimentMetricOutlierHandling"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
           "fingerprint": {
             "anyOf": [
               {
@@ -121343,6 +121801,17 @@
               }
             ],
             "title": "Numerator"
+          },
+          "numerator_outlier_handling": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ExperimentMetricOutlierHandling"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
           },
           "response": {
             "anyOf": [
@@ -132369,6 +132838,22 @@
             "default": null,
             "description": "Types of returned columns",
             "title": "Types"
+          },
+          "warnings": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/DataWarehouseSyncWarning"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Warnings about data warehouse sources referenced by the query whose latest sync failed, is paused, hit a billing limit, or is otherwise stale. Results may not reflect current source data.",
+            "title": "Warnings"
           }
         },
         "required": [
@@ -132690,6 +133175,9 @@
               "type": "object",
               "additionalProperties": true
             }
+          },
+          "searchable": {
+            "type": "boolean"
           },
           "required": {
             "type": "boolean",
@@ -137049,6 +137537,29 @@
           null
         ],
         "title": "LimitContext"
+      },
+      "ListOutput": {
+        "type": "object",
+        "description": "Typed output for view set `list`.",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "ID of the file download batch export run."
+          },
+          "status": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/BatchExportRunStatusEnum"
+              }
+            ],
+            "description": "Current status of the file download batch export run.\n\n* `Cancelled` - Cancelled\n* `Completed` - Completed\n* `ContinuedAsNew` - Continued As New\n* `Failed` - Failed\n* `FailedRetryable` - Failed Retryable\n* `FailedBilling` - Failed Billing\n* `Terminated` - Terminated\n* `TimedOut` - Timedout\n* `Running` - Running\n* `Starting` - Starting"
+          }
+        },
+        "required": [
+          "id",
+          "status"
+        ]
       },
       "LiveDebuggerBreakpoint": {
         "type": "object",
@@ -141515,6 +142026,30 @@
             "readOnly": true,
             "description": "The effective access level the user has for this object"
           },
+          "parent_resource": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "description": "Parent resource this notebook is attached to, or `null`. Returns `{type: 'account', id: <uuid>}` for account-linked notebooks; used by the frontend to route breadcrumbs back to the resource's list.",
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": [
+                  "account"
+                ]
+              },
+              "id": {
+                "type": "string",
+                "format": "uuid"
+              }
+            },
+            "required": [
+              "type",
+              "id"
+            ],
+            "readOnly": true
+          },
           "_create_in_folder": {
             "type": "string",
             "writeOnly": true,
@@ -141527,6 +142062,7 @@
           "id",
           "last_modified_at",
           "last_modified_by",
+          "parent_resource",
           "short_id",
           "user_access_level"
         ]
@@ -145668,6 +146204,41 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/LegalDocumentDTO"
+            }
+          }
+        }
+      },
+      "PaginatedListOutputList": {
+        "type": "object",
+        "required": [
+          "count",
+          "results"
+        ],
+        "properties": {
+          "count": {
+            "type": "integer",
+            "example": 123
+          },
+          "next": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uri",
+            "example": "http://api.example.org/accounts/?offset=400&limit=100"
+          },
+          "previous": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uri",
+            "example": "http://api.example.org/accounts/?offset=200&limit=100"
+          },
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ListOutput"
             }
           }
         }
@@ -153403,6 +153974,30 @@
             ],
             "readOnly": true,
             "description": "The effective access level the user has for this object"
+          },
+          "parent_resource": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "description": "Parent resource this notebook is attached to, or `null`. Returns `{type: 'account', id: <uuid>}` for account-linked notebooks; used by the frontend to route breadcrumbs back to the resource's list.",
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": [
+                  "account"
+                ]
+              },
+              "id": {
+                "type": "string",
+                "format": "uuid"
+              }
+            },
+            "required": [
+              "type",
+              "id"
+            ],
+            "readOnly": true
           },
           "_create_in_folder": {
             "type": "string",
@@ -166351,6 +166946,22 @@
             "default": null,
             "description": "Types of returned columns",
             "title": "Types"
+          },
+          "warnings": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/DataWarehouseSyncWarning"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Warnings about data warehouse sources referenced by the query whose latest sync failed, is paused, hit a billing limit, or is otherwise stale. Results may not reflect current source data.",
+            "title": "Warnings"
           }
         },
         "required": [
@@ -171116,6 +171727,22 @@
             "default": null,
             "description": "Types of returned columns",
             "title": "Types"
+          },
+          "warnings": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/DataWarehouseSyncWarning"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Warnings about data warehouse sources referenced by the query whose latest sync failed, is paused, hit a billing limit, or is otherwise stale. Results may not reflect current source data.",
+            "title": "Warnings"
           }
         },
         "required": [
@@ -173448,6 +174075,33 @@
         ],
         "title": "QueryUpgradeResponse",
         "type": "object"
+      },
+      "QuotaLimitsResponse": {
+        "type": "object",
+        "properties": {
+          "limited": {
+            "type": "object",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/QuotaResourceLimit"
+            },
+            "description": "Per-resource limit state keyed by `QuotaResource` value. Currently only `ai_credits` is reported; additional resources may be added."
+          }
+        },
+        "required": [
+          "limited"
+        ]
+      },
+      "QuotaResourceLimit": {
+        "type": "object",
+        "properties": {
+          "limited": {
+            "type": "boolean",
+            "description": "True when the team is currently over its quota for this resource and limits are in effect."
+          }
+        },
+        "required": [
+          "limited"
+        ]
       },
       "RETENTION": {
         "additionalProperties": false,
@@ -177291,6 +177945,22 @@
             "default": null,
             "description": "Types of returned columns",
             "title": "Types"
+          },
+          "warnings": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/DataWarehouseSyncWarning"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Warnings about data warehouse sources referenced by the query whose latest sync failed, is paused, hit a billing limit, or is otherwise stale. Results may not reflect current source data.",
+            "title": "Warnings"
           }
         },
         "required": [
@@ -205523,6 +206193,9 @@
       "name": "query"
     },
     {
+      "name": "quota_limits"
+    },
+    {
       "name": "replay"
     },
     {
@@ -205763,6 +206436,7 @@
         "proxy_records",
         "public_hog_function_templates",
         "query",
+        "quota_limits",
         "replay",
         "replay_vision",
         "reverse_proxy",
