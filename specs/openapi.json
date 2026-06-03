@@ -16542,7 +16542,9 @@
           }
         },
         "deprecated": true,
-        "x-product": []
+        "x-product": [
+          "core"
+        ]
       },
       "post": {
         "operationId": "environments_file_system_shortcut_create",
@@ -16594,7 +16596,9 @@
           }
         },
         "deprecated": true,
-        "x-product": []
+        "x-product": [
+          "core"
+        ]
       }
     },
     "/api/environments/{environment_id}/file_system_shortcut/{id}/": {
@@ -16638,7 +16642,9 @@
           }
         },
         "deprecated": true,
-        "x-product": []
+        "x-product": [
+          "core"
+        ]
       },
       "put": {
         "operationId": "environments_file_system_shortcut_update",
@@ -16700,7 +16706,9 @@
           }
         },
         "deprecated": true,
-        "x-product": []
+        "x-product": [
+          "core"
+        ]
       },
       "patch": {
         "operationId": "environments_file_system_shortcut_partial_update",
@@ -16761,7 +16769,9 @@
           }
         },
         "deprecated": true,
-        "x-product": []
+        "x-product": [
+          "core"
+        ]
       },
       "delete": {
         "operationId": "environments_file_system_shortcut_destroy",
@@ -16796,7 +16806,9 @@
           }
         },
         "deprecated": true,
-        "x-product": []
+        "x-product": [
+          "core"
+        ]
       }
     },
     "/api/environments/{environment_id}/file_system_shortcut/reorder/": {
@@ -16844,7 +16856,9 @@
           }
         },
         "deprecated": true,
-        "x-product": []
+        "x-product": [
+          "core"
+        ]
       }
     },
     "/api/environments/{environment_id}/groups/": {
@@ -31048,7 +31062,9 @@
           }
         },
         "deprecated": true,
-        "x-product": []
+        "x-product": [
+          "core"
+        ]
       },
       "post": {
         "operationId": "environments_persisted_folder_create",
@@ -31100,7 +31116,9 @@
           }
         },
         "deprecated": true,
-        "x-product": []
+        "x-product": [
+          "core"
+        ]
       }
     },
     "/api/environments/{environment_id}/persisted_folder/{id}/": {
@@ -31144,7 +31162,9 @@
           }
         },
         "deprecated": true,
-        "x-product": []
+        "x-product": [
+          "core"
+        ]
       },
       "put": {
         "operationId": "environments_persisted_folder_update",
@@ -31206,7 +31226,9 @@
           }
         },
         "deprecated": true,
-        "x-product": []
+        "x-product": [
+          "core"
+        ]
       },
       "patch": {
         "operationId": "environments_persisted_folder_partial_update",
@@ -31267,7 +31289,9 @@
           }
         },
         "deprecated": true,
-        "x-product": []
+        "x-product": [
+          "core"
+        ]
       },
       "delete": {
         "operationId": "environments_persisted_folder_destroy",
@@ -31302,7 +31326,9 @@
           }
         },
         "deprecated": true,
-        "x-product": []
+        "x-product": [
+          "core"
+        ]
       }
     },
     "/api/environments/{environment_id}/persons/": {
@@ -32257,81 +32283,6 @@
       },
       "post": {
         "operationId": "environments_persons_funnel_create",
-        "description": "This endpoint is meant for reading and deleting persons. To create or update persons, we recommend using the [capture API](https://posthog.com/docs/api/capture), the `$set` and `$unset` [properties](https://posthog.com/docs/product-analytics/user-properties), or one of our SDKs.",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/EnvironmentIdPath"
-          },
-          {
-            "in": "query",
-            "name": "format",
-            "schema": {
-              "type": "string",
-              "enum": [
-                "csv",
-                "json"
-              ]
-            }
-          }
-        ],
-        "tags": [
-          "persons"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/PersonRecord"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "No response body"
-          }
-        },
-        "deprecated": true,
-        "x-product": [
-          "persons"
-        ]
-      }
-    },
-    "/api/environments/{environment_id}/persons/funnel/correlation/": {
-      "get": {
-        "operationId": "environments_persons_funnel_correlation_retrieve",
-        "description": "This endpoint is meant for reading and deleting persons. To create or update persons, we recommend using the [capture API](https://posthog.com/docs/api/capture), the `$set` and `$unset` [properties](https://posthog.com/docs/product-analytics/user-properties), or one of our SDKs.",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/EnvironmentIdPath"
-          },
-          {
-            "in": "query",
-            "name": "format",
-            "schema": {
-              "type": "string",
-              "enum": [
-                "csv",
-                "json"
-              ]
-            }
-          }
-        ],
-        "tags": [
-          "persons"
-        ],
-        "responses": {
-          "200": {
-            "description": "No response body"
-          }
-        },
-        "deprecated": true,
-        "x-product": [
-          "persons"
-        ]
-      },
-      "post": {
-        "operationId": "environments_persons_funnel_correlation_create",
         "description": "This endpoint is meant for reading and deleting persons. To create or update persons, we recommend using the [capture API](https://posthog.com/docs/api/capture), the `$set` and `$unset` [properties](https://posthog.com/docs/product-analytics/user-properties), or one of our SDKs.",
         "parameters": [
           {
@@ -35755,6 +35706,42 @@
         ]
       }
     },
+    "/api/environments/{environment_id}/tracing/spans/has_spans/": {
+      "get": {
+        "operationId": "environments_tracing_spans_has_spans_retrieve",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/EnvironmentIdPath"
+          }
+        ],
+        "tags": [
+          "tracing"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "tracing:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/_HasSpansResponse"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "deprecated": true,
+        "x-product": [
+          "tracing"
+        ]
+      }
+    },
     "/api/environments/{environment_id}/tracing/spans/query/": {
       "post": {
         "operationId": "environments_tracing_spans_query_create",
@@ -37596,6 +37583,24 @@
           },
           {
             "in": "query",
+            "name": "order_by",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "-completed_at",
+                "-created_at",
+                "-started_at",
+                "-status",
+                "completed_at",
+                "created_at",
+                "started_at",
+                "status"
+              ]
+            },
+            "description": "Sort observations by created_at, started_at, completed_at, or status. Prefix with `-` for descending."
+          },
+          {
+            "in": "query",
             "name": "session_id",
             "schema": {
               "type": "string"
@@ -37763,24 +37768,19 @@
             "in": "query",
             "name": "order_by",
             "schema": {
-              "type": "array",
-              "items": {
-                "type": "string",
-                "enum": [
-                  "-created_at",
-                  "-name",
-                  "-scanner_type",
-                  "-updated_at",
-                  "created_at",
-                  "name",
-                  "scanner_type",
-                  "updated_at"
-                ]
-              }
+              "type": "string",
+              "enum": [
+                "-created_at",
+                "-name",
+                "-scanner_type",
+                "-updated_at",
+                "created_at",
+                "name",
+                "scanner_type",
+                "updated_at"
+              ]
             },
-            "description": "Sort scanners by name, created_at, updated_at, or scanner_type. Prefix with `-` for descending.\n\n* `name` - Name\n* `-name` - Name (descending)\n* `created_at` - Created at\n* `-created_at` - Created at (descending)\n* `updated_at` - Updated at\n* `-updated_at` - Updated at (descending)\n* `scanner_type` - Scanner type\n* `-scanner_type` - Scanner type (descending)",
-            "explode": false,
-            "style": "form"
+            "description": "Sort scanners by name, created_at, updated_at, or scanner_type. Prefix with `-` for descending."
           },
           {
             "in": "query",
@@ -38129,24 +38129,19 @@
             "in": "query",
             "name": "order_by",
             "schema": {
-              "type": "array",
-              "items": {
-                "type": "string",
-                "enum": [
-                  "-completed_at",
-                  "-created_at",
-                  "-started_at",
-                  "-status",
-                  "completed_at",
-                  "created_at",
-                  "started_at",
-                  "status"
-                ]
-              }
+              "type": "string",
+              "enum": [
+                "-completed_at",
+                "-created_at",
+                "-started_at",
+                "-status",
+                "completed_at",
+                "created_at",
+                "started_at",
+                "status"
+              ]
             },
-            "description": "Sort observations by created_at, started_at, completed_at, or status. Prefix with `-` for descending.\n\n* `created_at` - Created at\n* `-created_at` - Created at (descending)\n* `started_at` - Started at\n* `-started_at` - Started at (descending)\n* `completed_at` - Completed at\n* `-completed_at` - Completed at (descending)\n* `status` - Status\n* `-status` - Status (descending)",
-            "explode": false,
-            "style": "form"
+            "description": "Sort observations by created_at, started_at, completed_at, or status. Prefix with `-` for descending."
           },
           {
             "in": "path",
@@ -45754,6 +45749,55 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ProjectBackwardCompat"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "core"
+        ]
+      }
+    },
+    "/api/organizations/{organization_id}/projects/{id}/promoted_product_intent/": {
+      "get": {
+        "operationId": "organizations_projects_promoted_product_intent_retrieve",
+        "description": "Return the product key (e.g. `session_replay`, `web_analytics`) this team selected as their primary product during onboarding. Resolved from the team's most recent primary-onboarding `ProductIntent` record (the one carrying the `onboarding product selected - primary` context) — not from the `user showed product intent` event, which also fires for non-onboarding contexts. Returns `null` when no primary onboarding product intent has been captured (e.g. teams created before this signal existed, or where onboarding was skipped).",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "integer",
+              "maximum": 9223372036854776000,
+              "minimum": -9223372036854776000,
+              "format": "int64"
+            },
+            "description": "A unique value identifying this project.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/OrganizationIdPath"
+          }
+        ],
+        "tags": [
+          "platform_features",
+          "projects"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "project:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PromotedProductIntent"
                 }
               }
             },
@@ -57949,10 +57993,10 @@
         ]
       }
     },
-    "/api/projects/{project_id}/deployment_projects/": {
+    "/api/projects/{project_id}/desktop_file_system/": {
       "get": {
-        "operationId": "deployment_projects_list",
-        "description": "CRUD for DeploymentProject (the connected-repo + hosting-target entity).\n\nCreate-time provisioning calls Cloudflare BEFORE writing the DB row\n(see services/provision_project.py for the rationale). Delete is a\nsoft-delete; Cloudflare-side cleanup is deferred to a periodic Celery\ntask.",
+        "operationId": "desktop_file_system_list",
+        "description": "The file tree for the desktop product surface. Reuses all FileSystemViewSet behaviour but is\nscoped to the \"desktop\" surface, so its tree is fully isolated from the default \"web\" tree.",
         "parameters": [
           {
             "name": "limit",
@@ -57973,15 +58017,6 @@
             }
           },
           {
-            "name": "ordering",
-            "required": false,
-            "in": "query",
-            "description": "Which field to use when ordering the results.",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
             "$ref": "#/components/parameters/ProjectIdPath"
           },
           {
@@ -57995,17 +58030,12 @@
           }
         ],
         "tags": [
-          "deployment_projects"
+          "desktop_file_system"
         ],
         "security": [
           {
             "PersonalAPIKeyAuth": [
-              "deployment:read"
-            ]
-          },
-          {
-            "PersonalAPIKeyAuth": [
-              "deployment:read"
+              "file_system:read"
             ]
           }
         ],
@@ -58014,7 +58044,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PaginatedDeploymentProjectList"
+                  "$ref": "#/components/schemas/PaginatedFileSystemList"
                 }
               }
             },
@@ -58022,35 +58052,35 @@
           }
         },
         "x-product": [
-          "deployments"
+          "core"
         ]
       },
       "post": {
-        "operationId": "deployment_projects_create",
-        "description": "CRUD for DeploymentProject (the connected-repo + hosting-target entity).\n\nCreate-time provisioning calls Cloudflare BEFORE writing the DB row\n(see services/provision_project.py for the rationale). Delete is a\nsoft-delete; Cloudflare-side cleanup is deferred to a periodic Celery\ntask.",
+        "operationId": "desktop_file_system_create",
+        "description": "The file tree for the desktop product surface. Reuses all FileSystemViewSet behaviour but is\nscoped to the \"desktop\" surface, so its tree is fully isolated from the default \"web\" tree.",
         "parameters": [
           {
             "$ref": "#/components/parameters/ProjectIdPath"
           }
         ],
         "tags": [
-          "deployment_projects"
+          "desktop_file_system"
         ],
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/DeploymentProjectCreate"
+                "$ref": "#/components/schemas/FileSystem"
               }
             },
             "application/x-www-form-urlencoded": {
               "schema": {
-                "$ref": "#/components/schemas/DeploymentProjectCreate"
+                "$ref": "#/components/schemas/FileSystem"
               }
             },
             "multipart/form-data": {
               "schema": {
-                "$ref": "#/components/schemas/DeploymentProjectCreate"
+                "$ref": "#/components/schemas/FileSystem"
               }
             }
           },
@@ -58059,12 +58089,7 @@
         "security": [
           {
             "PersonalAPIKeyAuth": [
-              "deployment:write"
-            ]
-          },
-          {
-            "PersonalAPIKeyAuth": [
-              "deployment:write"
+              "file_system:write"
             ]
           }
         ],
@@ -58073,89 +58098,44 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DeploymentProject"
+                  "$ref": "#/components/schemas/FileSystem"
                 }
               }
             },
             "description": ""
-          },
-          "502": {
-            "description": "Cloudflare provisioning failed."
           }
         },
         "x-product": [
-          "deployments"
+          "core"
         ]
       }
     },
-    "/api/projects/{project_id}/deployment_projects/{deployment_project_id}/deployments/": {
+    "/api/projects/{project_id}/desktop_file_system/{id}/": {
       "get": {
-        "operationId": "deployment_projects_deployments_list",
-        "description": "Full lifecycle viewset for Deployments.\n\nAll deployments are scoped to a parent DeploymentProject via the URL\nparent lookup `deployment_project_id`. The viewset enforces that\nscoping in `safely_get_queryset` so a user can never see / mutate a\ndeployment that doesn't belong to the project in the URL.",
+        "operationId": "desktop_file_system_retrieve",
+        "description": "The file tree for the desktop product surface. Reuses all FileSystemViewSet behaviour but is\nscoped to the \"desktop\" surface, so its tree is fully isolated from the default \"web\" tree.",
         "parameters": [
           {
             "in": "path",
-            "name": "deployment_project_id",
+            "name": "id",
             "schema": {
               "type": "string",
               "format": "uuid"
             },
-            "description": "UUID of the parent DeploymentProject.",
+            "description": "A UUID string identifying this file system.",
             "required": true
           },
           {
-            "name": "limit",
-            "required": false,
-            "in": "query",
-            "description": "Number of results to return per page.",
-            "schema": {
-              "type": "integer"
-            }
-          },
-          {
-            "name": "offset",
-            "required": false,
-            "in": "query",
-            "description": "The initial index from which to return the results.",
-            "schema": {
-              "type": "integer"
-            }
-          },
-          {
-            "name": "ordering",
-            "required": false,
-            "in": "query",
-            "description": "Which field to use when ordering the results.",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
             "$ref": "#/components/parameters/ProjectIdPath"
-          },
-          {
-            "name": "search",
-            "required": false,
-            "in": "query",
-            "description": "A search term.",
-            "schema": {
-              "type": "string"
-            }
           }
         ],
         "tags": [
-          "deployments",
-          "deployment_projects"
+          "desktop_file_system"
         ],
         "security": [
           {
             "PersonalAPIKeyAuth": [
-              "deployment:read"
-            ]
-          },
-          {
-            "PersonalAPIKeyAuth": [
-              "deployment:read"
+              "file_system:read"
             ]
           }
         ],
@@ -58164,7 +58144,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PaginatedDeploymentList"
+                  "$ref": "#/components/schemas/FileSystem"
                 }
               }
             },
@@ -58172,572 +58152,12 @@
           }
         },
         "x-product": [
-          "deployments"
-        ]
-      },
-      "post": {
-        "operationId": "deployment_projects_deployments_create",
-        "description": "Full lifecycle viewset for Deployments.\n\nAll deployments are scoped to a parent DeploymentProject via the URL\nparent lookup `deployment_project_id`. The viewset enforces that\nscoping in `safely_get_queryset` so a user can never see / mutate a\ndeployment that doesn't belong to the project in the URL.",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "deployment_project_id",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            },
-            "description": "UUID of the parent DeploymentProject.",
-            "required": true
-          },
-          {
-            "$ref": "#/components/parameters/ProjectIdPath"
-          }
-        ],
-        "tags": [
-          "deployments",
-          "deployment_projects"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/DeploymentCreateInput"
-              }
-            },
-            "application/x-www-form-urlencoded": {
-              "schema": {
-                "$ref": "#/components/schemas/DeploymentCreateInput"
-              }
-            },
-            "multipart/form-data": {
-              "schema": {
-                "$ref": "#/components/schemas/DeploymentCreateInput"
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "PersonalAPIKeyAuth": [
-              "deployment:write"
-            ]
-          },
-          {
-            "PersonalAPIKeyAuth": [
-              "deployment:write"
-            ]
-          }
-        ],
-        "responses": {
-          "201": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Deployment"
-                }
-              }
-            },
-            "description": ""
-          },
-          "409": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/DeploymentConflictResponse"
-                }
-              }
-            },
-            "description": ""
-          },
-          "502": {
-            "description": "Upstream (GitHub commit lookup or build workflow dispatch) failed."
-          }
-        },
-        "x-product": [
-          "deployments"
-        ]
-      }
-    },
-    "/api/projects/{project_id}/deployment_projects/{deployment_project_id}/deployments/{id}/": {
-      "get": {
-        "operationId": "deployment_projects_deployments_retrieve",
-        "description": "Full lifecycle viewset for Deployments.\n\nAll deployments are scoped to a parent DeploymentProject via the URL\nparent lookup `deployment_project_id`. The viewset enforces that\nscoping in `safely_get_queryset` so a user can never see / mutate a\ndeployment that doesn't belong to the project in the URL.",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "deployment_project_id",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            },
-            "description": "UUID of the parent DeploymentProject.",
-            "required": true
-          },
-          {
-            "in": "path",
-            "name": "id",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            },
-            "description": "A UUID string identifying this deployment.",
-            "required": true
-          },
-          {
-            "$ref": "#/components/parameters/ProjectIdPath"
-          }
-        ],
-        "tags": [
-          "deployments",
-          "deployment_projects"
-        ],
-        "security": [
-          {
-            "PersonalAPIKeyAuth": [
-              "deployment:read"
-            ]
-          },
-          {
-            "PersonalAPIKeyAuth": [
-              "deployment:read"
-            ]
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Deployment"
-                }
-              }
-            },
-            "description": ""
-          }
-        },
-        "x-product": [
-          "deployments"
-        ]
-      }
-    },
-    "/api/projects/{project_id}/deployment_projects/{deployment_project_id}/deployments/{id}/cancel/": {
-      "post": {
-        "operationId": "deployment_projects_deployments_cancel_create",
-        "description": "Full lifecycle viewset for Deployments.\n\nAll deployments are scoped to a parent DeploymentProject via the URL\nparent lookup `deployment_project_id`. The viewset enforces that\nscoping in `safely_get_queryset` so a user can never see / mutate a\ndeployment that doesn't belong to the project in the URL.",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "deployment_project_id",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            },
-            "description": "UUID of the parent DeploymentProject.",
-            "required": true
-          },
-          {
-            "in": "path",
-            "name": "id",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            },
-            "description": "A UUID string identifying this deployment.",
-            "required": true
-          },
-          {
-            "$ref": "#/components/parameters/ProjectIdPath"
-          }
-        ],
-        "tags": [
-          "deployments",
-          "deployment_projects"
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/DeploymentActionResponse"
-                }
-              }
-            },
-            "description": ""
-          }
-        },
-        "x-product": [
-          "deployments"
-        ]
-      }
-    },
-    "/api/projects/{project_id}/deployment_projects/{deployment_project_id}/deployments/{id}/events/": {
-      "get": {
-        "operationId": "deployment_projects_deployments_events_list",
-        "description": "Full lifecycle viewset for Deployments.\n\nAll deployments are scoped to a parent DeploymentProject via the URL\nparent lookup `deployment_project_id`. The viewset enforces that\nscoping in `safely_get_queryset` so a user can never see / mutate a\ndeployment that doesn't belong to the project in the URL.",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "deployment_project_id",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            },
-            "description": "UUID of the parent DeploymentProject.",
-            "required": true
-          },
-          {
-            "in": "path",
-            "name": "id",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            },
-            "description": "A UUID string identifying this deployment.",
-            "required": true
-          },
-          {
-            "name": "limit",
-            "required": false,
-            "in": "query",
-            "description": "Number of results to return per page.",
-            "schema": {
-              "type": "integer"
-            }
-          },
-          {
-            "name": "offset",
-            "required": false,
-            "in": "query",
-            "description": "The initial index from which to return the results.",
-            "schema": {
-              "type": "integer"
-            }
-          },
-          {
-            "name": "ordering",
-            "required": false,
-            "in": "query",
-            "description": "Which field to use when ordering the results.",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "$ref": "#/components/parameters/ProjectIdPath"
-          },
-          {
-            "name": "search",
-            "required": false,
-            "in": "query",
-            "description": "A search term.",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "tags": [
-          "deployments",
-          "deployment_projects"
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PaginatedDeploymentEventList"
-                }
-              }
-            },
-            "description": ""
-          }
-        },
-        "x-product": [
-          "deployments"
-        ]
-      }
-    },
-    "/api/projects/{project_id}/deployment_projects/{deployment_project_id}/deployments/{id}/logs/": {
-      "get": {
-        "operationId": "deployment_projects_deployments_logs_retrieve",
-        "description": "Full lifecycle viewset for Deployments.\n\nAll deployments are scoped to a parent DeploymentProject via the URL\nparent lookup `deployment_project_id`. The viewset enforces that\nscoping in `safely_get_queryset` so a user can never see / mutate a\ndeployment that doesn't belong to the project in the URL.",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "deployment_project_id",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            },
-            "description": "UUID of the parent DeploymentProject.",
-            "required": true
-          },
-          {
-            "in": "path",
-            "name": "id",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            },
-            "description": "A UUID string identifying this deployment.",
-            "required": true
-          },
-          {
-            "$ref": "#/components/parameters/ProjectIdPath"
-          }
-        ],
-        "tags": [
-          "deployments",
-          "deployment_projects"
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/DeploymentLogsResponse"
-                }
-              }
-            },
-            "description": ""
-          },
-          "502": {
-            "description": "HogQL query against the events store failed."
-          }
-        },
-        "x-product": [
-          "deployments"
-        ]
-      }
-    },
-    "/api/projects/{project_id}/deployment_projects/{deployment_project_id}/deployments/{id}/redeploy/": {
-      "post": {
-        "operationId": "deployment_projects_deployments_redeploy_create",
-        "description": "Full lifecycle viewset for Deployments.\n\nAll deployments are scoped to a parent DeploymentProject via the URL\nparent lookup `deployment_project_id`. The viewset enforces that\nscoping in `safely_get_queryset` so a user can never see / mutate a\ndeployment that doesn't belong to the project in the URL.",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "deployment_project_id",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            },
-            "description": "UUID of the parent DeploymentProject.",
-            "required": true
-          },
-          {
-            "in": "path",
-            "name": "id",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            },
-            "description": "A UUID string identifying this deployment.",
-            "required": true
-          },
-          {
-            "$ref": "#/components/parameters/ProjectIdPath"
-          }
-        ],
-        "tags": [
-          "deployments",
-          "deployment_projects"
-        ],
-        "responses": {
-          "201": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Deployment"
-                }
-              }
-            },
-            "description": ""
-          },
-          "409": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/DeploymentConflictResponse"
-                }
-              }
-            },
-            "description": ""
-          },
-          "502": {
-            "description": "Upstream (GitHub commit lookup or build workflow dispatch) failed."
-          }
-        },
-        "x-product": [
-          "deployments"
-        ]
-      }
-    },
-    "/api/projects/{project_id}/deployment_projects/{deployment_project_id}/deployments/{id}/refresh_preview/": {
-      "post": {
-        "operationId": "deployment_projects_deployments_refresh_preview_create",
-        "description": "Full lifecycle viewset for Deployments.\n\nAll deployments are scoped to a parent DeploymentProject via the URL\nparent lookup `deployment_project_id`. The viewset enforces that\nscoping in `safely_get_queryset` so a user can never see / mutate a\ndeployment that doesn't belong to the project in the URL.",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "deployment_project_id",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            },
-            "description": "UUID of the parent DeploymentProject.",
-            "required": true
-          },
-          {
-            "in": "path",
-            "name": "id",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            },
-            "description": "A UUID string identifying this deployment.",
-            "required": true
-          },
-          {
-            "$ref": "#/components/parameters/ProjectIdPath"
-          }
-        ],
-        "tags": [
-          "deployments",
-          "deployment_projects"
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Deployment"
-                }
-              }
-            },
-            "description": ""
-          }
-        },
-        "x-product": [
-          "deployments"
-        ]
-      }
-    },
-    "/api/projects/{project_id}/deployment_projects/{deployment_project_id}/deployments/{id}/rollback/": {
-      "post": {
-        "operationId": "deployment_projects_deployments_rollback_create",
-        "description": "Full lifecycle viewset for Deployments.\n\nAll deployments are scoped to a parent DeploymentProject via the URL\nparent lookup `deployment_project_id`. The viewset enforces that\nscoping in `safely_get_queryset` so a user can never see / mutate a\ndeployment that doesn't belong to the project in the URL.",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "deployment_project_id",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            },
-            "description": "UUID of the parent DeploymentProject.",
-            "required": true
-          },
-          {
-            "in": "path",
-            "name": "id",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            },
-            "description": "A UUID string identifying this deployment.",
-            "required": true
-          },
-          {
-            "$ref": "#/components/parameters/ProjectIdPath"
-          }
-        ],
-        "tags": [
-          "deployments",
-          "deployment_projects"
-        ],
-        "responses": {
-          "201": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Deployment"
-                }
-              }
-            },
-            "description": ""
-          },
-          "409": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/DeploymentConflictResponse"
-                }
-              }
-            },
-            "description": ""
-          },
-          "502": {
-            "description": "Upstream (GitHub commit lookup or build workflow dispatch) failed."
-          }
-        },
-        "x-product": [
-          "deployments"
-        ]
-      }
-    },
-    "/api/projects/{project_id}/deployment_projects/{id}/": {
-      "get": {
-        "operationId": "deployment_projects_retrieve",
-        "description": "CRUD for DeploymentProject (the connected-repo + hosting-target entity).\n\nCreate-time provisioning calls Cloudflare BEFORE writing the DB row\n(see services/provision_project.py for the rationale). Delete is a\nsoft-delete; Cloudflare-side cleanup is deferred to a periodic Celery\ntask.",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "id",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            },
-            "description": "A UUID string identifying this deployment project.",
-            "required": true
-          },
-          {
-            "$ref": "#/components/parameters/ProjectIdPath"
-          }
-        ],
-        "tags": [
-          "deployment_projects"
-        ],
-        "security": [
-          {
-            "PersonalAPIKeyAuth": [
-              "deployment:read"
-            ]
-          },
-          {
-            "PersonalAPIKeyAuth": [
-              "deployment:read"
-            ]
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/DeploymentProject"
-                }
-              }
-            },
-            "description": ""
-          }
-        },
-        "x-product": [
-          "deployments"
+          "core"
         ]
       },
       "put": {
-        "operationId": "deployment_projects_update",
-        "description": "CRUD for DeploymentProject (the connected-repo + hosting-target entity).\n\nCreate-time provisioning calls Cloudflare BEFORE writing the DB row\n(see services/provision_project.py for the rationale). Delete is a\nsoft-delete; Cloudflare-side cleanup is deferred to a periodic Celery\ntask.",
+        "operationId": "desktop_file_system_update",
+        "description": "The file tree for the desktop product surface. Reuses all FileSystemViewSet behaviour but is\nscoped to the \"desktop\" surface, so its tree is fully isolated from the default \"web\" tree.",
         "parameters": [
           {
             "in": "path",
@@ -58746,7 +58166,7 @@
               "type": "string",
               "format": "uuid"
             },
-            "description": "A UUID string identifying this deployment project.",
+            "description": "A UUID string identifying this file system.",
             "required": true
           },
           {
@@ -58754,23 +58174,23 @@
           }
         ],
         "tags": [
-          "deployment_projects"
+          "desktop_file_system"
         ],
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/DeploymentProjectWrite"
+                "$ref": "#/components/schemas/FileSystem"
               }
             },
             "application/x-www-form-urlencoded": {
               "schema": {
-                "$ref": "#/components/schemas/DeploymentProjectWrite"
+                "$ref": "#/components/schemas/FileSystem"
               }
             },
             "multipart/form-data": {
               "schema": {
-                "$ref": "#/components/schemas/DeploymentProjectWrite"
+                "$ref": "#/components/schemas/FileSystem"
               }
             }
           },
@@ -58779,12 +58199,7 @@
         "security": [
           {
             "PersonalAPIKeyAuth": [
-              "deployment:write"
-            ]
-          },
-          {
-            "PersonalAPIKeyAuth": [
-              "deployment:write"
+              "file_system:write"
             ]
           }
         ],
@@ -58793,7 +58208,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DeploymentProject"
+                  "$ref": "#/components/schemas/FileSystem"
                 }
               }
             },
@@ -58801,12 +58216,12 @@
           }
         },
         "x-product": [
-          "deployments"
+          "core"
         ]
       },
       "patch": {
-        "operationId": "deployment_projects_partial_update",
-        "description": "CRUD for DeploymentProject (the connected-repo + hosting-target entity).\n\nCreate-time provisioning calls Cloudflare BEFORE writing the DB row\n(see services/provision_project.py for the rationale). Delete is a\nsoft-delete; Cloudflare-side cleanup is deferred to a periodic Celery\ntask.",
+        "operationId": "desktop_file_system_partial_update",
+        "description": "The file tree for the desktop product surface. Reuses all FileSystemViewSet behaviour but is\nscoped to the \"desktop\" surface, so its tree is fully isolated from the default \"web\" tree.",
         "parameters": [
           {
             "in": "path",
@@ -58815,7 +58230,7 @@
               "type": "string",
               "format": "uuid"
             },
-            "description": "A UUID string identifying this deployment project.",
+            "description": "A UUID string identifying this file system.",
             "required": true
           },
           {
@@ -58823,23 +58238,23 @@
           }
         ],
         "tags": [
-          "deployment_projects"
+          "desktop_file_system"
         ],
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/PatchedDeploymentProjectWrite"
+                "$ref": "#/components/schemas/PatchedFileSystem"
               }
             },
             "application/x-www-form-urlencoded": {
               "schema": {
-                "$ref": "#/components/schemas/PatchedDeploymentProjectWrite"
+                "$ref": "#/components/schemas/PatchedFileSystem"
               }
             },
             "multipart/form-data": {
               "schema": {
-                "$ref": "#/components/schemas/PatchedDeploymentProjectWrite"
+                "$ref": "#/components/schemas/PatchedFileSystem"
               }
             }
           }
@@ -58847,12 +58262,7 @@
         "security": [
           {
             "PersonalAPIKeyAuth": [
-              "deployment:write"
-            ]
-          },
-          {
-            "PersonalAPIKeyAuth": [
-              "deployment:write"
+              "file_system:write"
             ]
           }
         ],
@@ -58861,7 +58271,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DeploymentProject"
+                  "$ref": "#/components/schemas/FileSystem"
                 }
               }
             },
@@ -58869,12 +58279,12 @@
           }
         },
         "x-product": [
-          "deployments"
+          "core"
         ]
       },
       "delete": {
-        "operationId": "deployment_projects_destroy",
-        "description": "CRUD for DeploymentProject (the connected-repo + hosting-target entity).\n\nCreate-time provisioning calls Cloudflare BEFORE writing the DB row\n(see services/provision_project.py for the rationale). Delete is a\nsoft-delete; Cloudflare-side cleanup is deferred to a periodic Celery\ntask.",
+        "operationId": "desktop_file_system_destroy",
+        "description": "The file tree for the desktop product surface. Reuses all FileSystemViewSet behaviour but is\nscoped to the \"desktop\" surface, so its tree is fully isolated from the default \"web\" tree.",
         "parameters": [
           {
             "in": "path",
@@ -58883,7 +58293,7 @@
               "type": "string",
               "format": "uuid"
             },
-            "description": "A UUID string identifying this deployment project.",
+            "description": "A UUID string identifying this file system.",
             "required": true
           },
           {
@@ -58891,17 +58301,12 @@
           }
         ],
         "tags": [
-          "deployment_projects"
+          "desktop_file_system"
         ],
         "security": [
           {
             "PersonalAPIKeyAuth": [
-              "deployment:write"
-            ]
-          },
-          {
-            "PersonalAPIKeyAuth": [
-              "deployment:write"
+              "file_system:write"
             ]
           }
         ],
@@ -58911,15 +58316,14 @@
           }
         },
         "x-product": [
-          "deployments"
+          "core"
         ]
       }
     },
-    "/api/projects/{project_id}/deployment_projects/{id}/refresh/": {
+    "/api/projects/{project_id}/desktop_file_system/{id}/count/": {
       "post": {
-        "operationId": "deployment_projects_refresh_create",
-        "description": "CRUD for DeploymentProject (the connected-repo + hosting-target entity).\n\nCreate-time provisioning calls Cloudflare BEFORE writing the DB row\n(see services/provision_project.py for the rationale). Delete is a\nsoft-delete; Cloudflare-side cleanup is deferred to a periodic Celery\ntask.",
-        "summary": "Refresh a deployment project's GitHub branch",
+        "operationId": "desktop_file_system_count_create",
+        "description": "Get count of all files in a folder.",
         "parameters": [
           {
             "in": "path",
@@ -58928,7 +58332,7 @@
               "type": "string",
               "format": "uuid"
             },
-            "description": "A UUID string identifying this deployment project.",
+            "description": "A UUID string identifying this file system.",
             "required": true
           },
           {
@@ -58936,63 +58340,353 @@
           }
         ],
         "tags": [
-          "deployment_projects"
+          "desktop_file_system"
         ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/DeploymentProjectRefreshResponse"
-                }
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FileSystem"
               }
             },
-            "description": ""
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/FileSystem"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/FileSystem"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "No response body"
           }
         },
         "x-product": [
-          "deployments"
+          "core"
         ]
       }
     },
-    "/api/projects/{project_id}/deployment_projects/detect/": {
+    "/api/projects/{project_id}/desktop_file_system/{id}/link/": {
       "post": {
-        "operationId": "deployment_projects_detect_create",
-        "description": "Pure inspection — no git access, no DB writes. The connect-repo UI calls this after fetching `package.json` (via the team's GitHub integration) and uses the response to prefill the form.",
-        "summary": "Suggest project config from a repo's package.json and lockfiles",
+        "operationId": "desktop_file_system_link_create",
+        "description": "The file tree for the desktop product surface. Reuses all FileSystemViewSet behaviour but is\nscoped to the \"desktop\" surface, so its tree is fully isolated from the default \"web\" tree.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "A UUID string identifying this file system.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "desktop_file_system"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FileSystem"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/FileSystem"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/FileSystem"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "No response body"
+          }
+        },
+        "x-product": [
+          "core"
+        ]
+      }
+    },
+    "/api/projects/{project_id}/desktop_file_system/{id}/move/": {
+      "post": {
+        "operationId": "desktop_file_system_move_create",
+        "description": "The file tree for the desktop product surface. Reuses all FileSystemViewSet behaviour but is\nscoped to the \"desktop\" surface, so its tree is fully isolated from the default \"web\" tree.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "A UUID string identifying this file system.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "desktop_file_system"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FileSystem"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/FileSystem"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/FileSystem"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "No response body"
+          }
+        },
+        "x-product": [
+          "core"
+        ]
+      }
+    },
+    "/api/projects/{project_id}/desktop_file_system/count_by_path/": {
+      "post": {
+        "operationId": "desktop_file_system_count_by_path_create",
+        "description": "Get count of all files in a folder.",
         "parameters": [
           {
             "$ref": "#/components/parameters/ProjectIdPath"
           }
         ],
         "tags": [
-          "deployment_projects"
+          "desktop_file_system"
         ],
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/DetectConfigRequest"
+                "$ref": "#/components/schemas/FileSystem"
               }
             },
             "application/x-www-form-urlencoded": {
               "schema": {
-                "$ref": "#/components/schemas/DetectConfigRequest"
+                "$ref": "#/components/schemas/FileSystem"
               }
             },
             "multipart/form-data": {
               "schema": {
-                "$ref": "#/components/schemas/DetectConfigRequest"
+                "$ref": "#/components/schemas/FileSystem"
               }
             }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "No response body"
           }
         },
+        "x-product": [
+          "core"
+        ]
+      }
+    },
+    "/api/projects/{project_id}/desktop_file_system/log_view/": {
+      "get": {
+        "operationId": "desktop_file_system_log_view_retrieve",
+        "description": "The file tree for the desktop product surface. Reuses all FileSystemViewSet behaviour but is\nscoped to the \"desktop\" surface, so its tree is fully isolated from the default \"web\" tree.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "desktop_file_system"
+        ],
+        "responses": {
+          "200": {
+            "description": "No response body"
+          }
+        },
+        "x-product": [
+          "core"
+        ]
+      },
+      "post": {
+        "operationId": "desktop_file_system_log_view_create",
+        "description": "The file tree for the desktop product surface. Reuses all FileSystemViewSet behaviour but is\nscoped to the \"desktop\" surface, so its tree is fully isolated from the default \"web\" tree.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "desktop_file_system"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FileSystem"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/FileSystem"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/FileSystem"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "No response body"
+          }
+        },
+        "x-product": [
+          "core"
+        ]
+      }
+    },
+    "/api/projects/{project_id}/desktop_file_system/undo_delete/": {
+      "post": {
+        "operationId": "desktop_file_system_undo_delete_create",
+        "description": "The file tree for the desktop product surface. Reuses all FileSystemViewSet behaviour but is\nscoped to the \"desktop\" surface, so its tree is fully isolated from the default \"web\" tree.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "desktop_file_system"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FileSystem"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/FileSystem"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/FileSystem"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "No response body"
+          }
+        },
+        "x-product": [
+          "core"
+        ]
+      }
+    },
+    "/api/projects/{project_id}/desktop_file_system/unfiled/": {
+      "get": {
+        "operationId": "desktop_file_system_unfiled_retrieve",
+        "description": "The file tree for the desktop product surface. Reuses all FileSystemViewSet behaviour but is\nscoped to the \"desktop\" surface, so its tree is fully isolated from the default \"web\" tree.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "desktop_file_system"
+        ],
+        "responses": {
+          "200": {
+            "description": "No response body"
+          }
+        },
+        "x-product": [
+          "core"
+        ]
+      }
+    },
+    "/api/projects/{project_id}/desktop_file_system_shortcut/": {
+      "get": {
+        "operationId": "desktop_file_system_shortcut_list",
+        "description": "Sidebar shortcuts for the desktop product surface. Reuses all FileSystemShortcutViewSet\nbehaviour but is scoped to the \"desktop\" surface, so its shortcuts are fully isolated from\nthe default \"web\" surface.",
+        "parameters": [
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Number of results to return per page.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "offset",
+            "required": false,
+            "in": "query",
+            "description": "The initial index from which to return the results.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "desktop_file_system_shortcut"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "file_system_shortcut:read"
+            ]
+          }
+        ],
         "responses": {
           "200": {
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DetectConfigResponse"
+                  "$ref": "#/components/schemas/PaginatedFileSystemShortcutList"
                 }
               }
             },
@@ -59000,7 +58694,638 @@
           }
         },
         "x-product": [
-          "deployments"
+          "core"
+        ]
+      },
+      "post": {
+        "operationId": "desktop_file_system_shortcut_create",
+        "description": "Sidebar shortcuts for the desktop product surface. Reuses all FileSystemShortcutViewSet\nbehaviour but is scoped to the \"desktop\" surface, so its shortcuts are fully isolated from\nthe default \"web\" surface.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "desktop_file_system_shortcut"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FileSystemShortcut"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/FileSystemShortcut"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/FileSystemShortcut"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "file_system_shortcut:write"
+            ]
+          }
+        ],
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FileSystemShortcut"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "core"
+        ]
+      }
+    },
+    "/api/projects/{project_id}/desktop_file_system_shortcut/{id}/": {
+      "get": {
+        "operationId": "desktop_file_system_shortcut_retrieve",
+        "description": "Sidebar shortcuts for the desktop product surface. Reuses all FileSystemShortcutViewSet\nbehaviour but is scoped to the \"desktop\" surface, so its shortcuts are fully isolated from\nthe default \"web\" surface.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "A UUID string identifying this file system shortcut.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "desktop_file_system_shortcut"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "file_system_shortcut:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FileSystemShortcut"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "core"
+        ]
+      },
+      "put": {
+        "operationId": "desktop_file_system_shortcut_update",
+        "description": "Sidebar shortcuts for the desktop product surface. Reuses all FileSystemShortcutViewSet\nbehaviour but is scoped to the \"desktop\" surface, so its shortcuts are fully isolated from\nthe default \"web\" surface.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "A UUID string identifying this file system shortcut.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "desktop_file_system_shortcut"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FileSystemShortcut"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/FileSystemShortcut"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/FileSystemShortcut"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "file_system_shortcut:write"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FileSystemShortcut"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "core"
+        ]
+      },
+      "patch": {
+        "operationId": "desktop_file_system_shortcut_partial_update",
+        "description": "Sidebar shortcuts for the desktop product surface. Reuses all FileSystemShortcutViewSet\nbehaviour but is scoped to the \"desktop\" surface, so its shortcuts are fully isolated from\nthe default \"web\" surface.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "A UUID string identifying this file system shortcut.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "desktop_file_system_shortcut"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchedFileSystemShortcut"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchedFileSystemShortcut"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchedFileSystemShortcut"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "file_system_shortcut:write"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FileSystemShortcut"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "core"
+        ]
+      },
+      "delete": {
+        "operationId": "desktop_file_system_shortcut_destroy",
+        "description": "Sidebar shortcuts for the desktop product surface. Reuses all FileSystemShortcutViewSet\nbehaviour but is scoped to the \"desktop\" surface, so its shortcuts are fully isolated from\nthe default \"web\" surface.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "A UUID string identifying this file system shortcut.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "desktop_file_system_shortcut"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "file_system_shortcut:write"
+            ]
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No response body"
+          }
+        },
+        "x-product": [
+          "core"
+        ]
+      }
+    },
+    "/api/projects/{project_id}/desktop_file_system_shortcut/reorder/": {
+      "post": {
+        "operationId": "desktop_file_system_shortcut_reorder_create",
+        "description": "Set the display order of the current user's shortcuts. `ordered_ids` becomes the new top-to-bottom order; any unknown IDs are rejected.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "desktop_file_system_shortcut"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FileSystemShortcutReorder"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/FileSystemShortcutReorder"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/FileSystemShortcutReorder"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedFileSystemShortcutList"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "core"
+        ]
+      }
+    },
+    "/api/projects/{project_id}/desktop_persisted_folder/": {
+      "get": {
+        "operationId": "desktop_persisted_folder_list",
+        "description": "Persisted folders for the desktop product surface. Reuses all PersistedFolderViewSet behaviour\nbut is scoped to the \"desktop\" surface, so its folders are fully isolated from the default\n\"web\" surface.",
+        "parameters": [
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Number of results to return per page.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "offset",
+            "required": false,
+            "in": "query",
+            "description": "The initial index from which to return the results.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "desktop_persisted_folder"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "persisted_folder:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedPersistedFolderList"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "core"
+        ]
+      },
+      "post": {
+        "operationId": "desktop_persisted_folder_create",
+        "description": "Persisted folders for the desktop product surface. Reuses all PersistedFolderViewSet behaviour\nbut is scoped to the \"desktop\" surface, so its folders are fully isolated from the default\n\"web\" surface.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "desktop_persisted_folder"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PersistedFolder"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/PersistedFolder"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/PersistedFolder"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "persisted_folder:write"
+            ]
+          }
+        ],
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PersistedFolder"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "core"
+        ]
+      }
+    },
+    "/api/projects/{project_id}/desktop_persisted_folder/{id}/": {
+      "get": {
+        "operationId": "desktop_persisted_folder_retrieve",
+        "description": "Persisted folders for the desktop product surface. Reuses all PersistedFolderViewSet behaviour\nbut is scoped to the \"desktop\" surface, so its folders are fully isolated from the default\n\"web\" surface.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "A UUID string identifying this Persisted Folder.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "desktop_persisted_folder"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "persisted_folder:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PersistedFolder"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "core"
+        ]
+      },
+      "put": {
+        "operationId": "desktop_persisted_folder_update",
+        "description": "Persisted folders for the desktop product surface. Reuses all PersistedFolderViewSet behaviour\nbut is scoped to the \"desktop\" surface, so its folders are fully isolated from the default\n\"web\" surface.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "A UUID string identifying this Persisted Folder.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "desktop_persisted_folder"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PersistedFolder"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/PersistedFolder"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/PersistedFolder"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "persisted_folder:write"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PersistedFolder"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "core"
+        ]
+      },
+      "patch": {
+        "operationId": "desktop_persisted_folder_partial_update",
+        "description": "Persisted folders for the desktop product surface. Reuses all PersistedFolderViewSet behaviour\nbut is scoped to the \"desktop\" surface, so its folders are fully isolated from the default\n\"web\" surface.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "A UUID string identifying this Persisted Folder.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "desktop_persisted_folder"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchedPersistedFolder"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchedPersistedFolder"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchedPersistedFolder"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "persisted_folder:write"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PersistedFolder"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "core"
+        ]
+      },
+      "delete": {
+        "operationId": "desktop_persisted_folder_destroy",
+        "description": "Persisted folders for the desktop product surface. Reuses all PersistedFolderViewSet behaviour\nbut is scoped to the \"desktop\" surface, so its folders are fully isolated from the default\n\"web\" surface.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "A UUID string identifying this Persisted Folder.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "desktop_persisted_folder"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "persisted_folder:write"
+            ]
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No response body"
+          }
+        },
+        "x-product": [
+          "core"
         ]
       }
     },
@@ -61735,6 +62060,52 @@
           }
         },
         "x-product": []
+      }
+    },
+    "/api/projects/{project_id}/environments/{id}/promoted_product_intent/": {
+      "get": {
+        "operationId": "environments_promoted_product_intent_retrieve",
+        "description": "Return the product key (e.g. `session_replay`, `web_analytics`) this team selected as their primary product during onboarding. Resolved from the team's most recent primary-onboarding `ProductIntent` record (the one carrying the `onboarding product selected - primary` context) — not from the `user showed product intent` event, which also fires for non-onboarding contexts. Returns `null` when no primary onboarding product intent has been captured (e.g. teams created before this signal existed, or where onboarding was skipped).",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "A unique integer value identifying this environment (aka team).",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "platform_features",
+          "environments"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "project:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PromotedProductIntent"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "platform_features"
+        ]
       }
     },
     "/api/projects/{project_id}/environments/{id}/reset_token/": {
@@ -73474,7 +73845,9 @@
             "description": ""
           }
         },
-        "x-product": []
+        "x-product": [
+          "core"
+        ]
       },
       "post": {
         "operationId": "file_system_shortcut_create",
@@ -73525,7 +73898,9 @@
             "description": ""
           }
         },
-        "x-product": []
+        "x-product": [
+          "core"
+        ]
       }
     },
     "/api/projects/{project_id}/file_system_shortcut/{id}/": {
@@ -73568,7 +73943,9 @@
             "description": ""
           }
         },
-        "x-product": []
+        "x-product": [
+          "core"
+        ]
       },
       "put": {
         "operationId": "file_system_shortcut_update",
@@ -73629,7 +74006,9 @@
             "description": ""
           }
         },
-        "x-product": []
+        "x-product": [
+          "core"
+        ]
       },
       "patch": {
         "operationId": "file_system_shortcut_partial_update",
@@ -73689,7 +74068,9 @@
             "description": ""
           }
         },
-        "x-product": []
+        "x-product": [
+          "core"
+        ]
       },
       "delete": {
         "operationId": "file_system_shortcut_destroy",
@@ -73723,7 +74104,9 @@
             "description": "No response body"
           }
         },
-        "x-product": []
+        "x-product": [
+          "core"
+        ]
       }
     },
     "/api/projects/{project_id}/file_system_shortcut/reorder/": {
@@ -73770,7 +74153,9 @@
             "description": ""
           }
         },
-        "x-product": []
+        "x-product": [
+          "core"
+        ]
       }
     },
     "/api/projects/{project_id}/flag_value/values/": {
@@ -90499,7 +90884,9 @@
             "description": ""
           }
         },
-        "x-product": []
+        "x-product": [
+          "core"
+        ]
       },
       "post": {
         "operationId": "persisted_folder_create",
@@ -90550,7 +90937,9 @@
             "description": ""
           }
         },
-        "x-product": []
+        "x-product": [
+          "core"
+        ]
       }
     },
     "/api/projects/{project_id}/persisted_folder/{id}/": {
@@ -90593,7 +90982,9 @@
             "description": ""
           }
         },
-        "x-product": []
+        "x-product": [
+          "core"
+        ]
       },
       "put": {
         "operationId": "persisted_folder_update",
@@ -90654,7 +91045,9 @@
             "description": ""
           }
         },
-        "x-product": []
+        "x-product": [
+          "core"
+        ]
       },
       "patch": {
         "operationId": "persisted_folder_partial_update",
@@ -90714,7 +91107,9 @@
             "description": ""
           }
         },
-        "x-product": []
+        "x-product": [
+          "core"
+        ]
       },
       "delete": {
         "operationId": "persisted_folder_destroy",
@@ -90748,7 +91143,9 @@
             "description": "No response body"
           }
         },
-        "x-product": []
+        "x-product": [
+          "core"
+        ]
       }
     },
     "/api/projects/{project_id}/persons/": {
@@ -91687,79 +92084,6 @@
       },
       "post": {
         "operationId": "persons_funnel_create",
-        "description": "This endpoint is meant for reading and deleting persons. To create or update persons, we recommend using the [capture API](https://posthog.com/docs/api/capture), the `$set` and `$unset` [properties](https://posthog.com/docs/product-analytics/user-properties), or one of our SDKs.",
-        "parameters": [
-          {
-            "in": "query",
-            "name": "format",
-            "schema": {
-              "type": "string",
-              "enum": [
-                "csv",
-                "json"
-              ]
-            }
-          },
-          {
-            "$ref": "#/components/parameters/ProjectIdPath"
-          }
-        ],
-        "tags": [
-          "persons"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/PersonRecord"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "No response body"
-          }
-        },
-        "x-product": [
-          "persons"
-        ]
-      }
-    },
-    "/api/projects/{project_id}/persons/funnel/correlation/": {
-      "get": {
-        "operationId": "persons_funnel_correlation_retrieve",
-        "description": "This endpoint is meant for reading and deleting persons. To create or update persons, we recommend using the [capture API](https://posthog.com/docs/api/capture), the `$set` and `$unset` [properties](https://posthog.com/docs/product-analytics/user-properties), or one of our SDKs.",
-        "parameters": [
-          {
-            "in": "query",
-            "name": "format",
-            "schema": {
-              "type": "string",
-              "enum": [
-                "csv",
-                "json"
-              ]
-            }
-          },
-          {
-            "$ref": "#/components/parameters/ProjectIdPath"
-          }
-        ],
-        "tags": [
-          "persons"
-        ],
-        "responses": {
-          "200": {
-            "description": "No response body"
-          }
-        },
-        "x-product": [
-          "persons"
-        ]
-      },
-      "post": {
-        "operationId": "persons_funnel_correlation_create",
         "description": "This endpoint is meant for reading and deleting persons. To create or update persons, we recommend using the [capture API](https://posthog.com/docs/api/capture), the `$set` and `$unset` [properties](https://posthog.com/docs/product-analytics/user-properties), or one of our SDKs.",
         "parameters": [
           {
@@ -96440,6 +96764,77 @@
           {
             "PersonalAPIKeyAuth": [
               "task:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SignalReport"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "signals"
+        ]
+      }
+    },
+    "/api/projects/{project_id}/signals/reports/{id}/state/": {
+      "post": {
+        "operationId": "signals_reports_state_create",
+        "description": "Transition a report to a new state. The model validates allowed transitions.\n\nThe request body is validated by SignalReportStateRequestSerializer — only the\nfields it declares (state, dismissal_reason, dismissal_note, snooze_for) are read,\nand only snooze_for is ever forwarded to transition_to. Any other key is ignored,\nso internal transition_to kwargs (reset_weight, error, ...) can't be injected.\n\nBody: {\n    \"state\": \"suppressed\" | \"potential\",\n    # Optional dismissal feedback (honored when state == \"suppressed\" or \"potential\"):\n    \"dismissal_reason\": \"<any string code, owned by the caller>\",\n    \"dismissal_note\": \"free-form text\",\n    # Optional, only honored for state == \"potential\":\n    \"snooze_for\": <number of additional signals before re-promotion>,\n}",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "A UUID string identifying this signal report.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "signals"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SignalReportStateRequest"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/SignalReportStateRequest"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/SignalReportStateRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "task:write"
+            ]
+          },
+          {
+            "PersonalAPIKeyAuth": [
+              "task:write"
             ]
           }
         ],
@@ -102380,6 +102775,41 @@
         ]
       }
     },
+    "/api/projects/{project_id}/tracing/spans/has_spans/": {
+      "get": {
+        "operationId": "tracing_spans_has_spans_retrieve",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "tracing"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "tracing:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/_HasSpansResponse"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "tracing"
+        ]
+      }
+    },
     "/api/projects/{project_id}/tracing/spans/query/": {
       "post": {
         "operationId": "tracing_spans_query_create",
@@ -104220,6 +104650,24 @@
             }
           },
           {
+            "in": "query",
+            "name": "order_by",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "-completed_at",
+                "-created_at",
+                "-started_at",
+                "-status",
+                "completed_at",
+                "created_at",
+                "started_at",
+                "status"
+              ]
+            },
+            "description": "Sort observations by created_at, started_at, completed_at, or status. Prefix with `-` for descending."
+          },
+          {
             "$ref": "#/components/parameters/ProjectIdPath"
           },
           {
@@ -104385,24 +104833,19 @@
             "in": "query",
             "name": "order_by",
             "schema": {
-              "type": "array",
-              "items": {
-                "type": "string",
-                "enum": [
-                  "-created_at",
-                  "-name",
-                  "-scanner_type",
-                  "-updated_at",
-                  "created_at",
-                  "name",
-                  "scanner_type",
-                  "updated_at"
-                ]
-              }
+              "type": "string",
+              "enum": [
+                "-created_at",
+                "-name",
+                "-scanner_type",
+                "-updated_at",
+                "created_at",
+                "name",
+                "scanner_type",
+                "updated_at"
+              ]
             },
-            "description": "Sort scanners by name, created_at, updated_at, or scanner_type. Prefix with `-` for descending.\n\n* `name` - Name\n* `-name` - Name (descending)\n* `created_at` - Created at\n* `-created_at` - Created at (descending)\n* `updated_at` - Updated at\n* `-updated_at` - Updated at (descending)\n* `scanner_type` - Scanner type\n* `-scanner_type` - Scanner type (descending)",
-            "explode": false,
-            "style": "form"
+            "description": "Sort scanners by name, created_at, updated_at, or scanner_type. Prefix with `-` for descending."
           },
           {
             "$ref": "#/components/parameters/ProjectIdPath"
@@ -104745,24 +105188,19 @@
             "in": "query",
             "name": "order_by",
             "schema": {
-              "type": "array",
-              "items": {
-                "type": "string",
-                "enum": [
-                  "-completed_at",
-                  "-created_at",
-                  "-started_at",
-                  "-status",
-                  "completed_at",
-                  "created_at",
-                  "started_at",
-                  "status"
-                ]
-              }
+              "type": "string",
+              "enum": [
+                "-completed_at",
+                "-created_at",
+                "-started_at",
+                "-status",
+                "completed_at",
+                "created_at",
+                "started_at",
+                "status"
+              ]
             },
-            "description": "Sort observations by created_at, started_at, completed_at, or status. Prefix with `-` for descending.\n\n* `created_at` - Created at\n* `-created_at` - Created at (descending)\n* `started_at` - Started at\n* `-started_at` - Started at (descending)\n* `completed_at` - Completed at\n* `-completed_at` - Completed at (descending)\n* `status` - Status\n* `-status` - Status (descending)",
-            "explode": false,
-            "style": "form"
+            "description": "Sort observations by created_at, started_at, completed_at, or status. Prefix with `-` for descending."
           },
           {
             "$ref": "#/components/parameters/ProjectIdPath"
@@ -105916,7 +106354,7 @@
     "/api/projects/{project_id}/visual_review/runs/{id}/approve/": {
       "post": {
         "operationId": "visual_review_runs_approve_create",
-        "description": "Approve visual changes for snapshots in this run.\n\nWith approve_all=true, approves all changed+new snapshots and returns\nsigned baseline YAML. With specific snapshots, approves only those.",
+        "description": "Mark snapshots reviewed (DB only).\n\nRecords the per-snapshot \"Accept change\" decision. Does not commit the baseline\nor change the GitHub gate — call finalize to ship the run.",
         "parameters": [
           {
             "in": "path",
@@ -105950,52 +106388,9 @@
                 "$ref": "#/components/schemas/ApproveRunRequestInput"
               }
             }
-          }
-        },
-        "security": [
-          {
-            "PersonalAPIKeyAuth": [
-              "visual_review:write"
-            ]
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/AutoApproveResult"
-                }
-              }
-            },
-            "description": ""
-          }
-        },
-        "x-product": [
-          "visual_review"
-        ]
-      }
-    },
-    "/api/projects/{project_id}/visual_review/runs/{id}/auto-approve/": {
-      "post": {
-        "operationId": "visual_review_runs_auto_approve_create",
-        "description": "CLI auto-approve: approve all and return baseline YAML for local write.",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "id",
-            "schema": {
-              "type": "string"
-            },
-            "required": true
           },
-          {
-            "$ref": "#/components/parameters/ProjectIdPath"
-          }
-        ],
-        "tags": [
-          "visual_review"
-        ],
+          "required": true
+        },
         "security": [
           {
             "PersonalAPIKeyAuth": [
@@ -106003,13 +106398,12 @@
             ]
           }
         ],
-        "deprecated": true,
         "responses": {
           "200": {
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/AutoApproveResult"
+                  "$ref": "#/components/schemas/Run"
                 }
               }
             },
@@ -106054,6 +106448,62 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Run"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "visual_review"
+        ]
+      }
+    },
+    "/api/projects/{project_id}/visual_review/runs/{id}/finalize/": {
+      "post": {
+        "operationId": "visual_review_runs_finalize_create",
+        "description": "Finalize a fully-reviewed run: commit the approved baseline and green the gate.\n\nCommits exactly the snapshots approved in the DB (tolerated ones keep their baseline)\nand only succeeds once every changed/new snapshot is resolved. With approve_all=true,\nany still-pending changed/new snapshot is approved first. With commit_to_github=false\nthe server returns the signed baseline YAML instead of committing it.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "visual_review"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FinalizeRunRequestInput"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/FinalizeRunRequestInput"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/FinalizeRunRequestInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FinalizeResult"
                 }
               }
             },
@@ -111544,6 +111994,19 @@
             "default": null,
             "title": "Csm"
           },
+          "filterExpression": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Optional HogQL boolean expression AND-ed into the WHERE clause. Used by the overview tile click-to-filter affordance.",
+            "title": "Filterexpression"
+          },
           "kind": {
             "const": "AccountsQuery",
             "default": "AccountsQuery",
@@ -111561,6 +112024,22 @@
             ],
             "default": null,
             "title": "Limit"
+          },
+          "metrics": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Aggregation expressions evaluated against the filtered account set; one value per metric is returned in `metricsResults`. When `metrics` is set without a `select`, the runner skips the regular row fetch and returns only the aggregated values.",
+            "title": "Metrics"
           },
           "modifiers": {
             "anyOf": [
@@ -111729,6 +112208,29 @@
           "limit": {
             "title": "Limit",
             "type": "integer"
+          },
+          "metricsResults": {
+            "anyOf": [
+              {
+                "items": {
+                  "anyOf": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "When `metrics` is set on the query, the aggregated values in the same order.",
+            "title": "Metricsresults"
           },
           "modifiers": {
             "anyOf": [
@@ -114376,19 +114878,12 @@
             "items": {
               "$ref": "#/components/schemas/ApproveSnapshotInput"
             },
-            "description": "Specific snapshots to approve, each with `identifier` and `new_hash`. Ignored when `approve_all` is true."
-          },
-          "approve_all": {
-            "type": "boolean",
-            "default": false,
-            "description": "Approve every changed and new snapshot in the run. Mutually exclusive with `snapshots` — pass one or the other."
-          },
-          "commit_to_github": {
-            "type": "boolean",
-            "default": true,
-            "description": "Whether to commit the updated baseline YAML to the PR branch on GitHub. Set to false to record the approval without pushing a commit."
+            "description": "Snapshots to mark reviewed, each with `identifier` and `new_hash`. This only records the review in the database (the per-snapshot \"Accept change\" action) — it does not change the baseline or the GitHub gate. Commit the baseline and green the gate with the finalize endpoint."
           }
-        }
+        },
+        "required": [
+          "snapshots"
+        ]
       },
       "ApproveSnapshotInput": {
         "type": "object",
@@ -114544,21 +115039,6 @@
         ],
         "type": "string",
         "description": "* `first_touch` - First Touch\n* `last_touch` - Last Touch\n* `linear` - Linear\n* `time_decay` - Time Decay\n* `position_based` - Position Based"
-      },
-      "AutoApproveResult": {
-        "type": "object",
-        "properties": {
-          "run": {
-            "$ref": "#/components/schemas/Run"
-          },
-          "baseline_content": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "baseline_content",
-          "run"
-        ]
       },
       "AutocompleteCompletionItem": {
         "additionalProperties": false,
@@ -115518,7 +115998,7 @@
                 "$ref": "#/components/schemas/BatchExportDestinationTypeEnum"
               }
             ],
-            "description": "A choice of supported BatchExportDestination types.\n\n* `S3` - S3\n* `Snowflake` - Snowflake\n* `Postgres` - Postgres\n* `Redshift` - Redshift\n* `BigQuery` - Bigquery\n* `Databricks` - Databricks\n* `AzureBlob` - Azure Blob\n* `Workflows` - Workflows\n* `HTTP` - Http\n* `NoOp` - Noop\n* `FileDownload` - File Download"
+            "description": "A choice of supported BatchExportDestination types.\n\n* `S3` - S3\n* `AwsS3` - Aws S3\n* `S3Compatible` - S3 Compatible\n* `Snowflake` - Snowflake\n* `Postgres` - Postgres\n* `Redshift` - Redshift\n* `BigQuery` - Bigquery\n* `Databricks` - Databricks\n* `AzureBlob` - Azure Blob\n* `Workflows` - Workflows\n* `HTTP` - Http\n* `NoOp` - Noop\n* `FileDownload` - File Download"
           },
           "config": {
             "allOf": [
@@ -115594,6 +116074,8 @@
       "BatchExportDestinationTypeEnum": {
         "enum": [
           "S3",
+          "AwsS3",
+          "S3Compatible",
           "Snowflake",
           "Postgres",
           "Redshift",
@@ -115606,7 +116088,7 @@
           "FileDownload"
         ],
         "type": "string",
-        "description": "* `S3` - S3\n* `Snowflake` - Snowflake\n* `Postgres` - Postgres\n* `Redshift` - Redshift\n* `BigQuery` - Bigquery\n* `Databricks` - Databricks\n* `AzureBlob` - Azure Blob\n* `Workflows` - Workflows\n* `HTTP` - Http\n* `NoOp` - Noop\n* `FileDownload` - File Download"
+        "description": "* `S3` - S3\n* `AwsS3` - Aws S3\n* `S3Compatible` - S3 Compatible\n* `Snowflake` - Snowflake\n* `Postgres` - Postgres\n* `Redshift` - Redshift\n* `BigQuery` - Bigquery\n* `Databricks` - Databricks\n* `AzureBlob` - Azure Blob\n* `Workflows` - Workflows\n* `HTTP` - Http\n* `NoOp` - Noop\n* `FileDownload` - File Download"
       },
       "BatchExportRequest": {
         "type": "object",
@@ -124574,7 +125056,7 @@
             "required": [
               "query"
             ],
-            "description": "HogQL query definition as a JSON object with a \"query\" key containing the SQL string and a \"kind\" key (always \"HogQLQuery\"). Example: {\"kind\": \"HogQLQuery\", \"query\": \"SELECT * FROM events LIMIT 100\"}"
+            "description": "HogQL query definition as a JSON object with a \"query\" key containing the SQL string and a \"kind\" key (always \"HogQLQuery\"). Format the SQL string multi-line with indentation and inline `--` comments for non-obvious logic — the SQL editor renders it verbatim, so avoid minified single-line SQL. Example: {\"kind\": \"HogQLQuery\", \"query\": \"SELECT\\n    event,\\n    count() AS cnt\\nFROM events\\nGROUP BY event\\nLIMIT 100\"}"
           },
           "created_by": {
             "allOf": [
@@ -124968,6 +125450,19 @@
             "description": "Name of the ExternalDataSchema responsible for syncing the table",
             "title": "Schema Name",
             "type": "string"
+          },
+          "source_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "ID of the ExternalDataSource, used to link to its management page. Null for self-managed tables.",
+            "title": "Source Id"
           },
           "source_type": {
             "description": "Source type, e.g. \"Stripe\", \"Hubspot\"",
@@ -125708,7 +126203,7 @@
                 "$ref": "#/components/schemas/ExternalDataSourceTypeEnum"
               }
             ],
-            "description": "The source type to validate against.\n\n* `Ashby` - Ashby\n* `Supabase` - Supabase\n* `CustomerIO` - CustomerIO\n* `Github` - Github\n* `Stripe` - Stripe\n* `Hubspot` - Hubspot\n* `Postgres` - Postgres\n* `Zendesk` - Zendesk\n* `Snowflake` - Snowflake\n* `Salesforce` - Salesforce\n* `MySQL` - MySQL\n* `MongoDB` - MongoDB\n* `MSSQL` - MSSQL\n* `Vitally` - Vitally\n* `BigQuery` - BigQuery\n* `Chargebee` - Chargebee\n* `Clerk` - Clerk\n* `GoogleAds` - GoogleAds\n* `TemporalIO` - TemporalIO\n* `DoIt` - DoIt\n* `GoogleSheets` - GoogleSheets\n* `MetaAds` - MetaAds\n* `Klaviyo` - Klaviyo\n* `Mailchimp` - Mailchimp\n* `Braze` - Braze\n* `Mailjet` - Mailjet\n* `Redshift` - Redshift\n* `Polar` - Polar\n* `RevenueCat` - RevenueCat\n* `LinkedinAds` - LinkedinAds\n* `RedditAds` - RedditAds\n* `TikTokAds` - TikTokAds\n* `BingAds` - BingAds\n* `Shopify` - Shopify\n* `Attio` - Attio\n* `SnapchatAds` - SnapchatAds\n* `Linear` - Linear\n* `Intercom` - Intercom\n* `Amplitude` - Amplitude\n* `Mixpanel` - Mixpanel\n* `Jira` - Jira\n* `ActiveCampaign` - ActiveCampaign\n* `Marketo` - Marketo\n* `Adjust` - Adjust\n* `AppsFlyer` - AppsFlyer\n* `Freshdesk` - Freshdesk\n* `GoogleAnalytics` - GoogleAnalytics\n* `Pipedrive` - Pipedrive\n* `SendGrid` - SendGrid\n* `Slack` - Slack\n* `PagerDuty` - PagerDuty\n* `Asana` - Asana\n* `Notion` - Notion\n* `Airtable` - Airtable\n* `Greenhouse` - Greenhouse\n* `BambooHR` - BambooHR\n* `Lever` - Lever\n* `GitLab` - GitLab\n* `Datadog` - Datadog\n* `Sentry` - Sentry\n* `Pendo` - Pendo\n* `FullStory` - FullStory\n* `AmazonAds` - AmazonAds\n* `PinterestAds` - PinterestAds\n* `AppleSearchAds` - AppleSearchAds\n* `QuickBooks` - QuickBooks\n* `Xero` - Xero\n* `NetSuite` - NetSuite\n* `WooCommerce` - WooCommerce\n* `BigCommerce` - BigCommerce\n* `PayPal` - PayPal\n* `Square` - Square\n* `Zoom` - Zoom\n* `Trello` - Trello\n* `Monday` - Monday\n* `ClickUp` - ClickUp\n* `Confluence` - Confluence\n* `Recurly` - Recurly\n* `SalesLoft` - SalesLoft\n* `Outreach` - Outreach\n* `Gong` - Gong\n* `Calendly` - Calendly\n* `Typeform` - Typeform\n* `Iterable` - Iterable\n* `ZohoCRM` - ZohoCRM\n* `Close` - Close\n* `Oracle` - Oracle\n* `DynamoDB` - DynamoDB\n* `Elasticsearch` - Elasticsearch\n* `Kafka` - Kafka\n* `LaunchDarkly` - LaunchDarkly\n* `Braintree` - Braintree\n* `Recharge` - Recharge\n* `HelpScout` - HelpScout\n* `Gorgias` - Gorgias\n* `Instagram` - Instagram\n* `YouTubeAnalytics` - YouTubeAnalytics\n* `FacebookPages` - FacebookPages\n* `TwitterAds` - TwitterAds\n* `Workday` - Workday\n* `ServiceNow` - ServiceNow\n* `Pardot` - Pardot\n* `Copper` - Copper\n* `Front` - Front\n* `ChartMogul` - ChartMogul\n* `Zuora` - Zuora\n* `Paddle` - Paddle\n* `CircleCI` - CircleCI\n* `CockroachDB` - CockroachDB\n* `Firebase` - Firebase\n* `AzureBlob` - AzureBlob\n* `GoogleDrive` - GoogleDrive\n* `OneDrive` - OneDrive\n* `SharePoint` - SharePoint\n* `Box` - Box\n* `SFTP` - SFTP\n* `MicrosoftTeams` - MicrosoftTeams\n* `Aircall` - Aircall\n* `Webflow` - Webflow\n* `Okta` - Okta\n* `Auth0` - Auth0\n* `Productboard` - Productboard\n* `Smartsheet` - Smartsheet\n* `Wrike` - Wrike\n* `Plaid` - Plaid\n* `SurveyMonkey` - SurveyMonkey\n* `Eventbrite` - Eventbrite\n* `RingCentral` - RingCentral\n* `Twilio` - Twilio\n* `Freshsales` - Freshsales\n* `Shortcut` - Shortcut\n* `ConvertKit` - ConvertKit\n* `Drip` - Drip\n* `CampaignMonitor` - CampaignMonitor\n* `MailerLite` - MailerLite\n* `Omnisend` - Omnisend\n* `Brevo` - Brevo\n* `Postmark` - Postmark\n* `Granola` - Granola\n* `BuildBetter` - BuildBetter\n* `Convex` - Convex\n* `ClickHouse` - ClickHouse\n* `Plain` - Plain\n* `Resend` - Resend\n* `PgAnalyze` - PgAnalyze\n* `Custom` - Custom"
+            "description": "The source type to validate against.\n\n* `Ashby` - Ashby\n* `Supabase` - Supabase\n* `CustomerIO` - CustomerIO\n* `Github` - Github\n* `Stripe` - Stripe\n* `Hubspot` - Hubspot\n* `Postgres` - Postgres\n* `Zendesk` - Zendesk\n* `Snowflake` - Snowflake\n* `Salesforce` - Salesforce\n* `MySQL` - MySQL\n* `MongoDB` - MongoDB\n* `MSSQL` - MSSQL\n* `Vitally` - Vitally\n* `BigQuery` - BigQuery\n* `Chargebee` - Chargebee\n* `Clerk` - Clerk\n* `GoogleAds` - GoogleAds\n* `TemporalIO` - TemporalIO\n* `DoIt` - DoIt\n* `GoogleSheets` - GoogleSheets\n* `MetaAds` - MetaAds\n* `Klaviyo` - Klaviyo\n* `Mailchimp` - Mailchimp\n* `Braze` - Braze\n* `Mailjet` - Mailjet\n* `Redshift` - Redshift\n* `Polar` - Polar\n* `RevenueCat` - RevenueCat\n* `LinkedinAds` - LinkedinAds\n* `RedditAds` - RedditAds\n* `TikTokAds` - TikTokAds\n* `BingAds` - BingAds\n* `Shopify` - Shopify\n* `Attio` - Attio\n* `SnapchatAds` - SnapchatAds\n* `Linear` - Linear\n* `Intercom` - Intercom\n* `Amplitude` - Amplitude\n* `Mixpanel` - Mixpanel\n* `Jira` - Jira\n* `ActiveCampaign` - ActiveCampaign\n* `Marketo` - Marketo\n* `Adjust` - Adjust\n* `AppsFlyer` - AppsFlyer\n* `Freshdesk` - Freshdesk\n* `GoogleAnalytics` - GoogleAnalytics\n* `Pipedrive` - Pipedrive\n* `SendGrid` - SendGrid\n* `Slack` - Slack\n* `PagerDuty` - PagerDuty\n* `Asana` - Asana\n* `Notion` - Notion\n* `Airtable` - Airtable\n* `Greenhouse` - Greenhouse\n* `BambooHR` - BambooHR\n* `Lever` - Lever\n* `GitLab` - GitLab\n* `Datadog` - Datadog\n* `Sentry` - Sentry\n* `Pendo` - Pendo\n* `FullStory` - FullStory\n* `AmazonAds` - AmazonAds\n* `PinterestAds` - PinterestAds\n* `AppleSearchAds` - AppleSearchAds\n* `QuickBooks` - QuickBooks\n* `Xero` - Xero\n* `NetSuite` - NetSuite\n* `WooCommerce` - WooCommerce\n* `BigCommerce` - BigCommerce\n* `PayPal` - PayPal\n* `Square` - Square\n* `Zoom` - Zoom\n* `Trello` - Trello\n* `Monday` - Monday\n* `ClickUp` - ClickUp\n* `Confluence` - Confluence\n* `Recurly` - Recurly\n* `SalesLoft` - SalesLoft\n* `Outreach` - Outreach\n* `Gong` - Gong\n* `Calendly` - Calendly\n* `Typeform` - Typeform\n* `Iterable` - Iterable\n* `ZohoCRM` - ZohoCRM\n* `Close` - Close\n* `Oracle` - Oracle\n* `DynamoDB` - DynamoDB\n* `Elasticsearch` - Elasticsearch\n* `Kafka` - Kafka\n* `LaunchDarkly` - LaunchDarkly\n* `Braintree` - Braintree\n* `Recharge` - Recharge\n* `HelpScout` - HelpScout\n* `Gorgias` - Gorgias\n* `Instagram` - Instagram\n* `YouTubeAnalytics` - YouTubeAnalytics\n* `FacebookPages` - FacebookPages\n* `TwitterAds` - TwitterAds\n* `Workday` - Workday\n* `ServiceNow` - ServiceNow\n* `Pardot` - Pardot\n* `Copper` - Copper\n* `Front` - Front\n* `ChartMogul` - ChartMogul\n* `Zuora` - Zuora\n* `Paddle` - Paddle\n* `CircleCI` - CircleCI\n* `CockroachDB` - CockroachDB\n* `Firebase` - Firebase\n* `AzureBlob` - AzureBlob\n* `GoogleDrive` - GoogleDrive\n* `OneDrive` - OneDrive\n* `SharePoint` - SharePoint\n* `Box` - Box\n* `SFTP` - SFTP\n* `MicrosoftTeams` - MicrosoftTeams\n* `Aircall` - Aircall\n* `Webflow` - Webflow\n* `Okta` - Okta\n* `Auth0` - Auth0\n* `Productboard` - Productboard\n* `Smartsheet` - Smartsheet\n* `Wrike` - Wrike\n* `Plaid` - Plaid\n* `SurveyMonkey` - SurveyMonkey\n* `Eventbrite` - Eventbrite\n* `RingCentral` - RingCentral\n* `Twilio` - Twilio\n* `Freshsales` - Freshsales\n* `Shortcut` - Shortcut\n* `ConvertKit` - ConvertKit\n* `Drip` - Drip\n* `CampaignMonitor` - CampaignMonitor\n* `MailerLite` - MailerLite\n* `Omnisend` - Omnisend\n* `Brevo` - Brevo\n* `Postmark` - Postmark\n* `Granola` - Granola\n* `BuildBetter` - BuildBetter\n* `Convex` - Convex\n* `ClickHouse` - ClickHouse\n* `Plain` - Plain\n* `Resend` - Resend\n* `PgAnalyze` - PgAnalyze\n* `WorkOS` - WorkOS\n* `Custom` - Custom"
           }
         },
         "required": [
@@ -126326,627 +126821,6 @@
           "name"
         ]
       },
-      "Deployment": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "format": "uuid",
-            "readOnly": true,
-            "description": "Unique identifier for the deployment."
-          },
-          "project": {
-            "type": "string",
-            "format": "uuid",
-            "readOnly": true,
-            "description": "The deployment project this deployment belongs to."
-          },
-          "status": {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/DeploymentStatusEnum"
-              }
-            ],
-            "description": "Current pipeline stage. Valid values: queued, initializing, building, ready, error, cancelled.\n\n* `queued` - Queued\n* `initializing` - Initializing\n* `building` - Building\n* `ready` - Ready\n* `error` - Error\n* `cancelled` - Cancelled"
-          },
-          "started_at": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "format": "date-time",
-            "description": "When the pipeline started building. Null while still queued."
-          },
-          "finished_at": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "format": "date-time",
-            "description": "When the pipeline finished (regardless of outcome). Null while still running."
-          },
-          "created_at": {
-            "type": "string",
-            "format": "date-time",
-            "readOnly": true,
-            "description": "When the deployment row was created (~ queued_at)."
-          },
-          "commit_sha": {
-            "type": "string",
-            "description": "Git commit SHA the deployment was built from.",
-            "maxLength": 64
-          },
-          "commit_message": {
-            "type": "string",
-            "description": "Commit message associated with the commit SHA."
-          },
-          "commit_author_name": {
-            "type": "string",
-            "description": "Display name of the commit author.",
-            "maxLength": 255
-          },
-          "commit_author_email": {
-            "type": "string",
-            "description": "Email address of the commit author. Used by the Author filter on the list page.",
-            "maxLength": 255
-          },
-          "repo_url": {
-            "type": "string",
-            "format": "uri",
-            "description": "HTTPS URL of the source repository. Captured at deploy time.",
-            "maxLength": 1024
-          },
-          "branch": {
-            "type": "string",
-            "description": "Source branch the deployment was built from.",
-            "maxLength": 255
-          },
-          "deployment_url": {
-            "type": "string",
-            "format": "uri",
-            "description": "Public URL serving the built site once ready.",
-            "maxLength": 1024
-          },
-          "preview_image_url": {
-            "type": "string",
-            "format": "uri",
-            "description": "URL of the captured site screenshot, used in the list/card view.",
-            "maxLength": 1024
-          },
-          "triggered_by_deployment": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "format": "uuid",
-            "readOnly": true,
-            "description": "The deployment this one was triggered from (for rollbacks and redeploys)."
-          },
-          "triggered_by_user_id": {
-            "type": [
-              "integer",
-              "null"
-            ],
-            "readOnly": true,
-            "description": "Posthog user id of the user who clicked Deploy/Redeploy/Rollback. Null for git-triggered or seed rows."
-          },
-          "trigger_kind": {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/TriggerKindEnum"
-              }
-            ],
-            "description": "What caused this deployment to start: manual | git | redeploy | rollback | seed.\n\n* `manual` - Manual\n* `git` - Git\n* `redeploy` - Redeploy\n* `rollback` - Rollback\n* `seed` - Seed"
-          },
-          "error_message": {
-            "type": "string",
-            "readOnly": true,
-            "description": "Failure detail set when status=error. Empty for successful or in-flight deployments."
-          },
-          "error_step": {
-            "description": "Build step that failed: dispatch | clone | install | build | publish. Empty when status != error.\n\n* `dispatch` - Dispatch\n* `clone` - Clone\n* `install` - Install\n* `build` - Build\n* `publish` - Publish",
-            "oneOf": [
-              {
-                "$ref": "#/components/schemas/ErrorStepEnum"
-              },
-              {
-                "$ref": "#/components/schemas/BlankEnum"
-              }
-            ]
-          },
-          "cloudflare_deployment_id": {
-            "type": "string",
-            "readOnly": true,
-            "description": "Cloudflare Pages deployment id, set once the publish step succeeds."
-          },
-          "temporal_workflow_id": {
-            "type": "string",
-            "readOnly": true,
-            "description": "Temporal workflow id for this build. Used for cancellation signalling."
-          },
-          "is_current": {
-            "type": "boolean",
-            "readOnly": true,
-            "description": "True if this deployment is currently serving production traffic for its project."
-          },
-          "duration_seconds": {
-            "type": "integer",
-            "readOnly": true,
-            "description": "Build duration in seconds (finished_at - started_at). 0 while still running."
-          }
-        },
-        "required": [
-          "cloudflare_deployment_id",
-          "created_at",
-          "duration_seconds",
-          "error_message",
-          "id",
-          "is_current",
-          "project",
-          "status",
-          "temporal_workflow_id",
-          "trigger_kind",
-          "triggered_by_deployment",
-          "triggered_by_user_id"
-        ]
-      },
-      "DeploymentActionResponse": {
-        "type": "object",
-        "description": "Response shape for one-off action endpoints (cancel, refresh_preview).",
-        "properties": {
-          "detail": {
-            "type": "string",
-            "description": "Short human-readable confirmation message."
-          }
-        },
-        "required": [
-          "detail"
-        ]
-      },
-      "DeploymentConflictResponse": {
-        "type": "object",
-        "description": "Response shape returned with HTTP 409 when an active deploy exists.",
-        "properties": {
-          "detail": {
-            "type": "string",
-            "description": "Reason for the conflict."
-          },
-          "active_deployment_id": {
-            "type": "string",
-            "format": "uuid",
-            "description": "The deployment currently in-flight for the project. Frontend can poll this id."
-          }
-        },
-        "required": [
-          "active_deployment_id",
-          "detail"
-        ]
-      },
-      "DeploymentCreateInput": {
-        "type": "object",
-        "description": "Body of POST /api/projects/{}/deployment_projects/{}/deployments/.",
-        "properties": {
-          "commit_sha": {
-            "type": "string",
-            "description": "Optional commit SHA. If omitted, the build worker resolves HEAD of `branch` (or the project's default_branch).",
-            "maxLength": 64
-          },
-          "branch": {
-            "type": "string",
-            "description": "Optional branch override. If omitted, uses the project's `default_branch`.",
-            "maxLength": 255
-          }
-        }
-      },
-      "DeploymentEvent": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "format": "uuid",
-            "readOnly": true,
-            "description": "Unique identifier for the event row."
-          },
-          "deployment": {
-            "type": "string",
-            "format": "uuid",
-            "readOnly": true,
-            "description": "The deployment this event belongs to."
-          },
-          "event_type": {
-            "type": "string",
-            "description": "Event category, e.g. `status_changed`, `preview_captured`, `dispatched`.",
-            "maxLength": 50
-          },
-          "payload": {
-            "description": "Arbitrary structured payload for the event. Shape varies by event_type."
-          },
-          "occurred_at": {
-            "type": "string",
-            "format": "date-time",
-            "readOnly": true,
-            "description": "When the event occurred (server time)."
-          }
-        },
-        "required": [
-          "deployment",
-          "event_type",
-          "id",
-          "occurred_at",
-          "payload"
-        ]
-      },
-      "DeploymentLogEntry": {
-        "type": "object",
-        "description": "One line of build output emitted by the build worker as a `$log` event.",
-        "properties": {
-          "timestamp": {
-            "type": "string",
-            "format": "date-time",
-            "description": "When the line was emitted by the build worker."
-          },
-          "level": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "description": "Log level: \"info\" | \"warn\" | \"error\". Null if the event did not carry one."
-          },
-          "step": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "description": "Pipeline step: \"clone\" | \"install\" | \"build\" | \"publish\". Null if the event did not carry one."
-          },
-          "line": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "description": "The log line itself (a single line of stdout or stderr)."
-          },
-          "exit_code": {
-            "type": [
-              "integer",
-              "null"
-            ],
-            "description": "Set on the last line of a step; null on all other lines."
-          }
-        },
-        "required": [
-          "exit_code",
-          "level",
-          "line",
-          "step",
-          "timestamp"
-        ]
-      },
-      "DeploymentLogsResponse": {
-        "type": "object",
-        "description": "Response shape for GET /deployments/{id}/logs/.",
-        "properties": {
-          "results": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/DeploymentLogEntry"
-            },
-            "description": "Log lines for the deployment, oldest first."
-          },
-          "has_more": {
-            "type": "boolean",
-            "description": "True if the row limit was hit and older lines may exist beyond this page."
-          },
-          "row_limit": {
-            "type": "integer",
-            "description": "The hard cap applied by the server."
-          }
-        },
-        "required": [
-          "has_more",
-          "results",
-          "row_limit"
-        ]
-      },
-      "DeploymentProject": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "format": "uuid",
-            "readOnly": true,
-            "description": "Unique identifier for the deployment project."
-          },
-          "name": {
-            "type": "string",
-            "description": "Human-readable project name shown in the UI.",
-            "maxLength": 200
-          },
-          "slug": {
-            "type": "string",
-            "description": "URL-safe handle. Combined with the team id to form the Cloudflare project name; the actual subdomain comes from Cloudflare and is returned in the read-only `subdomain` field. Must be unique per team.",
-            "maxLength": 80,
-            "pattern": "^[-a-zA-Z0-9_]+$"
-          },
-          "repo_url": {
-            "type": "string",
-            "format": "uri",
-            "readOnly": true,
-            "description": "HTTPS URL of the connected GitHub repository, resolved from the selected repository id.",
-            "maxLength": 1024
-          },
-          "default_branch": {
-            "type": "string",
-            "description": "Branch PostHog tracks for deployment updates. Defaults to the repository default branch.",
-            "maxLength": 255
-          },
-          "github_integration_id": {
-            "type": [
-              "integer",
-              "null"
-            ],
-            "description": "Existing PostHog GitHub integration id used for repository access."
-          },
-          "github_repo_id": {
-            "type": [
-              "integer",
-              "null"
-            ],
-            "description": "Stable GitHub repository identifier selected from the existing integration's repository list."
-          },
-          "build_command": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "description": "Optional shell command run inside the build container. Null = the build worker infers it from `framework` (or auto-detection if framework is also null)."
-          },
-          "output_dir": {
-            "type": "string",
-            "default": "dist",
-            "description": "Directory containing the built static site, relative to the repository root.",
-            "maxLength": 255
-          },
-          "framework": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "description": "Optional framework hint (e.g. `nextjs`, `vite`, `astro`). Null = auto-detect.",
-            "maxLength": 50
-          },
-          "inject_posthog_snippet": {
-            "type": "boolean",
-            "default": false,
-            "description": "If true, the build injects a PostHog snippet into every HTML file that registers `release = deployment_id` as a super-property — runtime exceptions are then linked back to the deployment that introduced them."
-          },
-          "cloudflare_project_name": {
-            "type": "string",
-            "readOnly": true,
-            "description": "Cloudflare Pages project name, assigned during provisioning."
-          },
-          "subdomain": {
-            "type": "string",
-            "readOnly": true,
-            "description": "Public subdomain at which deployments of this project serve."
-          },
-          "cloudflare_ready_at": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "format": "date-time",
-            "readOnly": true,
-            "description": "Timestamp when the Cloudflare project was fully provisioned and ready to receive deploys."
-          },
-          "current_deployment": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "format": "uuid",
-            "readOnly": true,
-            "description": "The deployment currently serving traffic for this project. Null if no deployment has ever succeeded."
-          },
-          "is_ready_to_deploy": {
-            "type": "boolean",
-            "readOnly": true,
-            "description": "True when the project has both a provisioned Cloudflare backend and a configured GitHub credential — meaning a deploy can be triggered right now."
-          },
-          "created_at": {
-            "type": "string",
-            "format": "date-time",
-            "readOnly": true,
-            "description": "Timestamp when the project was created."
-          },
-          "updated_at": {
-            "type": "string",
-            "format": "date-time",
-            "readOnly": true,
-            "description": "Timestamp when the project was last modified."
-          }
-        },
-        "required": [
-          "cloudflare_project_name",
-          "cloudflare_ready_at",
-          "created_at",
-          "current_deployment",
-          "id",
-          "is_ready_to_deploy",
-          "name",
-          "repo_url",
-          "slug",
-          "subdomain",
-          "updated_at"
-        ]
-      },
-      "DeploymentProjectCreate": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "description": "Human-readable project name shown in the UI.",
-            "maxLength": 200
-          },
-          "slug": {
-            "type": "string",
-            "description": "URL-safe handle. Becomes the subdomain `{slug}.posthog-app.com`. Must be unique per team.",
-            "maxLength": 80,
-            "pattern": "^[-a-zA-Z0-9_]+$"
-          },
-          "default_branch": {
-            "type": "string",
-            "description": "Branch PostHog tracks for deployment updates. Defaults to the repository default branch.",
-            "maxLength": 255
-          },
-          "github_integration_id": {
-            "type": "integer",
-            "description": "Existing PostHog GitHub integration id used for repository access."
-          },
-          "github_repo_id": {
-            "type": "integer",
-            "description": "Stable GitHub repository identifier selected from the existing integration's repository list."
-          },
-          "build_command": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "description": "Optional shell command run inside the build container. Null = the build worker infers it from `framework` (or auto-detection if framework is also null)."
-          },
-          "output_dir": {
-            "type": "string",
-            "default": "dist",
-            "description": "Directory containing the built static site, relative to the repository root.",
-            "maxLength": 255
-          },
-          "framework": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "description": "Optional framework hint (e.g. `nextjs`, `vite`, `astro`). Null = auto-detect.",
-            "maxLength": 50
-          },
-          "inject_posthog_snippet": {
-            "type": "boolean",
-            "default": false,
-            "description": "If true, the build injects a PostHog snippet into every HTML file that registers `release = deployment_id` as a super-property — runtime exceptions are then linked back to the deployment that introduced them."
-          }
-        },
-        "required": [
-          "github_integration_id",
-          "github_repo_id",
-          "name",
-          "slug"
-        ]
-      },
-      "DeploymentProjectRefreshResponse": {
-        "type": "object",
-        "description": "Response shape for refreshing a deployment project's GitHub branch.",
-        "properties": {
-          "detail": {
-            "type": "string",
-            "description": "Human-readable explanation of the refresh result."
-          },
-          "repo_url": {
-            "type": "string",
-            "format": "uri",
-            "description": "HTTPS URL of the connected GitHub repository."
-          },
-          "default_branch": {
-            "type": "string",
-            "description": "Branch checked by the refresh action."
-          },
-          "commit_sha": {
-            "type": "string",
-            "description": "Current GitHub HEAD SHA for default_branch."
-          }
-        },
-        "required": [
-          "commit_sha",
-          "default_branch",
-          "detail",
-          "repo_url"
-        ]
-      },
-      "DeploymentProjectWrite": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "description": "Human-readable project name shown in the UI.",
-            "maxLength": 200
-          },
-          "slug": {
-            "type": "string",
-            "description": "URL-safe handle. Combined with the team id to form the Cloudflare project name; the actual subdomain comes from Cloudflare and is returned in the read-only `subdomain` field. Must be unique per team.",
-            "maxLength": 80,
-            "pattern": "^[-a-zA-Z0-9_]+$"
-          },
-          "default_branch": {
-            "type": "string",
-            "description": "Branch PostHog tracks for deployment updates. Defaults to the repository default branch.",
-            "maxLength": 255
-          },
-          "github_integration_id": {
-            "type": [
-              "integer",
-              "null"
-            ],
-            "description": "Existing PostHog GitHub integration id used for repository access."
-          },
-          "github_repo_id": {
-            "type": [
-              "integer",
-              "null"
-            ],
-            "description": "Stable GitHub repository identifier selected from the existing integration's repository list."
-          },
-          "build_command": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "description": "Optional shell command run inside the build container. Null = the build worker infers it from `framework` (or auto-detection if framework is also null)."
-          },
-          "output_dir": {
-            "type": "string",
-            "default": "dist",
-            "description": "Directory containing the built static site, relative to the repository root.",
-            "maxLength": 255
-          },
-          "framework": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "description": "Optional framework hint (e.g. `nextjs`, `vite`, `astro`). Null = auto-detect.",
-            "maxLength": 50
-          },
-          "inject_posthog_snippet": {
-            "type": "boolean",
-            "default": false,
-            "description": "If true, the build injects a PostHog snippet into every HTML file that registers `release = deployment_id` as a super-property — runtime exceptions are then linked back to the deployment that introduced them."
-          }
-        },
-        "required": [
-          "name",
-          "slug"
-        ]
-      },
-      "DeploymentStatusEnum": {
-        "enum": [
-          "queued",
-          "initializing",
-          "building",
-          "ready",
-          "error",
-          "cancelled"
-        ],
-        "type": "string",
-        "description": "* `queued` - Queued\n* `initializing` - Initializing\n* `building` - Building\n* `ready` - Ready\n* `error` - Error\n* `cancelled` - Cancelled"
-      },
       "DeprovisionWarehouseResponse": {
         "type": "object",
         "properties": {
@@ -127224,68 +127098,6 @@
         ],
         "title": "DetailedResultsAggregationType",
         "type": "string"
-      },
-      "DetectConfigRequest": {
-        "type": "object",
-        "description": "Inputs the `/detect/` endpoint needs to suggest a project config.\n\nDecouples detection from any one git provider — callers fetch\n`package.json` and the list of lockfiles however they like (GitHub\nraw content via the team's existing integration, a temporary clone,\nuser-pasted JSON during early development) and pass them here.",
-        "properties": {
-          "package_json": {
-            "description": "Parsed contents of the repo's `package.json`. Pass null or omit if the repo doesn't have one — the response is then the plain-HTML fallback."
-          },
-          "lockfiles": {
-            "type": "array",
-            "items": {
-              "type": "string",
-              "maxLength": 64
-            },
-            "description": "Filenames of package-manager lockfiles found in the repo root (e.g. [\"pnpm-lock.yaml\"]). Used to pick the package manager."
-          }
-        }
-      },
-      "DetectConfigResponse": {
-        "type": "object",
-        "description": "Suggested project config. Every field is overridable in the connect-repo UI.\n\n`build_command`, `output_dir`, and `framework` map directly to the\n`DeploymentProject` model fields. `package_manager`, `install_command`,\nand `node_version` are informational hints — the model doesn't store\nthem today, but the UI can display them so the user knows what the\nbuild worker will end up running.",
-        "properties": {
-          "package_manager": {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/PackageManagerEnum"
-              }
-            ],
-            "description": "Detected package manager from lockfile presence.\n\n* `npm` - npm\n* `pnpm` - pnpm\n* `yarn` - yarn\n* `bun` - bun"
-          },
-          "install_command": {
-            "type": "string",
-            "description": "Suggested install command, or empty when no install is needed."
-          },
-          "build_command": {
-            "type": "string",
-            "description": "Suggested build command, or empty when no known framework matched."
-          },
-          "output_dir": {
-            "type": "string",
-            "description": "Suggested output directory relative to repo root."
-          },
-          "node_version": {
-            "type": "string",
-            "description": "Suggested Node major version, parsed from `engines.node` or defaulted to 20."
-          },
-          "framework": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "description": "Detected framework hint (e.g. `nextjs`, `vite`, `astro`) to write into `DeploymentProject.framework`. Null when no framework matched — leaving the field null lets the build worker fall back to its own auto-detection."
-          }
-        },
-        "required": [
-          "build_command",
-          "framework",
-          "install_command",
-          "node_version",
-          "output_dir",
-          "package_manager"
-        ]
       },
       "DetectorConfig": {
         "anyOf": [
@@ -130591,17 +130403,6 @@
         "required": [
           "error"
         ]
-      },
-      "ErrorStepEnum": {
-        "enum": [
-          "dispatch",
-          "clone",
-          "install",
-          "build",
-          "publish"
-        ],
-        "type": "string",
-        "description": "* `dispatch` - Dispatch\n* `clone` - Clone\n* `install` - Install\n* `build` - Build\n* `publish` - Publish"
       },
       "ErrorTrackingAggregations": {
         "type": "object",
@@ -141952,6 +141753,31 @@
             },
             "readOnly": true,
             "description": "Source-side column metadata (name, data type, nullable) discovered for this schema. Empty until the source has been refreshed via `refresh_schemas`."
+          },
+          "source": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "source_type": {
+                "type": "string"
+              },
+              "supports_column_selection": {
+                "type": "boolean"
+              },
+              "user_access_level": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "readOnly": true,
+            "description": "Lightweight parent-source summary (id, source_type, column-selection support, the requesting user's access level). Only populated on the single-schema retrieve endpoint — `null` elsewhere — so read-only views can render without fetching the full source and all its schemas."
           }
         },
         "required": [
@@ -141963,6 +141789,7 @@
           "last_synced_at",
           "latest_error",
           "name",
+          "source",
           "status",
           "table"
         ]
@@ -142088,7 +141915,7 @@
                 "$ref": "#/components/schemas/ExternalDataSourceTypeEnum"
               }
             ],
-            "description": "The source type (e.g. 'Postgres', 'Stripe').\n\n* `Ashby` - Ashby\n* `Supabase` - Supabase\n* `CustomerIO` - CustomerIO\n* `Github` - Github\n* `Stripe` - Stripe\n* `Hubspot` - Hubspot\n* `Postgres` - Postgres\n* `Zendesk` - Zendesk\n* `Snowflake` - Snowflake\n* `Salesforce` - Salesforce\n* `MySQL` - MySQL\n* `MongoDB` - MongoDB\n* `MSSQL` - MSSQL\n* `Vitally` - Vitally\n* `BigQuery` - BigQuery\n* `Chargebee` - Chargebee\n* `Clerk` - Clerk\n* `GoogleAds` - GoogleAds\n* `TemporalIO` - TemporalIO\n* `DoIt` - DoIt\n* `GoogleSheets` - GoogleSheets\n* `MetaAds` - MetaAds\n* `Klaviyo` - Klaviyo\n* `Mailchimp` - Mailchimp\n* `Braze` - Braze\n* `Mailjet` - Mailjet\n* `Redshift` - Redshift\n* `Polar` - Polar\n* `RevenueCat` - RevenueCat\n* `LinkedinAds` - LinkedinAds\n* `RedditAds` - RedditAds\n* `TikTokAds` - TikTokAds\n* `BingAds` - BingAds\n* `Shopify` - Shopify\n* `Attio` - Attio\n* `SnapchatAds` - SnapchatAds\n* `Linear` - Linear\n* `Intercom` - Intercom\n* `Amplitude` - Amplitude\n* `Mixpanel` - Mixpanel\n* `Jira` - Jira\n* `ActiveCampaign` - ActiveCampaign\n* `Marketo` - Marketo\n* `Adjust` - Adjust\n* `AppsFlyer` - AppsFlyer\n* `Freshdesk` - Freshdesk\n* `GoogleAnalytics` - GoogleAnalytics\n* `Pipedrive` - Pipedrive\n* `SendGrid` - SendGrid\n* `Slack` - Slack\n* `PagerDuty` - PagerDuty\n* `Asana` - Asana\n* `Notion` - Notion\n* `Airtable` - Airtable\n* `Greenhouse` - Greenhouse\n* `BambooHR` - BambooHR\n* `Lever` - Lever\n* `GitLab` - GitLab\n* `Datadog` - Datadog\n* `Sentry` - Sentry\n* `Pendo` - Pendo\n* `FullStory` - FullStory\n* `AmazonAds` - AmazonAds\n* `PinterestAds` - PinterestAds\n* `AppleSearchAds` - AppleSearchAds\n* `QuickBooks` - QuickBooks\n* `Xero` - Xero\n* `NetSuite` - NetSuite\n* `WooCommerce` - WooCommerce\n* `BigCommerce` - BigCommerce\n* `PayPal` - PayPal\n* `Square` - Square\n* `Zoom` - Zoom\n* `Trello` - Trello\n* `Monday` - Monday\n* `ClickUp` - ClickUp\n* `Confluence` - Confluence\n* `Recurly` - Recurly\n* `SalesLoft` - SalesLoft\n* `Outreach` - Outreach\n* `Gong` - Gong\n* `Calendly` - Calendly\n* `Typeform` - Typeform\n* `Iterable` - Iterable\n* `ZohoCRM` - ZohoCRM\n* `Close` - Close\n* `Oracle` - Oracle\n* `DynamoDB` - DynamoDB\n* `Elasticsearch` - Elasticsearch\n* `Kafka` - Kafka\n* `LaunchDarkly` - LaunchDarkly\n* `Braintree` - Braintree\n* `Recharge` - Recharge\n* `HelpScout` - HelpScout\n* `Gorgias` - Gorgias\n* `Instagram` - Instagram\n* `YouTubeAnalytics` - YouTubeAnalytics\n* `FacebookPages` - FacebookPages\n* `TwitterAds` - TwitterAds\n* `Workday` - Workday\n* `ServiceNow` - ServiceNow\n* `Pardot` - Pardot\n* `Copper` - Copper\n* `Front` - Front\n* `ChartMogul` - ChartMogul\n* `Zuora` - Zuora\n* `Paddle` - Paddle\n* `CircleCI` - CircleCI\n* `CockroachDB` - CockroachDB\n* `Firebase` - Firebase\n* `AzureBlob` - AzureBlob\n* `GoogleDrive` - GoogleDrive\n* `OneDrive` - OneDrive\n* `SharePoint` - SharePoint\n* `Box` - Box\n* `SFTP` - SFTP\n* `MicrosoftTeams` - MicrosoftTeams\n* `Aircall` - Aircall\n* `Webflow` - Webflow\n* `Okta` - Okta\n* `Auth0` - Auth0\n* `Productboard` - Productboard\n* `Smartsheet` - Smartsheet\n* `Wrike` - Wrike\n* `Plaid` - Plaid\n* `SurveyMonkey` - SurveyMonkey\n* `Eventbrite` - Eventbrite\n* `RingCentral` - RingCentral\n* `Twilio` - Twilio\n* `Freshsales` - Freshsales\n* `Shortcut` - Shortcut\n* `ConvertKit` - ConvertKit\n* `Drip` - Drip\n* `CampaignMonitor` - CampaignMonitor\n* `MailerLite` - MailerLite\n* `Omnisend` - Omnisend\n* `Brevo` - Brevo\n* `Postmark` - Postmark\n* `Granola` - Granola\n* `BuildBetter` - BuildBetter\n* `Convex` - Convex\n* `ClickHouse` - ClickHouse\n* `Plain` - Plain\n* `Resend` - Resend\n* `PgAnalyze` - PgAnalyze\n* `Custom` - Custom"
+            "description": "The source type (e.g. 'Postgres', 'Stripe').\n\n* `Ashby` - Ashby\n* `Supabase` - Supabase\n* `CustomerIO` - CustomerIO\n* `Github` - Github\n* `Stripe` - Stripe\n* `Hubspot` - Hubspot\n* `Postgres` - Postgres\n* `Zendesk` - Zendesk\n* `Snowflake` - Snowflake\n* `Salesforce` - Salesforce\n* `MySQL` - MySQL\n* `MongoDB` - MongoDB\n* `MSSQL` - MSSQL\n* `Vitally` - Vitally\n* `BigQuery` - BigQuery\n* `Chargebee` - Chargebee\n* `Clerk` - Clerk\n* `GoogleAds` - GoogleAds\n* `TemporalIO` - TemporalIO\n* `DoIt` - DoIt\n* `GoogleSheets` - GoogleSheets\n* `MetaAds` - MetaAds\n* `Klaviyo` - Klaviyo\n* `Mailchimp` - Mailchimp\n* `Braze` - Braze\n* `Mailjet` - Mailjet\n* `Redshift` - Redshift\n* `Polar` - Polar\n* `RevenueCat` - RevenueCat\n* `LinkedinAds` - LinkedinAds\n* `RedditAds` - RedditAds\n* `TikTokAds` - TikTokAds\n* `BingAds` - BingAds\n* `Shopify` - Shopify\n* `Attio` - Attio\n* `SnapchatAds` - SnapchatAds\n* `Linear` - Linear\n* `Intercom` - Intercom\n* `Amplitude` - Amplitude\n* `Mixpanel` - Mixpanel\n* `Jira` - Jira\n* `ActiveCampaign` - ActiveCampaign\n* `Marketo` - Marketo\n* `Adjust` - Adjust\n* `AppsFlyer` - AppsFlyer\n* `Freshdesk` - Freshdesk\n* `GoogleAnalytics` - GoogleAnalytics\n* `Pipedrive` - Pipedrive\n* `SendGrid` - SendGrid\n* `Slack` - Slack\n* `PagerDuty` - PagerDuty\n* `Asana` - Asana\n* `Notion` - Notion\n* `Airtable` - Airtable\n* `Greenhouse` - Greenhouse\n* `BambooHR` - BambooHR\n* `Lever` - Lever\n* `GitLab` - GitLab\n* `Datadog` - Datadog\n* `Sentry` - Sentry\n* `Pendo` - Pendo\n* `FullStory` - FullStory\n* `AmazonAds` - AmazonAds\n* `PinterestAds` - PinterestAds\n* `AppleSearchAds` - AppleSearchAds\n* `QuickBooks` - QuickBooks\n* `Xero` - Xero\n* `NetSuite` - NetSuite\n* `WooCommerce` - WooCommerce\n* `BigCommerce` - BigCommerce\n* `PayPal` - PayPal\n* `Square` - Square\n* `Zoom` - Zoom\n* `Trello` - Trello\n* `Monday` - Monday\n* `ClickUp` - ClickUp\n* `Confluence` - Confluence\n* `Recurly` - Recurly\n* `SalesLoft` - SalesLoft\n* `Outreach` - Outreach\n* `Gong` - Gong\n* `Calendly` - Calendly\n* `Typeform` - Typeform\n* `Iterable` - Iterable\n* `ZohoCRM` - ZohoCRM\n* `Close` - Close\n* `Oracle` - Oracle\n* `DynamoDB` - DynamoDB\n* `Elasticsearch` - Elasticsearch\n* `Kafka` - Kafka\n* `LaunchDarkly` - LaunchDarkly\n* `Braintree` - Braintree\n* `Recharge` - Recharge\n* `HelpScout` - HelpScout\n* `Gorgias` - Gorgias\n* `Instagram` - Instagram\n* `YouTubeAnalytics` - YouTubeAnalytics\n* `FacebookPages` - FacebookPages\n* `TwitterAds` - TwitterAds\n* `Workday` - Workday\n* `ServiceNow` - ServiceNow\n* `Pardot` - Pardot\n* `Copper` - Copper\n* `Front` - Front\n* `ChartMogul` - ChartMogul\n* `Zuora` - Zuora\n* `Paddle` - Paddle\n* `CircleCI` - CircleCI\n* `CockroachDB` - CockroachDB\n* `Firebase` - Firebase\n* `AzureBlob` - AzureBlob\n* `GoogleDrive` - GoogleDrive\n* `OneDrive` - OneDrive\n* `SharePoint` - SharePoint\n* `Box` - Box\n* `SFTP` - SFTP\n* `MicrosoftTeams` - MicrosoftTeams\n* `Aircall` - Aircall\n* `Webflow` - Webflow\n* `Okta` - Okta\n* `Auth0` - Auth0\n* `Productboard` - Productboard\n* `Smartsheet` - Smartsheet\n* `Wrike` - Wrike\n* `Plaid` - Plaid\n* `SurveyMonkey` - SurveyMonkey\n* `Eventbrite` - Eventbrite\n* `RingCentral` - RingCentral\n* `Twilio` - Twilio\n* `Freshsales` - Freshsales\n* `Shortcut` - Shortcut\n* `ConvertKit` - ConvertKit\n* `Drip` - Drip\n* `CampaignMonitor` - CampaignMonitor\n* `MailerLite` - MailerLite\n* `Omnisend` - Omnisend\n* `Brevo` - Brevo\n* `Postmark` - Postmark\n* `Granola` - Granola\n* `BuildBetter` - BuildBetter\n* `Convex` - Convex\n* `ClickHouse` - ClickHouse\n* `Plain` - Plain\n* `Resend` - Resend\n* `PgAnalyze` - PgAnalyze\n* `WorkOS` - WorkOS\n* `Custom` - Custom"
           },
           "payload": {
             "type": "object",
@@ -142478,10 +142305,11 @@
           "Plain",
           "Resend",
           "PgAnalyze",
+          "WorkOS",
           "Custom"
         ],
         "type": "string",
-        "description": "* `Ashby` - Ashby\n* `Supabase` - Supabase\n* `CustomerIO` - CustomerIO\n* `Github` - Github\n* `Stripe` - Stripe\n* `Hubspot` - Hubspot\n* `Postgres` - Postgres\n* `Zendesk` - Zendesk\n* `Snowflake` - Snowflake\n* `Salesforce` - Salesforce\n* `MySQL` - MySQL\n* `MongoDB` - MongoDB\n* `MSSQL` - MSSQL\n* `Vitally` - Vitally\n* `BigQuery` - BigQuery\n* `Chargebee` - Chargebee\n* `Clerk` - Clerk\n* `GoogleAds` - GoogleAds\n* `TemporalIO` - TemporalIO\n* `DoIt` - DoIt\n* `GoogleSheets` - GoogleSheets\n* `MetaAds` - MetaAds\n* `Klaviyo` - Klaviyo\n* `Mailchimp` - Mailchimp\n* `Braze` - Braze\n* `Mailjet` - Mailjet\n* `Redshift` - Redshift\n* `Polar` - Polar\n* `RevenueCat` - RevenueCat\n* `LinkedinAds` - LinkedinAds\n* `RedditAds` - RedditAds\n* `TikTokAds` - TikTokAds\n* `BingAds` - BingAds\n* `Shopify` - Shopify\n* `Attio` - Attio\n* `SnapchatAds` - SnapchatAds\n* `Linear` - Linear\n* `Intercom` - Intercom\n* `Amplitude` - Amplitude\n* `Mixpanel` - Mixpanel\n* `Jira` - Jira\n* `ActiveCampaign` - ActiveCampaign\n* `Marketo` - Marketo\n* `Adjust` - Adjust\n* `AppsFlyer` - AppsFlyer\n* `Freshdesk` - Freshdesk\n* `GoogleAnalytics` - GoogleAnalytics\n* `Pipedrive` - Pipedrive\n* `SendGrid` - SendGrid\n* `Slack` - Slack\n* `PagerDuty` - PagerDuty\n* `Asana` - Asana\n* `Notion` - Notion\n* `Airtable` - Airtable\n* `Greenhouse` - Greenhouse\n* `BambooHR` - BambooHR\n* `Lever` - Lever\n* `GitLab` - GitLab\n* `Datadog` - Datadog\n* `Sentry` - Sentry\n* `Pendo` - Pendo\n* `FullStory` - FullStory\n* `AmazonAds` - AmazonAds\n* `PinterestAds` - PinterestAds\n* `AppleSearchAds` - AppleSearchAds\n* `QuickBooks` - QuickBooks\n* `Xero` - Xero\n* `NetSuite` - NetSuite\n* `WooCommerce` - WooCommerce\n* `BigCommerce` - BigCommerce\n* `PayPal` - PayPal\n* `Square` - Square\n* `Zoom` - Zoom\n* `Trello` - Trello\n* `Monday` - Monday\n* `ClickUp` - ClickUp\n* `Confluence` - Confluence\n* `Recurly` - Recurly\n* `SalesLoft` - SalesLoft\n* `Outreach` - Outreach\n* `Gong` - Gong\n* `Calendly` - Calendly\n* `Typeform` - Typeform\n* `Iterable` - Iterable\n* `ZohoCRM` - ZohoCRM\n* `Close` - Close\n* `Oracle` - Oracle\n* `DynamoDB` - DynamoDB\n* `Elasticsearch` - Elasticsearch\n* `Kafka` - Kafka\n* `LaunchDarkly` - LaunchDarkly\n* `Braintree` - Braintree\n* `Recharge` - Recharge\n* `HelpScout` - HelpScout\n* `Gorgias` - Gorgias\n* `Instagram` - Instagram\n* `YouTubeAnalytics` - YouTubeAnalytics\n* `FacebookPages` - FacebookPages\n* `TwitterAds` - TwitterAds\n* `Workday` - Workday\n* `ServiceNow` - ServiceNow\n* `Pardot` - Pardot\n* `Copper` - Copper\n* `Front` - Front\n* `ChartMogul` - ChartMogul\n* `Zuora` - Zuora\n* `Paddle` - Paddle\n* `CircleCI` - CircleCI\n* `CockroachDB` - CockroachDB\n* `Firebase` - Firebase\n* `AzureBlob` - AzureBlob\n* `GoogleDrive` - GoogleDrive\n* `OneDrive` - OneDrive\n* `SharePoint` - SharePoint\n* `Box` - Box\n* `SFTP` - SFTP\n* `MicrosoftTeams` - MicrosoftTeams\n* `Aircall` - Aircall\n* `Webflow` - Webflow\n* `Okta` - Okta\n* `Auth0` - Auth0\n* `Productboard` - Productboard\n* `Smartsheet` - Smartsheet\n* `Wrike` - Wrike\n* `Plaid` - Plaid\n* `SurveyMonkey` - SurveyMonkey\n* `Eventbrite` - Eventbrite\n* `RingCentral` - RingCentral\n* `Twilio` - Twilio\n* `Freshsales` - Freshsales\n* `Shortcut` - Shortcut\n* `ConvertKit` - ConvertKit\n* `Drip` - Drip\n* `CampaignMonitor` - CampaignMonitor\n* `MailerLite` - MailerLite\n* `Omnisend` - Omnisend\n* `Brevo` - Brevo\n* `Postmark` - Postmark\n* `Granola` - Granola\n* `BuildBetter` - BuildBetter\n* `Convex` - Convex\n* `ClickHouse` - ClickHouse\n* `Plain` - Plain\n* `Resend` - Resend\n* `PgAnalyze` - PgAnalyze\n* `Custom` - Custom"
+        "description": "* `Ashby` - Ashby\n* `Supabase` - Supabase\n* `CustomerIO` - CustomerIO\n* `Github` - Github\n* `Stripe` - Stripe\n* `Hubspot` - Hubspot\n* `Postgres` - Postgres\n* `Zendesk` - Zendesk\n* `Snowflake` - Snowflake\n* `Salesforce` - Salesforce\n* `MySQL` - MySQL\n* `MongoDB` - MongoDB\n* `MSSQL` - MSSQL\n* `Vitally` - Vitally\n* `BigQuery` - BigQuery\n* `Chargebee` - Chargebee\n* `Clerk` - Clerk\n* `GoogleAds` - GoogleAds\n* `TemporalIO` - TemporalIO\n* `DoIt` - DoIt\n* `GoogleSheets` - GoogleSheets\n* `MetaAds` - MetaAds\n* `Klaviyo` - Klaviyo\n* `Mailchimp` - Mailchimp\n* `Braze` - Braze\n* `Mailjet` - Mailjet\n* `Redshift` - Redshift\n* `Polar` - Polar\n* `RevenueCat` - RevenueCat\n* `LinkedinAds` - LinkedinAds\n* `RedditAds` - RedditAds\n* `TikTokAds` - TikTokAds\n* `BingAds` - BingAds\n* `Shopify` - Shopify\n* `Attio` - Attio\n* `SnapchatAds` - SnapchatAds\n* `Linear` - Linear\n* `Intercom` - Intercom\n* `Amplitude` - Amplitude\n* `Mixpanel` - Mixpanel\n* `Jira` - Jira\n* `ActiveCampaign` - ActiveCampaign\n* `Marketo` - Marketo\n* `Adjust` - Adjust\n* `AppsFlyer` - AppsFlyer\n* `Freshdesk` - Freshdesk\n* `GoogleAnalytics` - GoogleAnalytics\n* `Pipedrive` - Pipedrive\n* `SendGrid` - SendGrid\n* `Slack` - Slack\n* `PagerDuty` - PagerDuty\n* `Asana` - Asana\n* `Notion` - Notion\n* `Airtable` - Airtable\n* `Greenhouse` - Greenhouse\n* `BambooHR` - BambooHR\n* `Lever` - Lever\n* `GitLab` - GitLab\n* `Datadog` - Datadog\n* `Sentry` - Sentry\n* `Pendo` - Pendo\n* `FullStory` - FullStory\n* `AmazonAds` - AmazonAds\n* `PinterestAds` - PinterestAds\n* `AppleSearchAds` - AppleSearchAds\n* `QuickBooks` - QuickBooks\n* `Xero` - Xero\n* `NetSuite` - NetSuite\n* `WooCommerce` - WooCommerce\n* `BigCommerce` - BigCommerce\n* `PayPal` - PayPal\n* `Square` - Square\n* `Zoom` - Zoom\n* `Trello` - Trello\n* `Monday` - Monday\n* `ClickUp` - ClickUp\n* `Confluence` - Confluence\n* `Recurly` - Recurly\n* `SalesLoft` - SalesLoft\n* `Outreach` - Outreach\n* `Gong` - Gong\n* `Calendly` - Calendly\n* `Typeform` - Typeform\n* `Iterable` - Iterable\n* `ZohoCRM` - ZohoCRM\n* `Close` - Close\n* `Oracle` - Oracle\n* `DynamoDB` - DynamoDB\n* `Elasticsearch` - Elasticsearch\n* `Kafka` - Kafka\n* `LaunchDarkly` - LaunchDarkly\n* `Braintree` - Braintree\n* `Recharge` - Recharge\n* `HelpScout` - HelpScout\n* `Gorgias` - Gorgias\n* `Instagram` - Instagram\n* `YouTubeAnalytics` - YouTubeAnalytics\n* `FacebookPages` - FacebookPages\n* `TwitterAds` - TwitterAds\n* `Workday` - Workday\n* `ServiceNow` - ServiceNow\n* `Pardot` - Pardot\n* `Copper` - Copper\n* `Front` - Front\n* `ChartMogul` - ChartMogul\n* `Zuora` - Zuora\n* `Paddle` - Paddle\n* `CircleCI` - CircleCI\n* `CockroachDB` - CockroachDB\n* `Firebase` - Firebase\n* `AzureBlob` - AzureBlob\n* `GoogleDrive` - GoogleDrive\n* `OneDrive` - OneDrive\n* `SharePoint` - SharePoint\n* `Box` - Box\n* `SFTP` - SFTP\n* `MicrosoftTeams` - MicrosoftTeams\n* `Aircall` - Aircall\n* `Webflow` - Webflow\n* `Okta` - Okta\n* `Auth0` - Auth0\n* `Productboard` - Productboard\n* `Smartsheet` - Smartsheet\n* `Wrike` - Wrike\n* `Plaid` - Plaid\n* `SurveyMonkey` - SurveyMonkey\n* `Eventbrite` - Eventbrite\n* `RingCentral` - RingCentral\n* `Twilio` - Twilio\n* `Freshsales` - Freshsales\n* `Shortcut` - Shortcut\n* `ConvertKit` - ConvertKit\n* `Drip` - Drip\n* `CampaignMonitor` - CampaignMonitor\n* `MailerLite` - MailerLite\n* `Omnisend` - Omnisend\n* `Brevo` - Brevo\n* `Postmark` - Postmark\n* `Granola` - Granola\n* `BuildBetter` - BuildBetter\n* `Convex` - Convex\n* `ClickHouse` - ClickHouse\n* `Plain` - Plain\n* `Resend` - Resend\n* `PgAnalyze` - PgAnalyze\n* `WorkOS` - WorkOS\n* `Custom` - Custom"
       },
       "ExternalQueryError": {
         "additionalProperties": false,
@@ -144174,10 +144002,12 @@
             "readOnly": true
           },
           "path": {
-            "type": "string"
+            "type": "string",
+            "description": "Display path of the shortcut in the sidebar."
           },
           "type": {
             "type": "string",
+            "description": "Type of the linked item (e.g. 'folder', 'insight'), or blank.",
             "maxLength": 100
           },
           "ref": {
@@ -144185,18 +144015,21 @@
               "string",
               "null"
             ],
+            "description": "Reference to the linked item, scoped to its type. Null for href-only shortcuts.",
             "maxLength": 100
           },
           "href": {
             "type": [
               "string",
               "null"
-            ]
+            ],
+            "description": "Destination URL the shortcut opens. Null when the shortcut points at an item by ref."
           },
           "order": {
             "type": "integer",
             "maximum": 2147483647,
-            "minimum": -2147483648
+            "minimum": -2147483648,
+            "description": "Display order within the user's shortcut list, ascending."
           },
           "created_at": {
             "type": "string",
@@ -144276,6 +144109,36 @@
         },
         "title": "Filters",
         "type": "object"
+      },
+      "FinalizeResult": {
+        "type": "object",
+        "properties": {
+          "run": {
+            "$ref": "#/components/schemas/Run"
+          },
+          "baseline_content": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "baseline_content",
+          "run"
+        ]
+      },
+      "FinalizeRunRequestInput": {
+        "type": "object",
+        "properties": {
+          "approve_all": {
+            "type": "boolean",
+            "default": false,
+            "description": "Approve every still-pending changed and new snapshot before finalizing (tolerated snapshots are left untouched). Leave false to finalize a run you've already reviewed — finalizing fails if any changed/new snapshot is still unreviewed."
+          },
+          "commit_to_github": {
+            "type": "boolean",
+            "default": true,
+            "description": "Whether the server commits the approved baseline to the PR branch and greens the gate (the normal path — leave true). Set false only for tooling that commits the baseline itself: the server skips the commit and returns the signed YAML in `baseline_content` instead. With false, the gate is NOT greened and `metadata.baseline_commit_sha` is absent."
+          }
+        }
       },
       "FirstEvent": {
         "additionalProperties": false,
@@ -148845,6 +148708,14 @@
         "title": "HedgehogActorSkinOption",
         "type": "string"
       },
+      "HideViewedRecordings": {
+        "enum": [
+          "current-user",
+          "any-user",
+          null
+        ],
+        "title": "HideViewedRecordings"
+      },
       "HogFlow": {
         "type": "object",
         "properties": {
@@ -152083,10 +151954,11 @@
           "native_email",
           "posthog_assignee",
           "posthog_ticket_tags",
-          "posthog_business_hours"
+          "posthog_business_hours",
+          "non_failure_status_codes"
         ],
         "type": "string",
-        "description": "* `string` - string\n* `number` - number\n* `boolean` - boolean\n* `dictionary` - dictionary\n* `choice` - choice\n* `json` - json\n* `integration` - integration\n* `integration_field` - integration_field\n* `email` - email\n* `native_email` - native_email\n* `posthog_assignee` - posthog_assignee\n* `posthog_ticket_tags` - posthog_ticket_tags\n* `posthog_business_hours` - posthog_business_hours"
+        "description": "* `string` - string\n* `number` - number\n* `boolean` - boolean\n* `dictionary` - dictionary\n* `choice` - choice\n* `json` - json\n* `integration` - integration\n* `integration_field` - integration_field\n* `email` - email\n* `native_email` - native_email\n* `posthog_assignee` - posthog_assignee\n* `posthog_ticket_tags` - posthog_ticket_tags\n* `posthog_business_hours` - posthog_business_hours\n* `non_failure_status_codes` - non_failure_status_codes"
       },
       "Insight": {
         "type": "object",
@@ -162434,16 +162306,6 @@
         "title": "PCADetectorConfig",
         "type": "object"
       },
-      "PackageManagerEnum": {
-        "enum": [
-          "npm",
-          "pnpm",
-          "yarn",
-          "bun"
-        ],
-        "type": "string",
-        "description": "* `npm` - npm\n* `pnpm` - pnpm\n* `yarn` - yarn\n* `bun` - bun"
-      },
       "PageURL": {
         "additionalProperties": false,
         "properties": {
@@ -163394,111 +163256,6 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/Dataset"
-            }
-          }
-        }
-      },
-      "PaginatedDeploymentEventList": {
-        "type": "object",
-        "required": [
-          "count",
-          "results"
-        ],
-        "properties": {
-          "count": {
-            "type": "integer",
-            "example": 123
-          },
-          "next": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "format": "uri",
-            "example": "http://api.example.org/accounts/?offset=400&limit=100"
-          },
-          "previous": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "format": "uri",
-            "example": "http://api.example.org/accounts/?offset=200&limit=100"
-          },
-          "results": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/DeploymentEvent"
-            }
-          }
-        }
-      },
-      "PaginatedDeploymentList": {
-        "type": "object",
-        "required": [
-          "count",
-          "results"
-        ],
-        "properties": {
-          "count": {
-            "type": "integer",
-            "example": 123
-          },
-          "next": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "format": "uri",
-            "example": "http://api.example.org/accounts/?offset=400&limit=100"
-          },
-          "previous": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "format": "uri",
-            "example": "http://api.example.org/accounts/?offset=200&limit=100"
-          },
-          "results": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Deployment"
-            }
-          }
-        }
-      },
-      "PaginatedDeploymentProjectList": {
-        "type": "object",
-        "required": [
-          "count",
-          "results"
-        ],
-        "properties": {
-          "count": {
-            "type": "integer",
-            "example": 123
-          },
-          "next": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "format": "uri",
-            "example": "http://api.example.org/accounts/?offset=400&limit=100"
-          },
-          "previous": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "format": "uri",
-            "example": "http://api.example.org/accounts/?offset=200&limit=100"
-          },
-          "results": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/DeploymentProject"
             }
           }
         }
@@ -169077,7 +168834,7 @@
             "required": [
               "query"
             ],
-            "description": "HogQL query definition as a JSON object with a \"query\" key containing the SQL string and a \"kind\" key (always \"HogQLQuery\"). Example: {\"kind\": \"HogQLQuery\", \"query\": \"SELECT * FROM events LIMIT 100\"}"
+            "description": "HogQL query definition as a JSON object with a \"query\" key containing the SQL string and a \"kind\" key (always \"HogQLQuery\"). Format the SQL string multi-line with indentation and inline `--` comments for non-obvious logic — the SQL editor renders it verbatim, so avoid minified single-line SQL. Example: {\"kind\": \"HogQLQuery\", \"query\": \"SELECT\\n    event,\\n    count() AS cnt\\nFROM events\\nGROUP BY event\\nLIMIT 100\"}"
           },
           "created_by": {
             "allOf": [
@@ -169390,67 +169147,6 @@
           "team": {
             "type": "integer",
             "readOnly": true
-          }
-        }
-      },
-      "PatchedDeploymentProjectWrite": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "description": "Human-readable project name shown in the UI.",
-            "maxLength": 200
-          },
-          "slug": {
-            "type": "string",
-            "description": "URL-safe handle. Combined with the team id to form the Cloudflare project name; the actual subdomain comes from Cloudflare and is returned in the read-only `subdomain` field. Must be unique per team.",
-            "maxLength": 80,
-            "pattern": "^[-a-zA-Z0-9_]+$"
-          },
-          "default_branch": {
-            "type": "string",
-            "description": "Branch PostHog tracks for deployment updates. Defaults to the repository default branch.",
-            "maxLength": 255
-          },
-          "github_integration_id": {
-            "type": [
-              "integer",
-              "null"
-            ],
-            "description": "Existing PostHog GitHub integration id used for repository access."
-          },
-          "github_repo_id": {
-            "type": [
-              "integer",
-              "null"
-            ],
-            "description": "Stable GitHub repository identifier selected from the existing integration's repository list."
-          },
-          "build_command": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "description": "Optional shell command run inside the build container. Null = the build worker infers it from `framework` (or auto-detection if framework is also null)."
-          },
-          "output_dir": {
-            "type": "string",
-            "default": "dist",
-            "description": "Directory containing the built static site, relative to the repository root.",
-            "maxLength": 255
-          },
-          "framework": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "description": "Optional framework hint (e.g. `nextjs`, `vite`, `astro`). Null = auto-detect.",
-            "maxLength": 50
-          },
-          "inject_posthog_snippet": {
-            "type": "boolean",
-            "default": false,
-            "description": "If true, the build injects a PostHog snippet into every HTML file that registers `release = deployment_id` as a super-property — runtime exceptions are then linked back to the deployment that introduced them."
           }
         }
       },
@@ -171176,6 +170872,31 @@
             },
             "readOnly": true,
             "description": "Source-side column metadata (name, data type, nullable) discovered for this schema. Empty until the source has been refreshed via `refresh_schemas`."
+          },
+          "source": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "source_type": {
+                "type": "string"
+              },
+              "supports_column_selection": {
+                "type": "boolean"
+              },
+              "user_access_level": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "readOnly": true,
+            "description": "Lightweight parent-source summary (id, source_type, column-selection support, the requesting user's access level). Only populated on the single-schema retrieve endpoint — `null` elsewhere — so read-only views can render without fetching the full source and all its schemas."
           }
         }
       },
@@ -171432,10 +171153,12 @@
             "readOnly": true
           },
           "path": {
-            "type": "string"
+            "type": "string",
+            "description": "Display path of the shortcut in the sidebar."
           },
           "type": {
             "type": "string",
+            "description": "Type of the linked item (e.g. 'folder', 'insight'), or blank.",
             "maxLength": 100
           },
           "ref": {
@@ -171443,18 +171166,21 @@
               "string",
               "null"
             ],
+            "description": "Reference to the linked item, scoped to its type. Null for href-only shortcuts.",
             "maxLength": 100
           },
           "href": {
             "type": [
               "string",
               "null"
-            ]
+            ],
+            "description": "Destination URL the shortcut opens. Null when the shortcut points at an item by ref."
           },
           "order": {
             "type": "integer",
             "maximum": 2147483647,
-            "minimum": -2147483648
+            "minimum": -2147483648,
+            "description": "Display order within the user's shortcut list, ascending."
           },
           "created_at": {
             "type": "string",
@@ -173512,14 +173238,21 @@
             "readOnly": true
           },
           "type": {
-            "$ref": "#/components/schemas/PersistedFolderTypeEnum"
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/PersistedFolderTypeEnum"
+              }
+            ],
+            "description": "Which persisted folder this is for the user (home, pinned, custom_products).\n\n* `home` - Home\n* `pinned` - Pinned\n* `custom_products` - Custom Products"
           },
           "protocol": {
             "type": "string",
+            "description": "Protocol prefix of the folder location, e.g. 'products://'.",
             "maxLength": 64
           },
           "path": {
-            "type": "string"
+            "type": "string",
+            "description": "Path within the protocol that the folder resolves to."
           },
           "created_at": {
             "type": "string",
@@ -173755,7 +173488,10 @@
             "readOnly": true
           },
           "updated_at": {
-            "type": "string",
+            "type": [
+              "string",
+              "null"
+            ],
             "format": "date-time",
             "readOnly": true
           },
@@ -177721,14 +177457,21 @@
             "readOnly": true
           },
           "type": {
-            "$ref": "#/components/schemas/PersistedFolderTypeEnum"
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/PersistedFolderTypeEnum"
+              }
+            ],
+            "description": "Which persisted folder this is for the user (home, pinned, custom_products).\n\n* `home` - Home\n* `pinned` - Pinned\n* `custom_products` - Custom Products"
           },
           "protocol": {
             "type": "string",
+            "description": "Protocol prefix of the folder location, e.g. 'products://'.",
             "maxLength": 64
           },
           "path": {
-            "type": "string"
+            "type": "string",
+            "description": "Path within the protocol that the folder resolves to."
           },
           "created_at": {
             "type": "string",
@@ -179249,7 +178992,10 @@
             "readOnly": true
           },
           "updated_at": {
-            "type": "string",
+            "type": [
+              "string",
+              "null"
+            ],
             "format": "date-time",
             "readOnly": true
           },
@@ -180007,6 +179753,21 @@
           "mask_value",
           "scopes",
           "value"
+        ]
+      },
+      "PromotedProductIntent": {
+        "type": "object",
+        "properties": {
+          "product_key": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The product key the team selected as their primary product during onboarding (e.g. `session_replay`, `web_analytics`, `product_analytics`), or `null` if no primary onboarding product intent has been captured for this team."
+          }
+        },
+        "required": [
+          "product_key"
         ]
       },
       "Property": {
@@ -190384,6 +190145,29 @@
             "title": "Limit",
             "type": "integer"
           },
+          "metricsResults": {
+            "anyOf": [
+              {
+                "items": {
+                  "anyOf": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "When `metrics` is set on the query, the aggregated values in the same order.",
+            "title": "Metricsresults"
+          },
           "modifiers": {
             "anyOf": [
               {
@@ -193564,6 +193348,29 @@
             "title": "Limit",
             "type": "integer"
           },
+          "metricsResults": {
+            "anyOf": [
+              {
+                "items": {
+                  "anyOf": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "When `metrics` is set on the query, the aggregated values in the same order.",
+            "title": "Metricsresults"
+          },
           "modifiers": {
             "anyOf": [
               {
@@ -196093,6 +195900,18 @@
             ],
             "default": null,
             "title": "Having Predicates"
+          },
+          "hide_viewed_recordings": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/HideViewedRecordings"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Exclude recordings already viewed by the current user ('current-user'), by any team member ('any-user'), or none (default). Applied server-side so pagination and the result cursor operate on the filtered set."
           },
           "kind": {
             "const": "RecordingsQuery",
@@ -199743,6 +199562,29 @@
           "limit": {
             "title": "Limit",
             "type": "integer"
+          },
+          "metricsResults": {
+            "anyOf": [
+              {
+                "items": {
+                  "anyOf": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "When `metrics` is set on the query, the aggregated values in the same order.",
+            "title": "Metricsresults"
           },
           "modifiers": {
             "anyOf": [
@@ -208703,6 +208545,45 @@
           "total_weight",
           "updated_at"
         ]
+      },
+      "SignalReportStateRequest": {
+        "type": "object",
+        "properties": {
+          "state": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/SignalReportStateRequestStateEnum"
+              }
+            ],
+            "description": "Target state for the report. Use 'suppressed' to dismiss the report from the inbox, or 'potential' to snooze/reopen it for later review.\n\n* `suppressed` - suppressed\n* `potential` - potential"
+          },
+          "dismissal_reason": {
+            "type": "string",
+            "description": "Optional short reason code for the dismissal (e.g. 'not_a_bug', 'wont_fix', 'duplicate'). The set of reason codes is owned by the caller and is not validated server-side."
+          },
+          "dismissal_note": {
+            "type": "string",
+            "description": "Optional free-form note explaining the dismissal. Capped at 4000 characters.",
+            "maxLength": 4000
+          },
+          "snooze_for": {
+            "type": "integer",
+            "maximum": 100000,
+            "minimum": 1,
+            "description": "Optional, only honored when state is 'potential'. Number of additional signals the report must accumulate before it is re-promoted into the pipeline — effectively snoozing it until then. Omit to let the report re-enter the pipeline on the next matching signal."
+          }
+        },
+        "required": [
+          "state"
+        ]
+      },
+      "SignalReportStateRequestStateEnum": {
+        "enum": [
+          "suppressed",
+          "potential"
+        ],
+        "type": "string",
+        "description": "* `suppressed` - suppressed\n* `potential` - potential"
       },
       "SignalReportStatusEnum": {
         "enum": [
@@ -220393,6 +220274,19 @@
             "default": 1,
             "title": "Smoothingintervals"
           },
+          "stackBreakdownValues": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": false,
+            "description": "On the horizontal bar-value chart, stack a series' breakdown values into a single bar instead of rendering one bar per breakdown value.",
+            "title": "Stackbreakdownvalues"
+          },
           "xAxisLabel": {
             "anyOf": [
               {
@@ -220926,17 +220820,6 @@
           "job_type",
           "payload"
         ]
-      },
-      "TriggerKindEnum": {
-        "enum": [
-          "manual",
-          "git",
-          "redeploy",
-          "rollback",
-          "seed"
-        ],
-        "type": "string",
-        "description": "* `manual` - Manual\n* `git` - Git\n* `redeploy` - Redeploy\n* `rollback` - Rollback\n* `seed` - Seed"
       },
       "UpdateTextTileRequest": {
         "type": "object",
@@ -227841,6 +227724,18 @@
         "title": "_ExperimentApiMetricsList",
         "type": "array"
       },
+      "_HasSpansResponse": {
+        "type": "object",
+        "properties": {
+          "hasSpans": {
+            "type": "boolean",
+            "description": "Whether the team has ingested any tracing spans yet. Used to gate the onboarding empty state."
+          }
+        },
+        "required": [
+          "hasSpans"
+        ]
+      },
       "_InsightQuerySchema": {
         "description": "The query definition for this insight. The `kind` field determines the query type:\n- `InsightVizNode` — product analytics (trends, funnels, retention, paths, stickiness, lifecycle)\n- `DataVisualizationNode` — SQL insights using HogQL\n- `DataTableNode` — raw data tables\n- `HogQuery` — Hog language queries",
         "discriminator": {
@@ -229659,10 +229554,13 @@
       "name": "datasets"
     },
     {
-      "name": "deployment_projects"
+      "name": "desktop_file_system"
     },
     {
-      "name": "deployments"
+      "name": "desktop_file_system_shortcut"
+    },
+    {
+      "name": "desktop_persisted_folder"
     },
     {
       "name": "desktop_recordings"
@@ -230033,8 +229931,9 @@
         "data_warehouse",
         "dataset_items",
         "datasets",
-        "deployment_projects",
-        "deployments",
+        "desktop_file_system",
+        "desktop_file_system_shortcut",
+        "desktop_persisted_folder",
         "desktop_recordings",
         "docs",
         "domains",
