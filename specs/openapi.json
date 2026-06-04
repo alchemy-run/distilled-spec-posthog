@@ -1589,7 +1589,9 @@
           }
         },
         "deprecated": true,
-        "x-product": []
+        "x-product": [
+          "batch_exports"
+        ]
       },
       "post": {
         "operationId": "environments_batch_exports_backfills_create",
@@ -1652,7 +1654,9 @@
           }
         },
         "deprecated": true,
-        "x-product": []
+        "x-product": [
+          "batch_exports"
+        ]
       }
     },
     "/api/environments/{environment_id}/batch_exports/{batch_export_id}/backfills/{id}/": {
@@ -1707,7 +1711,9 @@
           }
         },
         "deprecated": true,
-        "x-product": []
+        "x-product": [
+          "batch_exports"
+        ]
       }
     },
     "/api/environments/{environment_id}/batch_exports/{batch_export_id}/backfills/{id}/cancel/": {
@@ -1775,7 +1781,9 @@
           }
         },
         "deprecated": true,
-        "x-product": []
+        "x-product": [
+          "batch_exports"
+        ]
       }
     },
     "/api/environments/{environment_id}/batch_exports/{batch_export_id}/runs/": {
@@ -4969,6 +4977,85 @@
       }
     },
     "/api/environments/{environment_id}/dashboards/{id}/move_tile/": {
+      "post": {
+        "operationId": "environments_dashboards_move_tile_create",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/EnvironmentIdPath"
+          },
+          {
+            "in": "query",
+            "name": "format",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "json",
+                "txt"
+              ]
+            }
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "A unique integer value identifying this dashboard.",
+            "required": true
+          }
+        ],
+        "tags": [
+          "dashboards"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MoveTileRequest"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/MoveTileRequest"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/MoveTileRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "dashboard:write"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Dashboard"
+                }
+              },
+              "text/event-stream": {
+                "schema": {
+                  "$ref": "#/components/schemas/Dashboard"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "deprecated": true,
+        "x-product": [
+          "dashboards"
+        ]
+      },
       "patch": {
         "operationId": "environments_dashboards_move_tile_partial_update",
         "parameters": [
@@ -8839,7 +8926,7 @@
     "/api/environments/{environment_id}/endpoints/last_execution_times/": {
       "post": {
         "operationId": "environments_endpoints_last_execution_times_create",
-        "description": "Get the last execution times in the past 6 months for multiple endpoints.",
+        "description": "Get the most recent execution time per endpoint (endpoint-level). Timestamps are recorded by the run path for personal-API-key calls. For per-version usage, query the query_log table directly.",
         "parameters": [
           {
             "$ref": "#/components/parameters/EnvironmentIdPath"
@@ -12082,6 +12169,15 @@
               "minLength": 1
             },
             "description": "Exact symbol set reference to filter by."
+          },
+          {
+            "in": "query",
+            "name": "search",
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "Case-insensitive substring search across reference, release version, release project, and release commit SHA."
           },
           {
             "in": "query",
@@ -18066,7 +18162,7 @@
     },
     "/api/environments/{environment_id}/hog_flows/{id}/batch_jobs/": {
       "get": {
-        "operationId": "environments_hog_flows_batch_jobs_retrieve",
+        "operationId": "environments_hog_flows_batch_jobs_list",
         "parameters": [
           {
             "$ref": "#/components/parameters/EnvironmentIdPath"
@@ -18085,12 +18181,22 @@
         "tags": [
           "hog_flows"
         ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "hog_flow:read"
+            ]
+          }
+        ],
         "responses": {
           "200": {
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/HogFlow"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/HogFlowBatchJob"
+                  }
                 }
               }
             },
@@ -18126,28 +18232,35 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/HogFlow"
+                "$ref": "#/components/schemas/HogFlowBatchJob"
               }
             },
             "application/x-www-form-urlencoded": {
               "schema": {
-                "$ref": "#/components/schemas/HogFlow"
+                "$ref": "#/components/schemas/HogFlowBatchJob"
               }
             },
             "multipart/form-data": {
               "schema": {
-                "$ref": "#/components/schemas/HogFlow"
+                "$ref": "#/components/schemas/HogFlowBatchJob"
               }
             }
           },
           "required": true
         },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "hog_flow:write"
+            ]
+          }
+        ],
         "responses": {
           "200": {
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/HogFlow"
+                  "$ref": "#/components/schemas/HogFlowBatchJob"
                 }
               }
             },
@@ -18560,21 +18673,6 @@
         "operationId": "environments_hog_flows_schedules_list",
         "parameters": [
           {
-            "in": "query",
-            "name": "created_at",
-            "schema": {
-              "type": "string",
-              "format": "date-time"
-            }
-          },
-          {
-            "in": "query",
-            "name": "created_by",
-            "schema": {
-              "type": "integer"
-            }
-          },
-          {
             "$ref": "#/components/parameters/EnvironmentIdPath"
           },
           {
@@ -18586,64 +18684,27 @@
             },
             "description": "A UUID string identifying this hog flow.",
             "required": true
-          },
-          {
-            "in": "query",
-            "name": "id",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
-          {
-            "name": "limit",
-            "required": false,
-            "in": "query",
-            "description": "Number of results to return per page.",
-            "schema": {
-              "type": "integer"
-            }
-          },
-          {
-            "name": "offset",
-            "required": false,
-            "in": "query",
-            "description": "The initial index from which to return the results.",
-            "schema": {
-              "type": "integer"
-            }
-          },
-          {
-            "in": "query",
-            "name": "status",
-            "schema": {
-              "type": "string",
-              "enum": [
-                "active",
-                "archived",
-                "draft"
-              ]
-            },
-            "description": "* `draft` - Draft\n* `active` - Active\n* `archived` - Archived"
-          },
-          {
-            "in": "query",
-            "name": "updated_at",
-            "schema": {
-              "type": "string",
-              "format": "date-time"
-            }
           }
         ],
         "tags": [
           "hog_flows"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "hog_flow:read"
+            ]
+          }
         ],
         "responses": {
           "200": {
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PaginatedHogFlowScheduleList"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/HogFlowSchedule"
+                  }
                 }
               }
             },
@@ -18659,21 +18720,6 @@
         "operationId": "environments_hog_flows_schedules_create",
         "parameters": [
           {
-            "in": "query",
-            "name": "created_at",
-            "schema": {
-              "type": "string",
-              "format": "date-time"
-            }
-          },
-          {
-            "in": "query",
-            "name": "created_by",
-            "schema": {
-              "type": "integer"
-            }
-          },
-          {
             "$ref": "#/components/parameters/EnvironmentIdPath"
           },
           {
@@ -18685,53 +18731,6 @@
             },
             "description": "A UUID string identifying this hog flow.",
             "required": true
-          },
-          {
-            "in": "query",
-            "name": "id",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
-          {
-            "name": "limit",
-            "required": false,
-            "in": "query",
-            "description": "Number of results to return per page.",
-            "schema": {
-              "type": "integer"
-            }
-          },
-          {
-            "name": "offset",
-            "required": false,
-            "in": "query",
-            "description": "The initial index from which to return the results.",
-            "schema": {
-              "type": "integer"
-            }
-          },
-          {
-            "in": "query",
-            "name": "status",
-            "schema": {
-              "type": "string",
-              "enum": [
-                "active",
-                "archived",
-                "draft"
-              ]
-            },
-            "description": "* `draft` - Draft\n* `active` - Active\n* `archived` - Archived"
-          },
-          {
-            "in": "query",
-            "name": "updated_at",
-            "schema": {
-              "type": "string",
-              "format": "date-time"
-            }
           }
         ],
         "tags": [
@@ -18741,28 +18740,35 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/HogFlow"
+                "$ref": "#/components/schemas/HogFlowSchedule"
               }
             },
             "application/x-www-form-urlencoded": {
               "schema": {
-                "$ref": "#/components/schemas/HogFlow"
+                "$ref": "#/components/schemas/HogFlowSchedule"
               }
             },
             "multipart/form-data": {
               "schema": {
-                "$ref": "#/components/schemas/HogFlow"
+                "$ref": "#/components/schemas/HogFlowSchedule"
               }
             }
           },
           "required": true
         },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "hog_flow:write"
+            ]
+          }
+        ],
         "responses": {
           "200": {
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PaginatedHogFlowScheduleList"
+                  "$ref": "#/components/schemas/HogFlowSchedule"
                 }
               }
             },
@@ -18808,27 +18814,34 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/PatchedHogFlow"
+                "$ref": "#/components/schemas/PatchedHogFlowSchedule"
               }
             },
             "application/x-www-form-urlencoded": {
               "schema": {
-                "$ref": "#/components/schemas/PatchedHogFlow"
+                "$ref": "#/components/schemas/PatchedHogFlowSchedule"
               }
             },
             "multipart/form-data": {
               "schema": {
-                "$ref": "#/components/schemas/PatchedHogFlow"
+                "$ref": "#/components/schemas/PatchedHogFlowSchedule"
               }
             }
           }
         },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "hog_flow:write"
+            ]
+          }
+        ],
         "responses": {
           "200": {
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/HogFlow"
+                  "$ref": "#/components/schemas/HogFlowSchedule"
                 }
               }
             },
@@ -18867,6 +18880,13 @@
         ],
         "tags": [
           "hog_flows"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "hog_flow:write"
+            ]
+          }
         ],
         "responses": {
           "204": {
@@ -18910,6 +18930,13 @@
           },
           "required": true
         },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "hog_flow:write"
+            ]
+          }
+        ],
         "responses": {
           "200": {
             "content": {
@@ -18959,6 +18986,14 @@
           },
           "required": true
         },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "hog_flow:read",
+              "person:read"
+            ]
+          }
+        ],
         "responses": {
           "200": {
             "content": {
@@ -49080,7 +49115,9 @@
             "description": ""
           }
         },
-        "x-product": []
+        "x-product": [
+          "annotations"
+        ]
       },
       "post": {
         "operationId": "annotations_create",
@@ -49131,7 +49168,9 @@
             "description": ""
           }
         },
-        "x-product": []
+        "x-product": [
+          "annotations"
+        ]
       }
     },
     "/api/projects/{project_id}/annotations/{id}/": {
@@ -49174,7 +49213,9 @@
             "description": ""
           }
         },
-        "x-product": []
+        "x-product": [
+          "annotations"
+        ]
       },
       "put": {
         "operationId": "annotations_update",
@@ -49234,7 +49275,9 @@
             "description": ""
           }
         },
-        "x-product": []
+        "x-product": [
+          "annotations"
+        ]
       },
       "patch": {
         "operationId": "annotations_partial_update",
@@ -49294,7 +49337,9 @@
             "description": ""
           }
         },
-        "x-product": []
+        "x-product": [
+          "annotations"
+        ]
       },
       "delete": {
         "operationId": "annotations_destroy",
@@ -49328,7 +49373,9 @@
             "description": "No response body"
           }
         },
-        "x-product": []
+        "x-product": [
+          "annotations"
+        ]
       }
     },
     "/api/projects/{project_id}/approval_policies/": {
@@ -49816,7 +49863,9 @@
             "description": ""
           }
         },
-        "x-product": []
+        "x-product": [
+          "batch_exports"
+        ]
       },
       "post": {
         "operationId": "batch_exports_backfills_create",
@@ -49878,7 +49927,9 @@
             "description": ""
           }
         },
-        "x-product": []
+        "x-product": [
+          "batch_exports"
+        ]
       }
     },
     "/api/projects/{project_id}/batch_exports/{batch_export_id}/backfills/{id}/": {
@@ -49932,7 +49983,9 @@
             "description": ""
           }
         },
-        "x-product": []
+        "x-product": [
+          "batch_exports"
+        ]
       }
     },
     "/api/projects/{project_id}/batch_exports/{batch_export_id}/backfills/{id}/cancel/": {
@@ -49999,7 +50052,9 @@
             "description": "No response body"
           }
         },
-        "x-product": []
+        "x-product": [
+          "batch_exports"
+        ]
       }
     },
     "/api/projects/{project_id}/batch_exports/{batch_export_id}/runs/": {
@@ -51608,6 +51663,22 @@
         "operationId": "cohorts_list",
         "parameters": [
           {
+            "in": "query",
+            "name": "basic",
+            "schema": {
+              "type": "boolean"
+            },
+            "description": "Return a basic payload that omits the heavy `filters`, `query`, and `groups` fields. Useful for pickers that only need id/name/count."
+          },
+          {
+            "in": "query",
+            "name": "hide_behavioral_cohorts",
+            "schema": {
+              "type": "boolean"
+            },
+            "description": "Set true to exclude behavioral (event-based) cohorts, which can't be used in feature flags or batch workflow audiences."
+          },
+          {
             "name": "limit",
             "required": false,
             "in": "query",
@@ -53113,13 +53184,6 @@
         "tags": [
           "conversations"
         ],
-        "security": [
-          {
-            "PersonalAPIKeyAuth": [
-              "ticket:write"
-            ]
-          }
-        ],
         "responses": {
           "204": {
             "description": "No response body"
@@ -53187,6 +53251,55 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/SuggestReplyError"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "conversations"
+        ]
+      }
+    },
+    "/api/projects/{project_id}/conversations/tickets/bulk_update_status/": {
+      "post": {
+        "operationId": "conversations_tickets_bulk_update_status_create",
+        "description": "Update the status of multiple tickets in a single request.\n\nOnly tickets belonging to the current team are affected; other-team UUIDs\nare silently ignored.  Tickets already in the requested status are skipped.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "conversations"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BulkUpdateStatusRequest"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/BulkUpdateStatusRequest"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/BulkUpdateStatusRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BulkUpdateStatusResponse"
                 }
               }
             },
@@ -53279,6 +53392,13 @@
           },
           "required": true
         },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "ticket:write"
+            ]
+          }
+        ],
         "responses": {
           "201": {
             "content": {
@@ -53317,6 +53437,13 @@
         ],
         "tags": [
           "conversations"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "ticket:read"
+            ]
+          }
         ],
         "responses": {
           "200": {
@@ -55638,6 +55765,84 @@
       }
     },
     "/api/projects/{project_id}/dashboards/{id}/move_tile/": {
+      "post": {
+        "operationId": "dashboards_move_tile_create",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "format",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "json",
+                "txt"
+              ]
+            }
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "A unique integer value identifying this dashboard.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "dashboards"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MoveTileRequest"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/MoveTileRequest"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/MoveTileRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "dashboard:write"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Dashboard"
+                }
+              },
+              "text/event-stream": {
+                "schema": {
+                  "$ref": "#/components/schemas/Dashboard"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "dashboards"
+        ]
+      },
       "patch": {
         "operationId": "dashboards_move_tile_partial_update",
         "parameters": [
@@ -61083,7 +61288,7 @@
     "/api/projects/{project_id}/endpoints/last_execution_times/": {
       "post": {
         "operationId": "endpoints_last_execution_times_create",
-        "description": "Get the last execution times in the past 6 months for multiple endpoints.",
+        "description": "Get the most recent execution time per endpoint (endpoint-level). Timestamps are recorded by the run path for personal-API-key calls. For per-version usage, query the query_log table directly.",
         "parameters": [
           {
             "$ref": "#/components/parameters/ProjectIdPath"
@@ -65365,6 +65570,15 @@
               "minLength": 1
             },
             "description": "Exact symbol set reference to filter by."
+          },
+          {
+            "in": "query",
+            "name": "search",
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "Case-insensitive substring search across reference, release version, release project, and release commit SHA."
           },
           {
             "in": "query",
@@ -72675,6 +72889,9 @@
           },
           "500": {
             "description": "Internal server error"
+          },
+          "503": {
+            "description": "Feature flag dependencies temporarily unavailable"
           }
         },
         "x-product": [
@@ -75940,7 +76157,7 @@
     },
     "/api/projects/{project_id}/hog_flows/{id}/batch_jobs/": {
       "get": {
-        "operationId": "hog_flows_batch_jobs_retrieve",
+        "operationId": "hog_flows_batch_jobs_list",
         "parameters": [
           {
             "in": "path",
@@ -75959,12 +76176,22 @@
         "tags": [
           "hog_flows"
         ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "hog_flow:read"
+            ]
+          }
+        ],
         "responses": {
           "200": {
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/HogFlow"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/HogFlowBatchJob"
+                  }
                 }
               }
             },
@@ -75999,28 +76226,35 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/HogFlow"
+                "$ref": "#/components/schemas/HogFlowBatchJob"
               }
             },
             "application/x-www-form-urlencoded": {
               "schema": {
-                "$ref": "#/components/schemas/HogFlow"
+                "$ref": "#/components/schemas/HogFlowBatchJob"
               }
             },
             "multipart/form-data": {
               "schema": {
-                "$ref": "#/components/schemas/HogFlow"
+                "$ref": "#/components/schemas/HogFlowBatchJob"
               }
             }
           },
           "required": true
         },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "hog_flow:write"
+            ]
+          }
+        ],
         "responses": {
           "200": {
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/HogFlow"
+                  "$ref": "#/components/schemas/HogFlowBatchJob"
                 }
               }
             },
@@ -76428,21 +76662,6 @@
         "operationId": "hog_flows_schedules_list",
         "parameters": [
           {
-            "in": "query",
-            "name": "created_at",
-            "schema": {
-              "type": "string",
-              "format": "date-time"
-            }
-          },
-          {
-            "in": "query",
-            "name": "created_by",
-            "schema": {
-              "type": "integer"
-            }
-          },
-          {
             "in": "path",
             "name": "id",
             "schema": {
@@ -76453,65 +76672,28 @@
             "required": true
           },
           {
-            "in": "query",
-            "name": "id",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
-          {
-            "name": "limit",
-            "required": false,
-            "in": "query",
-            "description": "Number of results to return per page.",
-            "schema": {
-              "type": "integer"
-            }
-          },
-          {
-            "name": "offset",
-            "required": false,
-            "in": "query",
-            "description": "The initial index from which to return the results.",
-            "schema": {
-              "type": "integer"
-            }
-          },
-          {
             "$ref": "#/components/parameters/ProjectIdPath"
-          },
-          {
-            "in": "query",
-            "name": "status",
-            "schema": {
-              "type": "string",
-              "enum": [
-                "active",
-                "archived",
-                "draft"
-              ]
-            },
-            "description": "* `draft` - Draft\n* `active` - Active\n* `archived` - Archived"
-          },
-          {
-            "in": "query",
-            "name": "updated_at",
-            "schema": {
-              "type": "string",
-              "format": "date-time"
-            }
           }
         ],
         "tags": [
           "hog_flows"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "hog_flow:read"
+            ]
+          }
         ],
         "responses": {
           "200": {
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PaginatedHogFlowScheduleList"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/HogFlowSchedule"
+                  }
                 }
               }
             },
@@ -76526,21 +76708,6 @@
         "operationId": "hog_flows_schedules_create",
         "parameters": [
           {
-            "in": "query",
-            "name": "created_at",
-            "schema": {
-              "type": "string",
-              "format": "date-time"
-            }
-          },
-          {
-            "in": "query",
-            "name": "created_by",
-            "schema": {
-              "type": "integer"
-            }
-          },
-          {
             "in": "path",
             "name": "id",
             "schema": {
@@ -76551,54 +76718,7 @@
             "required": true
           },
           {
-            "in": "query",
-            "name": "id",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
-          {
-            "name": "limit",
-            "required": false,
-            "in": "query",
-            "description": "Number of results to return per page.",
-            "schema": {
-              "type": "integer"
-            }
-          },
-          {
-            "name": "offset",
-            "required": false,
-            "in": "query",
-            "description": "The initial index from which to return the results.",
-            "schema": {
-              "type": "integer"
-            }
-          },
-          {
             "$ref": "#/components/parameters/ProjectIdPath"
-          },
-          {
-            "in": "query",
-            "name": "status",
-            "schema": {
-              "type": "string",
-              "enum": [
-                "active",
-                "archived",
-                "draft"
-              ]
-            },
-            "description": "* `draft` - Draft\n* `active` - Active\n* `archived` - Archived"
-          },
-          {
-            "in": "query",
-            "name": "updated_at",
-            "schema": {
-              "type": "string",
-              "format": "date-time"
-            }
           }
         ],
         "tags": [
@@ -76608,28 +76728,35 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/HogFlow"
+                "$ref": "#/components/schemas/HogFlowSchedule"
               }
             },
             "application/x-www-form-urlencoded": {
               "schema": {
-                "$ref": "#/components/schemas/HogFlow"
+                "$ref": "#/components/schemas/HogFlowSchedule"
               }
             },
             "multipart/form-data": {
               "schema": {
-                "$ref": "#/components/schemas/HogFlow"
+                "$ref": "#/components/schemas/HogFlowSchedule"
               }
             }
           },
           "required": true
         },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "hog_flow:write"
+            ]
+          }
+        ],
         "responses": {
           "200": {
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PaginatedHogFlowScheduleList"
+                  "$ref": "#/components/schemas/HogFlowSchedule"
                 }
               }
             },
@@ -76674,27 +76801,34 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/PatchedHogFlow"
+                "$ref": "#/components/schemas/PatchedHogFlowSchedule"
               }
             },
             "application/x-www-form-urlencoded": {
               "schema": {
-                "$ref": "#/components/schemas/PatchedHogFlow"
+                "$ref": "#/components/schemas/PatchedHogFlowSchedule"
               }
             },
             "multipart/form-data": {
               "schema": {
-                "$ref": "#/components/schemas/PatchedHogFlow"
+                "$ref": "#/components/schemas/PatchedHogFlowSchedule"
               }
             }
           }
         },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "hog_flow:write"
+            ]
+          }
+        ],
         "responses": {
           "200": {
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/HogFlow"
+                  "$ref": "#/components/schemas/HogFlowSchedule"
                 }
               }
             },
@@ -76732,6 +76866,13 @@
         ],
         "tags": [
           "hog_flows"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "hog_flow:write"
+            ]
+          }
         ],
         "responses": {
           "204": {
@@ -76774,6 +76915,13 @@
           },
           "required": true
         },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "hog_flow:write"
+            ]
+          }
+        ],
         "responses": {
           "200": {
             "content": {
@@ -76822,6 +76970,14 @@
           },
           "required": true
         },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "hog_flow:read",
+              "person:read"
+            ]
+          }
+        ],
         "responses": {
           "200": {
             "content": {
@@ -98160,6 +98316,20 @@
               "type": "string"
             },
             "description": "Fuzzy match against survey `name` and `description` using Postgres trigram word similarity. Supports typos and prefix-as-you-type."
+          },
+          {
+            "in": "query",
+            "name": "type",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "api",
+                "external_survey",
+                "popover",
+                "widget"
+              ]
+            },
+            "description": "* `popover` - popover\n* `widget` - widget\n* `external_survey` - external survey\n* `api` - api"
           }
         ],
         "tags": [
@@ -98649,6 +98819,174 @@
         ]
       }
     },
+    "/api/projects/{project_id}/surveys/{id}/launch/": {
+      "post": {
+        "operationId": "surveys_launch",
+        "description": "Launch a survey by setting `start_date` to the current time. No-op if the survey is already launched (start_date set in the past) — returns the existing state unchanged. Does not affect archived surveys or surveys with an end_date in the past; unarchive or extend the end_date first.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "A UUID string identifying this survey.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "surveys"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "survey:write"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Survey"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "surveys"
+        ]
+      }
+    },
+    "/api/projects/{project_id}/surveys/{id}/responses/": {
+      "get": {
+        "operationId": "surveys_responses_list",
+        "description": "List survey responses for a specific survey, with question text resolved server-side so callers do not have to map opaque `$survey_response_<id>` keys. Each row carries `distinct_id`, `session_id`, `submitted_at`, and an `extra` block (device, browser, OS, geoip, current_url, iteration) so agents can cross-pivot to recordings, persons, or paths in a single follow-up call. For person properties at event time, follow up with `persons-get` using the returned `distinct_id` — keeps scopes scoped. Use `question_id` + `score_lte` to fetch NPS detractors and similar score-filtered cohorts.",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "exclude_archived",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            },
+            "description": "When true, exclude responses that have been archived via the archive_response endpoint."
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "A UUID string identifying this survey.",
+            "required": true
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer",
+              "maximum": 500,
+              "minimum": 1,
+              "default": 100
+            },
+            "description": "Maximum number of rows to return (1-500). Defaults to 100."
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            },
+            "description": "Number of rows to skip for pagination. Combine with `limit` and the `has_more` field to paginate."
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          },
+          {
+            "in": "query",
+            "name": "question_id",
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "If set, only return rows where this question has a non-empty answer, and only include that question's answer in each row. Required when using score_lte or score_gte."
+          },
+          {
+            "in": "query",
+            "name": "score_gte",
+            "schema": {
+              "type": "number",
+              "format": "double"
+            },
+            "description": "Filter to rows where the rating answer for `question_id` is >= this value. Common use: NPS promoters with score_gte=9. Requires question_id."
+          },
+          {
+            "in": "query",
+            "name": "score_lte",
+            "schema": {
+              "type": "number",
+              "format": "double"
+            },
+            "description": "Filter to rows where the rating answer for `question_id` is <= this value. Common use: NPS detractors with score_lte=6. Requires question_id."
+          },
+          {
+            "in": "query",
+            "name": "since",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "description": "Only return responses submitted on or after this ISO 8601 timestamp."
+          },
+          {
+            "in": "query",
+            "name": "until",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "description": "Only return responses submitted on or before this ISO 8601 timestamp."
+          }
+        ],
+        "tags": [
+          "surveys"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "survey:read",
+              "query:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SurveyResponsesList"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "surveys"
+        ]
+      }
+    },
     "/api/projects/{project_id}/surveys/{id}/responses/{response_uuid}/archive/": {
       "post": {
         "operationId": "surveys_responses_archive_create",
@@ -98788,7 +99126,7 @@
     "/api/projects/{project_id}/surveys/{id}/stats/": {
       "get": {
         "operationId": "surveys_stats_retrieve",
-        "description": "Get survey response statistics for a specific survey.\n\nArgs:\n    date_from: Optional ISO timestamp for start date (e.g. 2024-01-01T00:00:00Z)\n    date_to: Optional ISO timestamp for end date (e.g. 2024-01-31T23:59:59Z)\n    exclude_archived: Optional boolean to exclude archived responses (default: false, includes archived)\n\nReturns:\n    Survey statistics including event counts, unique respondents, and conversion rates",
+        "description": "Get survey response statistics for a specific survey.\n\nArgs:\n    date_from: Optional ISO timestamp for start date (e.g. 2024-01-01T00:00:00Z)\n    date_to: Optional ISO timestamp for end date (e.g. 2024-01-31T23:59:59Z)\n    exclude_archived: Optional boolean to exclude archived responses (default: false, includes archived)\n    include_per_question_stats: Optional boolean to include per-question response counts and distributions\n\nReturns:\n    Survey statistics including event counts, unique respondents, and conversion rates",
         "parameters": [
           {
             "in": "query",
@@ -98817,6 +99155,14 @@
             },
             "description": "A UUID string identifying this survey.",
             "required": true
+          },
+          {
+            "in": "query",
+            "name": "include_per_question_stats",
+            "schema": {
+              "type": "boolean"
+            },
+            "description": "When true, also return per-question response counts and answer distributions. Adds one extra HogQL query per question, so leave off unless you need the breakdown."
           },
           {
             "$ref": "#/components/parameters/ProjectIdPath"
@@ -98849,9 +99195,10 @@
         ]
       }
     },
-    "/api/projects/{project_id}/surveys/{id}/summarize_responses/": {
+    "/api/projects/{project_id}/surveys/{id}/stop/": {
       "post": {
-        "operationId": "surveys_summarize_responses_create",
+        "operationId": "surveys_stop",
+        "description": "Stop a survey by setting `end_date` to the current time. No new responses are accepted after this; existing responses remain available. No-op if the survey already has an end_date in the past.",
         "parameters": [
           {
             "in": "path",
@@ -98870,25 +99217,86 @@
         "tags": [
           "surveys"
         ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "survey:write"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Survey"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "surveys"
+        ]
+      }
+    },
+    "/api/projects/{project_id}/surveys/{id}/summarize_responses/": {
+      "post": {
+        "operationId": "surveys_summarize_responses_create",
+        "description": "Summarize survey responses. When `question_index` or `question_id` is provided, returns a per-question theme summary using cached `survey.question_summaries` when fresh. When neither is provided, returns the survey-wide headline summary (delegates to summary_headline). Pass `force_refresh=true` in the body to bypass caches.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "A UUID string identifying this survey.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          },
+          {
+            "in": "query",
+            "name": "question_id",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Question UUID. Preferred over question_index — stable across question edits."
+          },
+          {
+            "in": "query",
+            "name": "question_index",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Zero-based question index. Omit to get the survey-wide headline instead."
+          }
+        ],
+        "tags": [
+          "surveys"
+        ],
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/SurveySerializerCreateUpdateOnly"
+                "$ref": "#/components/schemas/SurveySummarizeRequest"
               }
             },
             "application/x-www-form-urlencoded": {
               "schema": {
-                "$ref": "#/components/schemas/SurveySerializerCreateUpdateOnly"
+                "$ref": "#/components/schemas/SurveySummarizeRequest"
               }
             },
             "multipart/form-data": {
               "schema": {
-                "$ref": "#/components/schemas/SurveySerializerCreateUpdateOnly"
+                "$ref": "#/components/schemas/SurveySummarizeRequest"
               }
             }
-          },
-          "required": true
+          }
         },
         "security": [
           {
@@ -111819,9 +112227,21 @@
                   "string",
                   "null"
                 ]
+              },
+              "slack_channel_id": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "usage_dashboard_link": {
+                "type": [
+                  "string",
+                  "null"
+                ]
               }
             },
-            "description": "Typed account properties: assignment fields (csm, account_executive, account_owner) and external system identifiers (stripe_customer_id, hubspot_deal_id, billing_id, sfdc_id, zendesk_id). Defaults to an empty object. Unknown keys are rejected."
+            "description": "Typed account properties: assignment fields (csm, account_executive, account_owner) and external system identifiers (stripe_customer_id, hubspot_deal_id, billing_id, sfdc_id, zendesk_id, slack_channel_id, usage_dashboard_link). Defaults to an empty object. Unknown keys are rejected."
           },
           "tags": {
             "type": "array",
@@ -113882,16 +114302,16 @@
         "properties": {
           "widget_type": {
             "type": "string",
-            "description": "Widget type identifier. Supported values: error_tracking_list. Use dashboard-widget-catalog-list for config_schema_hints per type.",
+            "description": "Widget type identifier. Supported values: error_tracking_list, session_replay_list. Use dashboard-widget-catalog-list for config_schema_hints per type.",
             "maxLength": 64
           },
           "config": {
             "allOf": [
               {
-                "$ref": "#/components/schemas/ErrorTrackingListWidgetConfig"
+                "$ref": "#/components/schemas/DashboardWidgetConfig"
               }
             ],
-            "description": "Widget-specific configuration. Shape depends on widget_type; see dashboard-widget-catalog-list for other types. For error_tracking_list, use the schema below (currently the only supported type: error_tracking_list)."
+            "description": "Widget-specific configuration. Shape depends on widget_type; see dashboard-widget-catalog-list for config_schema_hints. Supported types: error_tracking_list, session_replay_list."
           },
           "name": {
             "type": [
@@ -117449,6 +117869,53 @@
         },
         "required": [
           "keys"
+        ]
+      },
+      "BulkUpdateStatusRequest": {
+        "type": "object",
+        "properties": {
+          "ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "List of ticket UUIDs to update.",
+            "maxItems": 500
+          },
+          "status": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/TicketStatusEnum"
+              }
+            ],
+            "description": "New status to apply to all selected tickets: new, open, pending, on_hold, or resolved.\n\n* `new` - New\n* `open` - Open\n* `pending` - Pending\n* `on_hold` - On hold\n* `resolved` - Resolved"
+          }
+        },
+        "required": [
+          "ids",
+          "status"
+        ]
+      },
+      "BulkUpdateStatusResponse": {
+        "type": "object",
+        "properties": {
+          "updated": {
+            "type": "integer",
+            "description": "Number of tickets whose status actually changed."
+          },
+          "ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "UUIDs of the tickets whose status changed."
+          }
+        },
+        "required": [
+          "ids",
+          "updated"
         ]
       },
       "BulkUpdateTagsError": {
@@ -123405,7 +123872,7 @@
           "config": {
             "allOf": [
               {
-                "$ref": "#/components/schemas/ErrorTrackingListWidgetConfig"
+                "$ref": "#/components/schemas/DashboardWidgetConfig"
               }
             ],
             "description": "Widget-specific configuration JSON for this widget type."
@@ -123434,6 +123901,16 @@
           "last_modified_by",
           "team",
           "widget_type"
+        ]
+      },
+      "DashboardWidgetConfig": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/ErrorTrackingListWidgetConfig"
+          },
+          {
+            "$ref": "#/components/schemas/SessionReplayListWidgetConfig"
+          }
         ]
       },
       "DashboardWidgetRunResult": {
@@ -128678,7 +129155,7 @@
           },
           "endpoint_path": {
             "type": "string",
-            "description": "Relative API path to execute this endpoint (e.g. /api/environments/{team_id}/endpoints/{name}/run)."
+            "description": "Relative API path to execute this endpoint (e.g. /api/projects/{team_id}/endpoints/{name}/run)."
           },
           "url": {
             "type": [
@@ -128977,7 +129454,7 @@
           },
           "endpoint_path": {
             "type": "string",
-            "description": "Relative API path to execute this endpoint (e.g. /api/environments/{team_id}/endpoints/{name}/run)."
+            "description": "Relative API path to execute this endpoint (e.g. /api/projects/{team_id}/endpoints/{name}/run)."
           },
           "url": {
             "type": [
@@ -129045,7 +129522,7 @@
               "null"
             ],
             "format": "date-time",
-            "description": "When this endpoint was last executed via the API (ISO 8601), or null if never executed."
+            "description": "When this specific version was last executed via the API (ISO 8601), or null if it hasn't been executed. Per-version tracking is recent, so versions that predate it read null until their next run."
           },
           "materialization": {
             "allOf": [
@@ -148826,6 +149303,14 @@
           },
           "billable_action_types": {
             "readOnly": true
+          },
+          "schedules": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/HogFlowSchedule"
+            },
+            "readOnly": true,
+            "description": "Recurring schedules attached to this workflow (read-only here; manage via the schedules sub-resource). A batch/schedule workflow only fires when it's active AND has an active schedule. Empty for non-scheduled workflows."
           }
         },
         "required": [
@@ -148835,6 +149320,7 @@
           "created_at",
           "created_by",
           "id",
+          "schedules",
           "trigger",
           "updated_at",
           "version"
@@ -148905,6 +149391,72 @@
           "name",
           "type"
         ]
+      },
+      "HogFlowBatchJob": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "readOnly": true
+          },
+          "status": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/HogFlowBatchJobStatusEnum"
+              }
+            ],
+            "description": "Not currently tracked — stays at its initial value. Use the workflow logs/metrics endpoints for run outcome.\n\n* `waiting` - Waiting\n* `queued` - Queued\n* `active` - Active\n* `completed` - Completed\n* `cancelled` - Cancelled\n* `failed` - Failed"
+          },
+          "hog_flow": {
+            "type": "string",
+            "format": "uuid",
+            "description": "ID of the workflow this batch run belongs to."
+          },
+          "filters": {
+            "description": "Audience snapshot the run fanned out to, taken from the workflow's batch trigger filters."
+          },
+          "variables": {
+            "description": "Variable value overrides applied to this run."
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          },
+          "created_by": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/UserBasic"
+              }
+            ],
+            "readOnly": true
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          }
+        },
+        "required": [
+          "created_at",
+          "created_by",
+          "hog_flow",
+          "id",
+          "updated_at"
+        ]
+      },
+      "HogFlowBatchJobStatusEnum": {
+        "enum": [
+          "waiting",
+          "queued",
+          "active",
+          "completed",
+          "cancelled",
+          "failed"
+        ],
+        "type": "string",
+        "description": "* `waiting` - Waiting\n* `queued` - Queued\n* `active` - Active\n* `completed` - Completed\n* `cancelled` - Cancelled\n* `failed` - Failed"
       },
       "HogFlowEdge": {
         "type": "object",
@@ -149121,24 +149673,30 @@
             "readOnly": true
           },
           "rrule": {
-            "type": "string"
+            "type": "string",
+            "description": "iCalendar RRULE string (e.g. 'FREQ=DAILY;INTERVAL=1'). Must produce occurrences at most once per hour."
           },
           "starts_at": {
             "type": "string",
-            "format": "date-time"
+            "format": "date-time",
+            "description": "ISO 8601 datetime the schedule starts from."
           },
           "timezone": {
             "type": "string",
+            "description": "IANA timezone for interpreting the RRULE (default 'UTC').",
             "maxLength": 64
           },
-          "variables": {},
+          "variables": {
+            "description": "Variable value overrides merged with the workflow defaults on each run."
+          },
           "status": {
             "allOf": [
               {
                 "$ref": "#/components/schemas/HogFlowScheduleStatusEnum"
               }
             ],
-            "readOnly": true
+            "readOnly": true,
+            "description": "active, paused, or completed (set once the RRULE's COUNT/UNTIL is exhausted).\n\n* `active` - Active\n* `paused` - Paused\n* `completed` - Completed"
           },
           "next_run_at": {
             "type": [
@@ -149146,7 +149704,8 @@
               "null"
             ],
             "format": "date-time",
-            "readOnly": true
+            "readOnly": true,
+            "description": "Next scheduled fire time, computed by the scheduler."
           },
           "created_at": {
             "type": "string",
@@ -149970,9 +150529,6 @@
                 "$ref": "#/components/schemas/WebPageURLSearchQuery"
               },
               {
-                "$ref": "#/components/schemas/WebTrendsQuery"
-              },
-              {
                 "$ref": "#/components/schemas/WebAnalyticsExternalSummaryQuery"
               },
               {
@@ -150453,9 +151009,6 @@
               },
               {
                 "$ref": "#/components/schemas/WebPageURLSearchQuery"
-              },
-              {
-                "$ref": "#/components/schemas/WebTrendsQuery"
               },
               {
                 "$ref": "#/components/schemas/WebAnalyticsExternalSummaryQuery"
@@ -153281,7 +153834,6 @@
       "IntegrationKind": {
         "enum": [
           "slack",
-          "slack-posthog-code",
           "salesforce",
           "hubspot",
           "google-pubsub",
@@ -159940,85 +160492,6 @@
         "title": "Metric",
         "type": "string"
       },
-      "Metrics": {
-        "additionalProperties": false,
-        "properties": {
-          "Bounces": {
-            "anyOf": [
-              {
-                "type": "number"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": null,
-            "title": "Bounces"
-          },
-          "PageViews": {
-            "anyOf": [
-              {
-                "type": "number"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": null,
-            "title": "Pageviews"
-          },
-          "SessionDuration": {
-            "anyOf": [
-              {
-                "type": "number"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": null,
-            "title": "Sessionduration"
-          },
-          "Sessions": {
-            "anyOf": [
-              {
-                "type": "number"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": null,
-            "title": "Sessions"
-          },
-          "TotalSessions": {
-            "anyOf": [
-              {
-                "type": "number"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": null,
-            "title": "Totalsessions"
-          },
-          "UniqueUsers": {
-            "anyOf": [
-              {
-                "type": "number"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": null,
-            "title": "Uniqueusers"
-          }
-        },
-        "title": "Metrics",
-        "type": "object"
-      },
       "MinimalFeatureFlag": {
         "type": "object",
         "properties": {
@@ -160249,6 +160722,27 @@
         ],
         "type": "string",
         "description": "* `events` - Events\n* `persons` - Persons\n* `sessions` - Sessions"
+      },
+      "MoveTileRequest": {
+        "type": "object",
+        "properties": {
+          "to_dashboard": {
+            "type": "integer",
+            "description": "Destination dashboard ID."
+          },
+          "tile": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/MoveTileTile"
+              }
+            ],
+            "description": "Tile to move, identified by its dashboard tile ID."
+          }
+        },
+        "required": [
+          "tile",
+          "to_dashboard"
+        ]
       },
       "MoveTileTile": {
         "type": "object",
@@ -164485,41 +164979,6 @@
           }
         }
       },
-      "PaginatedHogFlowScheduleList": {
-        "type": "object",
-        "required": [
-          "count",
-          "results"
-        ],
-        "properties": {
-          "count": {
-            "type": "integer",
-            "example": 123
-          },
-          "next": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "format": "uri",
-            "example": "http://api.example.org/accounts/?offset=400&limit=100"
-          },
-          "previous": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "format": "uri",
-            "example": "http://api.example.org/accounts/?offset=200&limit=100"
-          },
-          "results": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/HogFlowSchedule"
-            }
-          }
-        }
-      },
       "PaginatedHogFunctionMinimalList": {
         "type": "object",
         "required": [
@@ -167436,9 +167895,21 @@
                   "string",
                   "null"
                 ]
+              },
+              "slack_channel_id": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "usage_dashboard_link": {
+                "type": [
+                  "string",
+                  "null"
+                ]
               }
             },
-            "description": "Typed account properties: assignment fields (csm, account_executive, account_owner) and external system identifiers (stripe_customer_id, hubspot_deal_id, billing_id, sfdc_id, zendesk_id). Defaults to an empty object. Unknown keys are rejected."
+            "description": "Typed account properties: assignment fields (csm, account_executive, account_owner) and external system identifiers (stripe_customer_id, hubspot_deal_id, billing_id, sfdc_id, zendesk_id, slack_channel_id, usage_dashboard_link). Defaults to an empty object. Unknown keys are rejected."
           },
           "tags": {
             "type": "array",
@@ -171549,6 +172020,69 @@
           },
           "billable_action_types": {
             "readOnly": true
+          },
+          "schedules": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/HogFlowSchedule"
+            },
+            "readOnly": true,
+            "description": "Recurring schedules attached to this workflow (read-only here; manage via the schedules sub-resource). A batch/schedule workflow only fires when it's active AND has an active schedule. Empty for non-scheduled workflows."
+          }
+        }
+      },
+      "PatchedHogFlowSchedule": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "readOnly": true
+          },
+          "rrule": {
+            "type": "string",
+            "description": "iCalendar RRULE string (e.g. 'FREQ=DAILY;INTERVAL=1'). Must produce occurrences at most once per hour."
+          },
+          "starts_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "ISO 8601 datetime the schedule starts from."
+          },
+          "timezone": {
+            "type": "string",
+            "description": "IANA timezone for interpreting the RRULE (default 'UTC').",
+            "maxLength": 64
+          },
+          "variables": {
+            "description": "Variable value overrides merged with the workflow defaults on each run."
+          },
+          "status": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/HogFlowScheduleStatusEnum"
+              }
+            ],
+            "readOnly": true,
+            "description": "active, paused, or completed (set once the RRULE's COUNT/UNTIL is exhausted).\n\n* `active` - Active\n* `paused` - Paused\n* `completed` - Completed"
+          },
+          "next_run_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time",
+            "readOnly": true,
+            "description": "Next scheduled fire time, computed by the scheduler."
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
           }
         }
       },
@@ -173935,7 +174469,7 @@
             "description": "What the scanner does: monitor, classifier, scorer, or summarizer.\n\n* `monitor` - Monitor\n* `classifier` - Classifier\n* `scorer` - Scorer\n* `summarizer` - Summarizer"
           },
           "scanner_config": {
-            "description": "Type-specific configuration. All scanner types require `prompt`; classifiers add `tags`, scorers add `scale`, summarizers add optional `length` and `emits_embeddings` flag."
+            "description": "Type-specific configuration. All scanner types require `prompt`; monitors add optional `allow_inconclusive`, classifiers add `tags`, scorers add `scale`, summarizers add optional `length`."
           },
           "query": {
             "description": "Persisted `RecordingsQuery` shape used to pick candidate sessions. `date_from`/`date_to` are stripped on save — the schedule controls time, not the user."
@@ -176662,6 +177196,16 @@
               "type": "string"
             },
             "description": "Ordered list of questions the voice agent should work through during the interview."
+          },
+          "invite_subject": {
+            "type": "string",
+            "description": "Subject line for the invitation email. Plain text only — URLs, angle brackets, and control characters are rejected. Leave blank to use the default subject. Personalization is handled by the email template, so do not include placeholders.",
+            "maxLength": 255
+          },
+          "invite_message": {
+            "type": "string",
+            "description": "Intro message shown in the invitation email body, above the interview link. Plain prose only — URLs, angle brackets, and control characters are rejected (line breaks are allowed). Leave blank to use the default copy.",
+            "maxLength": 1000
           }
         }
       },
@@ -196495,7 +197039,7 @@
             "description": "What the scanner does: monitor, classifier, scorer, or summarizer.\n\n* `monitor` - Monitor\n* `classifier` - Classifier\n* `scorer` - Scorer\n* `summarizer` - Summarizer"
           },
           "scanner_config": {
-            "description": "Type-specific configuration. All scanner types require `prompt`; classifiers add `tags`, scorers add `scale`, summarizers add optional `length` and `emits_embeddings` flag."
+            "description": "Type-specific configuration. All scanner types require `prompt`; monitors add optional `allow_inconclusive`, classifiers add `tags`, scorers add `scale`, summarizers add optional `length`."
           },
           "query": {
             "description": "Persisted `RecordingsQuery` shape used to pick candidate sessions. `date_from`/`date_to` are stripped on save — the schedule controls time, not the user."
@@ -205965,7 +206509,7 @@
           },
           "status_reason": {
             "type": "string",
-            "description": "Per-version badge tooltip text matching the SDK Doctor UI exactly. Quote verbatim when reporting to users. Varies by state: 'Released X ago. Upgrade recommended.' for outdated versions, 'You have the latest available. Click Releases above to check for any since.' for current versions, or 'Released X ago. Upgrading is a good idea, but it's not urgent yet.' for recent-but-behind versions."
+            "description": "Per-version badge tooltip text matching the SDK Doctor UI exactly. Quote verbatim when reporting to users. Varies by state: 'Released X ago. Upgrade recommended.' for outdated versions, 'You have the latest available.' for current versions, or 'Released X ago. Upgrading is a good idea, but it's not urgent yet.' for recent-but-behind versions."
           },
           "sql_query": {
             "type": "string",
@@ -206005,7 +206549,7 @@
         "properties": {
           "subject": {
             "type": "string",
-            "description": "Override the default email subject line. Defaults to a friendly prompt referencing the topic.",
+            "description": "Override the email subject line for this send. Plain text only — URLs, angle brackets, and control characters are rejected. Falls back to the topic's saved subject, then a default.",
             "maxLength": 200
           },
           "reply_to": {
@@ -207389,6 +207933,63 @@
         ],
         "title": "SessionRecordingType",
         "type": "object"
+      },
+      "SessionReplayListWidgetConfig": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "maximum": 25,
+            "minimum": 1,
+            "default": 10,
+            "description": "Maximum number of recordings to return."
+          },
+          "orderBy": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/SessionReplayListWidgetConfigOrderByEnum"
+              }
+            ],
+            "default": "start_time",
+            "description": "Recording ranking column.\n\n* `activity_score` - activity_score\n* `click_count` - click_count\n* `console_error_count` - console_error_count\n* `duration` - duration\n* `recording_duration` - recording_duration\n* `start_time` - start_time"
+          },
+          "orderDirection": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/OrderDirectionEnum"
+              }
+            ],
+            "default": "DESC",
+            "description": "Sort direction for orderBy.\n\n* `ASC` - ASC\n* `DESC` - DESC"
+          },
+          "dateRange": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/WidgetDateRange"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Optional relative date range override."
+          },
+          "filterTestAccounts": {
+            "type": "boolean",
+            "description": "When omitted, follows the project default for filtering test accounts."
+          }
+        }
+      },
+      "SessionReplayListWidgetConfigOrderByEnum": {
+        "enum": [
+          "activity_score",
+          "click_count",
+          "console_error_count",
+          "duration",
+          "recording_duration",
+          "start_time"
+        ],
+        "type": "string",
+        "description": "* `activity_score` - activity_score\n* `click_count` - click_count\n* `console_error_count` - console_error_count\n* `duration` - duration\n* `recording_duration` - recording_duration\n* `start_time` - start_time"
       },
       "SessionSummaries": {
         "type": "object",
@@ -212052,6 +212653,37 @@
         "type": "string",
         "description": "* `rating` - rating"
       },
+      "SurveyResponseAnswer": {
+        "type": "object",
+        "properties": {
+          "question_id": {
+            "type": "string",
+            "description": "UUID of the survey question this answer belongs to."
+          },
+          "question_index": {
+            "type": "integer",
+            "description": "Zero-based index of the question within the survey."
+          },
+          "question_text": {
+            "type": "string",
+            "description": "Untranslated question text as configured by the survey author."
+          },
+          "question_type": {
+            "type": "string",
+            "description": "Question type: open, rating, single_choice, multiple_choice, or link. Determines the shape of the answer field."
+          },
+          "answer": {
+            "description": "Resolved answer. String for open/rating/single_choice/link questions, list of strings for multiple_choice questions. Already decoded from the raw $survey_response_<id> property so callers don't need to parse it."
+          }
+        },
+        "required": [
+          "answer",
+          "question_id",
+          "question_index",
+          "question_text",
+          "question_type"
+        ]
+      },
       "SurveyResponseBasedBranching": {
         "type": "object",
         "properties": {
@@ -212093,6 +212725,145 @@
         ],
         "type": "string",
         "description": "* `response_based` - response_based"
+      },
+      "SurveyResponseExtra": {
+        "type": "object",
+        "properties": {
+          "device_type": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "$device_type at the time the response was sent."
+          },
+          "browser": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "$browser at the time the response was sent."
+          },
+          "os": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "$os (operating system) at the time the response was sent."
+          },
+          "geoip_country_code": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "$geoip_country_code at submission time."
+          },
+          "geoip_country_name": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "$geoip_country_name at submission time."
+          },
+          "geoip_city_name": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "$geoip_city_name at submission time."
+          },
+          "current_url": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "$current_url where the survey was submitted."
+          },
+          "iteration": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Survey iteration number when the response was sent. Only set for recurring surveys."
+          }
+        }
+      },
+      "SurveyResponseRow": {
+        "type": "object",
+        "properties": {
+          "uuid": {
+            "type": "string",
+            "description": "UUID of the underlying `survey sent` event. Use as the response identifier for archive operations."
+          },
+          "distinct_id": {
+            "type": "string",
+            "description": "distinct_id of the respondent. Cross-pivot to the persons API or session recordings."
+          },
+          "session_id": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "$session_id of the respondent when available. Use to pull the session recording for this response."
+          },
+          "submitted_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Event timestamp when the response was sent (ISO 8601, UTC)."
+          },
+          "answers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SurveyResponseAnswer"
+            },
+            "description": "One entry per survey question that received a non-empty answer. Question text is already resolved — callers do not need to look up `$survey_response_<id>` keys."
+          },
+          "extra": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/SurveyResponseExtra"
+              }
+            ],
+            "description": "Convenience fields extracted from the event properties (device, browser, geoip, iteration)."
+          }
+        },
+        "required": [
+          "answers",
+          "distinct_id",
+          "extra",
+          "session_id",
+          "submitted_at",
+          "uuid"
+        ]
+      },
+      "SurveyResponsesList": {
+        "type": "object",
+        "properties": {
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SurveyResponseRow"
+            },
+            "description": "Survey response rows for the requested page."
+          },
+          "has_more": {
+            "type": "boolean",
+            "description": "True if more rows exist beyond the current page — fetch the next page with offset + limit."
+          },
+          "limit": {
+            "type": "integer",
+            "description": "The limit applied to this query (echoed back for pagination)."
+          },
+          "offset": {
+            "type": "integer",
+            "description": "The offset applied to this query (echoed back for pagination)."
+          }
+        },
+        "required": [
+          "has_more",
+          "limit",
+          "offset",
+          "results"
+        ]
       },
       "SurveySerializerCreateUpdateOnly": {
         "type": "object",
@@ -212755,6 +213526,11 @@
             "type": "object",
             "additionalProperties": true,
             "description": "Calculated response and dismissal rates."
+          },
+          "per_question_stats": {
+            "type": "array",
+            "items": {},
+            "description": "Per-question response counts and distributions. Only present when include_per_question_stats=true was passed. For rating questions includes `average`; for choice/rating questions `distribution` maps answer value to count; for open questions `distribution` is empty (use surveys-responses-list to read free-text)."
           }
         },
         "required": [
@@ -212764,6 +213540,16 @@
           "stats",
           "survey_id"
         ]
+      },
+      "SurveySummarizeRequest": {
+        "type": "object",
+        "properties": {
+          "force_refresh": {
+            "type": "boolean",
+            "default": false,
+            "description": "When true, bypass cached summaries and regenerate. Defaults to false."
+          }
+        }
       },
       "SurveyType": {
         "enum": [
@@ -222132,6 +222918,16 @@
               "type": "string"
             },
             "description": "Ordered list of questions the voice agent should work through during the interview."
+          },
+          "invite_subject": {
+            "type": "string",
+            "description": "Subject line for the invitation email. Plain text only — URLs, angle brackets, and control characters are rejected. Leave blank to use the default subject. Personalization is handled by the email template, so do not include placeholders.",
+            "maxLength": 255
+          },
+          "invite_message": {
+            "type": "string",
+            "description": "Intro message shown in the invitation email body, above the interview link. Plain prose only — URLs, angle brackets, and control characters are rejected (line breaks are allowed). Leave blank to use the default copy.",
+            "maxLength": 1000
           }
         },
         "required": [
@@ -225758,565 +226554,6 @@
           "results"
         ],
         "title": "WebStatsTableQueryResponse",
-        "type": "object"
-      },
-      "WebTrendsItem": {
-        "additionalProperties": false,
-        "properties": {
-          "bucket": {
-            "title": "Bucket",
-            "type": "string"
-          },
-          "metrics": {
-            "$ref": "#/components/schemas/Metrics"
-          }
-        },
-        "required": [
-          "bucket",
-          "metrics"
-        ],
-        "title": "WebTrendsItem",
-        "type": "object"
-      },
-      "WebTrendsMetric": {
-        "enum": [
-          "UniqueUsers",
-          "PageViews",
-          "Sessions",
-          "Bounces",
-          "SessionDuration",
-          "TotalSessions"
-        ],
-        "title": "WebTrendsMetric",
-        "type": "string"
-      },
-      "WebTrendsQuery": {
-        "additionalProperties": false,
-        "properties": {
-          "aggregation_group_type_index": {
-            "anyOf": [
-              {
-                "type": "integer"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": null,
-            "description": "Groups aggregation - not used in Web Analytics but required for type compatibility",
-            "title": "Aggregation Group Type Index"
-          },
-          "compareFilter": {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/CompareFilter"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": null
-          },
-          "conversionGoal": {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/ActionConversionGoal"
-              },
-              {
-                "$ref": "#/components/schemas/CustomEventConversionGoal"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": null,
-            "title": "Conversiongoal"
-          },
-          "dataColorTheme": {
-            "anyOf": [
-              {
-                "type": "number"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": null,
-            "description": "Colors used in the insight's visualization - not used in Web Analytics but required for type compatibility",
-            "title": "Datacolortheme"
-          },
-          "dateRange": {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/DateRange"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": null
-          },
-          "doPathCleaning": {
-            "anyOf": [
-              {
-                "type": "boolean"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": null,
-            "title": "Dopathcleaning"
-          },
-          "filterTestAccounts": {
-            "anyOf": [
-              {
-                "type": "boolean"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": null,
-            "title": "Filtertestaccounts"
-          },
-          "includeRevenue": {
-            "anyOf": [
-              {
-                "type": "boolean"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": null,
-            "title": "Includerevenue"
-          },
-          "interval": {
-            "$ref": "#/components/schemas/IntervalType",
-            "description": "Interval for date range calculation (affects date_to rounding for hour vs day ranges)"
-          },
-          "kind": {
-            "const": "WebTrendsQuery",
-            "default": "WebTrendsQuery",
-            "title": "Kind",
-            "type": "string"
-          },
-          "limit": {
-            "anyOf": [
-              {
-                "type": "integer"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": null,
-            "title": "Limit"
-          },
-          "metrics": {
-            "items": {
-              "$ref": "#/components/schemas/WebTrendsMetric"
-            },
-            "title": "Metrics",
-            "type": "array"
-          },
-          "modifiers": {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/HogQLQueryModifiers"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": null,
-            "description": "Modifiers used when performing the query"
-          },
-          "offset": {
-            "anyOf": [
-              {
-                "type": "integer"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": null,
-            "title": "Offset"
-          },
-          "orderBy": {
-            "anyOf": [
-              {
-                "items": {
-                  "anyOf": [
-                    {
-                      "$ref": "#/components/schemas/WebAnalyticsOrderByFields"
-                    },
-                    {
-                      "$ref": "#/components/schemas/WebAnalyticsOrderByDirection"
-                    }
-                  ]
-                },
-                "type": "array"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": null,
-            "title": "Orderby"
-          },
-          "properties": {
-            "type": "array",
-            "items": {
-              "anyOf": [
-                {
-                  "$ref": "#/components/schemas/EventPropertyFilter"
-                },
-                {
-                  "$ref": "#/components/schemas/PersonPropertyFilter"
-                },
-                {
-                  "$ref": "#/components/schemas/SessionPropertyFilter"
-                },
-                {
-                  "$ref": "#/components/schemas/CohortPropertyFilter"
-                }
-              ]
-            },
-            "title": "Properties"
-          },
-          "response": {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/WebTrendsQueryResponse"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": null
-          },
-          "sampling": {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/WebAnalyticsSampling"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": null
-          },
-          "samplingFactor": {
-            "anyOf": [
-              {
-                "type": "number"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": null,
-            "description": "Sampling rate",
-            "title": "Samplingfactor"
-          },
-          "tags": {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/QueryLogTags"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": null
-          },
-          "useSessionsTable": {
-            "anyOf": [
-              {
-                "type": "boolean"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": null,
-            "title": "Usesessionstable"
-          },
-          "version": {
-            "anyOf": [
-              {
-                "type": "number"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": null,
-            "description": "version of the node, used for schema migrations",
-            "title": "Version"
-          }
-        },
-        "required": [
-          "interval",
-          "metrics",
-          "properties"
-        ],
-        "title": "WebTrendsQuery",
-        "type": "object"
-      },
-      "WebTrendsQueryResponse": {
-        "additionalProperties": false,
-        "properties": {
-          "clickhouse": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": null,
-            "description": "Executed ClickHouse query",
-            "title": "Clickhouse"
-          },
-          "columns": {
-            "anyOf": [
-              {
-                "items": {},
-                "type": "array"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": null,
-            "description": "Returned columns",
-            "title": "Columns"
-          },
-          "error": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": null,
-            "description": "Query error. Returned only if 'explain' or `modifiers.debug` is true. Throws an error otherwise.",
-            "title": "Error"
-          },
-          "explain": {
-            "anyOf": [
-              {
-                "items": {
-                  "type": "string"
-                },
-                "type": "array"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": null,
-            "description": "Query explanation output",
-            "title": "Explain"
-          },
-          "hasMore": {
-            "anyOf": [
-              {
-                "type": "boolean"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": null,
-            "title": "Hasmore"
-          },
-          "hogql": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": null,
-            "description": "Generated HogQL query.",
-            "title": "Hogql"
-          },
-          "limit": {
-            "anyOf": [
-              {
-                "type": "integer"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": null,
-            "title": "Limit"
-          },
-          "metadata": {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/HogQLMetadataResponse"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": null,
-            "description": "Query metadata output"
-          },
-          "modifiers": {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/HogQLQueryModifiers"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": null,
-            "description": "Modifiers used when performing the query"
-          },
-          "offset": {
-            "anyOf": [
-              {
-                "type": "integer"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": null,
-            "title": "Offset"
-          },
-          "query": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": null,
-            "description": "Input query string",
-            "title": "Query"
-          },
-          "query_status": {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/QueryStatus"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": null,
-            "description": "Query status indicates whether next to the provided data, a query is still running."
-          },
-          "resolved_date_range": {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/ResolvedDateRangeResponse"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": null,
-            "description": "The date range used for the query"
-          },
-          "results": {
-            "items": {
-              "$ref": "#/components/schemas/WebTrendsItem"
-            },
-            "title": "Results",
-            "type": "array"
-          },
-          "samplingRate": {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/SamplingRate"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": null
-          },
-          "timings": {
-            "anyOf": [
-              {
-                "items": {
-                  "$ref": "#/components/schemas/QueryTiming"
-                },
-                "type": "array"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": null,
-            "description": "Measured timings for different parts of the query generation process",
-            "title": "Timings"
-          },
-          "types": {
-            "anyOf": [
-              {
-                "items": {},
-                "type": "array"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": null,
-            "description": "Types of returned columns",
-            "title": "Types"
-          },
-          "usedPreAggregatedTables": {
-            "anyOf": [
-              {
-                "type": "boolean"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": null,
-            "title": "Usedpreaggregatedtables"
-          },
-          "warnings": {
-            "anyOf": [
-              {
-                "items": {
-                  "$ref": "#/components/schemas/DataWarehouseSyncWarning"
-                },
-                "type": "array"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "default": null,
-            "description": "Warnings about data warehouse sources referenced by the query whose latest sync failed, is paused, hit a billing limit, or is otherwise stale. Results may not reflect current source data. Accumulated across every HogQL execution that contributes to this response — so insights backed by warehouse tables (Trends, Funnels, etc.) receive the same warnings as raw HogQL queries.",
-            "title": "Warnings"
-          }
-        },
-        "required": [
-          "results"
-        ],
-        "title": "WebTrendsQueryResponse",
         "type": "object"
       },
       "WebVitalsMetric": {
