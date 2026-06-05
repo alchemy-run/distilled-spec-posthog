@@ -5644,17 +5644,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/AddDashboardWidgetsBatchRequest"
+                "$ref": "#/components/schemas/AddDashboardWidgetsBatchRequestOpenApi"
               }
             },
             "application/x-www-form-urlencoded": {
               "schema": {
-                "$ref": "#/components/schemas/AddDashboardWidgetsBatchRequest"
+                "$ref": "#/components/schemas/AddDashboardWidgetsBatchRequestOpenApi"
               }
             },
             "multipart/form-data": {
               "schema": {
-                "$ref": "#/components/schemas/AddDashboardWidgetsBatchRequest"
+                "$ref": "#/components/schemas/AddDashboardWidgetsBatchRequestOpenApi"
               }
             }
           },
@@ -17679,6 +17679,7 @@
     "/api/environments/{environment_id}/heatmap_screenshots/{id}/content/": {
       "get": {
         "operationId": "environments_heatmap_screenshots_content_retrieve",
+        "description": "Fetch the rendered screenshot image (JPEG bytes) for a saved heatmap at a given viewport width. Returns 202 with the saved-heatmap metadata while the screenshot is still being generated.",
         "parameters": [
           {
             "$ref": "#/components/parameters/EnvironmentIdPath"
@@ -17692,6 +17693,14 @@
             },
             "description": "A UUID string identifying this saved heatmap.",
             "required": true
+          },
+          {
+            "in": "query",
+            "name": "width",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Viewport width (CSS pixels) to fetch. Defaults to 1024. If no exact render exists for this width the closest available one is returned."
           }
         ],
         "tags": [
@@ -17706,7 +17715,25 @@
         ],
         "responses": {
           "200": {
-            "description": "No response body"
+            "content": {
+              "image/jpeg": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            },
+            "description": ""
+          },
+          "202": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HeatmapScreenshotResponse"
+                }
+              }
+            },
+            "description": ""
           }
         },
         "deprecated": true,
@@ -17718,27 +17745,118 @@
     "/api/environments/{environment_id}/heatmaps/": {
       "get": {
         "operationId": "environments_heatmaps_list",
+        "description": "Aggregated heatmap interactions for a page. For type 'click'/'rageclick'/'mousemove' each result is a point with relative x, absolute client-y, and a count. For type 'scrolldepth' the response is scroll-depth buckets instead (cumulative reach down the page).",
         "parameters": [
+          {
+            "in": "query",
+            "name": "aggregation",
+            "schema": {
+              "enum": [
+                "unique_visitors",
+                "total_count"
+              ],
+              "type": "string",
+              "default": "total_count",
+              "minLength": 1
+            },
+            "description": "How to aggregate counts: 'total_count' (every interaction, default) or 'unique_visitors' (distinct people).\n\n* `unique_visitors` - unique_visitors\n* `total_count` - total_count"
+          },
+          {
+            "in": "query",
+            "name": "cohort_ids",
+            "schema": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "description": "JSON array of cohort IDs (e.g. '[123, 456]') to restrict results to people in those cohorts. Feature-flagged; ignored when the cohort filter is not enabled for the caller."
+          },
+          {
+            "in": "query",
+            "name": "date_from",
+            "schema": {
+              "type": "string",
+              "default": "-7d",
+              "minLength": 1
+            },
+            "description": "Start of the window. Relative (e.g. '-7d', '-30d', '-1mStart') or an absolute 'YYYY-MM-DD' date. Defaults to '-7d'. Heatmap data is retained for 90 days."
+          },
+          {
+            "in": "query",
+            "name": "date_to",
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "End of the window, inclusive. Relative or absolute 'YYYY-MM-DD'. Defaults to today."
+          },
           {
             "$ref": "#/components/parameters/EnvironmentIdPath"
           },
           {
-            "name": "limit",
-            "required": false,
             "in": "query",
-            "description": "Number of results to return per page.",
+            "name": "filter_test_accounts",
             "schema": {
-              "type": "integer"
-            }
+              "type": [
+                "boolean",
+                "null"
+              ]
+            },
+            "description": "When true, exclude sessions from internal/test accounts using the project's test-account filters."
           },
           {
-            "name": "offset",
-            "required": false,
             "in": "query",
-            "description": "The initial index from which to return the results.",
+            "name": "hide_zero_coordinates",
+            "schema": {
+              "type": "boolean",
+              "default": true
+            },
+            "description": "When true (default), drop interactions recorded at the (0, 0) origin, which are usually noise."
+          },
+          {
+            "in": "query",
+            "name": "type",
+            "schema": {
+              "type": "string",
+              "default": "click",
+              "minLength": 1
+            },
+            "description": "The interaction type to return. One of: 'click' (default), 'rageclick', 'mousemove', or 'scrolldepth'. Scrolldepth returns scroll buckets instead of x/y coordinates."
+          },
+          {
+            "in": "query",
+            "name": "url_exact",
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "Match a single page by exact URL (trailing slash is ignored). Mutually exclusive with url_pattern."
+          },
+          {
+            "in": "query",
+            "name": "url_pattern",
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "Match pages by regex against the full current_url (anchored automatically). Use this to aggregate across query strings or path segments. Mutually exclusive with url_exact."
+          },
+          {
+            "in": "query",
+            "name": "viewport_width_max",
             "schema": {
               "type": "integer"
-            }
+            },
+            "description": "Only include interactions captured at a viewport at most this wide, in CSS pixels."
+          },
+          {
+            "in": "query",
+            "name": "viewport_width_min",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Only include interactions captured at a viewport at least this wide, in CSS pixels. Use with viewport_width_max to isolate a device class (e.g. 360-768 for mobile)."
           }
         ],
         "tags": [
@@ -17756,7 +17874,10 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PaginatedHeatmapsResponseList"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/HeatmapsResponse"
+                  }
                 }
               }
             },
@@ -17772,9 +17893,149 @@
     "/api/environments/{environment_id}/heatmaps/events/": {
       "get": {
         "operationId": "environments_heatmaps_events_retrieve",
+        "description": "Drill into the individual session interactions behind one or more heatmap coordinates. Pass the 'points' you want to inspect (from the heatmaps list response) to get the underlying per-session events, so you can jump to the session recordings that produced a hotspot.",
         "parameters": [
           {
+            "in": "query",
+            "name": "aggregation",
+            "schema": {
+              "enum": [
+                "unique_visitors",
+                "total_count"
+              ],
+              "type": "string",
+              "default": "total_count",
+              "minLength": 1
+            },
+            "description": "How to aggregate counts: 'total_count' (every interaction, default) or 'unique_visitors' (distinct people).\n\n* `unique_visitors` - unique_visitors\n* `total_count` - total_count"
+          },
+          {
+            "in": "query",
+            "name": "cohort_ids",
+            "schema": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "description": "JSON array of cohort IDs (e.g. '[123, 456]') to restrict results to people in those cohorts. Feature-flagged; ignored when the cohort filter is not enabled for the caller."
+          },
+          {
+            "in": "query",
+            "name": "date_from",
+            "schema": {
+              "type": "string",
+              "default": "-7d",
+              "minLength": 1
+            },
+            "description": "Start of the window. Relative (e.g. '-7d', '-30d', '-1mStart') or an absolute 'YYYY-MM-DD' date. Defaults to '-7d'. Heatmap data is retained for 90 days."
+          },
+          {
+            "in": "query",
+            "name": "date_to",
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "End of the window, inclusive. Relative or absolute 'YYYY-MM-DD'. Defaults to today."
+          },
+          {
             "$ref": "#/components/parameters/EnvironmentIdPath"
+          },
+          {
+            "in": "query",
+            "name": "filter_test_accounts",
+            "schema": {
+              "type": [
+                "boolean",
+                "null"
+              ]
+            },
+            "description": "When true, exclude sessions from internal/test accounts using the project's test-account filters."
+          },
+          {
+            "in": "query",
+            "name": "hide_zero_coordinates",
+            "schema": {
+              "type": "boolean",
+              "default": true
+            },
+            "description": "When true (default), drop interactions recorded at the (0, 0) origin, which are usually noise."
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 50
+            },
+            "description": "Maximum interactions to return (1-100)."
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            },
+            "description": "Number of interactions to skip, for pagination."
+          },
+          {
+            "in": "query",
+            "name": "points",
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "JSON array of the heatmap coordinates to drill into, e.g. '[{\"x\": 0.5, \"y\": 100}]'. Each point needs 'x' (relative x, 0..1) and 'y' (absolute client-y pixels) matching values returned by the heatmaps list endpoint; an optional 'target_fixed' boolean matches fixed-position elements. Returns the individual session interactions behind those spots.",
+            "required": true
+          },
+          {
+            "in": "query",
+            "name": "type",
+            "schema": {
+              "type": "string",
+              "default": "click",
+              "minLength": 1
+            },
+            "description": "The interaction type to return. One of: 'click' (default), 'rageclick', 'mousemove', or 'scrolldepth'. Scrolldepth returns scroll buckets instead of x/y coordinates."
+          },
+          {
+            "in": "query",
+            "name": "url_exact",
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "Match a single page by exact URL (trailing slash is ignored). Mutually exclusive with url_pattern."
+          },
+          {
+            "in": "query",
+            "name": "url_pattern",
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "Match pages by regex against the full current_url (anchored automatically). Use this to aggregate across query strings or path segments. Mutually exclusive with url_exact."
+          },
+          {
+            "in": "query",
+            "name": "viewport_width_max",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Only include interactions captured at a viewport at most this wide, in CSS pixels."
+          },
+          {
+            "in": "query",
+            "name": "viewport_width_min",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Only include interactions captured at a viewport at least this wide, in CSS pixels. Use with viewport_width_max to isolate a device class (e.g. 360-768 for mobile)."
           }
         ],
         "tags": [
@@ -17789,7 +18050,14 @@
         ],
         "responses": {
           "200": {
-            "description": "No response body"
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HeatmapEventsResponse"
+                }
+              }
+            },
+            "description": ""
           }
         },
         "deprecated": true,
@@ -21820,6 +22088,7 @@
                 "google-cloud-service-account",
                 "google-cloud-storage",
                 "google-pubsub",
+                "google-search-console",
                 "google-sheets",
                 "hubspot",
                 "intercom",
@@ -21840,7 +22109,7 @@
                 "vercel"
               ]
             },
-            "description": "* `anthropic` - Anthropic\n* `apns` - Apple Push\n* `azure-blob` - Azure Blob\n* `bing-ads` - Bing Ads\n* `clickup` - Clickup\n* `customerio-app` - Customerio App\n* `customerio-track` - Customerio Track\n* `customerio-webhook` - Customerio Webhook\n* `databricks` - Databricks\n* `email` - Email\n* `firebase` - Firebase\n* `github` - Github\n* `gitlab` - Gitlab\n* `google-ads` - Google Ads\n* `google-cloud-service-account` - Google Cloud Service Account\n* `google-cloud-storage` - Google Cloud Storage\n* `google-pubsub` - Google Pubsub\n* `google-sheets` - Google Sheets\n* `hubspot` - Hubspot\n* `intercom` - Intercom\n* `jira` - Jira\n* `linear` - Linear\n* `linkedin-ads` - Linkedin Ads\n* `meta-ads` - Meta Ads\n* `pinterest-ads` - Pinterest Ads\n* `postgresql` - Postgresql\n* `reddit-ads` - Reddit Ads\n* `salesforce` - Salesforce\n* `slack` - Slack\n* `slack-posthog-code` - Slack Posthog Code\n* `snapchat` - Snapchat\n* `stripe` - Stripe\n* `tiktok-ads` - Tiktok Ads\n* `twilio` - Twilio\n* `vercel` - Vercel"
+            "description": "* `anthropic` - Anthropic\n* `apns` - Apple Push\n* `azure-blob` - Azure Blob\n* `bing-ads` - Bing Ads\n* `clickup` - Clickup\n* `customerio-app` - Customerio App\n* `customerio-track` - Customerio Track\n* `customerio-webhook` - Customerio Webhook\n* `databricks` - Databricks\n* `email` - Email\n* `firebase` - Firebase\n* `github` - Github\n* `gitlab` - Gitlab\n* `google-ads` - Google Ads\n* `google-cloud-service-account` - Google Cloud Service Account\n* `google-cloud-storage` - Google Cloud Storage\n* `google-pubsub` - Google Pubsub\n* `google-search-console` - Google Search Console\n* `google-sheets` - Google Sheets\n* `hubspot` - Hubspot\n* `intercom` - Intercom\n* `jira` - Jira\n* `linear` - Linear\n* `linkedin-ads` - Linkedin Ads\n* `meta-ads` - Meta Ads\n* `pinterest-ads` - Pinterest Ads\n* `postgresql` - Postgresql\n* `reddit-ads` - Reddit Ads\n* `salesforce` - Salesforce\n* `slack` - Slack\n* `slack-posthog-code` - Slack Posthog Code\n* `snapchat` - Snapchat\n* `stripe` - Stripe\n* `tiktok-ads` - Tiktok Ads\n* `twilio` - Twilio\n* `vercel` - Vercel"
           },
           {
             "name": "limit",
@@ -33419,27 +33688,72 @@
     "/api/environments/{environment_id}/saved/": {
       "get": {
         "operationId": "environments_saved_list",
+        "description": "List saved heatmaps for the project. A saved heatmap pins a page URL and a set of viewport widths, and (for type 'screenshot') renders the page so heatmap data can be overlaid on it.",
         "parameters": [
+          {
+            "in": "query",
+            "name": "created_by",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Filter by the creating user's ID."
+          },
           {
             "$ref": "#/components/parameters/EnvironmentIdPath"
           },
           {
-            "name": "limit",
-            "required": false,
             "in": "query",
-            "description": "Number of results to return per page.",
+            "name": "limit",
             "schema": {
-              "type": "integer"
-            }
+              "type": "integer",
+              "default": 100
+            },
+            "description": "Maximum saved heatmaps to return."
           },
           {
-            "name": "offset",
-            "required": false,
             "in": "query",
-            "description": "The initial index from which to return the results.",
+            "name": "offset",
             "schema": {
-              "type": "integer"
-            }
+              "type": "integer",
+              "default": 0
+            },
+            "description": "Number to skip, for pagination."
+          },
+          {
+            "in": "query",
+            "name": "order",
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "Field to order by, e.g. '-updated_at' (default) or 'created_at'."
+          },
+          {
+            "in": "query",
+            "name": "search",
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "Case-insensitive substring match on URL or name."
+          },
+          {
+            "in": "query",
+            "name": "status",
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "Filter by generation status: 'processing', 'completed', or 'failed'."
+          },
+          {
+            "in": "query",
+            "name": "type",
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "Filter by render mode: 'screenshot', 'iframe', or 'recording'."
           }
         ],
         "tags": [
@@ -33457,7 +33771,10 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PaginatedHeatmapScreenshotResponseList"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SavedHeatmapListResponse"
+                  }
                 }
               }
             },
@@ -33471,6 +33788,7 @@
       },
       "post": {
         "operationId": "environments_saved_create",
+        "description": "Create a saved heatmap for a page URL. For type 'screenshot' (the default) this enqueues a headless render of the page at each target width; poll the saved heatmap or its content endpoint until status is 'completed'. Provide 'widths' to control which viewport widths are rendered.",
         "parameters": [
           {
             "$ref": "#/components/parameters/EnvironmentIdPath"
@@ -33483,17 +33801,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/HeatmapScreenshotResponse"
+                "$ref": "#/components/schemas/SavedHeatmapRequest"
               }
             },
             "application/x-www-form-urlencoded": {
               "schema": {
-                "$ref": "#/components/schemas/HeatmapScreenshotResponse"
+                "$ref": "#/components/schemas/SavedHeatmapRequest"
               }
             },
             "multipart/form-data": {
               "schema": {
-                "$ref": "#/components/schemas/HeatmapScreenshotResponse"
+                "$ref": "#/components/schemas/SavedHeatmapRequest"
               }
             }
           },
@@ -33527,6 +33845,7 @@
     "/api/environments/{environment_id}/saved/{short_id}/": {
       "get": {
         "operationId": "environments_saved_retrieve",
+        "description": "Get a single saved heatmap by its short_id, including per-width render status.",
         "parameters": [
           {
             "$ref": "#/components/parameters/EnvironmentIdPath"
@@ -33569,6 +33888,7 @@
       },
       "patch": {
         "operationId": "environments_saved_partial_update",
+        "description": "Update a saved heatmap (e.g. rename, change widths, or soft-delete via 'deleted'). Changing the URL of a 'screenshot' heatmap triggers a re-render.",
         "parameters": [
           {
             "$ref": "#/components/parameters/EnvironmentIdPath"
@@ -33589,17 +33909,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/PatchedHeatmapScreenshotResponse"
+                "$ref": "#/components/schemas/PatchedSavedHeatmapRequest"
               }
             },
             "application/x-www-form-urlencoded": {
               "schema": {
-                "$ref": "#/components/schemas/PatchedHeatmapScreenshotResponse"
+                "$ref": "#/components/schemas/PatchedSavedHeatmapRequest"
               }
             },
             "multipart/form-data": {
               "schema": {
-                "$ref": "#/components/schemas/PatchedHeatmapScreenshotResponse"
+                "$ref": "#/components/schemas/PatchedSavedHeatmapRequest"
               }
             }
           }
@@ -33668,6 +33988,7 @@
     "/api/environments/{environment_id}/saved/{short_id}/regenerate/": {
       "post": {
         "operationId": "environments_saved_regenerate_create",
+        "description": "Re-run screenshot generation for a saved heatmap of type 'screenshot'. Clears existing renders and re-renders at every target width; status returns to 'processing'.",
         "parameters": [
           {
             "$ref": "#/components/parameters/EnvironmentIdPath"
@@ -33684,29 +34005,19 @@
         "tags": [
           "saved"
         ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/HeatmapScreenshotResponse"
-              }
-            },
-            "application/x-www-form-urlencoded": {
-              "schema": {
-                "$ref": "#/components/schemas/HeatmapScreenshotResponse"
-              }
-            },
-            "multipart/form-data": {
-              "schema": {
-                "$ref": "#/components/schemas/HeatmapScreenshotResponse"
-              }
-            }
-          },
-          "required": true
-        },
         "responses": {
           "200": {
-            "description": "No response body"
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HeatmapScreenshotResponse"
+                }
+              }
+            },
+            "description": ""
+          },
+          "400": {
+            "description": "Not a screenshot"
           }
         },
         "deprecated": true,
@@ -37233,6 +37544,14 @@
         "operationId": "environments_user_interviews_list",
         "parameters": [
           {
+            "in": "query",
+            "name": "classifications",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Comma-separated classifications; returns responses carrying any of them (OR). Valid values: abandoned, off-topic."
+          },
+          {
             "$ref": "#/components/parameters/EnvironmentIdPath"
           },
           {
@@ -37624,15 +37943,21 @@
               "enum": [
                 "-completed_at",
                 "-created_at",
+                "-result_score",
+                "-result_verdict",
+                "-scanner_version",
                 "-started_at",
                 "-status",
                 "completed_at",
                 "created_at",
+                "result_score",
+                "result_verdict",
+                "scanner_version",
                 "started_at",
                 "status"
               ]
             },
-            "description": "Sort observations by created_at, started_at, completed_at, or status. Prefix with `-` for descending."
+            "description": "Sort observations. Plain keys: created_at, started_at, completed_at, status. JSONB keys: result_score (scorer), result_verdict (monitor), scanner_version. Prefix with `-` for descending."
           },
           {
             "in": "query",
@@ -37764,6 +38089,14 @@
         "parameters": [
           {
             "in": "query",
+            "name": "created_by",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter to scanners created by the given user IDs (comma-separated)."
+          },
+          {
+            "in": "query",
             "name": "emits_signals",
             "schema": {
               "type": "boolean"
@@ -37774,9 +38107,9 @@
             "in": "query",
             "name": "enabled",
             "schema": {
-              "type": "boolean"
+              "type": "string"
             },
-            "description": "Filter to enabled vs disabled scanners."
+            "description": "Filter by enabled state. Accepts a comma-separated list of `enabled`/`disabled`."
           },
           {
             "$ref": "#/components/parameters/EnvironmentIdPath"
@@ -37806,30 +38139,38 @@
               "type": "string",
               "enum": [
                 "-created_at",
+                "-created_by",
+                "-enabled",
                 "-name",
+                "-sampling_rate",
                 "-scanner_type",
                 "-updated_at",
                 "created_at",
+                "created_by",
+                "enabled",
                 "name",
+                "sampling_rate",
                 "scanner_type",
                 "updated_at"
               ]
             },
-            "description": "Sort scanners by name, created_at, updated_at, or scanner_type. Prefix with `-` for descending."
+            "description": "Sort scanners by name, created_at, updated_at, scanner_type, enabled, sampling_rate, or created_by. Prefix with `-` for descending."
           },
           {
             "in": "query",
             "name": "scanner_type",
             "schema": {
-              "type": "string",
-              "enum": [
-                "classifier",
-                "monitor",
-                "scorer",
-                "summarizer"
-              ]
+              "type": "string"
             },
-            "description": "Filter by scanner type (monitor, classifier, scorer, summarizer).\n\n* `monitor` - Monitor\n* `classifier` - Classifier\n* `scorer` - Scorer\n* `summarizer` - Summarizer"
+            "description": "Filter by scanner type (monitor, classifier, scorer, summarizer). Accepts a comma-separated list."
+          },
+          {
+            "in": "query",
+            "name": "search",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Case-insensitive substring match across name, description, and the prompt in scanner_config."
           }
         ],
         "tags": [
@@ -38168,15 +38509,21 @@
               "enum": [
                 "-completed_at",
                 "-created_at",
+                "-result_score",
+                "-result_verdict",
+                "-scanner_version",
                 "-started_at",
                 "-status",
                 "completed_at",
                 "created_at",
+                "result_score",
+                "result_verdict",
+                "scanner_version",
                 "started_at",
                 "status"
               ]
             },
-            "description": "Sort observations by created_at, started_at, completed_at, or status. Prefix with `-` for descending."
+            "description": "Sort observations. Plain keys: created_at, started_at, completed_at, status. JSONB keys: result_score (scorer), result_verdict (monitor), scanner_version. Prefix with `-` for descending."
           },
           {
             "in": "path",
@@ -38199,28 +38546,33 @@
             "in": "query",
             "name": "status",
             "schema": {
-              "type": "string",
-              "enum": [
-                "failed",
-                "ineligible",
-                "pending",
-                "running",
-                "succeeded"
-              ]
+              "type": "string"
             },
-            "description": "Filter by observation status.\n\n* `pending` - Pending\n* `running` - Running\n* `succeeded` - Succeeded\n* `failed` - Failed\n* `ineligible` - Ineligible"
+            "description": "Filter by observation status. Accepts a comma-separated list."
+          },
+          {
+            "in": "query",
+            "name": "tags",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter classifier observations whose fixed or freeform tags include any of the given values (comma-separated). Matches if the tag appears in either `tags` or `tags_freeform`."
           },
           {
             "in": "query",
             "name": "triggered_by",
             "schema": {
-              "type": "string",
-              "enum": [
-                "on_demand",
-                "schedule"
-              ]
+              "type": "string"
             },
-            "description": "Filter by trigger source (schedule or on_demand).\n\n* `schedule` - Schedule\n* `on_demand` - On demand"
+            "description": "Filter by trigger source (schedule or on_demand). Accepts a comma-separated list."
+          },
+          {
+            "in": "query",
+            "name": "verdict",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter monitor observations by verdict. Accepts a comma-separated list (e.g. `yes,inconclusive`)."
           }
         ],
         "tags": [
@@ -38297,6 +38649,130 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ReplayObservation"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "deprecated": true,
+        "x-product": [
+          "replay_vision"
+        ]
+      }
+    },
+    "/api/environments/{environment_id}/vision/scanners/{scanner_id}/observations/stats/": {
+      "get": {
+        "operationId": "environments_vision_scanners_observations_stats_retrieve",
+        "description": "Aggregate counts and per-scanner-type distributions over the filtered observation set. Same filters as the list endpoint apply.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/EnvironmentIdPath"
+          },
+          {
+            "in": "path",
+            "name": "scanner_id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "required": true
+          },
+          {
+            "in": "query",
+            "name": "session_id",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter to observations of a specific session recording."
+          },
+          {
+            "in": "query",
+            "name": "status",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter by observation status. Accepts a comma-separated list."
+          },
+          {
+            "in": "query",
+            "name": "tags",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter classifier observations whose fixed or freeform tags include any of the given values (comma-separated). Matches if the tag appears in either `tags` or `tags_freeform`."
+          },
+          {
+            "in": "query",
+            "name": "triggered_by",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter by trigger source (schedule or on_demand). Accepts a comma-separated list."
+          },
+          {
+            "in": "query",
+            "name": "verdict",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter monitor observations by verdict. Accepts a comma-separated list (e.g. `yes,inconclusive`)."
+          }
+        ],
+        "tags": [
+          "vision"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "replay_scanner:read",
+              "session_recording:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ObservationStats"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "deprecated": true,
+        "x-product": [
+          "replay_vision"
+        ]
+      }
+    },
+    "/api/environments/{environment_id}/vision/scanners/creators/": {
+      "get": {
+        "operationId": "environments_vision_scanners_creators_retrieve",
+        "description": "Distinct creators across the team's scanners — feeds the `Created by` filter dropdown.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/EnvironmentIdPath"
+          }
+        ],
+        "tags": [
+          "vision"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "replay_scanner:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScannerCreatorsResponse"
                 }
               }
             },
@@ -48250,12 +48726,13 @@
                 "DashboardWidget",
                 "ProductTour",
                 "Ticket",
-                "InstanceSetting"
+                "InstanceSetting",
+                "SignalScoutConfig"
               ],
               "type": "string",
               "minLength": 1
             },
-            "description": "Filter by a single activity scope, e.g. \"FeatureFlag\", \"Insight\", \"Dashboard\", \"Experiment\".\n\n* `Cohort` - Cohort\n* `FeatureFlag` - FeatureFlag\n* `Person` - Person\n* `Group` - Group\n* `Insight` - Insight\n* `Plugin` - Plugin\n* `PluginConfig` - PluginConfig\n* `HogFunction` - HogFunction\n* `HogFlow` - HogFlow\n* `DataManagement` - DataManagement\n* `EventDefinition` - EventDefinition\n* `PropertyDefinition` - PropertyDefinition\n* `Notebook` - Notebook\n* `Endpoint` - Endpoint\n* `EndpointVersion` - EndpointVersion\n* `Dashboard` - Dashboard\n* `Replay` - Replay\n* `Experiment` - Experiment\n* `ExperimentHoldout` - ExperimentHoldout\n* `ExperimentSavedMetric` - ExperimentSavedMetric\n* `Survey` - Survey\n* `EarlyAccessFeature` - EarlyAccessFeature\n* `SessionRecordingPlaylist` - SessionRecordingPlaylist\n* `Comment` - Comment\n* `Team` - Team\n* `Project` - Project\n* `ErrorTrackingIssue` - ErrorTrackingIssue\n* `DataWarehouseSavedQuery` - DataWarehouseSavedQuery\n* `LegalDocument` - LegalDocument\n* `Organization` - Organization\n* `OrganizationDomain` - OrganizationDomain\n* `OrganizationMembership` - OrganizationMembership\n* `Role` - Role\n* `UserGroup` - UserGroup\n* `BatchExport` - BatchExport\n* `BatchImport` - BatchImport\n* `Integration` - Integration\n* `Annotation` - Annotation\n* `Tag` - Tag\n* `TaggedItem` - TaggedItem\n* `Subscription` - Subscription\n* `PersonalAPIKey` - PersonalAPIKey\n* `ProjectSecretAPIKey` - ProjectSecretAPIKey\n* `User` - User\n* `Action` - Action\n* `AlertConfiguration` - AlertConfiguration\n* `Threshold` - Threshold\n* `AlertSubscription` - AlertSubscription\n* `ExternalDataSource` - ExternalDataSource\n* `ExternalDataSchema` - ExternalDataSchema\n* `Evaluation` - Evaluation\n* `LLMTrace` - LLMTrace\n* `WebAnalyticsFilterPreset` - WebAnalyticsFilterPreset\n* `CustomerProfileConfig` - CustomerProfileConfig\n* `Log` - Log\n* `LogsAlertConfiguration` - LogsAlertConfiguration\n* `LogsExclusionRule` - LogsExclusionRule\n* `DashboardWidget` - DashboardWidget\n* `ProductTour` - ProductTour\n* `Ticket` - Ticket\n* `InstanceSetting` - InstanceSetting"
+            "description": "Filter by a single activity scope, e.g. \"FeatureFlag\", \"Insight\", \"Dashboard\", \"Experiment\".\n\n* `Cohort` - Cohort\n* `FeatureFlag` - FeatureFlag\n* `Person` - Person\n* `Group` - Group\n* `Insight` - Insight\n* `Plugin` - Plugin\n* `PluginConfig` - PluginConfig\n* `HogFunction` - HogFunction\n* `HogFlow` - HogFlow\n* `DataManagement` - DataManagement\n* `EventDefinition` - EventDefinition\n* `PropertyDefinition` - PropertyDefinition\n* `Notebook` - Notebook\n* `Endpoint` - Endpoint\n* `EndpointVersion` - EndpointVersion\n* `Dashboard` - Dashboard\n* `Replay` - Replay\n* `Experiment` - Experiment\n* `ExperimentHoldout` - ExperimentHoldout\n* `ExperimentSavedMetric` - ExperimentSavedMetric\n* `Survey` - Survey\n* `EarlyAccessFeature` - EarlyAccessFeature\n* `SessionRecordingPlaylist` - SessionRecordingPlaylist\n* `Comment` - Comment\n* `Team` - Team\n* `Project` - Project\n* `ErrorTrackingIssue` - ErrorTrackingIssue\n* `DataWarehouseSavedQuery` - DataWarehouseSavedQuery\n* `LegalDocument` - LegalDocument\n* `Organization` - Organization\n* `OrganizationDomain` - OrganizationDomain\n* `OrganizationMembership` - OrganizationMembership\n* `Role` - Role\n* `UserGroup` - UserGroup\n* `BatchExport` - BatchExport\n* `BatchImport` - BatchImport\n* `Integration` - Integration\n* `Annotation` - Annotation\n* `Tag` - Tag\n* `TaggedItem` - TaggedItem\n* `Subscription` - Subscription\n* `PersonalAPIKey` - PersonalAPIKey\n* `ProjectSecretAPIKey` - ProjectSecretAPIKey\n* `User` - User\n* `Action` - Action\n* `AlertConfiguration` - AlertConfiguration\n* `Threshold` - Threshold\n* `AlertSubscription` - AlertSubscription\n* `ExternalDataSource` - ExternalDataSource\n* `ExternalDataSchema` - ExternalDataSchema\n* `Evaluation` - Evaluation\n* `LLMTrace` - LLMTrace\n* `WebAnalyticsFilterPreset` - WebAnalyticsFilterPreset\n* `CustomerProfileConfig` - CustomerProfileConfig\n* `Log` - Log\n* `LogsAlertConfiguration` - LogsAlertConfiguration\n* `LogsExclusionRule` - LogsExclusionRule\n* `DashboardWidget` - DashboardWidget\n* `ProductTour` - ProductTour\n* `Ticket` - Ticket\n* `InstanceSetting` - InstanceSetting\n* `SignalScoutConfig` - SignalScoutConfig"
           },
           {
             "in": "query",
@@ -48324,10 +48801,11 @@
                   "DashboardWidget",
                   "ProductTour",
                   "Ticket",
-                  "InstanceSetting"
+                  "InstanceSetting",
+                  "SignalScoutConfig"
                 ],
                 "type": "string",
-                "description": "* `Cohort` - Cohort\n* `FeatureFlag` - FeatureFlag\n* `Person` - Person\n* `Group` - Group\n* `Insight` - Insight\n* `Plugin` - Plugin\n* `PluginConfig` - PluginConfig\n* `HogFunction` - HogFunction\n* `HogFlow` - HogFlow\n* `DataManagement` - DataManagement\n* `EventDefinition` - EventDefinition\n* `PropertyDefinition` - PropertyDefinition\n* `Notebook` - Notebook\n* `Endpoint` - Endpoint\n* `EndpointVersion` - EndpointVersion\n* `Dashboard` - Dashboard\n* `Replay` - Replay\n* `Experiment` - Experiment\n* `ExperimentHoldout` - ExperimentHoldout\n* `ExperimentSavedMetric` - ExperimentSavedMetric\n* `Survey` - Survey\n* `EarlyAccessFeature` - EarlyAccessFeature\n* `SessionRecordingPlaylist` - SessionRecordingPlaylist\n* `Comment` - Comment\n* `Team` - Team\n* `Project` - Project\n* `ErrorTrackingIssue` - ErrorTrackingIssue\n* `DataWarehouseSavedQuery` - DataWarehouseSavedQuery\n* `LegalDocument` - LegalDocument\n* `Organization` - Organization\n* `OrganizationDomain` - OrganizationDomain\n* `OrganizationMembership` - OrganizationMembership\n* `Role` - Role\n* `UserGroup` - UserGroup\n* `BatchExport` - BatchExport\n* `BatchImport` - BatchImport\n* `Integration` - Integration\n* `Annotation` - Annotation\n* `Tag` - Tag\n* `TaggedItem` - TaggedItem\n* `Subscription` - Subscription\n* `PersonalAPIKey` - PersonalAPIKey\n* `ProjectSecretAPIKey` - ProjectSecretAPIKey\n* `User` - User\n* `Action` - Action\n* `AlertConfiguration` - AlertConfiguration\n* `Threshold` - Threshold\n* `AlertSubscription` - AlertSubscription\n* `ExternalDataSource` - ExternalDataSource\n* `ExternalDataSchema` - ExternalDataSchema\n* `Evaluation` - Evaluation\n* `LLMTrace` - LLMTrace\n* `WebAnalyticsFilterPreset` - WebAnalyticsFilterPreset\n* `CustomerProfileConfig` - CustomerProfileConfig\n* `Log` - Log\n* `LogsAlertConfiguration` - LogsAlertConfiguration\n* `LogsExclusionRule` - LogsExclusionRule\n* `DashboardWidget` - DashboardWidget\n* `ProductTour` - ProductTour\n* `Ticket` - Ticket\n* `InstanceSetting` - InstanceSetting"
+                "description": "* `Cohort` - Cohort\n* `FeatureFlag` - FeatureFlag\n* `Person` - Person\n* `Group` - Group\n* `Insight` - Insight\n* `Plugin` - Plugin\n* `PluginConfig` - PluginConfig\n* `HogFunction` - HogFunction\n* `HogFlow` - HogFlow\n* `DataManagement` - DataManagement\n* `EventDefinition` - EventDefinition\n* `PropertyDefinition` - PropertyDefinition\n* `Notebook` - Notebook\n* `Endpoint` - Endpoint\n* `EndpointVersion` - EndpointVersion\n* `Dashboard` - Dashboard\n* `Replay` - Replay\n* `Experiment` - Experiment\n* `ExperimentHoldout` - ExperimentHoldout\n* `ExperimentSavedMetric` - ExperimentSavedMetric\n* `Survey` - Survey\n* `EarlyAccessFeature` - EarlyAccessFeature\n* `SessionRecordingPlaylist` - SessionRecordingPlaylist\n* `Comment` - Comment\n* `Team` - Team\n* `Project` - Project\n* `ErrorTrackingIssue` - ErrorTrackingIssue\n* `DataWarehouseSavedQuery` - DataWarehouseSavedQuery\n* `LegalDocument` - LegalDocument\n* `Organization` - Organization\n* `OrganizationDomain` - OrganizationDomain\n* `OrganizationMembership` - OrganizationMembership\n* `Role` - Role\n* `UserGroup` - UserGroup\n* `BatchExport` - BatchExport\n* `BatchImport` - BatchImport\n* `Integration` - Integration\n* `Annotation` - Annotation\n* `Tag` - Tag\n* `TaggedItem` - TaggedItem\n* `Subscription` - Subscription\n* `PersonalAPIKey` - PersonalAPIKey\n* `ProjectSecretAPIKey` - ProjectSecretAPIKey\n* `User` - User\n* `Action` - Action\n* `AlertConfiguration` - AlertConfiguration\n* `Threshold` - Threshold\n* `AlertSubscription` - AlertSubscription\n* `ExternalDataSource` - ExternalDataSource\n* `ExternalDataSchema` - ExternalDataSchema\n* `Evaluation` - Evaluation\n* `LLMTrace` - LLMTrace\n* `WebAnalyticsFilterPreset` - WebAnalyticsFilterPreset\n* `CustomerProfileConfig` - CustomerProfileConfig\n* `Log` - Log\n* `LogsAlertConfiguration` - LogsAlertConfiguration\n* `LogsExclusionRule` - LogsExclusionRule\n* `DashboardWidget` - DashboardWidget\n* `ProductTour` - ProductTour\n* `Ticket` - Ticket\n* `InstanceSetting` - InstanceSetting\n* `SignalScoutConfig` - SignalScoutConfig"
               }
             },
             "description": "Filter by multiple activity scopes, comma-separated. Values must be valid ActivityScope enum values. E.g. \"FeatureFlag,Insight\"."
@@ -56424,17 +56902,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/AddDashboardWidgetsBatchRequest"
+                "$ref": "#/components/schemas/AddDashboardWidgetsBatchRequestOpenApi"
               }
             },
             "application/x-www-form-urlencoded": {
               "schema": {
-                "$ref": "#/components/schemas/AddDashboardWidgetsBatchRequest"
+                "$ref": "#/components/schemas/AddDashboardWidgetsBatchRequestOpenApi"
               }
             },
             "multipart/form-data": {
               "schema": {
-                "$ref": "#/components/schemas/AddDashboardWidgetsBatchRequest"
+                "$ref": "#/components/schemas/AddDashboardWidgetsBatchRequestOpenApi"
               }
             }
           },
@@ -75683,6 +76161,7 @@
     "/api/projects/{project_id}/heatmap_screenshots/{id}/content/": {
       "get": {
         "operationId": "heatmap_screenshots_content_retrieve",
+        "description": "Fetch the rendered screenshot image (JPEG bytes) for a saved heatmap at a given viewport width. Returns 202 with the saved-heatmap metadata while the screenshot is still being generated.",
         "parameters": [
           {
             "in": "path",
@@ -75696,6 +76175,14 @@
           },
           {
             "$ref": "#/components/parameters/ProjectIdPath"
+          },
+          {
+            "in": "query",
+            "name": "width",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Viewport width (CSS pixels) to fetch. Defaults to 1024. If no exact render exists for this width the closest available one is returned."
           }
         ],
         "tags": [
@@ -75710,7 +76197,25 @@
         ],
         "responses": {
           "200": {
-            "description": "No response body"
+            "content": {
+              "image/jpeg": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            },
+            "description": ""
+          },
+          "202": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HeatmapScreenshotResponse"
+                }
+              }
+            },
+            "description": ""
           }
         },
         "x-product": [
@@ -75721,27 +76226,118 @@
     "/api/projects/{project_id}/heatmaps/": {
       "get": {
         "operationId": "heatmaps_list",
+        "description": "Aggregated heatmap interactions for a page. For type 'click'/'rageclick'/'mousemove' each result is a point with relative x, absolute client-y, and a count. For type 'scrolldepth' the response is scroll-depth buckets instead (cumulative reach down the page).",
         "parameters": [
           {
-            "name": "limit",
-            "required": false,
             "in": "query",
-            "description": "Number of results to return per page.",
+            "name": "aggregation",
             "schema": {
-              "type": "integer"
-            }
+              "enum": [
+                "unique_visitors",
+                "total_count"
+              ],
+              "type": "string",
+              "default": "total_count",
+              "minLength": 1
+            },
+            "description": "How to aggregate counts: 'total_count' (every interaction, default) or 'unique_visitors' (distinct people).\n\n* `unique_visitors` - unique_visitors\n* `total_count` - total_count"
           },
           {
-            "name": "offset",
-            "required": false,
             "in": "query",
-            "description": "The initial index from which to return the results.",
+            "name": "cohort_ids",
             "schema": {
-              "type": "integer"
-            }
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "description": "JSON array of cohort IDs (e.g. '[123, 456]') to restrict results to people in those cohorts. Feature-flagged; ignored when the cohort filter is not enabled for the caller."
+          },
+          {
+            "in": "query",
+            "name": "date_from",
+            "schema": {
+              "type": "string",
+              "default": "-7d",
+              "minLength": 1
+            },
+            "description": "Start of the window. Relative (e.g. '-7d', '-30d', '-1mStart') or an absolute 'YYYY-MM-DD' date. Defaults to '-7d'. Heatmap data is retained for 90 days."
+          },
+          {
+            "in": "query",
+            "name": "date_to",
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "End of the window, inclusive. Relative or absolute 'YYYY-MM-DD'. Defaults to today."
+          },
+          {
+            "in": "query",
+            "name": "filter_test_accounts",
+            "schema": {
+              "type": [
+                "boolean",
+                "null"
+              ]
+            },
+            "description": "When true, exclude sessions from internal/test accounts using the project's test-account filters."
+          },
+          {
+            "in": "query",
+            "name": "hide_zero_coordinates",
+            "schema": {
+              "type": "boolean",
+              "default": true
+            },
+            "description": "When true (default), drop interactions recorded at the (0, 0) origin, which are usually noise."
           },
           {
             "$ref": "#/components/parameters/ProjectIdPath"
+          },
+          {
+            "in": "query",
+            "name": "type",
+            "schema": {
+              "type": "string",
+              "default": "click",
+              "minLength": 1
+            },
+            "description": "The interaction type to return. One of: 'click' (default), 'rageclick', 'mousemove', or 'scrolldepth'. Scrolldepth returns scroll buckets instead of x/y coordinates."
+          },
+          {
+            "in": "query",
+            "name": "url_exact",
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "Match a single page by exact URL (trailing slash is ignored). Mutually exclusive with url_pattern."
+          },
+          {
+            "in": "query",
+            "name": "url_pattern",
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "Match pages by regex against the full current_url (anchored automatically). Use this to aggregate across query strings or path segments. Mutually exclusive with url_exact."
+          },
+          {
+            "in": "query",
+            "name": "viewport_width_max",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Only include interactions captured at a viewport at most this wide, in CSS pixels."
+          },
+          {
+            "in": "query",
+            "name": "viewport_width_min",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Only include interactions captured at a viewport at least this wide, in CSS pixels. Use with viewport_width_max to isolate a device class (e.g. 360-768 for mobile)."
           }
         ],
         "tags": [
@@ -75759,7 +76355,10 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PaginatedHeatmapsResponseList"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/HeatmapsResponse"
+                  }
                 }
               }
             },
@@ -75774,9 +76373,149 @@
     "/api/projects/{project_id}/heatmaps/events/": {
       "get": {
         "operationId": "heatmaps_events_retrieve",
+        "description": "Drill into the individual session interactions behind one or more heatmap coordinates. Pass the 'points' you want to inspect (from the heatmaps list response) to get the underlying per-session events, so you can jump to the session recordings that produced a hotspot.",
         "parameters": [
           {
+            "in": "query",
+            "name": "aggregation",
+            "schema": {
+              "enum": [
+                "unique_visitors",
+                "total_count"
+              ],
+              "type": "string",
+              "default": "total_count",
+              "minLength": 1
+            },
+            "description": "How to aggregate counts: 'total_count' (every interaction, default) or 'unique_visitors' (distinct people).\n\n* `unique_visitors` - unique_visitors\n* `total_count` - total_count"
+          },
+          {
+            "in": "query",
+            "name": "cohort_ids",
+            "schema": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "description": "JSON array of cohort IDs (e.g. '[123, 456]') to restrict results to people in those cohorts. Feature-flagged; ignored when the cohort filter is not enabled for the caller."
+          },
+          {
+            "in": "query",
+            "name": "date_from",
+            "schema": {
+              "type": "string",
+              "default": "-7d",
+              "minLength": 1
+            },
+            "description": "Start of the window. Relative (e.g. '-7d', '-30d', '-1mStart') or an absolute 'YYYY-MM-DD' date. Defaults to '-7d'. Heatmap data is retained for 90 days."
+          },
+          {
+            "in": "query",
+            "name": "date_to",
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "End of the window, inclusive. Relative or absolute 'YYYY-MM-DD'. Defaults to today."
+          },
+          {
+            "in": "query",
+            "name": "filter_test_accounts",
+            "schema": {
+              "type": [
+                "boolean",
+                "null"
+              ]
+            },
+            "description": "When true, exclude sessions from internal/test accounts using the project's test-account filters."
+          },
+          {
+            "in": "query",
+            "name": "hide_zero_coordinates",
+            "schema": {
+              "type": "boolean",
+              "default": true
+            },
+            "description": "When true (default), drop interactions recorded at the (0, 0) origin, which are usually noise."
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 50
+            },
+            "description": "Maximum interactions to return (1-100)."
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            },
+            "description": "Number of interactions to skip, for pagination."
+          },
+          {
+            "in": "query",
+            "name": "points",
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "JSON array of the heatmap coordinates to drill into, e.g. '[{\"x\": 0.5, \"y\": 100}]'. Each point needs 'x' (relative x, 0..1) and 'y' (absolute client-y pixels) matching values returned by the heatmaps list endpoint; an optional 'target_fixed' boolean matches fixed-position elements. Returns the individual session interactions behind those spots.",
+            "required": true
+          },
+          {
             "$ref": "#/components/parameters/ProjectIdPath"
+          },
+          {
+            "in": "query",
+            "name": "type",
+            "schema": {
+              "type": "string",
+              "default": "click",
+              "minLength": 1
+            },
+            "description": "The interaction type to return. One of: 'click' (default), 'rageclick', 'mousemove', or 'scrolldepth'. Scrolldepth returns scroll buckets instead of x/y coordinates."
+          },
+          {
+            "in": "query",
+            "name": "url_exact",
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "Match a single page by exact URL (trailing slash is ignored). Mutually exclusive with url_pattern."
+          },
+          {
+            "in": "query",
+            "name": "url_pattern",
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "Match pages by regex against the full current_url (anchored automatically). Use this to aggregate across query strings or path segments. Mutually exclusive with url_exact."
+          },
+          {
+            "in": "query",
+            "name": "viewport_width_max",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Only include interactions captured at a viewport at most this wide, in CSS pixels."
+          },
+          {
+            "in": "query",
+            "name": "viewport_width_min",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Only include interactions captured at a viewport at least this wide, in CSS pixels. Use with viewport_width_max to isolate a device class (e.g. 360-768 for mobile)."
           }
         ],
         "tags": [
@@ -75791,7 +76530,14 @@
         ],
         "responses": {
           "200": {
-            "description": "No response body"
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HeatmapEventsResponse"
+                }
+              }
+            },
+            "description": ""
           }
         },
         "x-product": [
@@ -79871,6 +80617,7 @@
                 "google-cloud-service-account",
                 "google-cloud-storage",
                 "google-pubsub",
+                "google-search-console",
                 "google-sheets",
                 "hubspot",
                 "intercom",
@@ -79891,7 +80638,7 @@
                 "vercel"
               ]
             },
-            "description": "* `anthropic` - Anthropic\n* `apns` - Apple Push\n* `azure-blob` - Azure Blob\n* `bing-ads` - Bing Ads\n* `clickup` - Clickup\n* `customerio-app` - Customerio App\n* `customerio-track` - Customerio Track\n* `customerio-webhook` - Customerio Webhook\n* `databricks` - Databricks\n* `email` - Email\n* `firebase` - Firebase\n* `github` - Github\n* `gitlab` - Gitlab\n* `google-ads` - Google Ads\n* `google-cloud-service-account` - Google Cloud Service Account\n* `google-cloud-storage` - Google Cloud Storage\n* `google-pubsub` - Google Pubsub\n* `google-sheets` - Google Sheets\n* `hubspot` - Hubspot\n* `intercom` - Intercom\n* `jira` - Jira\n* `linear` - Linear\n* `linkedin-ads` - Linkedin Ads\n* `meta-ads` - Meta Ads\n* `pinterest-ads` - Pinterest Ads\n* `postgresql` - Postgresql\n* `reddit-ads` - Reddit Ads\n* `salesforce` - Salesforce\n* `slack` - Slack\n* `slack-posthog-code` - Slack Posthog Code\n* `snapchat` - Snapchat\n* `stripe` - Stripe\n* `tiktok-ads` - Tiktok Ads\n* `twilio` - Twilio\n* `vercel` - Vercel"
+            "description": "* `anthropic` - Anthropic\n* `apns` - Apple Push\n* `azure-blob` - Azure Blob\n* `bing-ads` - Bing Ads\n* `clickup` - Clickup\n* `customerio-app` - Customerio App\n* `customerio-track` - Customerio Track\n* `customerio-webhook` - Customerio Webhook\n* `databricks` - Databricks\n* `email` - Email\n* `firebase` - Firebase\n* `github` - Github\n* `gitlab` - Gitlab\n* `google-ads` - Google Ads\n* `google-cloud-service-account` - Google Cloud Service Account\n* `google-cloud-storage` - Google Cloud Storage\n* `google-pubsub` - Google Pubsub\n* `google-search-console` - Google Search Console\n* `google-sheets` - Google Sheets\n* `hubspot` - Hubspot\n* `intercom` - Intercom\n* `jira` - Jira\n* `linear` - Linear\n* `linkedin-ads` - Linkedin Ads\n* `meta-ads` - Meta Ads\n* `pinterest-ads` - Pinterest Ads\n* `postgresql` - Postgresql\n* `reddit-ads` - Reddit Ads\n* `salesforce` - Salesforce\n* `slack` - Slack\n* `slack-posthog-code` - Slack Posthog Code\n* `snapchat` - Snapchat\n* `stripe` - Stripe\n* `tiktok-ads` - Tiktok Ads\n* `twilio` - Twilio\n* `vercel` - Vercel"
           },
           {
             "name": "limit",
@@ -93685,7 +94432,7 @@
                 "null"
               ]
             },
-            "description": "Whether to return only properties for events in `event_names`"
+            "description": "Whether to return only properties for events in `event_names`. Note: this event scoping does not apply to feature flag properties ($feature/*), which are global and not tracked per-event; to retrieve feature flags use is_feature_flag=true instead."
           },
           {
             "in": "query",
@@ -93704,7 +94451,7 @@
                 "null"
               ]
             },
-            "description": "Whether to return only (or excluding) feature flag properties"
+            "description": "Whether to return only (or excluding) feature flag properties ($feature/*). Flags are global, not per-event, so they can't be scoped by event_names/filter_by_event_names — pass is_feature_flag=true to list them all."
           },
           {
             "in": "query",
@@ -94723,27 +95470,72 @@
     "/api/projects/{project_id}/saved/": {
       "get": {
         "operationId": "saved_list",
+        "description": "List saved heatmaps for the project. A saved heatmap pins a page URL and a set of viewport widths, and (for type 'screenshot') renders the page so heatmap data can be overlaid on it.",
         "parameters": [
           {
-            "name": "limit",
-            "required": false,
             "in": "query",
-            "description": "Number of results to return per page.",
+            "name": "created_by",
             "schema": {
               "type": "integer"
-            }
+            },
+            "description": "Filter by the creating user's ID."
           },
           {
-            "name": "offset",
-            "required": false,
             "in": "query",
-            "description": "The initial index from which to return the results.",
+            "name": "limit",
             "schema": {
-              "type": "integer"
-            }
+              "type": "integer",
+              "default": 100
+            },
+            "description": "Maximum saved heatmaps to return."
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "schema": {
+              "type": "integer",
+              "default": 0
+            },
+            "description": "Number to skip, for pagination."
+          },
+          {
+            "in": "query",
+            "name": "order",
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "Field to order by, e.g. '-updated_at' (default) or 'created_at'."
           },
           {
             "$ref": "#/components/parameters/ProjectIdPath"
+          },
+          {
+            "in": "query",
+            "name": "search",
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "Case-insensitive substring match on URL or name."
+          },
+          {
+            "in": "query",
+            "name": "status",
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "Filter by generation status: 'processing', 'completed', or 'failed'."
+          },
+          {
+            "in": "query",
+            "name": "type",
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "Filter by render mode: 'screenshot', 'iframe', or 'recording'."
           }
         ],
         "tags": [
@@ -94761,7 +95553,10 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PaginatedHeatmapScreenshotResponseList"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SavedHeatmapListResponse"
+                  }
                 }
               }
             },
@@ -94774,6 +95569,7 @@
       },
       "post": {
         "operationId": "saved_create",
+        "description": "Create a saved heatmap for a page URL. For type 'screenshot' (the default) this enqueues a headless render of the page at each target width; poll the saved heatmap or its content endpoint until status is 'completed'. Provide 'widths' to control which viewport widths are rendered.",
         "parameters": [
           {
             "$ref": "#/components/parameters/ProjectIdPath"
@@ -94786,17 +95582,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/HeatmapScreenshotResponse"
+                "$ref": "#/components/schemas/SavedHeatmapRequest"
               }
             },
             "application/x-www-form-urlencoded": {
               "schema": {
-                "$ref": "#/components/schemas/HeatmapScreenshotResponse"
+                "$ref": "#/components/schemas/SavedHeatmapRequest"
               }
             },
             "multipart/form-data": {
               "schema": {
-                "$ref": "#/components/schemas/HeatmapScreenshotResponse"
+                "$ref": "#/components/schemas/SavedHeatmapRequest"
               }
             }
           },
@@ -94829,6 +95625,7 @@
     "/api/projects/{project_id}/saved/{short_id}/": {
       "get": {
         "operationId": "saved_retrieve",
+        "description": "Get a single saved heatmap by its short_id, including per-width render status.",
         "parameters": [
           {
             "$ref": "#/components/parameters/ProjectIdPath"
@@ -94870,6 +95667,7 @@
       },
       "patch": {
         "operationId": "saved_partial_update",
+        "description": "Update a saved heatmap (e.g. rename, change widths, or soft-delete via 'deleted'). Changing the URL of a 'screenshot' heatmap triggers a re-render.",
         "parameters": [
           {
             "$ref": "#/components/parameters/ProjectIdPath"
@@ -94890,17 +95688,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/PatchedHeatmapScreenshotResponse"
+                "$ref": "#/components/schemas/PatchedSavedHeatmapRequest"
               }
             },
             "application/x-www-form-urlencoded": {
               "schema": {
-                "$ref": "#/components/schemas/PatchedHeatmapScreenshotResponse"
+                "$ref": "#/components/schemas/PatchedSavedHeatmapRequest"
               }
             },
             "multipart/form-data": {
               "schema": {
-                "$ref": "#/components/schemas/PatchedHeatmapScreenshotResponse"
+                "$ref": "#/components/schemas/PatchedSavedHeatmapRequest"
               }
             }
           }
@@ -94967,6 +95765,7 @@
     "/api/projects/{project_id}/saved/{short_id}/regenerate/": {
       "post": {
         "operationId": "saved_regenerate_create",
+        "description": "Re-run screenshot generation for a saved heatmap of type 'screenshot'. Clears existing renders and re-renders at every target width; status returns to 'processing'.",
         "parameters": [
           {
             "$ref": "#/components/parameters/ProjectIdPath"
@@ -94983,29 +95782,19 @@
         "tags": [
           "saved"
         ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/HeatmapScreenshotResponse"
-              }
-            },
-            "application/x-www-form-urlencoded": {
-              "schema": {
-                "$ref": "#/components/schemas/HeatmapScreenshotResponse"
-              }
-            },
-            "multipart/form-data": {
-              "schema": {
-                "$ref": "#/components/schemas/HeatmapScreenshotResponse"
-              }
-            }
-          },
-          "required": true
-        },
         "responses": {
           "200": {
-            "description": "No response body"
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HeatmapScreenshotResponse"
+                }
+              }
+            },
+            "description": ""
+          },
+          "400": {
+            "description": "Not a screenshot"
           }
         },
         "x-product": [
@@ -96823,6 +97612,14 @@
             "description": "Comma-separated ordering clauses. Each clause is a field name optionally prefixed with '-' for descending. Allowed fields: status, is_suggested_reviewer, signal_count, total_weight, priority, created_at, updated_at, id. Defaults to '-is_suggested_reviewer,status,-updated_at'."
           },
           {
+            "in": "query",
+            "name": "priority",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Comma-separated list of priorities to include. Valid values: P0, P1, P2, P3, P4. Reports without a priority assignment are excluded when this filter is set."
+          },
+          {
             "$ref": "#/components/parameters/ProjectIdPath"
           },
           {
@@ -97004,6 +97801,125 @@
               }
             },
             "description": ""
+          }
+        },
+        "x-product": [
+          "signals"
+        ]
+      }
+    },
+    "/api/projects/{project_id}/signals/scout/configs/": {
+      "get": {
+        "operationId": "signals_scout_config_list",
+        "description": "List the per-(team, skill) scout configs for this project — schedule (`run_interval_minutes`), `enabled`, and `emit` posture per scout.",
+        "summary": "List scout configs",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "signals"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "signal_scout:read"
+            ]
+          },
+          {
+            "PersonalAPIKeyAuth": [
+              "signal_scout:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SignalScoutConfig"
+                  }
+                }
+              }
+            },
+            "description": "Per-scout configs for this project, ordered by skill name."
+          }
+        },
+        "x-product": [
+          "signals"
+        ]
+      }
+    },
+    "/api/projects/{project_id}/signals/scout/configs/{id}/": {
+      "patch": {
+        "operationId": "signals_scout_config_update",
+        "description": "Tune one scout: change its schedule (`run_interval_minutes`), `enabled`, or `emit` (dry-run) posture. `skill_name` is fixed. Enabling records `enabled_by` and is activity-logged since it drives spend.",
+        "summary": "Update a scout config",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "A UUID string identifying this Signal scout config.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "signals"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchedSignalScoutConfig"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchedSignalScoutConfig"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchedSignalScoutConfig"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "signal_scout:write"
+            ]
+          },
+          {
+            "PersonalAPIKeyAuth": [
+              "signal_scout:write"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SignalScoutConfig"
+                }
+              }
+            },
+            "description": "Updated config."
+          },
+          "404": {
+            "description": "Config not found for this project."
           }
         },
         "x-product": [
@@ -104684,6 +105600,14 @@
         "operationId": "user_interviews_list",
         "parameters": [
           {
+            "in": "query",
+            "name": "classifications",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Comma-separated classifications; returns responses carrying any of them (OR). Valid values: abandoned, off-topic."
+          },
+          {
             "name": "limit",
             "required": false,
             "in": "query",
@@ -105065,15 +105989,21 @@
               "enum": [
                 "-completed_at",
                 "-created_at",
+                "-result_score",
+                "-result_verdict",
+                "-scanner_version",
                 "-started_at",
                 "-status",
                 "completed_at",
                 "created_at",
+                "result_score",
+                "result_verdict",
+                "scanner_version",
                 "started_at",
                 "status"
               ]
             },
-            "description": "Sort observations by created_at, started_at, completed_at, or status. Prefix with `-` for descending."
+            "description": "Sort observations. Plain keys: created_at, started_at, completed_at, status. JSONB keys: result_score (scorer), result_verdict (monitor), scanner_version. Prefix with `-` for descending."
           },
           {
             "$ref": "#/components/parameters/ProjectIdPath"
@@ -105205,6 +106135,14 @@
         "parameters": [
           {
             "in": "query",
+            "name": "created_by",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter to scanners created by the given user IDs (comma-separated)."
+          },
+          {
+            "in": "query",
             "name": "emits_signals",
             "schema": {
               "type": "boolean"
@@ -105215,9 +106153,9 @@
             "in": "query",
             "name": "enabled",
             "schema": {
-              "type": "boolean"
+              "type": "string"
             },
-            "description": "Filter to enabled vs disabled scanners."
+            "description": "Filter by enabled state. Accepts a comma-separated list of `enabled`/`disabled`."
           },
           {
             "name": "limit",
@@ -105244,16 +106182,22 @@
               "type": "string",
               "enum": [
                 "-created_at",
+                "-created_by",
+                "-enabled",
                 "-name",
+                "-sampling_rate",
                 "-scanner_type",
                 "-updated_at",
                 "created_at",
+                "created_by",
+                "enabled",
                 "name",
+                "sampling_rate",
                 "scanner_type",
                 "updated_at"
               ]
             },
-            "description": "Sort scanners by name, created_at, updated_at, or scanner_type. Prefix with `-` for descending."
+            "description": "Sort scanners by name, created_at, updated_at, scanner_type, enabled, sampling_rate, or created_by. Prefix with `-` for descending."
           },
           {
             "$ref": "#/components/parameters/ProjectIdPath"
@@ -105262,15 +106206,17 @@
             "in": "query",
             "name": "scanner_type",
             "schema": {
-              "type": "string",
-              "enum": [
-                "classifier",
-                "monitor",
-                "scorer",
-                "summarizer"
-              ]
+              "type": "string"
             },
-            "description": "Filter by scanner type (monitor, classifier, scorer, summarizer).\n\n* `monitor` - Monitor\n* `classifier` - Classifier\n* `scorer` - Scorer\n* `summarizer` - Summarizer"
+            "description": "Filter by scanner type (monitor, classifier, scorer, summarizer). Accepts a comma-separated list."
+          },
+          {
+            "in": "query",
+            "name": "search",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Case-insensitive substring match across name, description, and the prompt in scanner_config."
           }
         ],
         "tags": [
@@ -105600,15 +106546,21 @@
               "enum": [
                 "-completed_at",
                 "-created_at",
+                "-result_score",
+                "-result_verdict",
+                "-scanner_version",
                 "-started_at",
                 "-status",
                 "completed_at",
                 "created_at",
+                "result_score",
+                "result_verdict",
+                "scanner_version",
                 "started_at",
                 "status"
               ]
             },
-            "description": "Sort observations by created_at, started_at, completed_at, or status. Prefix with `-` for descending."
+            "description": "Sort observations. Plain keys: created_at, started_at, completed_at, status. JSONB keys: result_score (scorer), result_verdict (monitor), scanner_version. Prefix with `-` for descending."
           },
           {
             "$ref": "#/components/parameters/ProjectIdPath"
@@ -105634,28 +106586,33 @@
             "in": "query",
             "name": "status",
             "schema": {
-              "type": "string",
-              "enum": [
-                "failed",
-                "ineligible",
-                "pending",
-                "running",
-                "succeeded"
-              ]
+              "type": "string"
             },
-            "description": "Filter by observation status.\n\n* `pending` - Pending\n* `running` - Running\n* `succeeded` - Succeeded\n* `failed` - Failed\n* `ineligible` - Ineligible"
+            "description": "Filter by observation status. Accepts a comma-separated list."
+          },
+          {
+            "in": "query",
+            "name": "tags",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter classifier observations whose fixed or freeform tags include any of the given values (comma-separated). Matches if the tag appears in either `tags` or `tags_freeform`."
           },
           {
             "in": "query",
             "name": "triggered_by",
             "schema": {
-              "type": "string",
-              "enum": [
-                "on_demand",
-                "schedule"
-              ]
+              "type": "string"
             },
-            "description": "Filter by trigger source (schedule or on_demand).\n\n* `schedule` - Schedule\n* `on_demand` - On demand"
+            "description": "Filter by trigger source (schedule or on_demand). Accepts a comma-separated list."
+          },
+          {
+            "in": "query",
+            "name": "verdict",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter monitor observations by verdict. Accepts a comma-separated list (e.g. `yes,inconclusive`)."
           }
         ],
         "tags": [
@@ -105731,6 +106688,128 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ReplayObservation"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "replay_vision"
+        ]
+      }
+    },
+    "/api/projects/{project_id}/vision/scanners/{scanner_id}/observations/stats/": {
+      "get": {
+        "operationId": "vision_scanners_observations_stats_retrieve",
+        "description": "Aggregate counts and per-scanner-type distributions over the filtered observation set. Same filters as the list endpoint apply.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          },
+          {
+            "in": "path",
+            "name": "scanner_id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "required": true
+          },
+          {
+            "in": "query",
+            "name": "session_id",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter to observations of a specific session recording."
+          },
+          {
+            "in": "query",
+            "name": "status",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter by observation status. Accepts a comma-separated list."
+          },
+          {
+            "in": "query",
+            "name": "tags",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter classifier observations whose fixed or freeform tags include any of the given values (comma-separated). Matches if the tag appears in either `tags` or `tags_freeform`."
+          },
+          {
+            "in": "query",
+            "name": "triggered_by",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter by trigger source (schedule or on_demand). Accepts a comma-separated list."
+          },
+          {
+            "in": "query",
+            "name": "verdict",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter monitor observations by verdict. Accepts a comma-separated list (e.g. `yes,inconclusive`)."
+          }
+        ],
+        "tags": [
+          "vision"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "replay_scanner:read",
+              "session_recording:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ObservationStats"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "replay_vision"
+        ]
+      }
+    },
+    "/api/projects/{project_id}/vision/scanners/creators/": {
+      "get": {
+        "operationId": "vision_scanners_creators_retrieve",
+        "description": "Distinct creators across the team's scanners — feeds the `Created by` filter dropdown.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "vision"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "replay_scanner:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScannerCreatorsResponse"
                 }
               }
             },
@@ -114298,60 +115377,32 @@
         "type": "object"
       },
       "AddDashboardWidgetRequest": {
-        "type": "object",
-        "properties": {
-          "widget_type": {
-            "type": "string",
-            "description": "Widget type identifier. Supported values: error_tracking_list, session_replay_list. Use dashboard-widget-catalog-list for config_schema_hints per type.",
-            "maxLength": 64
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/ErrorTrackingListWidgetAddRequestOpenApi"
           },
-          "config": {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/DashboardWidgetConfig"
-              }
-            ],
-            "description": "Widget-specific configuration. Shape depends on widget_type; see dashboard-widget-catalog-list for config_schema_hints. Supported types: error_tracking_list, session_replay_list."
-          },
-          "name": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "description": "Optional custom display name for the widget tile.",
-            "maxLength": 400
-          },
-          "description": {
-            "type": "string",
-            "description": "Optional markdown description shown when show_description is enabled."
-          },
-          "layouts": {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/TileLayouts"
-              }
-            ],
-            "description": "Optional react-grid-layout positions keyed by breakpoint (sm, xs)."
-          },
-          "show_description": {
-            "type": "boolean",
-            "description": "Whether to show the description on the dashboard tile."
+          {
+            "$ref": "#/components/schemas/SessionReplayListWidgetAddRequestOpenApi"
           }
-        },
-        "required": [
-          "config",
-          "widget_type"
-        ]
+        ],
+        "discriminator": {
+          "propertyName": "widget_type",
+          "mapping": {
+            "error_tracking_list": "#/components/schemas/ErrorTrackingListWidgetAddRequestOpenApi",
+            "session_replay_list": "#/components/schemas/SessionReplayListWidgetAddRequestOpenApi"
+          }
+        }
       },
-      "AddDashboardWidgetsBatchRequest": {
+      "AddDashboardWidgetsBatchRequestOpenApi": {
         "type": "object",
+        "description": "OpenAPI-only batch-add schema with widget_type-discriminated config shapes for agents.",
         "properties": {
           "widgets": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/AddDashboardWidgetRequest"
             },
-            "description": "Widget tiles to add atomically (1–10). Use a single-element list to add one widget.",
+            "description": "Widget tiles to add atomically. Supported widget_type values: error_tracking_list, session_replay_list. Use dashboard-widget-catalog-list for config_schema_hints per type. (1–10 per request).",
             "maxItems": 10,
             "minItems": 1
           }
@@ -119469,6 +120520,42 @@
           "name"
         ]
       },
+      "ClassificationsEnum": {
+        "enum": [
+          "abandoned",
+          "off-topic"
+        ],
+        "type": "string",
+        "description": "* `abandoned` - Abandoned\n* `off-topic` - Off-topic"
+      },
+      "ClassifierStats": {
+        "type": "object",
+        "properties": {
+          "fixed_ranked": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TagCount"
+            },
+            "description": "Top fixed-vocabulary tags by emission count."
+          },
+          "freeform_ranked": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TagCount"
+            },
+            "description": "Top freeform tags by emission count."
+          },
+          "total_with_tags": {
+            "type": "integer",
+            "description": "Succeeded observations that emitted at least one tag."
+          }
+        },
+        "required": [
+          "fixed_ranked",
+          "freeform_ranked",
+          "total_with_tags"
+        ]
+      },
       "ClaudeRuntimeAdapterEnum": {
         "enum": [
           "claude"
@@ -122155,6 +123242,28 @@
         ],
         "title": "CountPerActorMathType",
         "type": "string"
+      },
+      "CoverageStats": {
+        "type": "object",
+        "properties": {
+          "recent_sessions": {
+            "type": "integer",
+            "description": "Distinct sessions observed within the last `recent_days` days."
+          },
+          "total_sessions": {
+            "type": "integer",
+            "description": "Distinct sessions observed overall."
+          },
+          "recent_days": {
+            "type": "integer",
+            "description": "Window size in days used for `recent_sessions`."
+          }
+        },
+        "required": [
+          "recent_days",
+          "recent_sessions",
+          "total_sessions"
+        ]
       },
       "CrawlModeEnum": {
         "enum": [
@@ -126680,7 +127789,7 @@
                 "$ref": "#/components/schemas/ExternalDataSourceTypeEnum"
               }
             ],
-            "description": "The source type to validate against.\n\n* `Ashby` - Ashby\n* `Supabase` - Supabase\n* `CustomerIO` - CustomerIO\n* `Github` - Github\n* `Stripe` - Stripe\n* `Hubspot` - Hubspot\n* `Postgres` - Postgres\n* `Zendesk` - Zendesk\n* `Snowflake` - Snowflake\n* `Salesforce` - Salesforce\n* `MySQL` - MySQL\n* `MongoDB` - MongoDB\n* `MSSQL` - MSSQL\n* `Vitally` - Vitally\n* `BigQuery` - BigQuery\n* `Chargebee` - Chargebee\n* `Clerk` - Clerk\n* `GoogleAds` - GoogleAds\n* `TemporalIO` - TemporalIO\n* `DoIt` - DoIt\n* `GoogleSheets` - GoogleSheets\n* `MetaAds` - MetaAds\n* `Klaviyo` - Klaviyo\n* `Mailchimp` - Mailchimp\n* `Braze` - Braze\n* `Mailjet` - Mailjet\n* `Redshift` - Redshift\n* `Polar` - Polar\n* `RevenueCat` - RevenueCat\n* `LinkedinAds` - LinkedinAds\n* `RedditAds` - RedditAds\n* `TikTokAds` - TikTokAds\n* `BingAds` - BingAds\n* `Shopify` - Shopify\n* `Attio` - Attio\n* `SnapchatAds` - SnapchatAds\n* `Linear` - Linear\n* `Intercom` - Intercom\n* `Amplitude` - Amplitude\n* `Mixpanel` - Mixpanel\n* `Jira` - Jira\n* `ActiveCampaign` - ActiveCampaign\n* `Marketo` - Marketo\n* `Adjust` - Adjust\n* `AppsFlyer` - AppsFlyer\n* `Freshdesk` - Freshdesk\n* `GoogleAnalytics` - GoogleAnalytics\n* `Pipedrive` - Pipedrive\n* `SendGrid` - SendGrid\n* `Slack` - Slack\n* `PagerDuty` - PagerDuty\n* `Asana` - Asana\n* `Notion` - Notion\n* `Airtable` - Airtable\n* `Greenhouse` - Greenhouse\n* `BambooHR` - BambooHR\n* `Lever` - Lever\n* `GitLab` - GitLab\n* `Datadog` - Datadog\n* `Sentry` - Sentry\n* `Pendo` - Pendo\n* `FullStory` - FullStory\n* `AmazonAds` - AmazonAds\n* `PinterestAds` - PinterestAds\n* `AppleSearchAds` - AppleSearchAds\n* `QuickBooks` - QuickBooks\n* `Xero` - Xero\n* `NetSuite` - NetSuite\n* `WooCommerce` - WooCommerce\n* `BigCommerce` - BigCommerce\n* `PayPal` - PayPal\n* `Square` - Square\n* `Zoom` - Zoom\n* `Trello` - Trello\n* `Monday` - Monday\n* `ClickUp` - ClickUp\n* `Confluence` - Confluence\n* `Recurly` - Recurly\n* `SalesLoft` - SalesLoft\n* `Outreach` - Outreach\n* `Gong` - Gong\n* `Calendly` - Calendly\n* `Typeform` - Typeform\n* `Iterable` - Iterable\n* `ZohoCRM` - ZohoCRM\n* `Close` - Close\n* `Oracle` - Oracle\n* `DynamoDB` - DynamoDB\n* `Elasticsearch` - Elasticsearch\n* `Kafka` - Kafka\n* `LaunchDarkly` - LaunchDarkly\n* `Braintree` - Braintree\n* `Recharge` - Recharge\n* `HelpScout` - HelpScout\n* `Gorgias` - Gorgias\n* `Instagram` - Instagram\n* `YouTubeAnalytics` - YouTubeAnalytics\n* `FacebookPages` - FacebookPages\n* `TwitterAds` - TwitterAds\n* `Workday` - Workday\n* `ServiceNow` - ServiceNow\n* `Pardot` - Pardot\n* `Copper` - Copper\n* `Front` - Front\n* `ChartMogul` - ChartMogul\n* `Zuora` - Zuora\n* `Paddle` - Paddle\n* `CircleCI` - CircleCI\n* `CockroachDB` - CockroachDB\n* `Firebase` - Firebase\n* `AzureBlob` - AzureBlob\n* `GoogleDrive` - GoogleDrive\n* `OneDrive` - OneDrive\n* `SharePoint` - SharePoint\n* `Box` - Box\n* `SFTP` - SFTP\n* `MicrosoftTeams` - MicrosoftTeams\n* `Aircall` - Aircall\n* `Webflow` - Webflow\n* `Okta` - Okta\n* `Auth0` - Auth0\n* `Productboard` - Productboard\n* `Smartsheet` - Smartsheet\n* `Wrike` - Wrike\n* `Plaid` - Plaid\n* `SurveyMonkey` - SurveyMonkey\n* `Eventbrite` - Eventbrite\n* `RingCentral` - RingCentral\n* `Twilio` - Twilio\n* `Freshsales` - Freshsales\n* `Shortcut` - Shortcut\n* `ConvertKit` - ConvertKit\n* `Drip` - Drip\n* `CampaignMonitor` - CampaignMonitor\n* `MailerLite` - MailerLite\n* `Omnisend` - Omnisend\n* `Brevo` - Brevo\n* `Postmark` - Postmark\n* `Granola` - Granola\n* `BuildBetter` - BuildBetter\n* `Convex` - Convex\n* `ClickHouse` - ClickHouse\n* `Plain` - Plain\n* `Resend` - Resend\n* `PgAnalyze` - PgAnalyze\n* `WorkOS` - WorkOS\n* `Custom` - Custom"
+            "description": "The source type to validate against.\n\n* `Ashby` - Ashby\n* `Supabase` - Supabase\n* `CustomerIO` - CustomerIO\n* `Github` - Github\n* `Stripe` - Stripe\n* `Hubspot` - Hubspot\n* `Postgres` - Postgres\n* `Zendesk` - Zendesk\n* `Snowflake` - Snowflake\n* `Salesforce` - Salesforce\n* `MySQL` - MySQL\n* `MongoDB` - MongoDB\n* `MSSQL` - MSSQL\n* `Vitally` - Vitally\n* `BigQuery` - BigQuery\n* `Chargebee` - Chargebee\n* `Clerk` - Clerk\n* `GoogleAds` - GoogleAds\n* `GoogleSearchConsole` - GoogleSearchConsole\n* `TemporalIO` - TemporalIO\n* `DoIt` - DoIt\n* `GoogleSheets` - GoogleSheets\n* `MetaAds` - MetaAds\n* `Klaviyo` - Klaviyo\n* `Mailchimp` - Mailchimp\n* `Braze` - Braze\n* `Mailjet` - Mailjet\n* `Redshift` - Redshift\n* `Polar` - Polar\n* `RevenueCat` - RevenueCat\n* `LinkedinAds` - LinkedinAds\n* `RedditAds` - RedditAds\n* `TikTokAds` - TikTokAds\n* `BingAds` - BingAds\n* `Shopify` - Shopify\n* `Attio` - Attio\n* `SnapchatAds` - SnapchatAds\n* `Linear` - Linear\n* `Intercom` - Intercom\n* `Amplitude` - Amplitude\n* `Mixpanel` - Mixpanel\n* `Jira` - Jira\n* `ActiveCampaign` - ActiveCampaign\n* `Marketo` - Marketo\n* `Adjust` - Adjust\n* `AppsFlyer` - AppsFlyer\n* `Freshdesk` - Freshdesk\n* `GoogleAnalytics` - GoogleAnalytics\n* `Pipedrive` - Pipedrive\n* `SendGrid` - SendGrid\n* `Slack` - Slack\n* `PagerDuty` - PagerDuty\n* `Asana` - Asana\n* `Notion` - Notion\n* `Airtable` - Airtable\n* `Greenhouse` - Greenhouse\n* `BambooHR` - BambooHR\n* `Lever` - Lever\n* `GitLab` - GitLab\n* `Datadog` - Datadog\n* `Sentry` - Sentry\n* `Pendo` - Pendo\n* `FullStory` - FullStory\n* `AmazonAds` - AmazonAds\n* `PinterestAds` - PinterestAds\n* `AppleSearchAds` - AppleSearchAds\n* `QuickBooks` - QuickBooks\n* `Xero` - Xero\n* `NetSuite` - NetSuite\n* `WooCommerce` - WooCommerce\n* `BigCommerce` - BigCommerce\n* `PayPal` - PayPal\n* `Square` - Square\n* `Zoom` - Zoom\n* `Trello` - Trello\n* `Monday` - Monday\n* `ClickUp` - ClickUp\n* `Confluence` - Confluence\n* `Recurly` - Recurly\n* `SalesLoft` - SalesLoft\n* `Outreach` - Outreach\n* `Gong` - Gong\n* `Calendly` - Calendly\n* `Typeform` - Typeform\n* `Iterable` - Iterable\n* `ZohoCRM` - ZohoCRM\n* `Close` - Close\n* `Oracle` - Oracle\n* `DynamoDB` - DynamoDB\n* `Elasticsearch` - Elasticsearch\n* `Kafka` - Kafka\n* `LaunchDarkly` - LaunchDarkly\n* `Braintree` - Braintree\n* `Recharge` - Recharge\n* `HelpScout` - HelpScout\n* `Gorgias` - Gorgias\n* `Instagram` - Instagram\n* `YouTubeAnalytics` - YouTubeAnalytics\n* `FacebookPages` - FacebookPages\n* `TwitterAds` - TwitterAds\n* `Workday` - Workday\n* `ServiceNow` - ServiceNow\n* `Pardot` - Pardot\n* `Copper` - Copper\n* `Front` - Front\n* `ChartMogul` - ChartMogul\n* `Zuora` - Zuora\n* `Paddle` - Paddle\n* `CircleCI` - CircleCI\n* `CockroachDB` - CockroachDB\n* `Firebase` - Firebase\n* `AzureBlob` - AzureBlob\n* `GoogleDrive` - GoogleDrive\n* `OneDrive` - OneDrive\n* `SharePoint` - SharePoint\n* `Box` - Box\n* `SFTP` - SFTP\n* `MicrosoftTeams` - MicrosoftTeams\n* `Aircall` - Aircall\n* `Webflow` - Webflow\n* `Okta` - Okta\n* `Auth0` - Auth0\n* `Productboard` - Productboard\n* `Smartsheet` - Smartsheet\n* `Wrike` - Wrike\n* `Plaid` - Plaid\n* `SurveyMonkey` - SurveyMonkey\n* `Eventbrite` - Eventbrite\n* `RingCentral` - RingCentral\n* `Twilio` - Twilio\n* `Freshsales` - Freshsales\n* `Shortcut` - Shortcut\n* `ConvertKit` - ConvertKit\n* `Drip` - Drip\n* `CampaignMonitor` - CampaignMonitor\n* `MailerLite` - MailerLite\n* `Omnisend` - Omnisend\n* `Brevo` - Brevo\n* `Postmark` - Postmark\n* `Granola` - Granola\n* `BuildBetter` - BuildBetter\n* `Convex` - Convex\n* `ClickHouse` - ClickHouse\n* `Plain` - Plain\n* `Resend` - Resend\n* `PgAnalyze` - PgAnalyze\n* `WorkOS` - WorkOS\n* `Custom` - Custom"
           }
         },
         "required": [
@@ -133157,6 +134266,57 @@
           }
         }
       },
+      "ErrorTrackingListWidgetAddRequestOpenApi": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Optional custom display name for the widget tile.",
+            "maxLength": 400
+          },
+          "description": {
+            "type": "string",
+            "description": "Optional markdown description shown when show_description is enabled."
+          },
+          "layouts": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/_WidgetTileLayoutsOpenApi"
+              }
+            ],
+            "description": "Optional react-grid-layout positions keyed by breakpoint (sm, xs)."
+          },
+          "show_description": {
+            "type": "boolean",
+            "description": "Whether to show the description on the dashboard tile."
+          },
+          "widget_type": {
+            "$ref": "#/components/schemas/ErrorTrackingListWidgetAddRequestOpenApiWidgetTypeEnum"
+          },
+          "config": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ErrorTrackingListWidgetConfig"
+              }
+            ],
+            "description": "Configuration for the error tracking list widget."
+          }
+        },
+        "required": [
+          "config",
+          "widget_type"
+        ]
+      },
+      "ErrorTrackingListWidgetAddRequestOpenApiWidgetTypeEnum": {
+        "enum": [
+          "error_tracking_list"
+        ],
+        "type": "string",
+        "description": "* `error_tracking_list` - error_tracking_list"
+      },
       "ErrorTrackingListWidgetConfig": {
         "type": "object",
         "properties": {
@@ -134804,7 +135964,11 @@
             "description": "Output config. For 'boolean' output_type: {allows_na} to permit N/A results."
           },
           "conditions": {
-            "description": "Optional trigger conditions to filter which events are evaluated. OR between condition sets, AND within each."
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EvaluationCondition"
+            },
+            "description": "Trigger conditions that filter which events are evaluated. OR between condition sets, AND within each. Each set is {id, rollout_percentage, properties[]} — `rollout_percentage` (0-100, defaults to 100) is the sampling field the dispatcher reads."
           },
           "model_configuration": {
             "oneOf": [
@@ -134849,6 +136013,36 @@
           "status",
           "status_reason",
           "updated_at"
+        ]
+      },
+      "EvaluationCondition": {
+        "type": "object",
+        "description": "A trigger condition set controlling which generations an evaluation runs on.",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Stable identifier for this condition set.",
+            "maxLength": 100
+          },
+          "rollout_percentage": {
+            "type": "number",
+            "format": "double",
+            "maximum": 100,
+            "minimum": 0,
+            "default": 100,
+            "description": "Percentage (0-100) of matching events to sample for this evaluation. Defaults to 100."
+          },
+          "properties": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": true
+            },
+            "description": "Property filters (event or person) that scope which generations match this condition set."
+          }
+        },
+        "required": [
+          "id"
         ]
       },
       "EvaluationConfig": {
@@ -142392,7 +143586,7 @@
                 "$ref": "#/components/schemas/ExternalDataSourceTypeEnum"
               }
             ],
-            "description": "The source type (e.g. 'Postgres', 'Stripe').\n\n* `Ashby` - Ashby\n* `Supabase` - Supabase\n* `CustomerIO` - CustomerIO\n* `Github` - Github\n* `Stripe` - Stripe\n* `Hubspot` - Hubspot\n* `Postgres` - Postgres\n* `Zendesk` - Zendesk\n* `Snowflake` - Snowflake\n* `Salesforce` - Salesforce\n* `MySQL` - MySQL\n* `MongoDB` - MongoDB\n* `MSSQL` - MSSQL\n* `Vitally` - Vitally\n* `BigQuery` - BigQuery\n* `Chargebee` - Chargebee\n* `Clerk` - Clerk\n* `GoogleAds` - GoogleAds\n* `TemporalIO` - TemporalIO\n* `DoIt` - DoIt\n* `GoogleSheets` - GoogleSheets\n* `MetaAds` - MetaAds\n* `Klaviyo` - Klaviyo\n* `Mailchimp` - Mailchimp\n* `Braze` - Braze\n* `Mailjet` - Mailjet\n* `Redshift` - Redshift\n* `Polar` - Polar\n* `RevenueCat` - RevenueCat\n* `LinkedinAds` - LinkedinAds\n* `RedditAds` - RedditAds\n* `TikTokAds` - TikTokAds\n* `BingAds` - BingAds\n* `Shopify` - Shopify\n* `Attio` - Attio\n* `SnapchatAds` - SnapchatAds\n* `Linear` - Linear\n* `Intercom` - Intercom\n* `Amplitude` - Amplitude\n* `Mixpanel` - Mixpanel\n* `Jira` - Jira\n* `ActiveCampaign` - ActiveCampaign\n* `Marketo` - Marketo\n* `Adjust` - Adjust\n* `AppsFlyer` - AppsFlyer\n* `Freshdesk` - Freshdesk\n* `GoogleAnalytics` - GoogleAnalytics\n* `Pipedrive` - Pipedrive\n* `SendGrid` - SendGrid\n* `Slack` - Slack\n* `PagerDuty` - PagerDuty\n* `Asana` - Asana\n* `Notion` - Notion\n* `Airtable` - Airtable\n* `Greenhouse` - Greenhouse\n* `BambooHR` - BambooHR\n* `Lever` - Lever\n* `GitLab` - GitLab\n* `Datadog` - Datadog\n* `Sentry` - Sentry\n* `Pendo` - Pendo\n* `FullStory` - FullStory\n* `AmazonAds` - AmazonAds\n* `PinterestAds` - PinterestAds\n* `AppleSearchAds` - AppleSearchAds\n* `QuickBooks` - QuickBooks\n* `Xero` - Xero\n* `NetSuite` - NetSuite\n* `WooCommerce` - WooCommerce\n* `BigCommerce` - BigCommerce\n* `PayPal` - PayPal\n* `Square` - Square\n* `Zoom` - Zoom\n* `Trello` - Trello\n* `Monday` - Monday\n* `ClickUp` - ClickUp\n* `Confluence` - Confluence\n* `Recurly` - Recurly\n* `SalesLoft` - SalesLoft\n* `Outreach` - Outreach\n* `Gong` - Gong\n* `Calendly` - Calendly\n* `Typeform` - Typeform\n* `Iterable` - Iterable\n* `ZohoCRM` - ZohoCRM\n* `Close` - Close\n* `Oracle` - Oracle\n* `DynamoDB` - DynamoDB\n* `Elasticsearch` - Elasticsearch\n* `Kafka` - Kafka\n* `LaunchDarkly` - LaunchDarkly\n* `Braintree` - Braintree\n* `Recharge` - Recharge\n* `HelpScout` - HelpScout\n* `Gorgias` - Gorgias\n* `Instagram` - Instagram\n* `YouTubeAnalytics` - YouTubeAnalytics\n* `FacebookPages` - FacebookPages\n* `TwitterAds` - TwitterAds\n* `Workday` - Workday\n* `ServiceNow` - ServiceNow\n* `Pardot` - Pardot\n* `Copper` - Copper\n* `Front` - Front\n* `ChartMogul` - ChartMogul\n* `Zuora` - Zuora\n* `Paddle` - Paddle\n* `CircleCI` - CircleCI\n* `CockroachDB` - CockroachDB\n* `Firebase` - Firebase\n* `AzureBlob` - AzureBlob\n* `GoogleDrive` - GoogleDrive\n* `OneDrive` - OneDrive\n* `SharePoint` - SharePoint\n* `Box` - Box\n* `SFTP` - SFTP\n* `MicrosoftTeams` - MicrosoftTeams\n* `Aircall` - Aircall\n* `Webflow` - Webflow\n* `Okta` - Okta\n* `Auth0` - Auth0\n* `Productboard` - Productboard\n* `Smartsheet` - Smartsheet\n* `Wrike` - Wrike\n* `Plaid` - Plaid\n* `SurveyMonkey` - SurveyMonkey\n* `Eventbrite` - Eventbrite\n* `RingCentral` - RingCentral\n* `Twilio` - Twilio\n* `Freshsales` - Freshsales\n* `Shortcut` - Shortcut\n* `ConvertKit` - ConvertKit\n* `Drip` - Drip\n* `CampaignMonitor` - CampaignMonitor\n* `MailerLite` - MailerLite\n* `Omnisend` - Omnisend\n* `Brevo` - Brevo\n* `Postmark` - Postmark\n* `Granola` - Granola\n* `BuildBetter` - BuildBetter\n* `Convex` - Convex\n* `ClickHouse` - ClickHouse\n* `Plain` - Plain\n* `Resend` - Resend\n* `PgAnalyze` - PgAnalyze\n* `WorkOS` - WorkOS\n* `Custom` - Custom"
+            "description": "The source type (e.g. 'Postgres', 'Stripe').\n\n* `Ashby` - Ashby\n* `Supabase` - Supabase\n* `CustomerIO` - CustomerIO\n* `Github` - Github\n* `Stripe` - Stripe\n* `Hubspot` - Hubspot\n* `Postgres` - Postgres\n* `Zendesk` - Zendesk\n* `Snowflake` - Snowflake\n* `Salesforce` - Salesforce\n* `MySQL` - MySQL\n* `MongoDB` - MongoDB\n* `MSSQL` - MSSQL\n* `Vitally` - Vitally\n* `BigQuery` - BigQuery\n* `Chargebee` - Chargebee\n* `Clerk` - Clerk\n* `GoogleAds` - GoogleAds\n* `GoogleSearchConsole` - GoogleSearchConsole\n* `TemporalIO` - TemporalIO\n* `DoIt` - DoIt\n* `GoogleSheets` - GoogleSheets\n* `MetaAds` - MetaAds\n* `Klaviyo` - Klaviyo\n* `Mailchimp` - Mailchimp\n* `Braze` - Braze\n* `Mailjet` - Mailjet\n* `Redshift` - Redshift\n* `Polar` - Polar\n* `RevenueCat` - RevenueCat\n* `LinkedinAds` - LinkedinAds\n* `RedditAds` - RedditAds\n* `TikTokAds` - TikTokAds\n* `BingAds` - BingAds\n* `Shopify` - Shopify\n* `Attio` - Attio\n* `SnapchatAds` - SnapchatAds\n* `Linear` - Linear\n* `Intercom` - Intercom\n* `Amplitude` - Amplitude\n* `Mixpanel` - Mixpanel\n* `Jira` - Jira\n* `ActiveCampaign` - ActiveCampaign\n* `Marketo` - Marketo\n* `Adjust` - Adjust\n* `AppsFlyer` - AppsFlyer\n* `Freshdesk` - Freshdesk\n* `GoogleAnalytics` - GoogleAnalytics\n* `Pipedrive` - Pipedrive\n* `SendGrid` - SendGrid\n* `Slack` - Slack\n* `PagerDuty` - PagerDuty\n* `Asana` - Asana\n* `Notion` - Notion\n* `Airtable` - Airtable\n* `Greenhouse` - Greenhouse\n* `BambooHR` - BambooHR\n* `Lever` - Lever\n* `GitLab` - GitLab\n* `Datadog` - Datadog\n* `Sentry` - Sentry\n* `Pendo` - Pendo\n* `FullStory` - FullStory\n* `AmazonAds` - AmazonAds\n* `PinterestAds` - PinterestAds\n* `AppleSearchAds` - AppleSearchAds\n* `QuickBooks` - QuickBooks\n* `Xero` - Xero\n* `NetSuite` - NetSuite\n* `WooCommerce` - WooCommerce\n* `BigCommerce` - BigCommerce\n* `PayPal` - PayPal\n* `Square` - Square\n* `Zoom` - Zoom\n* `Trello` - Trello\n* `Monday` - Monday\n* `ClickUp` - ClickUp\n* `Confluence` - Confluence\n* `Recurly` - Recurly\n* `SalesLoft` - SalesLoft\n* `Outreach` - Outreach\n* `Gong` - Gong\n* `Calendly` - Calendly\n* `Typeform` - Typeform\n* `Iterable` - Iterable\n* `ZohoCRM` - ZohoCRM\n* `Close` - Close\n* `Oracle` - Oracle\n* `DynamoDB` - DynamoDB\n* `Elasticsearch` - Elasticsearch\n* `Kafka` - Kafka\n* `LaunchDarkly` - LaunchDarkly\n* `Braintree` - Braintree\n* `Recharge` - Recharge\n* `HelpScout` - HelpScout\n* `Gorgias` - Gorgias\n* `Instagram` - Instagram\n* `YouTubeAnalytics` - YouTubeAnalytics\n* `FacebookPages` - FacebookPages\n* `TwitterAds` - TwitterAds\n* `Workday` - Workday\n* `ServiceNow` - ServiceNow\n* `Pardot` - Pardot\n* `Copper` - Copper\n* `Front` - Front\n* `ChartMogul` - ChartMogul\n* `Zuora` - Zuora\n* `Paddle` - Paddle\n* `CircleCI` - CircleCI\n* `CockroachDB` - CockroachDB\n* `Firebase` - Firebase\n* `AzureBlob` - AzureBlob\n* `GoogleDrive` - GoogleDrive\n* `OneDrive` - OneDrive\n* `SharePoint` - SharePoint\n* `Box` - Box\n* `SFTP` - SFTP\n* `MicrosoftTeams` - MicrosoftTeams\n* `Aircall` - Aircall\n* `Webflow` - Webflow\n* `Okta` - Okta\n* `Auth0` - Auth0\n* `Productboard` - Productboard\n* `Smartsheet` - Smartsheet\n* `Wrike` - Wrike\n* `Plaid` - Plaid\n* `SurveyMonkey` - SurveyMonkey\n* `Eventbrite` - Eventbrite\n* `RingCentral` - RingCentral\n* `Twilio` - Twilio\n* `Freshsales` - Freshsales\n* `Shortcut` - Shortcut\n* `ConvertKit` - ConvertKit\n* `Drip` - Drip\n* `CampaignMonitor` - CampaignMonitor\n* `MailerLite` - MailerLite\n* `Omnisend` - Omnisend\n* `Brevo` - Brevo\n* `Postmark` - Postmark\n* `Granola` - Granola\n* `BuildBetter` - BuildBetter\n* `Convex` - Convex\n* `ClickHouse` - ClickHouse\n* `Plain` - Plain\n* `Resend` - Resend\n* `PgAnalyze` - PgAnalyze\n* `WorkOS` - WorkOS\n* `Custom` - Custom"
           },
           "payload": {
             "type": "object",
@@ -142655,6 +143849,7 @@
           "Chargebee",
           "Clerk",
           "GoogleAds",
+          "GoogleSearchConsole",
           "TemporalIO",
           "DoIt",
           "GoogleSheets",
@@ -142786,7 +143981,7 @@
           "Custom"
         ],
         "type": "string",
-        "description": "* `Ashby` - Ashby\n* `Supabase` - Supabase\n* `CustomerIO` - CustomerIO\n* `Github` - Github\n* `Stripe` - Stripe\n* `Hubspot` - Hubspot\n* `Postgres` - Postgres\n* `Zendesk` - Zendesk\n* `Snowflake` - Snowflake\n* `Salesforce` - Salesforce\n* `MySQL` - MySQL\n* `MongoDB` - MongoDB\n* `MSSQL` - MSSQL\n* `Vitally` - Vitally\n* `BigQuery` - BigQuery\n* `Chargebee` - Chargebee\n* `Clerk` - Clerk\n* `GoogleAds` - GoogleAds\n* `TemporalIO` - TemporalIO\n* `DoIt` - DoIt\n* `GoogleSheets` - GoogleSheets\n* `MetaAds` - MetaAds\n* `Klaviyo` - Klaviyo\n* `Mailchimp` - Mailchimp\n* `Braze` - Braze\n* `Mailjet` - Mailjet\n* `Redshift` - Redshift\n* `Polar` - Polar\n* `RevenueCat` - RevenueCat\n* `LinkedinAds` - LinkedinAds\n* `RedditAds` - RedditAds\n* `TikTokAds` - TikTokAds\n* `BingAds` - BingAds\n* `Shopify` - Shopify\n* `Attio` - Attio\n* `SnapchatAds` - SnapchatAds\n* `Linear` - Linear\n* `Intercom` - Intercom\n* `Amplitude` - Amplitude\n* `Mixpanel` - Mixpanel\n* `Jira` - Jira\n* `ActiveCampaign` - ActiveCampaign\n* `Marketo` - Marketo\n* `Adjust` - Adjust\n* `AppsFlyer` - AppsFlyer\n* `Freshdesk` - Freshdesk\n* `GoogleAnalytics` - GoogleAnalytics\n* `Pipedrive` - Pipedrive\n* `SendGrid` - SendGrid\n* `Slack` - Slack\n* `PagerDuty` - PagerDuty\n* `Asana` - Asana\n* `Notion` - Notion\n* `Airtable` - Airtable\n* `Greenhouse` - Greenhouse\n* `BambooHR` - BambooHR\n* `Lever` - Lever\n* `GitLab` - GitLab\n* `Datadog` - Datadog\n* `Sentry` - Sentry\n* `Pendo` - Pendo\n* `FullStory` - FullStory\n* `AmazonAds` - AmazonAds\n* `PinterestAds` - PinterestAds\n* `AppleSearchAds` - AppleSearchAds\n* `QuickBooks` - QuickBooks\n* `Xero` - Xero\n* `NetSuite` - NetSuite\n* `WooCommerce` - WooCommerce\n* `BigCommerce` - BigCommerce\n* `PayPal` - PayPal\n* `Square` - Square\n* `Zoom` - Zoom\n* `Trello` - Trello\n* `Monday` - Monday\n* `ClickUp` - ClickUp\n* `Confluence` - Confluence\n* `Recurly` - Recurly\n* `SalesLoft` - SalesLoft\n* `Outreach` - Outreach\n* `Gong` - Gong\n* `Calendly` - Calendly\n* `Typeform` - Typeform\n* `Iterable` - Iterable\n* `ZohoCRM` - ZohoCRM\n* `Close` - Close\n* `Oracle` - Oracle\n* `DynamoDB` - DynamoDB\n* `Elasticsearch` - Elasticsearch\n* `Kafka` - Kafka\n* `LaunchDarkly` - LaunchDarkly\n* `Braintree` - Braintree\n* `Recharge` - Recharge\n* `HelpScout` - HelpScout\n* `Gorgias` - Gorgias\n* `Instagram` - Instagram\n* `YouTubeAnalytics` - YouTubeAnalytics\n* `FacebookPages` - FacebookPages\n* `TwitterAds` - TwitterAds\n* `Workday` - Workday\n* `ServiceNow` - ServiceNow\n* `Pardot` - Pardot\n* `Copper` - Copper\n* `Front` - Front\n* `ChartMogul` - ChartMogul\n* `Zuora` - Zuora\n* `Paddle` - Paddle\n* `CircleCI` - CircleCI\n* `CockroachDB` - CockroachDB\n* `Firebase` - Firebase\n* `AzureBlob` - AzureBlob\n* `GoogleDrive` - GoogleDrive\n* `OneDrive` - OneDrive\n* `SharePoint` - SharePoint\n* `Box` - Box\n* `SFTP` - SFTP\n* `MicrosoftTeams` - MicrosoftTeams\n* `Aircall` - Aircall\n* `Webflow` - Webflow\n* `Okta` - Okta\n* `Auth0` - Auth0\n* `Productboard` - Productboard\n* `Smartsheet` - Smartsheet\n* `Wrike` - Wrike\n* `Plaid` - Plaid\n* `SurveyMonkey` - SurveyMonkey\n* `Eventbrite` - Eventbrite\n* `RingCentral` - RingCentral\n* `Twilio` - Twilio\n* `Freshsales` - Freshsales\n* `Shortcut` - Shortcut\n* `ConvertKit` - ConvertKit\n* `Drip` - Drip\n* `CampaignMonitor` - CampaignMonitor\n* `MailerLite` - MailerLite\n* `Omnisend` - Omnisend\n* `Brevo` - Brevo\n* `Postmark` - Postmark\n* `Granola` - Granola\n* `BuildBetter` - BuildBetter\n* `Convex` - Convex\n* `ClickHouse` - ClickHouse\n* `Plain` - Plain\n* `Resend` - Resend\n* `PgAnalyze` - PgAnalyze\n* `WorkOS` - WorkOS\n* `Custom` - Custom"
+        "description": "* `Ashby` - Ashby\n* `Supabase` - Supabase\n* `CustomerIO` - CustomerIO\n* `Github` - Github\n* `Stripe` - Stripe\n* `Hubspot` - Hubspot\n* `Postgres` - Postgres\n* `Zendesk` - Zendesk\n* `Snowflake` - Snowflake\n* `Salesforce` - Salesforce\n* `MySQL` - MySQL\n* `MongoDB` - MongoDB\n* `MSSQL` - MSSQL\n* `Vitally` - Vitally\n* `BigQuery` - BigQuery\n* `Chargebee` - Chargebee\n* `Clerk` - Clerk\n* `GoogleAds` - GoogleAds\n* `GoogleSearchConsole` - GoogleSearchConsole\n* `TemporalIO` - TemporalIO\n* `DoIt` - DoIt\n* `GoogleSheets` - GoogleSheets\n* `MetaAds` - MetaAds\n* `Klaviyo` - Klaviyo\n* `Mailchimp` - Mailchimp\n* `Braze` - Braze\n* `Mailjet` - Mailjet\n* `Redshift` - Redshift\n* `Polar` - Polar\n* `RevenueCat` - RevenueCat\n* `LinkedinAds` - LinkedinAds\n* `RedditAds` - RedditAds\n* `TikTokAds` - TikTokAds\n* `BingAds` - BingAds\n* `Shopify` - Shopify\n* `Attio` - Attio\n* `SnapchatAds` - SnapchatAds\n* `Linear` - Linear\n* `Intercom` - Intercom\n* `Amplitude` - Amplitude\n* `Mixpanel` - Mixpanel\n* `Jira` - Jira\n* `ActiveCampaign` - ActiveCampaign\n* `Marketo` - Marketo\n* `Adjust` - Adjust\n* `AppsFlyer` - AppsFlyer\n* `Freshdesk` - Freshdesk\n* `GoogleAnalytics` - GoogleAnalytics\n* `Pipedrive` - Pipedrive\n* `SendGrid` - SendGrid\n* `Slack` - Slack\n* `PagerDuty` - PagerDuty\n* `Asana` - Asana\n* `Notion` - Notion\n* `Airtable` - Airtable\n* `Greenhouse` - Greenhouse\n* `BambooHR` - BambooHR\n* `Lever` - Lever\n* `GitLab` - GitLab\n* `Datadog` - Datadog\n* `Sentry` - Sentry\n* `Pendo` - Pendo\n* `FullStory` - FullStory\n* `AmazonAds` - AmazonAds\n* `PinterestAds` - PinterestAds\n* `AppleSearchAds` - AppleSearchAds\n* `QuickBooks` - QuickBooks\n* `Xero` - Xero\n* `NetSuite` - NetSuite\n* `WooCommerce` - WooCommerce\n* `BigCommerce` - BigCommerce\n* `PayPal` - PayPal\n* `Square` - Square\n* `Zoom` - Zoom\n* `Trello` - Trello\n* `Monday` - Monday\n* `ClickUp` - ClickUp\n* `Confluence` - Confluence\n* `Recurly` - Recurly\n* `SalesLoft` - SalesLoft\n* `Outreach` - Outreach\n* `Gong` - Gong\n* `Calendly` - Calendly\n* `Typeform` - Typeform\n* `Iterable` - Iterable\n* `ZohoCRM` - ZohoCRM\n* `Close` - Close\n* `Oracle` - Oracle\n* `DynamoDB` - DynamoDB\n* `Elasticsearch` - Elasticsearch\n* `Kafka` - Kafka\n* `LaunchDarkly` - LaunchDarkly\n* `Braintree` - Braintree\n* `Recharge` - Recharge\n* `HelpScout` - HelpScout\n* `Gorgias` - Gorgias\n* `Instagram` - Instagram\n* `YouTubeAnalytics` - YouTubeAnalytics\n* `FacebookPages` - FacebookPages\n* `TwitterAds` - TwitterAds\n* `Workday` - Workday\n* `ServiceNow` - ServiceNow\n* `Pardot` - Pardot\n* `Copper` - Copper\n* `Front` - Front\n* `ChartMogul` - ChartMogul\n* `Zuora` - Zuora\n* `Paddle` - Paddle\n* `CircleCI` - CircleCI\n* `CockroachDB` - CockroachDB\n* `Firebase` - Firebase\n* `AzureBlob` - AzureBlob\n* `GoogleDrive` - GoogleDrive\n* `OneDrive` - OneDrive\n* `SharePoint` - SharePoint\n* `Box` - Box\n* `SFTP` - SFTP\n* `MicrosoftTeams` - MicrosoftTeams\n* `Aircall` - Aircall\n* `Webflow` - Webflow\n* `Okta` - Okta\n* `Auth0` - Auth0\n* `Productboard` - Productboard\n* `Smartsheet` - Smartsheet\n* `Wrike` - Wrike\n* `Plaid` - Plaid\n* `SurveyMonkey` - SurveyMonkey\n* `Eventbrite` - Eventbrite\n* `RingCentral` - RingCentral\n* `Twilio` - Twilio\n* `Freshsales` - Freshsales\n* `Shortcut` - Shortcut\n* `ConvertKit` - ConvertKit\n* `Drip` - Drip\n* `CampaignMonitor` - CampaignMonitor\n* `MailerLite` - MailerLite\n* `Omnisend` - Omnisend\n* `Brevo` - Brevo\n* `Postmark` - Postmark\n* `Granola` - Granola\n* `BuildBetter` - BuildBetter\n* `Convex` - Convex\n* `ClickHouse` - ClickHouse\n* `Plain` - Plain\n* `Resend` - Resend\n* `PgAnalyze` - PgAnalyze\n* `WorkOS` - WorkOS\n* `Custom` - Custom"
       },
       "ExternalQueryError": {
         "additionalProperties": false,
@@ -146850,6 +148045,19 @@
             "description": "Customizations for the appearance of result datasets.",
             "title": "Resultcustomizations"
           },
+          "showAnnotations": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": true,
+            "description": "Whether to render annotations on the chart. Only applies to historical-trends funnels.",
+            "title": "Showannotations"
+          },
           "showTrendLines": {
             "anyOf": [
               {
@@ -148802,6 +150010,98 @@
         "type": "string",
         "description": "* `active` - Active\n* `resolved` - Resolved"
       },
+      "HeatmapEventItem": {
+        "type": "object",
+        "properties": {
+          "session_id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "distinct_id": {
+            "type": "string"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "pointer_relative_x": {
+            "type": "number",
+            "format": "double"
+          },
+          "pointer_y": {
+            "type": "integer"
+          },
+          "current_url": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "current_url",
+          "distinct_id",
+          "pointer_relative_x",
+          "pointer_y",
+          "timestamp",
+          "type"
+        ]
+      },
+      "HeatmapEventsResponse": {
+        "type": "object",
+        "properties": {
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/HeatmapEventItem"
+            }
+          },
+          "total_count": {
+            "type": "integer"
+          },
+          "has_more": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "has_more",
+          "results",
+          "total_count"
+        ]
+      },
+      "HeatmapFoldSummary": {
+        "type": "object",
+        "properties": {
+          "total_count": {
+            "type": "integer",
+            "description": "Number of non-fixed interactions of this type on the page in the window (the population the above/below-the-fold split applies to; fixed-position elements are excluded since they're always on screen)."
+          },
+          "below_fold_count": {
+            "type": "integer",
+            "description": "How many of those interactions happened below the user's initial viewport — i.e. they had to scroll to reach them."
+          },
+          "pct_below_fold": {
+            "type": "number",
+            "format": "double",
+            "description": "Percentage of non-fixed interactions that were below the initial viewport (0-100). A high value means engaged content sits off the first screen and is a candidate to move up."
+          },
+          "median_viewport_height": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "description": "Median viewport height in CSS pixels across the matched interactions — the typical fold line to recommend against. Null when there are no interactions."
+          }
+        },
+        "required": [
+          "below_fold_count",
+          "median_viewport_height",
+          "pct_below_fold",
+          "total_count"
+        ]
+      },
       "HeatmapGradientStop": {
         "additionalProperties": false,
         "properties": {
@@ -148855,18 +150155,21 @@
           },
           "short_id": {
             "type": "string",
-            "readOnly": true
+            "readOnly": true,
+            "description": "Short, URL-safe identifier used as the lookup key for saved-heatmap routes."
           },
           "name": {
             "type": [
               "string",
               "null"
             ],
+            "description": "Human-readable label for the saved heatmap.",
             "maxLength": 400
           },
           "url": {
             "type": "string",
             "format": "uri",
+            "description": "The page URL this saved heatmap renders and overlays data on.",
             "maxLength": 2000
           },
           "data_url": {
@@ -148875,12 +150178,19 @@
               "null"
             ],
             "format": "uri",
-            "description": "URL for fetching heatmap data",
+            "description": "URL whose heatmap data is overlaid on the screenshot (defaults to 'url').",
             "maxLength": 2000
           },
-          "target_widths": {},
+          "target_widths": {
+            "description": "Viewport widths (CSS pixels) the screenshot is rendered at."
+          },
           "type": {
-            "$ref": "#/components/schemas/HeatmapScreenshotResponseTypeEnum"
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/HeatmapType"
+              }
+            ],
+            "description": "Render mode: 'screenshot', 'iframe', or 'recording'.\n\n* `screenshot` - Screenshot\n* `iframe` - Iframe\n* `recording` - Recording"
           },
           "status": {
             "allOf": [
@@ -148888,22 +150198,25 @@
                 "$ref": "#/components/schemas/HeatmapScreenshotResponseStatusEnum"
               }
             ],
-            "readOnly": true
+            "readOnly": true,
+            "description": "Screenshot generation status: 'processing', 'completed', or 'failed'.\n\n* `processing` - Processing\n* `completed` - Completed\n* `failed` - Failed"
           },
           "has_content": {
             "type": "boolean",
-            "readOnly": true
+            "readOnly": true,
+            "description": "Whether at least one rendered image is ready to fetch."
           },
           "snapshots": {
             "type": "array",
             "items": {
-              "type": "object",
-              "additionalProperties": true
+              "$ref": "#/components/schemas/HeatmapSnapshotMetadata"
             },
-            "readOnly": true
+            "readOnly": true,
+            "description": "Per-width render metadata. Fetch the actual image bytes for a width from the content endpoint."
           },
           "deleted": {
-            "type": "boolean"
+            "type": "boolean",
+            "description": "Soft-delete flag; deleted heatmaps are hidden from the list."
           },
           "created_by": {
             "allOf": [
@@ -148928,7 +150241,8 @@
               "string",
               "null"
             ],
-            "readOnly": true
+            "readOnly": true,
+            "description": "Error detail when screenshot generation failed, otherwise null."
           }
         },
         "required": [
@@ -148952,15 +150266,6 @@
         ],
         "type": "string",
         "description": "* `processing` - Processing\n* `completed` - Completed\n* `failed` - Failed"
-      },
-      "HeatmapScreenshotResponseTypeEnum": {
-        "enum": [
-          "screenshot",
-          "iframe",
-          "recording"
-        ],
-        "type": "string",
-        "description": "* `screenshot` - Screenshot\n* `iframe` - Iframe\n* `recording` - Recording"
       },
       "HeatmapSettings": {
         "additionalProperties": false,
@@ -149114,6 +150419,23 @@
         "title": "HeatmapSettings",
         "type": "object"
       },
+      "HeatmapSnapshotMetadata": {
+        "type": "object",
+        "properties": {
+          "width": {
+            "type": "integer",
+            "description": "Viewport width (CSS pixels) this screenshot was rendered at."
+          },
+          "has_content": {
+            "type": "boolean",
+            "description": "Whether the rendered image for this width is ready to fetch from the content endpoint."
+          }
+        },
+        "required": [
+          "has_content",
+          "width"
+        ]
+      },
       "HeatmapSortOrder": {
         "enum": [
           "asc",
@@ -149121,6 +150443,15 @@
         ],
         "title": "HeatmapSortOrder",
         "type": "string"
+      },
+      "HeatmapType": {
+        "enum": [
+          "screenshot",
+          "iframe",
+          "recording"
+        ],
+        "type": "string",
+        "description": "* `screenshot` - Screenshot\n* `iframe` - Iframe\n* `recording` - Recording"
       },
       "HeatmapsResponse": {
         "type": "object",
@@ -149130,6 +150461,17 @@
             "items": {
               "$ref": "#/components/schemas/HeatmapResponseItem"
             }
+          },
+          "fold": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/HeatmapFoldSummary"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Above/below-the-fold summary for the returned interactions. Present for click/rageclick/mousemove; omitted for scrolldepth."
           }
         },
         "required": [
@@ -153840,6 +155182,7 @@
           "google-cloud-service-account",
           "google-cloud-storage",
           "google-ads",
+          "google-search-console",
           "google-sheets",
           "linkedin-ads",
           "snapchat",
@@ -153887,6 +155230,7 @@
           "google-cloud-service-account",
           "google-cloud-storage",
           "google-pubsub",
+          "google-search-console",
           "google-sheets",
           "hubspot",
           "intercom",
@@ -153907,7 +155251,7 @@
           "vercel"
         ],
         "type": "string",
-        "description": "* `anthropic` - Anthropic\n* `apns` - Apple Push\n* `azure-blob` - Azure Blob\n* `bing-ads` - Bing Ads\n* `clickup` - Clickup\n* `customerio-app` - Customerio App\n* `customerio-track` - Customerio Track\n* `customerio-webhook` - Customerio Webhook\n* `databricks` - Databricks\n* `email` - Email\n* `firebase` - Firebase\n* `github` - Github\n* `gitlab` - Gitlab\n* `google-ads` - Google Ads\n* `google-cloud-service-account` - Google Cloud Service Account\n* `google-cloud-storage` - Google Cloud Storage\n* `google-pubsub` - Google Pubsub\n* `google-sheets` - Google Sheets\n* `hubspot` - Hubspot\n* `intercom` - Intercom\n* `jira` - Jira\n* `linear` - Linear\n* `linkedin-ads` - Linkedin Ads\n* `meta-ads` - Meta Ads\n* `pinterest-ads` - Pinterest Ads\n* `postgresql` - Postgresql\n* `reddit-ads` - Reddit Ads\n* `salesforce` - Salesforce\n* `slack` - Slack\n* `slack-posthog-code` - Slack Posthog Code\n* `snapchat` - Snapchat\n* `stripe` - Stripe\n* `tiktok-ads` - Tiktok Ads\n* `twilio` - Twilio\n* `vercel` - Vercel"
+        "description": "* `anthropic` - Anthropic\n* `apns` - Apple Push\n* `azure-blob` - Azure Blob\n* `bing-ads` - Bing Ads\n* `clickup` - Clickup\n* `customerio-app` - Customerio App\n* `customerio-track` - Customerio Track\n* `customerio-webhook` - Customerio Webhook\n* `databricks` - Databricks\n* `email` - Email\n* `firebase` - Firebase\n* `github` - Github\n* `gitlab` - Gitlab\n* `google-ads` - Google Ads\n* `google-cloud-service-account` - Google Cloud Service Account\n* `google-cloud-storage` - Google Cloud Storage\n* `google-pubsub` - Google Pubsub\n* `google-search-console` - Google Search Console\n* `google-sheets` - Google Sheets\n* `hubspot` - Hubspot\n* `intercom` - Intercom\n* `jira` - Jira\n* `linear` - Linear\n* `linkedin-ads` - Linkedin Ads\n* `meta-ads` - Meta Ads\n* `pinterest-ads` - Pinterest Ads\n* `postgresql` - Postgresql\n* `reddit-ads` - Reddit Ads\n* `salesforce` - Salesforce\n* `slack` - Slack\n* `slack-posthog-code` - Slack Posthog Code\n* `snapchat` - Snapchat\n* `stripe` - Stripe\n* `tiktok-ads` - Tiktok Ads\n* `twilio` - Twilio\n* `vercel` - Vercel"
       },
       "InterestingNote": {
         "type": "object",
@@ -154363,6 +155707,27 @@
             "type": "string",
             "readOnly": true
           },
+          "refresh_interval": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/RefreshIntervalEnum"
+              }
+            ],
+            "readOnly": true
+          },
+          "next_refresh_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "readOnly": true,
+            "description": "When the background coordinator will next auto-refresh this source. Null for manual sources or sources never refreshed."
+          },
+          "has_unsafe_documents": {
+            "type": "boolean",
+            "readOnly": true,
+            "description": "True when at least one document in this source was flagged unsafe by the content classifier and is therefore excluded from agent search."
+          },
           "crawl_mode": {
             "allOf": [
               {
@@ -154399,12 +155764,15 @@
           "error_message",
           "file_content_type",
           "file_size_bytes",
+          "has_unsafe_documents",
           "id",
           "last_refresh_at",
           "last_refresh_error",
           "last_refresh_status",
           "name",
+          "next_refresh_at",
           "original_filename",
+          "refresh_interval",
           "source_type",
           "source_url",
           "status",
@@ -160723,6 +162091,28 @@
         "type": "string",
         "description": "* `events` - Events\n* `persons` - Persons\n* `sessions` - Sessions"
       },
+      "MonitorStats": {
+        "type": "object",
+        "properties": {
+          "yes_total": {
+            "type": "integer",
+            "description": "Succeeded observations whose verdict was `yes`."
+          },
+          "no_total": {
+            "type": "integer",
+            "description": "Succeeded observations whose verdict was `no`."
+          },
+          "inconclusive_total": {
+            "type": "integer",
+            "description": "Succeeded observations whose verdict was `inconclusive`."
+          }
+        },
+        "required": [
+          "inconclusive_total",
+          "no_total",
+          "yes_total"
+        ]
+      },
       "MoveTileRequest": {
         "type": "object",
         "properties": {
@@ -161840,6 +163230,115 @@
           "updated_at"
         ]
       },
+      "ObservationStats": {
+        "type": "object",
+        "properties": {
+          "status_counts": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ObservationStatusCounts"
+              }
+            ],
+            "description": "Counts of observations by terminal status."
+          },
+          "coverage": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CoverageStats"
+              }
+            ],
+            "description": "Session-level scanner coverage."
+          },
+          "available_tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "All distinct tags (fixed + freeform) emitted by succeeded observations in the filtered set."
+          },
+          "monitor": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/MonitorStats"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Monitor-type aggregates; null when the scanner is not a monitor."
+          },
+          "classifier": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/ClassifierStats"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Classifier-type aggregates; null when the scanner is not a classifier."
+          },
+          "scorer": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/ScorerStats"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Scorer-type aggregates; null when the scanner is not a scorer."
+          }
+        },
+        "required": [
+          "available_tags",
+          "classifier",
+          "coverage",
+          "monitor",
+          "scorer",
+          "status_counts"
+        ]
+      },
+      "ObservationStatusCounts": {
+        "type": "object",
+        "properties": {
+          "total": {
+            "type": "integer",
+            "description": "Total observations in the filtered set."
+          },
+          "succeeded": {
+            "type": "integer",
+            "description": "Observations with `status=succeeded`."
+          },
+          "failed": {
+            "type": "integer",
+            "description": "Observations with `status=failed`."
+          },
+          "ineligible": {
+            "type": "integer",
+            "description": "Observations with `status=ineligible`."
+          },
+          "in_flight": {
+            "type": "integer",
+            "description": "Observations not yet in a terminal status."
+          },
+          "success_rate": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "description": "Percentage of (succeeded + failed) observations that succeeded; ineligible rows are excluded. Null when no observations have completed."
+          }
+        },
+        "required": [
+          "failed",
+          "in_flight",
+          "ineligible",
+          "succeeded",
+          "success_rate",
+          "total"
+        ]
+      },
       "ObservationStatusEnum": {
         "enum": [
           "pending",
@@ -162113,6 +163612,13 @@
               "boolean",
               "null"
             ]
+          },
+          "members_can_create_projects": {
+            "type": [
+              "boolean",
+              "null"
+            ],
+            "description": "When True, organization members (below admin) are allowed to create new projects. Admins and owners can always create projects."
           },
           "members_can_use_personal_api_keys": {
             "type": "boolean"
@@ -164870,76 +166376,6 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/HealthIssue"
-            }
-          }
-        }
-      },
-      "PaginatedHeatmapScreenshotResponseList": {
-        "type": "object",
-        "required": [
-          "count",
-          "results"
-        ],
-        "properties": {
-          "count": {
-            "type": "integer",
-            "example": 123
-          },
-          "next": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "format": "uri",
-            "example": "http://api.example.org/accounts/?offset=400&limit=100"
-          },
-          "previous": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "format": "uri",
-            "example": "http://api.example.org/accounts/?offset=200&limit=100"
-          },
-          "results": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/HeatmapScreenshotResponse"
-            }
-          }
-        }
-      },
-      "PaginatedHeatmapsResponseList": {
-        "type": "object",
-        "required": [
-          "count",
-          "results"
-        ],
-        "properties": {
-          "count": {
-            "type": "integer",
-            "example": 123
-          },
-          "next": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "format": "uri",
-            "example": "http://api.example.org/accounts/?offset=400&limit=100"
-          },
-          "previous": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "format": "uri",
-            "example": "http://api.example.org/accounts/?offset=200&limit=100"
-          },
-          "results": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/HeatmapsResponse"
             }
           }
         }
@@ -170673,7 +172109,11 @@
             "description": "Output config. For 'boolean' output_type: {allows_na} to permit N/A results."
           },
           "conditions": {
-            "description": "Optional trigger conditions to filter which events are evaluated. OR between condition sets, AND within each."
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EvaluationCondition"
+            },
+            "description": "Trigger conditions that filter which events are evaluated. OR between condition sets, AND within each. Each set is {id, rollout_percentage, properties[]} — `rollout_percentage` (0-100, defaults to 100) is the sampling field the dispatcher reads."
           },
           "model_configuration": {
             "oneOf": [
@@ -171819,93 +173259,6 @@
               "null"
             ],
             "format": "date-time",
-            "readOnly": true
-          }
-        }
-      },
-      "PatchedHeatmapScreenshotResponse": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "format": "uuid",
-            "readOnly": true
-          },
-          "short_id": {
-            "type": "string",
-            "readOnly": true
-          },
-          "name": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "maxLength": 400
-          },
-          "url": {
-            "type": "string",
-            "format": "uri",
-            "maxLength": 2000
-          },
-          "data_url": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "format": "uri",
-            "description": "URL for fetching heatmap data",
-            "maxLength": 2000
-          },
-          "target_widths": {},
-          "type": {
-            "$ref": "#/components/schemas/HeatmapScreenshotResponseTypeEnum"
-          },
-          "status": {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/HeatmapScreenshotResponseStatusEnum"
-              }
-            ],
-            "readOnly": true
-          },
-          "has_content": {
-            "type": "boolean",
-            "readOnly": true
-          },
-          "snapshots": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "additionalProperties": true
-            },
-            "readOnly": true
-          },
-          "deleted": {
-            "type": "boolean"
-          },
-          "created_by": {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/UserBasic"
-              }
-            ],
-            "readOnly": true
-          },
-          "created_at": {
-            "type": "string",
-            "format": "date-time",
-            "readOnly": true
-          },
-          "updated_at": {
-            "type": "string",
-            "format": "date-time",
-            "readOnly": true
-          },
-          "exception": {
-            "type": [
-              "string",
-              "null"
-            ],
             "readOnly": true
           }
         }
@@ -173488,6 +174841,13 @@
               "null"
             ]
           },
+          "members_can_create_projects": {
+            "type": [
+              "boolean",
+              "null"
+            ],
+            "description": "When True, organization members (below admin) are allowed to create new projects. Admins and owners can always create projects."
+          },
           "members_can_use_personal_api_keys": {
             "type": "boolean"
           },
@@ -174681,6 +176041,57 @@
           }
         }
       },
+      "PatchedSavedHeatmapRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Human-readable label for the saved heatmap.",
+            "maxLength": 400
+          },
+          "url": {
+            "type": "string",
+            "format": "uri",
+            "description": "Exact page URL to render and overlay heatmap data on. Wildcards are not allowed.",
+            "maxLength": 2000
+          },
+          "data_url": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uri",
+            "description": "URL whose heatmap data is overlaid on the screenshot. Defaults to 'url' when omitted.",
+            "maxLength": 2000
+          },
+          "widths": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "maximum": 3000,
+              "minimum": 100
+            },
+            "description": "Viewport widths (px, 100-3000) to render the heatmap screenshot at — one render per width. Defaults to [320, 375, 425, 768, 1024, 1440, 1920] when omitted. At most 16 widths.",
+            "maxItems": 16
+          },
+          "type": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/HeatmapType"
+              }
+            ],
+            "default": "screenshot",
+            "description": "Render mode: 'screenshot' (renders the page headlessly, default), 'iframe', or 'recording'. Only 'screenshot' generates image bytes.\n\n* `screenshot` - Screenshot\n* `iframe` - Iframe\n* `recording` - Recording"
+          },
+          "deleted": {
+            "type": "boolean",
+            "description": "Set true to soft-delete the saved heatmap."
+          }
+        }
+      },
       "PatchedSchemaPropertyGroup": {
         "type": "object",
         "properties": {
@@ -175115,6 +176526,50 @@
           }
         }
       },
+      "PatchedSignalScoutConfig": {
+        "type": "object",
+        "description": "Per-(team, skill) scout config: schedule, enablement, and emit posture.\n\nOne row per `signals-scout-*` skill on the team. The coordinator auto-creates a row\nwhen it discovers a scout skill; this serializer lets agents tune the row.",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "readOnly": true
+          },
+          "skill_name": {
+            "type": "string",
+            "readOnly": true,
+            "description": "The `signals-scout-*` skill this config controls. Set at creation, not editable."
+          },
+          "enabled": {
+            "type": "boolean",
+            "description": "Whether this scout runs on its schedule. Disabled scouts are skipped by the coordinator."
+          },
+          "emit": {
+            "type": "boolean",
+            "description": "Whether the scout writes findings to the inbox. False = dry-run: it runs and logs but emits nothing."
+          },
+          "run_interval_minutes": {
+            "type": "integer",
+            "maximum": 43200,
+            "minimum": 10,
+            "description": "Minutes between runs (10–43200). The scout runs once this interval has elapsed since its last run."
+          },
+          "last_run_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time",
+            "readOnly": true,
+            "description": "When the coordinator last dispatched this scout. Null if it has never run."
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          }
+        }
+      },
       "PatchedSignalSourceConfig": {
         "type": "object",
         "properties": {
@@ -175218,8 +176673,8 @@
           "interval": {
             "type": "integer",
             "maximum": 2147483647,
-            "minimum": -2147483648,
-            "description": "Interval multiplier (e.g. 2 with weekly frequency means every 2 weeks). Default 1."
+            "minimum": 1,
+            "description": "Interval multiplier (e.g. 2 with weekly frequency means every 2 weeks). Required on create; must be 1 or greater."
           },
           "byweekday": {
             "type": [
@@ -177137,6 +178592,13 @@
           },
           "summary": {
             "type": "string"
+          },
+          "classifications": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ClassificationsEnum"
+            },
+            "description": "Searchable classifications on the response. `abandoned` is auto-derived from the transcript when the interview is recorded; `off-topic` is set manually. Sending `classifications` on an update replaces the whole list — pass the full desired set, not a delta."
           },
           "audio": {
             "type": "string",
@@ -196830,6 +198292,17 @@
         "title": "RecordingsQueryResponse",
         "type": "object"
       },
+      "RefreshIntervalEnum": {
+        "enum": [
+          "manual",
+          "1h",
+          "6h",
+          "24h",
+          "7d"
+        ],
+        "type": "string",
+        "description": "* `manual` - Manual only\n* `1h` - Every hour\n* `6h` - Every 6 hours\n* `24h` - Every day\n* `7d` - Every week"
+      },
       "RefreshType": {
         "enum": [
           "async",
@@ -205217,6 +206690,79 @@
           "updated_at"
         ]
       },
+      "SavedHeatmapListResponse": {
+        "type": "object",
+        "properties": {
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/HeatmapScreenshotResponse"
+            }
+          },
+          "count": {
+            "type": "integer",
+            "description": "Total number of saved heatmaps matching the filters."
+          }
+        },
+        "required": [
+          "count",
+          "results"
+        ]
+      },
+      "SavedHeatmapRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Human-readable label for the saved heatmap.",
+            "maxLength": 400
+          },
+          "url": {
+            "type": "string",
+            "format": "uri",
+            "description": "Exact page URL to render and overlay heatmap data on. Wildcards are not allowed.",
+            "maxLength": 2000
+          },
+          "data_url": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uri",
+            "description": "URL whose heatmap data is overlaid on the screenshot. Defaults to 'url' when omitted.",
+            "maxLength": 2000
+          },
+          "widths": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "maximum": 3000,
+              "minimum": 100
+            },
+            "description": "Viewport widths (px, 100-3000) to render the heatmap screenshot at — one render per width. Defaults to [320, 375, 425, 768, 1024, 1440, 1920] when omitted. At most 16 widths.",
+            "maxItems": 16
+          },
+          "type": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/HeatmapType"
+              }
+            ],
+            "default": "screenshot",
+            "description": "Render mode: 'screenshot' (renders the page headlessly, default), 'iframe', or 'recording'. Only 'screenshot' generates image bytes.\n\n* `screenshot` - Screenshot\n* `iframe` - Iframe\n* `recording` - Recording"
+          },
+          "deleted": {
+            "type": "boolean",
+            "description": "Set true to soft-delete the saved heatmap."
+          }
+        },
+        "required": [
+          "url"
+        ]
+      },
       "SavedInsightNode": {
         "additionalProperties": false,
         "properties": {
@@ -205848,6 +207394,22 @@
           "foundPosthogInit"
         ]
       },
+      "ScannerCreatorsResponse": {
+        "type": "object",
+        "description": "Distinct creators across all scanners on the team — feeds the `Created by` filter dropdown.",
+        "properties": {
+          "creators": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UserBasic"
+            },
+            "description": "Users who created at least one scanner on this team. Returned regardless of pagination state so the dropdown stays stable across pages."
+          }
+        },
+        "required": [
+          "creators"
+        ]
+      },
       "ScannerModelEnum": {
         "enum": [
           "gemini-3-flash-preview",
@@ -206284,6 +207846,108 @@
         },
         "required": [
           "config"
+        ]
+      },
+      "ScorerHistogram": {
+        "type": "object",
+        "properties": {
+          "labels": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Bucket labels (one per histogram bar) spanning the scanner's configured scale."
+          },
+          "counts": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            },
+            "description": "Observation count per bucket; same length as `labels`."
+          }
+        },
+        "required": [
+          "counts",
+          "labels"
+        ]
+      },
+      "ScorerStats": {
+        "type": "object",
+        "properties": {
+          "summary": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/ScorerSummary"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Score quantile summary; null when no observations have been scored."
+          },
+          "histogram": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/ScorerHistogram"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Score histogram; null when no observations have been scored."
+          }
+        },
+        "required": [
+          "histogram",
+          "summary"
+        ]
+      },
+      "ScorerSummary": {
+        "type": "object",
+        "properties": {
+          "min": {
+            "type": "number",
+            "format": "double",
+            "description": "Minimum observed score."
+          },
+          "p25": {
+            "type": "number",
+            "format": "double",
+            "description": "25th-percentile score."
+          },
+          "median": {
+            "type": "number",
+            "format": "double",
+            "description": "Median score."
+          },
+          "mean": {
+            "type": "number",
+            "format": "double",
+            "description": "Mean score."
+          },
+          "p75": {
+            "type": "number",
+            "format": "double",
+            "description": "75th-percentile score."
+          },
+          "max": {
+            "type": "number",
+            "format": "double",
+            "description": "Maximum observed score."
+          },
+          "count": {
+            "type": "integer",
+            "description": "Number of scored observations summarized."
+          }
+        },
+        "required": [
+          "count",
+          "max",
+          "mean",
+          "median",
+          "min",
+          "p25",
+          "p75"
         ]
       },
       "ScratchpadEntry": {
@@ -207934,6 +209598,57 @@
         "title": "SessionRecordingType",
         "type": "object"
       },
+      "SessionReplayListWidgetAddRequestOpenApi": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Optional custom display name for the widget tile.",
+            "maxLength": 400
+          },
+          "description": {
+            "type": "string",
+            "description": "Optional markdown description shown when show_description is enabled."
+          },
+          "layouts": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/_WidgetTileLayoutsOpenApi"
+              }
+            ],
+            "description": "Optional react-grid-layout positions keyed by breakpoint (sm, xs)."
+          },
+          "show_description": {
+            "type": "boolean",
+            "description": "Whether to show the description on the dashboard tile."
+          },
+          "widget_type": {
+            "$ref": "#/components/schemas/SessionReplayListWidgetAddRequestOpenApiWidgetTypeEnum"
+          },
+          "config": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/SessionReplayListWidgetConfig"
+              }
+            ],
+            "description": "Configuration for the session replay list widget."
+          }
+        },
+        "required": [
+          "config",
+          "widget_type"
+        ]
+      },
+      "SessionReplayListWidgetAddRequestOpenApiWidgetTypeEnum": {
+        "enum": [
+          "session_replay_list"
+        ],
+        "type": "string",
+        "description": "* `session_replay_list` - session_replay_list"
+      },
       "SessionReplayListWidgetConfig": {
         "type": "object",
         "properties": {
@@ -209207,6 +210922,56 @@
         ],
         "type": "string",
         "description": "* `implementation` - Implementation"
+      },
+      "SignalScoutConfig": {
+        "type": "object",
+        "description": "Per-(team, skill) scout config: schedule, enablement, and emit posture.\n\nOne row per `signals-scout-*` skill on the team. The coordinator auto-creates a row\nwhen it discovers a scout skill; this serializer lets agents tune the row.",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "readOnly": true
+          },
+          "skill_name": {
+            "type": "string",
+            "readOnly": true,
+            "description": "The `signals-scout-*` skill this config controls. Set at creation, not editable."
+          },
+          "enabled": {
+            "type": "boolean",
+            "description": "Whether this scout runs on its schedule. Disabled scouts are skipped by the coordinator."
+          },
+          "emit": {
+            "type": "boolean",
+            "description": "Whether the scout writes findings to the inbox. False = dry-run: it runs and logs but emits nothing."
+          },
+          "run_interval_minutes": {
+            "type": "integer",
+            "maximum": 43200,
+            "minimum": 10,
+            "description": "Minutes between runs (10–43200). The scout runs once this interval has elapsed since its last run."
+          },
+          "last_run_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time",
+            "readOnly": true,
+            "description": "When the coordinator last dispatched this scout. Null if it has never run."
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          }
+        },
+        "required": [
+          "created_at",
+          "id",
+          "last_run_at",
+          "skill_name"
+        ]
       },
       "SignalScoutRunDetail": {
         "type": "object",
@@ -211323,8 +213088,8 @@
           "interval": {
             "type": "integer",
             "maximum": 2147483647,
-            "minimum": -2147483648,
-            "description": "Interval multiplier (e.g. 2 with weekly frequency means every 2 weeks). Default 1."
+            "minimum": 1,
+            "description": "Interval multiplier (e.g. 2 with weekly frequency means every 2 weeks). Required on create; must be 1 or greater."
           },
           "byweekday": {
             "type": [
@@ -211447,6 +213212,7 @@
           "frequency",
           "id",
           "insight_short_id",
+          "interval",
           "next_delivery_date",
           "resource_name",
           "start_date",
@@ -213757,6 +215523,23 @@
         },
         "title": "TableSettings",
         "type": "object"
+      },
+      "TagCount": {
+        "type": "object",
+        "properties": {
+          "tag": {
+            "type": "string",
+            "description": "The tag value."
+          },
+          "count": {
+            "type": "integer",
+            "description": "Number of succeeded observations carrying this tag."
+          }
+        },
+        "required": [
+          "count",
+          "tag"
+        ]
       },
       "TagDefinition": {
         "type": "object",
@@ -220952,6 +222735,18 @@
             "default": false,
             "title": "Showalertthresholdlines"
           },
+          "showAnnotations": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": true,
+            "title": "Showannotations"
+          },
           "showConfidenceIntervals": {
             "anyOf": [
               {
@@ -222755,6 +224550,13 @@
           "summary": {
             "type": "string"
           },
+          "classifications": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ClassificationsEnum"
+            },
+            "description": "Searchable classifications on the response. `abandoned` is auto-derived from the transcript when the interview is recorded; `off-topic` is set manually. Sending `classifications` on an update replaces the whole list — pass the full desired set, not a delta."
+          },
           "audio": {
             "type": "string",
             "format": "uri",
@@ -222802,6 +224604,14 @@
             ],
             "format": "uuid",
             "description": "Optional. Restrict results to interviews belonging to a specific UserInterviewTopic."
+          },
+          "classifications": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ClassificationsEnum"
+            },
+            "description": "Optional. Restrict results to interviews carrying any of these classifications (OR). Combines with `topic_id` as AND.",
+            "minItems": 1
           },
           "limit": {
             "type": "integer",
@@ -229667,6 +231477,48 @@
           "name",
           "role"
         ]
+      },
+      "_WidgetTileLayoutBoxOpenApi": {
+        "type": "object",
+        "properties": {
+          "x": {
+            "type": "integer",
+            "description": "Column position in the dashboard grid (0-indexed)."
+          },
+          "y": {
+            "type": "integer",
+            "description": "Row position in the dashboard grid (0-indexed)."
+          },
+          "w": {
+            "type": "integer",
+            "description": "Width in grid columns. The desktop grid is 12 columns wide."
+          },
+          "h": {
+            "type": "integer",
+            "description": "Height in grid rows."
+          }
+        }
+      },
+      "_WidgetTileLayoutsOpenApi": {
+        "type": "object",
+        "properties": {
+          "sm": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/_WidgetTileLayoutBoxOpenApi"
+              }
+            ],
+            "description": "Layout for the standard (desktop) breakpoint. The grid is 12 columns wide."
+          },
+          "xs": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/_WidgetTileLayoutBoxOpenApi"
+              }
+            ],
+            "description": "Layout for the small (mobile) breakpoint. The grid is 1 column wide."
+          }
+        }
       }
     },
     "securitySchemes": {
