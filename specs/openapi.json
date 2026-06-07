@@ -45602,6 +45602,52 @@
           "organizations",
           "legal_documents"
         ]
+      },
+      "delete": {
+        "operationId": "legal_documents_destroy",
+        "description": "Delete an unsigned legal document. The PandaDoc envelope is voided\nfirst so the original signer can no longer complete it; only if that\nsucceeds is the row removed, freeing the unique-per-org-per-type\nconstraint so a fresh document can be generated.\n\nReturns 503 if the PandaDoc void fails — the row stays in that case\nand the frontend should prompt the user to retry. Returns 403 for\nsigned documents (legal artifacts; staff can still delete signed\nrows from Django admin).",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/OrganizationIdPath"
+          }
+        ],
+        "tags": [
+          "organizations",
+          "legal_documents"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "legal_document:write"
+            ]
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No response body"
+          },
+          "403": {
+            "description": "No response body"
+          },
+          "404": {
+            "description": "No response body"
+          },
+          "503": {
+            "description": "No response body"
+          }
+        },
+        "x-product": [
+          "organizations",
+          "legal_documents"
+        ]
       }
     },
     "/api/organizations/{organization_id}/legal_documents/{id}/download/": {
@@ -59244,7 +59290,7 @@
     "/api/projects/{project_id}/desktop_file_system/": {
       "get": {
         "operationId": "desktop_file_system_list",
-        "description": "The file tree for the desktop product surface. Reuses all FileSystemViewSet behaviour but is\nscoped to the \"desktop\" surface, so its tree is fully isolated from the default \"web\" tree.",
+        "description": "The file tree for the desktop product surface. Reuses all FileSystemViewSet behaviour but is\nscoped to the \"desktop\" surface, so its tree is fully isolated from the default \"web\" tree.\n\nAdds per-folder, versioned markdown instructions describing the contents of a folder.",
         "parameters": [
           {
             "name": "limit",
@@ -59305,7 +59351,7 @@
       },
       "post": {
         "operationId": "desktop_file_system_create",
-        "description": "The file tree for the desktop product surface. Reuses all FileSystemViewSet behaviour but is\nscoped to the \"desktop\" surface, so its tree is fully isolated from the default \"web\" tree.",
+        "description": "The file tree for the desktop product surface. Reuses all FileSystemViewSet behaviour but is\nscoped to the \"desktop\" surface, so its tree is fully isolated from the default \"web\" tree.\n\nAdds per-folder, versioned markdown instructions describing the contents of a folder.",
         "parameters": [
           {
             "$ref": "#/components/parameters/ProjectIdPath"
@@ -59361,7 +59407,7 @@
     "/api/projects/{project_id}/desktop_file_system/{id}/": {
       "get": {
         "operationId": "desktop_file_system_retrieve",
-        "description": "The file tree for the desktop product surface. Reuses all FileSystemViewSet behaviour but is\nscoped to the \"desktop\" surface, so its tree is fully isolated from the default \"web\" tree.",
+        "description": "The file tree for the desktop product surface. Reuses all FileSystemViewSet behaviour but is\nscoped to the \"desktop\" surface, so its tree is fully isolated from the default \"web\" tree.\n\nAdds per-folder, versioned markdown instructions describing the contents of a folder.",
         "parameters": [
           {
             "in": "path",
@@ -59405,7 +59451,7 @@
       },
       "put": {
         "operationId": "desktop_file_system_update",
-        "description": "The file tree for the desktop product surface. Reuses all FileSystemViewSet behaviour but is\nscoped to the \"desktop\" surface, so its tree is fully isolated from the default \"web\" tree.",
+        "description": "The file tree for the desktop product surface. Reuses all FileSystemViewSet behaviour but is\nscoped to the \"desktop\" surface, so its tree is fully isolated from the default \"web\" tree.\n\nAdds per-folder, versioned markdown instructions describing the contents of a folder.",
         "parameters": [
           {
             "in": "path",
@@ -59469,7 +59515,7 @@
       },
       "patch": {
         "operationId": "desktop_file_system_partial_update",
-        "description": "The file tree for the desktop product surface. Reuses all FileSystemViewSet behaviour but is\nscoped to the \"desktop\" surface, so its tree is fully isolated from the default \"web\" tree.",
+        "description": "The file tree for the desktop product surface. Reuses all FileSystemViewSet behaviour but is\nscoped to the \"desktop\" surface, so its tree is fully isolated from the default \"web\" tree.\n\nAdds per-folder, versioned markdown instructions describing the contents of a folder.",
         "parameters": [
           {
             "in": "path",
@@ -59532,7 +59578,7 @@
       },
       "delete": {
         "operationId": "desktop_file_system_destroy",
-        "description": "The file tree for the desktop product surface. Reuses all FileSystemViewSet behaviour but is\nscoped to the \"desktop\" surface, so its tree is fully isolated from the default \"web\" tree.",
+        "description": "The file tree for the desktop product surface. Reuses all FileSystemViewSet behaviour but is\nscoped to the \"desktop\" surface, so its tree is fully isolated from the default \"web\" tree.\n\nAdds per-folder, versioned markdown instructions describing the contents of a folder.",
         "parameters": [
           {
             "in": "path",
@@ -59620,10 +59666,293 @@
         ]
       }
     },
+    "/api/projects/{project_id}/desktop_file_system/{id}/instructions/": {
+      "get": {
+        "operationId": "desktop_file_system_instructions_retrieve",
+        "description": "Return the latest non-deleted instructions for this folder.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "A UUID string identifying this file system.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "desktop_file_system"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "file_system:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FolderInstructions"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "core"
+        ]
+      },
+      "put": {
+        "operationId": "desktop_file_system_instructions_update",
+        "description": "Publish a new version of the folder's instructions.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "A UUID string identifying this file system.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "desktop_file_system"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FolderInstructionsPublish"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/FolderInstructionsPublish"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/FolderInstructionsPublish"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "file_system:write"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FolderInstructions"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "core"
+        ]
+      },
+      "patch": {
+        "operationId": "desktop_file_system_instructions_partial_update",
+        "description": "Publish a new version of the folder's instructions.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "A UUID string identifying this file system.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "desktop_file_system"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchedFolderInstructionsPublish"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchedFolderInstructionsPublish"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchedFolderInstructionsPublish"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "file_system:write"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FolderInstructions"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "core"
+        ]
+      },
+      "delete": {
+        "operationId": "desktop_file_system_instructions_destroy",
+        "description": "Soft-delete every version of this folder's instructions.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "A UUID string identifying this file system.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "desktop_file_system"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "file_system:write"
+            ]
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No response body"
+          }
+        },
+        "x-product": [
+          "core"
+        ]
+      }
+    },
+    "/api/projects/{project_id}/desktop_file_system/{id}/instructions/versions/": {
+      "get": {
+        "operationId": "desktop_file_system_instructions_versions_list",
+        "description": "List the version history for this folder's instructions, newest first.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "A UUID string identifying this file system.",
+            "required": true
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Number of results to return per page.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "offset",
+            "required": false,
+            "in": "query",
+            "description": "The initial index from which to return the results.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "description": "A search term.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "tags": [
+          "desktop_file_system"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "file_system:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedFolderInstructionsVersionList"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "core"
+        ]
+      }
+    },
     "/api/projects/{project_id}/desktop_file_system/{id}/link/": {
       "post": {
         "operationId": "desktop_file_system_link_create",
-        "description": "The file tree for the desktop product surface. Reuses all FileSystemViewSet behaviour but is\nscoped to the \"desktop\" surface, so its tree is fully isolated from the default \"web\" tree.",
+        "description": "The file tree for the desktop product surface. Reuses all FileSystemViewSet behaviour but is\nscoped to the \"desktop\" surface, so its tree is fully isolated from the default \"web\" tree.\n\nAdds per-folder, versioned markdown instructions describing the contents of a folder.",
         "parameters": [
           {
             "in": "path",
@@ -59675,7 +60004,7 @@
     "/api/projects/{project_id}/desktop_file_system/{id}/move/": {
       "post": {
         "operationId": "desktop_file_system_move_create",
-        "description": "The file tree for the desktop product surface. Reuses all FileSystemViewSet behaviour but is\nscoped to the \"desktop\" surface, so its tree is fully isolated from the default \"web\" tree.",
+        "description": "The file tree for the desktop product surface. Reuses all FileSystemViewSet behaviour but is\nscoped to the \"desktop\" surface, so its tree is fully isolated from the default \"web\" tree.\n\nAdds per-folder, versioned markdown instructions describing the contents of a folder.",
         "parameters": [
           {
             "in": "path",
@@ -59769,7 +60098,7 @@
     "/api/projects/{project_id}/desktop_file_system/log_view/": {
       "get": {
         "operationId": "desktop_file_system_log_view_retrieve",
-        "description": "The file tree for the desktop product surface. Reuses all FileSystemViewSet behaviour but is\nscoped to the \"desktop\" surface, so its tree is fully isolated from the default \"web\" tree.",
+        "description": "The file tree for the desktop product surface. Reuses all FileSystemViewSet behaviour but is\nscoped to the \"desktop\" surface, so its tree is fully isolated from the default \"web\" tree.\n\nAdds per-folder, versioned markdown instructions describing the contents of a folder.",
         "parameters": [
           {
             "$ref": "#/components/parameters/ProjectIdPath"
@@ -59789,7 +60118,7 @@
       },
       "post": {
         "operationId": "desktop_file_system_log_view_create",
-        "description": "The file tree for the desktop product surface. Reuses all FileSystemViewSet behaviour but is\nscoped to the \"desktop\" surface, so its tree is fully isolated from the default \"web\" tree.",
+        "description": "The file tree for the desktop product surface. Reuses all FileSystemViewSet behaviour but is\nscoped to the \"desktop\" surface, so its tree is fully isolated from the default \"web\" tree.\n\nAdds per-folder, versioned markdown instructions describing the contents of a folder.",
         "parameters": [
           {
             "$ref": "#/components/parameters/ProjectIdPath"
@@ -59831,7 +60160,7 @@
     "/api/projects/{project_id}/desktop_file_system/undo_delete/": {
       "post": {
         "operationId": "desktop_file_system_undo_delete_create",
-        "description": "The file tree for the desktop product surface. Reuses all FileSystemViewSet behaviour but is\nscoped to the \"desktop\" surface, so its tree is fully isolated from the default \"web\" tree.",
+        "description": "The file tree for the desktop product surface. Reuses all FileSystemViewSet behaviour but is\nscoped to the \"desktop\" surface, so its tree is fully isolated from the default \"web\" tree.\n\nAdds per-folder, versioned markdown instructions describing the contents of a folder.",
         "parameters": [
           {
             "$ref": "#/components/parameters/ProjectIdPath"
@@ -59873,7 +60202,7 @@
     "/api/projects/{project_id}/desktop_file_system/unfiled/": {
       "get": {
         "operationId": "desktop_file_system_unfiled_retrieve",
-        "description": "The file tree for the desktop product surface. Reuses all FileSystemViewSet behaviour but is\nscoped to the \"desktop\" surface, so its tree is fully isolated from the default \"web\" tree.",
+        "description": "The file tree for the desktop product surface. Reuses all FileSystemViewSet behaviour but is\nscoped to the \"desktop\" surface, so its tree is fully isolated from the default \"web\" tree.\n\nAdds per-folder, versioned markdown instructions describing the contents of a folder.",
         "parameters": [
           {
             "$ref": "#/components/parameters/ProjectIdPath"
@@ -97542,9 +97871,9 @@
         "x-product": []
       }
     },
-    "/api/projects/{project_id}/sdk_doctor/report/": {
+    "/api/projects/{project_id}/sdk_health/report/": {
       "get": {
-        "operationId": "sdk_doctor_report_retrieve",
+        "operationId": "sdk_health_report_retrieve",
         "description": "Returns a pre-digested health assessment of the PostHog SDKs the project is using. Covers which SDKs are current vs outdated (smart-semver rules with grace periods and traffic-percentage thresholds), per-version breakdown, and a human-readable reason for each assessment. Use this to diagnose SDK version issues, surface upgrade recommendations, or check overall SDK health.",
         "summary": "Get SDK health report for a project",
         "parameters": [
@@ -97561,8 +97890,8 @@
           }
         ],
         "tags": [
-          "sdk_doctor",
-          "sdk_doctor"
+          "sdk_health",
+          "sdk_health"
         ],
         "security": [
           {
@@ -97584,7 +97913,7 @@
           }
         },
         "x-product": [
-          "sdk_doctor"
+          "sdk_health"
         ]
       }
     },
@@ -148616,6 +148945,123 @@
           "results"
         ]
       },
+      "FolderInstructions": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "readOnly": true,
+            "description": "Unique identifier for this instructions version."
+          },
+          "content": {
+            "type": "string",
+            "readOnly": true,
+            "description": "Markdown instructions describing the contents of the folder."
+          },
+          "version": {
+            "type": "integer",
+            "readOnly": true,
+            "description": "Monotonically increasing version number, starting at 1."
+          },
+          "is_latest": {
+            "type": "boolean",
+            "readOnly": true,
+            "description": "Whether this is the current (latest) version for the folder."
+          },
+          "created_by": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/UserBasic"
+              }
+            ],
+            "readOnly": true,
+            "description": "User who published this version."
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true,
+            "description": "When this version was published."
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true,
+            "description": "When this version row was last modified."
+          }
+        },
+        "required": [
+          "content",
+          "created_at",
+          "created_by",
+          "id",
+          "is_latest",
+          "updated_at",
+          "version"
+        ]
+      },
+      "FolderInstructionsPublish": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "string",
+            "description": "Full markdown instructions to publish as a new version for the folder."
+          },
+          "base_version": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Latest version you are editing from, for optimistic concurrency. If provided and the folder's instructions have changed since, the request fails with 409. Use 0 when no instructions exist yet."
+          }
+        },
+        "required": [
+          "content"
+        ]
+      },
+      "FolderInstructionsVersion": {
+        "type": "object",
+        "description": "Version-history entry: metadata only, with the markdown content omitted.",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "readOnly": true,
+            "description": "Unique identifier for this instructions version."
+          },
+          "version": {
+            "type": "integer",
+            "readOnly": true,
+            "description": "Monotonically increasing version number, starting at 1."
+          },
+          "is_latest": {
+            "type": "boolean",
+            "readOnly": true,
+            "description": "Whether this is the current (latest) version for the folder."
+          },
+          "created_by": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/UserBasic"
+              }
+            ],
+            "readOnly": true,
+            "description": "User who published this version."
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true,
+            "description": "When this version was published."
+          }
+        },
+        "required": [
+          "created_at",
+          "created_by",
+          "id",
+          "is_latest",
+          "version"
+        ]
+      },
       "ForgetRequest": {
         "type": "object",
         "description": "Request body for `forget`.",
@@ -169582,6 +170028,41 @@
           }
         }
       },
+      "PaginatedFolderInstructionsVersionList": {
+        "type": "object",
+        "required": [
+          "count",
+          "results"
+        ],
+        "properties": {
+          "count": {
+            "type": "integer",
+            "example": 123
+          },
+          "next": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uri",
+            "example": "http://api.example.org/accounts/?offset=400&limit=100"
+          },
+          "previous": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uri",
+            "example": "http://api.example.org/accounts/?offset=200&limit=100"
+          },
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FolderInstructionsVersion"
+            }
+          }
+        }
+      },
       "PaginatedGroupUsageMetricList": {
         "type": "object",
         "required": [
@@ -176499,6 +176980,20 @@
             "type": "string",
             "format": "date-time",
             "readOnly": true
+          }
+        }
+      },
+      "PatchedFolderInstructionsPublish": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "string",
+            "description": "Full markdown instructions to publish as a new version for the folder."
+          },
+          "base_version": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Latest version you are editing from, for optimistic concurrency. If provided and the folder's instructions have changed since, the request fails with 409. Use 0 when no instructions exist yet."
           }
         }
       },
@@ -213171,7 +213666,7 @@
           },
           "readable_name": {
             "type": "string",
-            "description": "Human-readable SDK name matching the SDK Doctor UI (e.g. 'Python', 'Node.js', 'Web', 'iOS')."
+            "description": "Human-readable SDK name matching the SDK Health UI (e.g. 'Python', 'Node.js', 'Web', 'iOS')."
           },
           "latest_version": {
             "type": "string",
@@ -213206,7 +213701,7 @@
             "items": {
               "type": "string"
             },
-            "description": "Top-level alert sentences matching the SDK Doctor UI's 'Time for an update!' banner — one per outdated version with significant traffic. Quote verbatim when surfacing the headline to users."
+            "description": "Top-level alert sentences matching the SDK Health UI's 'Time for an update!' banner — one per outdated version with significant traffic. Quote verbatim when surfacing the headline to users."
           },
           "releases": {
             "type": "array",
@@ -213343,7 +213838,7 @@
           },
           "status_reason": {
             "type": "string",
-            "description": "Per-version badge tooltip text matching the SDK Doctor UI exactly. Quote verbatim when reporting to users. Varies by state: 'Released X ago. Upgrade recommended.' for outdated versions, 'You have the latest available.' for current versions, or 'Released X ago. Upgrading is a good idea, but it's not urgent yet.' for recent-but-behind versions."
+            "description": "Per-version badge tooltip text matching the SDK Health UI exactly. Quote verbatim when reporting to users. Varies by state: 'Released X ago. Upgrade recommended.' for outdated versions, 'You have the latest available.' for current versions, or 'Released X ago. Upgrading is a good idea, but it's not urgent yet.' for recent-but-behind versions."
           },
           "sql_query": {
             "type": "string",
@@ -238006,7 +238501,7 @@
       "name": "schema_property_groups"
     },
     {
-      "name": "sdk_doctor"
+      "name": "sdk_health"
     },
     {
       "name": "session_group_summaries"
@@ -238226,7 +238721,7 @@
         "sandbox_environments",
         "saved",
         "schema_property_groups",
-        "sdk_doctor",
+        "sdk_health",
         "session_group_summaries",
         "session_recording_playlists",
         "session_recordings",
