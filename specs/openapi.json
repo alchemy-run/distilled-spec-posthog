@@ -8980,6 +8980,13 @@
           },
           "required": true
         },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "endpoint:read"
+            ]
+          }
+        ],
         "responses": {
           "200": {
             "content": {
@@ -62689,6 +62696,13 @@
           },
           "required": true
         },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "endpoint:read"
+            ]
+          }
+        ],
         "responses": {
           "200": {
             "content": {
