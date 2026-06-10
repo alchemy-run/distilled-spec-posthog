@@ -18487,6 +18487,159 @@
         ]
       }
     },
+    "/api/environments/{environment_id}/hog_flows/{id}/invocation_results/": {
+      "get": {
+        "operationId": "environments_hog_flows_invocation_results_retrieve",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "after",
+            "schema": {
+              "type": "string",
+              "default": "-7d",
+              "minLength": 1
+            },
+            "description": "Start of the time range, matched on scheduled time. Relative ('-7d', '-24h') or ISO 8601. Defaults to -7d — bounds the ClickHouse partition scan, so widen it explicitly for older runs."
+          },
+          {
+            "in": "query",
+            "name": "before",
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "End of the time range, matched on scheduled time. Same format as 'after'. Defaults to now."
+          },
+          {
+            "in": "query",
+            "name": "distinct_id",
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "Only return invocations triggered for this distinct_id (the person the run executed for)."
+          },
+          {
+            "$ref": "#/components/parameters/EnvironmentIdPath"
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "A UUID string identifying this hog flow.",
+            "required": true
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer",
+              "maximum": 500,
+              "minimum": 1,
+              "default": 50
+            },
+            "description": "Maximum number of invocations to return (1-500, default 50)."
+          },
+          {
+            "in": "query",
+            "name": "status",
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "Comma-separated invocation statuses to include, e.g. 'failed' or 'success,failed'."
+          }
+        ],
+        "tags": [
+          "hog_flows"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "hog_flow:read",
+              "person:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/HogInvocationResult"
+                  }
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "deprecated": true,
+        "x-product": [
+          "workflows"
+        ]
+      }
+    },
+    "/api/environments/{environment_id}/hog_flows/{id}/invocation_results/{invocation_id}/": {
+      "get": {
+        "operationId": "environments_hog_flows_invocation_result_retrieve",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/EnvironmentIdPath"
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "A UUID string identifying this hog flow.",
+            "required": true
+          },
+          {
+            "in": "path",
+            "name": "invocation_id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "tags": [
+          "hog_flows"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "hog_flow:read",
+              "person:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HogInvocationResultDetail"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "deprecated": true,
+        "x-product": [
+          "workflows"
+        ]
+      }
+    },
     "/api/environments/{environment_id}/hog_flows/{id}/invocations/": {
       "post": {
         "operationId": "environments_hog_flows_invocations_create",
@@ -19158,6 +19311,64 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/HogFlow"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "deprecated": true,
+        "x-product": [
+          "workflows"
+        ]
+      }
+    },
+    "/api/environments/{environment_id}/hog_flows/metrics/global/": {
+      "get": {
+        "operationId": "environments_hog_flows_metrics_global_retrieve",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "after",
+            "schema": {
+              "type": "string",
+              "default": "-7d",
+              "minLength": 1
+            },
+            "description": "Start of the window, matched on metric time. Relative ('-7d', '-24h') or ISO 8601. Defaults to -7d."
+          },
+          {
+            "in": "query",
+            "name": "before",
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "End of the window. Same format as 'after'. Defaults to now."
+          },
+          {
+            "$ref": "#/components/parameters/EnvironmentIdPath"
+          }
+        ],
+        "tags": [
+          "hog_flows"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "hog_flow:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/WorkflowStatsRow"
+                  }
                 }
               }
             },
@@ -32471,7 +32682,7 @@
     "/api/environments/{environment_id}/persons/{id}/split/": {
       "post": {
         "operationId": "environments_persons_split_create",
-        "description": "This endpoint is meant for reading and deleting persons. To create or update persons, we recommend using the [capture API](https://posthog.com/docs/api/capture), the `$set` and `$unset` [properties](https://posthog.com/docs/product-analytics/user-properties), or one of our SDKs.",
+        "description": "Split distinct_ids off a merged person. Two mutually exclusive modes:\n\n- **`distinct_ids_to_split`** (recommended for surgical edits): moves only the listed distinct_ids off this person onto new single-id persons. The original person keeps every other distinct_id and its properties.\n- **`main_distinct_id`** (legacy semantics): keeps only the specified distinct_id on this person; moves every *other* distinct_id off onto its own new person. If omitted, the person's properties are wiped and the first distinct_id is treated as the one to keep.\n\nThe split runs asynchronously: a 201 response means the task was enqueued. Newly-created split-off persons get a deterministic UUID derived from `(team_id, distinct_id)`, so they can be located client-side without polling. If you need to delete a split-off person after this call, prefer looking it up by that deterministic UUID rather than by distinct_id, since the latter still resolves to the original merged person until the async task completes.",
         "parameters": [
           {
             "$ref": "#/components/parameters/EnvironmentIdPath"
@@ -32491,9 +32702,9 @@
             "in": "path",
             "name": "id",
             "schema": {
-              "type": "integer"
+              "type": "string"
             },
-            "description": "A unique integer value identifying this person.",
+            "description": "A unique value identifying this person. Accepts both numeric ID and UUID.",
             "required": true
           }
         ],
@@ -32504,7 +32715,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/PersonRecord"
+                "$ref": "#/components/schemas/PersonSplitRequest"
               }
             }
           }
@@ -32517,8 +32728,20 @@
           }
         ],
         "responses": {
-          "200": {
-            "description": "No response body"
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PersonSplitResponse"
+                }
+              },
+              "text/csv": {
+                "schema": {
+                  "$ref": "#/components/schemas/PersonSplitResponse"
+                }
+              }
+            },
+            "description": ""
           }
         },
         "deprecated": true,
@@ -37339,6 +37562,72 @@
               }
             },
             "description": "CSV with columns: interviewee_identifier, interviewee_email, user_name, interview_url. One row per targeted interviewee."
+          }
+        },
+        "deprecated": true,
+        "x-product": [
+          "user_interviews"
+        ]
+      }
+    },
+    "/api/environments/{environment_id}/user_interview_topics/{id}/preview_invite/": {
+      "post": {
+        "operationId": "environments_user_interview_topics_preview_invite_create",
+        "description": "Render the invite email exactly as a specific targeted interviewee would receive it — personalized subject and body — without sending anything and without creating or reading any share links. Pass `interviewee_identifier` to preview for a particular person, or omit it to preview for the first targeted interviewee. The body always shows an illustrative placeholder link (`is_preview_link: true`), never a live interview URL.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/EnvironmentIdPath"
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "A UUID string identifying this user interview topic.",
+            "required": true
+          }
+        ],
+        "tags": [
+          "user_interview_topics"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PreviewInviteRequest"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/PreviewInviteRequest"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/PreviewInviteRequest"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "user_interview:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PreviewInviteResult"
+                }
+              }
+            },
+            "description": ""
           }
         },
         "deprecated": true,
@@ -69658,6 +69947,14 @@
           },
           {
             "in": "query",
+            "name": "event",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter to experiments whose metrics reference this event name. Matches events used directly in metric queries as well as events behind any actions those metrics reference."
+          },
+          {
+            "in": "query",
             "name": "feature_flag_id",
             "schema": {
               "type": "integer"
@@ -74240,63 +74537,6 @@
         ]
       }
     },
-    "/api/projects/{project_id}/feature_flags/local_evaluation/": {
-      "get": {
-        "operationId": "feature_flags_local_evaluation_retrieve",
-        "description": "Create, read, update and delete feature flags. [See docs](https://posthog.com/docs/feature-flags) for more information on feature flags.\n\nIf you're looking to use feature flags on your application, you can either use our JavaScript Library or our dedicated endpoint to check if feature flags are enabled for a given user.",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/ProjectIdPath"
-          },
-          {
-            "in": "query",
-            "name": "send_cohorts",
-            "schema": {
-              "type": [
-                "boolean",
-                "null"
-              ],
-              "default": false
-            },
-            "description": "Include cohorts in response"
-          }
-        ],
-        "tags": [
-          "feature_flags"
-        ],
-        "security": [
-          {
-            "PersonalAPIKeyAuth": [
-              "feature_flag:read"
-            ]
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/LocalEvaluationResponse"
-                }
-              }
-            },
-            "description": ""
-          },
-          "402": {
-            "description": "Payment required"
-          },
-          "500": {
-            "description": "Internal server error"
-          },
-          "503": {
-            "description": "Feature flag dependencies temporarily unavailable"
-          }
-        },
-        "x-product": [
-          "feature_flags"
-        ]
-      }
-    },
     "/api/projects/{project_id}/feature_flags/matching_ids/": {
       "get": {
         "operationId": "feature_flags_matching_ids_retrieve",
@@ -77970,6 +78210,157 @@
         ]
       }
     },
+    "/api/projects/{project_id}/hog_flows/{id}/invocation_results/": {
+      "get": {
+        "operationId": "hog_flows_invocation_results_retrieve",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "after",
+            "schema": {
+              "type": "string",
+              "default": "-7d",
+              "minLength": 1
+            },
+            "description": "Start of the time range, matched on scheduled time. Relative ('-7d', '-24h') or ISO 8601. Defaults to -7d — bounds the ClickHouse partition scan, so widen it explicitly for older runs."
+          },
+          {
+            "in": "query",
+            "name": "before",
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "End of the time range, matched on scheduled time. Same format as 'after'. Defaults to now."
+          },
+          {
+            "in": "query",
+            "name": "distinct_id",
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "Only return invocations triggered for this distinct_id (the person the run executed for)."
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "A UUID string identifying this hog flow.",
+            "required": true
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer",
+              "maximum": 500,
+              "minimum": 1,
+              "default": 50
+            },
+            "description": "Maximum number of invocations to return (1-500, default 50)."
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          },
+          {
+            "in": "query",
+            "name": "status",
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "Comma-separated invocation statuses to include, e.g. 'failed' or 'success,failed'."
+          }
+        ],
+        "tags": [
+          "hog_flows"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "hog_flow:read",
+              "person:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/HogInvocationResult"
+                  }
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "workflows"
+        ]
+      }
+    },
+    "/api/projects/{project_id}/hog_flows/{id}/invocation_results/{invocation_id}/": {
+      "get": {
+        "operationId": "hog_flows_invocation_result_retrieve",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "A UUID string identifying this hog flow.",
+            "required": true
+          },
+          {
+            "in": "path",
+            "name": "invocation_id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "hog_flows"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "hog_flow:read",
+              "person:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HogInvocationResultDetail"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "workflows"
+        ]
+      }
+    },
     "/api/projects/{project_id}/hog_flows/{id}/invocations/": {
       "post": {
         "operationId": "hog_flows_invocations_create",
@@ -78633,6 +79024,63 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/HogFlow"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "workflows"
+        ]
+      }
+    },
+    "/api/projects/{project_id}/hog_flows/metrics/global/": {
+      "get": {
+        "operationId": "hog_flows_metrics_global_retrieve",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "after",
+            "schema": {
+              "type": "string",
+              "default": "-7d",
+              "minLength": 1
+            },
+            "description": "Start of the window, matched on metric time. Relative ('-7d', '-24h') or ISO 8601. Defaults to -7d."
+          },
+          {
+            "in": "query",
+            "name": "before",
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "End of the window. Same format as 'after'. Defaults to now."
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "hog_flows"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "hog_flow:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/WorkflowStatsRow"
+                  }
                 }
               }
             },
@@ -94141,7 +94589,7 @@
     "/api/projects/{project_id}/persons/{id}/split/": {
       "post": {
         "operationId": "persons_split_create",
-        "description": "This endpoint is meant for reading and deleting persons. To create or update persons, we recommend using the [capture API](https://posthog.com/docs/api/capture), the `$set` and `$unset` [properties](https://posthog.com/docs/product-analytics/user-properties), or one of our SDKs.",
+        "description": "Split distinct_ids off a merged person. Two mutually exclusive modes:\n\n- **`distinct_ids_to_split`** (recommended for surgical edits): moves only the listed distinct_ids off this person onto new single-id persons. The original person keeps every other distinct_id and its properties.\n- **`main_distinct_id`** (legacy semantics): keeps only the specified distinct_id on this person; moves every *other* distinct_id off onto its own new person. If omitted, the person's properties are wiped and the first distinct_id is treated as the one to keep.\n\nThe split runs asynchronously: a 201 response means the task was enqueued. Newly-created split-off persons get a deterministic UUID derived from `(team_id, distinct_id)`, so they can be located client-side without polling. If you need to delete a split-off person after this call, prefer looking it up by that deterministic UUID rather than by distinct_id, since the latter still resolves to the original merged person until the async task completes.",
         "parameters": [
           {
             "in": "query",
@@ -94158,9 +94606,9 @@
             "in": "path",
             "name": "id",
             "schema": {
-              "type": "integer"
+              "type": "string"
             },
-            "description": "A unique integer value identifying this person.",
+            "description": "A unique value identifying this person. Accepts both numeric ID and UUID.",
             "required": true
           },
           {
@@ -94174,7 +94622,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/PersonRecord"
+                "$ref": "#/components/schemas/PersonSplitRequest"
               }
             }
           }
@@ -94187,8 +94635,20 @@
           }
         ],
         "responses": {
-          "200": {
-            "description": "No response body"
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PersonSplitResponse"
+                }
+              },
+              "text/csv": {
+                "schema": {
+                  "$ref": "#/components/schemas/PersonSplitResponse"
+                }
+              }
+            },
+            "description": ""
           }
         },
         "x-product": [
@@ -99748,6 +100208,64 @@
               }
             },
             "description": "Full run detail."
+          },
+          "404": {
+            "description": "Run not found or not visible to this project."
+          }
+        },
+        "x-product": [
+          "signals"
+        ]
+      }
+    },
+    "/api/projects/{project_id}/signals/scout/runs/{id}/emissions/": {
+      "get": {
+        "operationId": "signals_scout_runs_emissions",
+        "description": "Return the findings a `SignalScoutRun` emitted to the inbox, newest first — one row per emit with its `description` (the finding text as surfaced), `weight`, `confidence`, `severity`, and the deterministic `source_id` that joins back to the underlying signal. Lets a team and its agents see *what* a run surfaced without parsing `emitted_finding_ids` or scanning the signal store. Strictly team-scoped — a run UUID belonging to another team returns 404.",
+        "summary": "List a run's emitted findings",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "A UUID string identifying this Signal scout run.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "signals"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "signal_scout:read"
+            ]
+          },
+          {
+            "PersonalAPIKeyAuth": [
+              "signal_scout:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SignalScoutEmission"
+                  }
+                }
+              }
+            },
+            "description": "Findings this run emitted to the inbox, newest first."
           },
           "404": {
             "description": "Run not found or not visible to this project."
@@ -107020,6 +107538,71 @@
               }
             },
             "description": "CSV with columns: interviewee_identifier, interviewee_email, user_name, interview_url. One row per targeted interviewee."
+          }
+        },
+        "x-product": [
+          "user_interviews"
+        ]
+      }
+    },
+    "/api/projects/{project_id}/user_interview_topics/{id}/preview_invite/": {
+      "post": {
+        "operationId": "user_interview_topics_preview_invite_create",
+        "description": "Render the invite email exactly as a specific targeted interviewee would receive it — personalized subject and body — without sending anything and without creating or reading any share links. Pass `interviewee_identifier` to preview for a particular person, or omit it to preview for the first targeted interviewee. The body always shows an illustrative placeholder link (`is_preview_link: true`), never a live interview URL.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "A UUID string identifying this user interview topic.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "user_interview_topics"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PreviewInviteRequest"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/PreviewInviteRequest"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/PreviewInviteRequest"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "user_interview:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PreviewInviteResult"
+                }
+              }
+            },
+            "description": ""
           }
         },
         "x-product": [
@@ -115529,31 +116112,33 @@
           "accountExecutive": {
             "anyOf": [
               {
-                "type": "string"
-              },
-              {
-                "type": "integer"
+                "items": {
+                  "type": "integer"
+                },
+                "type": "array"
               },
               {
                 "type": "null"
               }
             ],
             "default": null,
+            "description": "Match accounts whose account executive is any of these user ids (OR semantics).",
             "title": "Accountexecutive"
           },
           "accountOwner": {
             "anyOf": [
               {
-                "type": "string"
-              },
-              {
-                "type": "integer"
+                "items": {
+                  "type": "integer"
+                },
+                "type": "array"
               },
               {
                 "type": "null"
               }
             ],
             "default": null,
+            "description": "Match accounts whose account owner is any of these user ids (OR semantics).",
             "title": "Accountowner"
           },
           "allRolesUnassigned": {
@@ -115571,16 +116156,17 @@
           "csm": {
             "anyOf": [
               {
-                "type": "string"
-              },
-              {
-                "type": "integer"
+                "items": {
+                  "type": "integer"
+                },
+                "type": "array"
               },
               {
                 "type": "null"
               }
             ],
             "default": null,
+            "description": "Match accounts whose CSM is any of these user ids (OR semantics).",
             "title": "Csm"
           },
           "filterExpression": {
@@ -117603,10 +118189,11 @@
           "flags",
           "llm_analytics",
           "sandbox",
-          "user_interview"
+          "user_interview",
+          "customer_analytics"
         ],
         "type": "string",
-        "description": "* `product_analytics` - product_analytics\n* `sql` - sql\n* `session_replay` - session_replay\n* `error_tracking` - error_tracking\n* `plan` - plan\n* `execution` - execution\n* `survey` - survey\n* `research` - research\n* `flags` - flags\n* `llm_analytics` - llm_analytics\n* `sandbox` - sandbox\n* `user_interview` - user_interview"
+        "description": "* `product_analytics` - product_analytics\n* `sql` - sql\n* `session_replay` - session_replay\n* `error_tracking` - error_tracking\n* `plan` - plan\n* `execution` - execution\n* `survey` - survey\n* `research` - research\n* `flags` - flags\n* `llm_analytics` - llm_analytics\n* `sandbox` - sandbox\n* `user_interview` - user_interview\n* `customer_analytics` - customer_analytics"
       },
       "AggregatedSpanRow": {
         "additionalProperties": false,
@@ -127686,7 +128273,7 @@
             "description": "Widget type identifier, or null when the tile was not found."
           },
           "result": {
-            "description": "Live widget query result payload."
+            "description": "Live widget query result payload. List widgets return results (array), limit (configured page size), hasMore (boolean), totalCount (matching rows for current filters), totalCountCapped (true when totalCount hit the widget max and more may exist), and optional offset/nextOffset. error_tracking_list results are issue summaries; session_replay_list results are recording metadata."
           },
           "error": {
             "type": [
@@ -132723,13 +133310,6 @@
             "description": "Canonical evidence-bundle prose. Becomes the signal's `description`.",
             "maxLength": 50000
           },
-          "weight": {
-            "type": "number",
-            "format": "double",
-            "maximum": 1,
-            "minimum": 0,
-            "description": "Agent's weight for the signal in [0, 1]. Drives ranking in the inbox."
-          },
           "confidence": {
             "type": "number",
             "format": "double",
@@ -132793,14 +133373,14 @@
               "string",
               "null"
             ],
-            "description": "Stable id for this finding, baked into the signal's source_id for traceability. NOT a dedupe key — re-emitting the same id creates another signal."
+            "description": "Stable id for this finding, baked into the signal's source_id for traceability. NOT a dedupe key — re-emitting the same id creates another signal.",
+            "maxLength": 100
           }
         },
         "required": [
           "confidence",
           "description",
-          "evidence",
-          "weight"
+          "evidence"
         ]
       },
       "EmitFindingResponse": {
@@ -141780,8 +142360,11 @@
             "description": "Unique key for the experiment's feature flag. Letters, numbers, hyphens, and underscores only. Search existing flags with the feature-flags-get-all tool first — reuse an existing flag when possible."
           },
           "feature_flag": {
-            "type": "object",
-            "additionalProperties": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/MinimalFeatureFlag"
+              }
+            ],
             "readOnly": true
           },
           "holdout": {
@@ -142258,15 +142841,42 @@
         "additionalProperties": false,
         "properties": {
           "event": {
-            "description": "Custom exposure event name.",
-            "title": "Event",
-            "type": "string"
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Custom exposure event name. Required when kind is 'ExperimentEventExposureConfig'.",
+            "title": "Event"
+          },
+          "id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Action ID. Required when kind is 'ActionsNode'.",
+            "title": "Id"
           },
           "kind": {
-            "const": "ExperimentEventExposureConfig",
-            "default": "ExperimentEventExposureConfig",
-            "title": "Kind",
-            "type": "string"
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Kind1"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Defaults to 'ExperimentEventExposureConfig' when omitted. Pass 'ActionsNode' for an action-based exposure."
           },
           "properties": {
             "type": "array",
@@ -142278,7 +142888,6 @@
           }
         },
         "required": [
-          "event",
           "properties"
         ],
         "title": "ExperimentApiExposureConfig",
@@ -155189,6 +155798,146 @@
         "type": "string",
         "description": "* `destination` - Destination\n* `site_destination` - Site Destination\n* `internal_destination` - Internal Destination\n* `source_webhook` - Source Webhook\n* `warehouse_source_webhook` - Warehouse Source Webhook\n* `site_app` - Site App\n* `transformation` - Transformation"
       },
+      "HogInvocationResult": {
+        "type": "object",
+        "properties": {
+          "invocation_id": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "error_kind": {
+            "type": "string"
+          },
+          "error_message": {
+            "type": "string"
+          },
+          "distinct_id": {
+            "type": "string"
+          },
+          "person_id": {
+            "type": "string"
+          },
+          "scheduled_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "started_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "finished_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "duration_ms": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "attempts": {
+            "type": "integer"
+          },
+          "is_retry": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "attempts",
+          "distinct_id",
+          "duration_ms",
+          "error_kind",
+          "error_message",
+          "finished_at",
+          "invocation_id",
+          "is_retry",
+          "person_id",
+          "scheduled_at",
+          "started_at",
+          "status"
+        ]
+      },
+      "HogInvocationResultDetail": {
+        "type": "object",
+        "properties": {
+          "invocation_globals": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "The triggering payload (event/person/groups) the run executed against, as a JSON object."
+          },
+          "invocation_id": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "error_kind": {
+            "type": "string"
+          },
+          "error_message": {
+            "type": "string"
+          },
+          "distinct_id": {
+            "type": "string"
+          },
+          "person_id": {
+            "type": "string"
+          },
+          "scheduled_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "started_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "finished_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "duration_ms": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "attempts": {
+            "type": "integer"
+          },
+          "is_retry": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "attempts",
+          "distinct_id",
+          "duration_ms",
+          "error_kind",
+          "error_message",
+          "finished_at",
+          "invocation_globals",
+          "invocation_id",
+          "is_retry",
+          "person_id",
+          "scheduled_at",
+          "started_at",
+          "status"
+        ]
+      },
       "HogLanguage": {
         "enum": [
           "hog",
@@ -157635,7 +158384,7 @@
             "readOnly": true
           },
           "search_match_type": {
-            "description": "How this row matched the `search` term: `exact` (the term is a case-insensitive substring of the name, derived_name, description, or a tag name) or `similar` (a fuzzy trigram match only). Results are ordered exact-first. Null when the list is not filtered by `search`.",
+            "description": "How this row matched the `search` query parameter: `exact` (the term is a case-insensitive substring of a searched field) or `similar` (a fuzzy trigram match only). Results are ordered exact-first. Null when the list is not filtered by `search`.",
             "readOnly": true,
             "oneOf": [
               {
@@ -158941,7 +159690,7 @@
           },
           "reason": {
             "type": "string",
-            "description": "Why the email was skipped (e.g., `not_an_email`, `already_sent`). Empty when sent=true."
+            "description": "Why the email was skipped (e.g., `not_an_email`, `duplicate_recipient`, `already_sent`). Empty when sent=true."
           }
         },
         "required": [
@@ -159223,6 +159972,14 @@
           "ActionsNode"
         ],
         "title": "Kind",
+        "type": "string"
+      },
+      "Kind1": {
+        "enum": [
+          "ExperimentEventExposureConfig",
+          "ActionsNode"
+        ],
+        "title": "Kind1",
         "type": "string"
       },
       "KnowledgeSource": {
@@ -161926,33 +162683,6 @@
           "id",
           "line_number",
           "updated_at"
-        ]
-      },
-      "LocalEvaluationResponse": {
-        "type": "object",
-        "properties": {
-          "flags": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/MinimalFeatureFlag"
-            }
-          },
-          "group_type_mapping": {
-            "type": "object",
-            "additionalProperties": {
-              "type": "string"
-            }
-          },
-          "cohorts": {
-            "type": "object",
-            "additionalProperties": true,
-            "description": "Cohort definitions keyed by cohort ID. Each value is a property group structure with 'type' (OR/AND) and 'values' (array of property groups or property filters)."
-          }
-        },
-        "required": [
-          "cohorts",
-          "flags",
-          "group_type_mapping"
         ]
       },
       "LogAttributeResult": {
@@ -176369,8 +177099,11 @@
             "description": "Unique key for the experiment's feature flag. Letters, numbers, hyphens, and underscores only. Search existing flags with the feature-flags-get-all tool first — reuse an existing flag when possible."
           },
           "feature_flag": {
-            "type": "object",
-            "additionalProperties": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/MinimalFeatureFlag"
+              }
+            ],
             "readOnly": true
           },
           "holdout": {
@@ -177934,7 +178667,7 @@
             "readOnly": true
           },
           "search_match_type": {
-            "description": "How this row matched the `search` term: `exact` (the term is a case-insensitive substring of the name, derived_name, description, or a tag name) or `similar` (a fuzzy trigram match only). Results are ordered exact-first. Null when the list is not filtered by `search`.",
+            "description": "How this row matched the `search` query parameter: `exact` (the term is a case-insensitive substring of a searched field) or `similar` (a fuzzy trigram match only). Results are ordered exact-first. Null when the list is not filtered by `search`.",
             "readOnly": true,
             "oneOf": [
               {
@@ -179874,6 +180607,14 @@
               "$ref": "#/components/schemas/AvailableSetupTaskIdsEnum"
             },
             "readOnly": true
+          },
+          "is_pending_deletion": {
+            "type": [
+              "boolean",
+              "null"
+            ],
+            "readOnly": true,
+            "description": "Set to True when project deletion has been initiated. Blocks UI access to this project until the async task completes."
           }
         }
       },
@@ -180943,10 +181684,12 @@
             "description": "Optional message included in the invitation email when adding new recipients."
           },
           "summary_enabled": {
-            "type": "boolean"
+            "type": "boolean",
+            "description": "Whether to attach an AI-generated summary to each delivery (insight and dashboard subscriptions only). Requires the organization to have approved AI data processing, and is subject to the org's active-summary cap and AI credit budget; otherwise the write is rejected. Not applicable to prompt subscriptions, which are themselves AI-generated."
           },
           "summary_prompt_guide": {
             "type": "string",
+            "description": "Optional free-text guidance (max 500 chars) steering the AI summary, e.g. which metrics to emphasize. Only settable when AI summary context is enabled for the organization; clearing it (empty string) is always allowed.",
             "maxLength": 500
           }
         }
@@ -184118,6 +184861,40 @@
           "uuid"
         ]
       },
+      "PersonSplitRequest": {
+        "type": "object",
+        "properties": {
+          "main_distinct_id": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The distinct_id to **keep** on this person; every *other* distinct_id is moved to its own new single-id person. If omitted, the first distinct_id on the person is used and the person's properties are wiped. To surgically *remove* one or more distinct_ids while leaving the merge intact, use `distinct_ids_to_split` instead — these parameters are inverses of each other and cannot be combined."
+          },
+          "distinct_ids_to_split": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "description": "List of distinct_ids to **move off** this person onto new single-id persons. The original person keeps every other distinct_id and its properties. New persons are created with deterministic UUIDs derived from `(team_id, distinct_id)`. Cannot be combined with `main_distinct_id`."
+          }
+        }
+      },
+      "PersonSplitResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "Always `true` when the split task was enqueued. The split itself runs asynchronously — a 201 response means the task was accepted, not that the merge state has already been updated."
+          }
+        },
+        "required": [
+          "success"
+        ]
+      },
       "PersonType": {
         "additionalProperties": false,
         "properties": {
@@ -184848,6 +185625,68 @@
         "title": "PreprocessingConfig",
         "type": "object"
       },
+      "PreviewInviteRequest": {
+        "type": "object",
+        "properties": {
+          "interviewee_identifier": {
+            "type": "string",
+            "description": "Which targeted interviewee to render the preview for (an email or PostHog distinct ID already on the topic). Leave blank to preview for the first targeted interviewee.",
+            "maxLength": 400
+          }
+        }
+      },
+      "PreviewInviteResult": {
+        "type": "object",
+        "properties": {
+          "interviewee_identifier": {
+            "type": "string",
+            "description": "The identifier (email or distinct ID) the preview was rendered for."
+          },
+          "user_name": {
+            "type": "string",
+            "description": "The display name used in the email greeting, derived from the identifier."
+          },
+          "email": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "email",
+            "description": "The email address the invite would be sent to. Null for distinct-ID-only interviewees."
+          },
+          "subject": {
+            "type": "string",
+            "description": "The rendered subject line (saved topic subject, sanitized, or the default)."
+          },
+          "html": {
+            "type": "string",
+            "description": "The fully rendered, CSS-inlined HTML body of the invite email. Safe to display in a sandboxed iframe."
+          },
+          "interview_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "An illustrative placeholder interview link shown in the previewed email body. The preview never exposes a real per-recipient share token — that link is minted only when invites are sent."
+          },
+          "emailable": {
+            "type": "boolean",
+            "description": "True if this interviewee has an email address and could actually receive the invite."
+          },
+          "is_preview_link": {
+            "type": "boolean",
+            "description": "Always true — the previewed interview_url is an illustrative placeholder, never a live link."
+          }
+        },
+        "required": [
+          "email",
+          "emailable",
+          "html",
+          "interview_url",
+          "interviewee_identifier",
+          "is_preview_link",
+          "subject",
+          "user_name"
+        ]
+      },
       "PrimaryPropertiesResponse": {
         "type": "object",
         "properties": {
@@ -185521,6 +186360,14 @@
               "$ref": "#/components/schemas/AvailableSetupTaskIdsEnum"
             },
             "readOnly": true
+          },
+          "is_pending_deletion": {
+            "type": [
+              "boolean",
+              "null"
+            ],
+            "readOnly": true,
+            "description": "Set to True when project deletion has been initiated. Blocks UI access to this project until the async task completes."
           }
         },
         "required": [
@@ -185533,6 +186380,7 @@
           "has_group_types",
           "id",
           "ingested_event",
+          "is_pending_deletion",
           "live_events_token",
           "organization",
           "person_on_events_querying_enabled",
@@ -216903,6 +217751,74 @@
           "skill_name"
         ]
       },
+      "SignalScoutEmission": {
+        "type": "object",
+        "description": "One finding a scout run emitted to the inbox — the persisted, queryable record of\n*what* the run surfaced, returned by `signals-scout-runs-emissions-list`. The emitted text\nlives in `description`; `source_id` is the join key (`run:<run_id>:finding:<finding_id>`)\nback into the underlying signal store.",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "readOnly": true
+          },
+          "run_id": {
+            "type": "string",
+            "description": "UUID of the `SignalScoutRun` that emitted this finding."
+          },
+          "finding_id": {
+            "type": "string",
+            "description": "Stable id the finding was emitted under; matches an entry in the run's `emitted_finding_ids`."
+          },
+          "description": {
+            "type": "string",
+            "description": "The emitted finding prose — the signal's `description` as surfaced to the inbox."
+          },
+          "weight": {
+            "type": "number",
+            "format": "double",
+            "maximum": 1,
+            "minimum": 0,
+            "description": "Agent's weight for the signal in [0, 1]. Drives ranking in the inbox."
+          },
+          "confidence": {
+            "type": "number",
+            "format": "double",
+            "maximum": 1,
+            "minimum": 0,
+            "description": "Agent's confidence the finding is real in [0, 1]."
+          },
+          "severity": {
+            "description": "Optional severity tag — one of P0, P1, P2, P3, P4 — or null if the run didn't set one.\n\n* `P0` - P0\n* `P1` - P1\n* `P2` - P2\n* `P3` - P3\n* `P4` - P4",
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/AutonomyPriorityEnum"
+              },
+              {
+                "$ref": "#/components/schemas/NullEnum"
+              }
+            ]
+          },
+          "source_id": {
+            "type": "string",
+            "description": "Deterministic `run:<run_id>:finding:<finding_id>` — the join key into the underlying signal store."
+          },
+          "emitted_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "ISO-8601 timestamp the finding was emitted."
+          }
+        },
+        "required": [
+          "confidence",
+          "description",
+          "emitted_at",
+          "finding_id",
+          "id",
+          "run_id",
+          "severity",
+          "source_id",
+          "weight"
+        ]
+      },
       "SignalScoutRunDetail": {
         "type": "object",
         "description": "Full `SignalScoutRun` projection used by `get-run`. Same shape as the summary\ntoday; kept distinct so future detail-only extensions (linked Signal rows,\nLLMA token-cost join) can land here without bloating the list response.",
@@ -219448,10 +220364,12 @@
             "description": "Optional message included in the invitation email when adding new recipients."
           },
           "summary_enabled": {
-            "type": "boolean"
+            "type": "boolean",
+            "description": "Whether to attach an AI-generated summary to each delivery (insight and dashboard subscriptions only). Requires the organization to have approved AI data processing, and is subject to the org's active-summary cap and AI credit budget; otherwise the write is rejected. Not applicable to prompt subscriptions, which are themselves AI-generated."
           },
           "summary_prompt_guide": {
             "type": "string",
+            "description": "Optional free-text guidance (max 500 chars) steering the AI summary, e.g. which metrics to emphasize. Only settable when AI summary context is enabled for the organization; clearing it (empty string) is always allowed.",
             "maxLength": 500
           }
         },
@@ -228797,7 +229715,7 @@
             "readOnly": true
           },
           "search_match_type": {
-            "description": "How this row matched the `search` term: `exact` (the term is a case-insensitive substring of the name, derived_name, description, or a tag name) or `similar` (a fuzzy trigram match only). Results are ordered exact-first. Null when the list is not filtered by `search`.",
+            "description": "How this row matched the `search` query parameter: `exact` (the term is a case-insensitive substring of a searched field) or `similar` (a fuzzy trigram match only). Results are ordered exact-first. Null when the list is not filtered by `search`.",
             "readOnly": true,
             "oneOf": [
               {
@@ -236349,6 +237267,28 @@
           "run_count",
           "success_rate",
           "workflow_name"
+        ]
+      },
+      "WorkflowStatsRow": {
+        "type": "object",
+        "properties": {
+          "workflow_id": {
+            "type": "string",
+            "description": "The workflow these counts are for."
+          },
+          "succeeded": {
+            "type": "integer",
+            "description": "Successful invocations in the window."
+          },
+          "failed": {
+            "type": "integer",
+            "description": "Failed invocations in the window."
+          }
+        },
+        "required": [
+          "failed",
+          "succeeded",
+          "workflow_id"
         ]
       },
       "WorkflowVariablePropertyFilter": {
