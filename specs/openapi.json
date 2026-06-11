@@ -3948,7 +3948,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "Optional. Fuzzy match against dashboard `name` and `description` using Postgres trigram word similarity (handles typos, transpositions, and prefix-as-you-type). `name` matches rank above `description` matches. Results are ordered by relevance, then pinned status, then name. When omitted, dashboards are ordered by pinned status then alphabetical name. Capped at 200 characters; longer queries return a 400 error."
+            "description": "Optional. Match against dashboard `name`, `description`, and tag names. Returns case-insensitive substring matches and fuzzy trigram matches (typos, transpositions, prefix-as-you-type) together, ordered exact-first, then pinned status, then name; each result's `search_match_type` is `exact` or `similar`. When omitted, dashboards are ordered by pinned status then alphabetical name. Capped at 200 characters; longer queries return a 400 error."
           }
         ],
         "tags": [
@@ -4612,17 +4612,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/PatchedDashboard"
+                "$ref": "#/components/schemas/PatchedPatchedDashboardOpenApi"
               }
             },
             "application/x-www-form-urlencoded": {
               "schema": {
-                "$ref": "#/components/schemas/PatchedDashboard"
+                "$ref": "#/components/schemas/PatchedPatchedDashboardOpenApi"
               }
             },
             "multipart/form-data": {
               "schema": {
-                "$ref": "#/components/schemas/PatchedDashboard"
+                "$ref": "#/components/schemas/PatchedPatchedDashboardOpenApi"
               }
             }
           }
@@ -5755,7 +5755,7 @@
     "/api/environments/{environment_id}/dashboards/widget_catalog/": {
       "get": {
         "operationId": "environments_dashboards_widget_catalog_retrieve",
-        "description": "List registered dashboard widget types and config hints for agents.",
+        "description": "List registered dashboard widget types and per-type config_schema documentation for agents.",
         "parameters": [
           {
             "$ref": "#/components/parameters/EnvironmentIdPath"
@@ -8486,6 +8486,100 @@
         ]
       }
     },
+    "/api/environments/{environment_id}/endpoints/{name}/logs/": {
+      "get": {
+        "operationId": "environments_endpoints_logs_retrieve",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "after",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "description": "Only return entries after this ISO 8601 timestamp."
+          },
+          {
+            "in": "query",
+            "name": "before",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "description": "Only return entries before this ISO 8601 timestamp."
+          },
+          {
+            "$ref": "#/components/parameters/EnvironmentIdPath"
+          },
+          {
+            "in": "query",
+            "name": "instance_id",
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "Filter logs to a specific execution instance."
+          },
+          {
+            "in": "query",
+            "name": "level",
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "Comma-separated log levels to include, e.g. 'WARN,ERROR'. Valid levels: DEBUG, LOG, INFO, WARN, ERROR."
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer",
+              "maximum": 500,
+              "minimum": 1,
+              "default": 50
+            },
+            "description": "Maximum number of log entries to return (1-500, default 50)."
+          },
+          {
+            "in": "path",
+            "name": "name",
+            "schema": {
+              "type": "string",
+              "description": "URL-safe name for the endpoint"
+            },
+            "required": true
+          },
+          {
+            "in": "query",
+            "name": "search",
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "Case-insensitive substring search across log messages."
+          }
+        ],
+        "tags": [
+          "endpoints"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "endpoint:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response body"
+          }
+        },
+        "deprecated": true,
+        "x-product": [
+          "endpoints"
+        ]
+      }
+    },
     "/api/environments/{environment_id}/endpoints/{name}/materialization_preview/": {
       "post": {
         "operationId": "environments_endpoints_materialization_preview_create",
@@ -9995,21 +10089,20 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/ErrorTrackingIssueFull"
+                "$ref": "#/components/schemas/ErrorTrackingIssueWrite"
               }
             },
             "application/x-www-form-urlencoded": {
               "schema": {
-                "$ref": "#/components/schemas/ErrorTrackingIssueFull"
+                "$ref": "#/components/schemas/ErrorTrackingIssueWrite"
               }
             },
             "multipart/form-data": {
               "schema": {
-                "$ref": "#/components/schemas/ErrorTrackingIssueFull"
+                "$ref": "#/components/schemas/ErrorTrackingIssueWrite"
               }
             }
-          },
-          "required": true
+          }
         },
         "security": [
           {
@@ -10059,17 +10152,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/PatchedErrorTrackingIssueFull"
+                "$ref": "#/components/schemas/PatchedErrorTrackingIssueWrite"
               }
             },
             "application/x-www-form-urlencoded": {
               "schema": {
-                "$ref": "#/components/schemas/PatchedErrorTrackingIssueFull"
+                "$ref": "#/components/schemas/PatchedErrorTrackingIssueWrite"
               }
             },
             "multipart/form-data": {
               "schema": {
-                "$ref": "#/components/schemas/PatchedErrorTrackingIssueFull"
+                "$ref": "#/components/schemas/PatchedErrorTrackingIssueWrite"
               }
             }
           }
@@ -33953,6 +34046,18 @@
         "tags": [
           "project_secret_api_keys"
         ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "project:write"
+            ]
+          },
+          {
+            "PersonalAPIKeyAuth": [
+              "project:write"
+            ]
+          }
+        ],
         "responses": {
           "200": {
             "content": {
@@ -39389,6 +39494,14 @@
         "parameters": [
           {
             "$ref": "#/components/parameters/EnvironmentIdPath"
+          },
+          {
+            "in": "query",
+            "name": "recent_days",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Window size in days for the coverage `recent_sessions` count. Clamped to [1, 365]. Defaults to 14 when omitted."
           },
           {
             "in": "path",
@@ -45948,7 +46061,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "Fuzzy match against member `first_name`, `last_name`, and `email` using Postgres trigram word similarity. Supports typos and prefix-as-you-type. Capped at 200 characters."
+            "description": "Match against member `first_name`, `last_name`, and `email`. Returns case-insensitive substring matches and fuzzy trigram matches (typos, prefix-as-you-type) together, ordered exact-first; each result's `search_match_type` is `exact` or `similar`. Capped at 200 characters."
           }
         ],
         "tags": [
@@ -52285,6 +52398,72 @@
         ]
       }
     },
+    "/api/projects/{project_id}/business_knowledge/documents/{id}/window/": {
+      "get": {
+        "operationId": "business_knowledge_documents_window_list",
+        "description": "Read-only access to parsed knowledge documents. Currently exposes only the\n`window` drill-down so an agent (PHAI or MCP) can pull a wider context span\naround a chunk it found via search.",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "around_ordinal",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Zero-based chunk ordinal to center the window on (from a search result).",
+            "required": true
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "A UUID string identifying this knowledge document.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          },
+          {
+            "in": "query",
+            "name": "radius",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Number of chunks before and after the center to include. Defaults to 5, clamped to [0, 15]."
+          }
+        ],
+        "tags": [
+          "business_knowledge"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "business_knowledge:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/KnowledgeDocumentWindow"
+                  }
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "business_knowledge"
+        ]
+      }
+    },
     "/api/projects/{project_id}/business_knowledge/sources/": {
       "get": {
         "operationId": "business_knowledge_sources_list",
@@ -54227,7 +54406,23 @@
             "schema": {
               "type": "string"
             },
-            "description": "JSON-encoded array of tag names to filter by, e.g. `[\"billing\",\"urgent\"]`."
+            "description": "JSON-encoded array of tag names; returns tickets with ANY of them (OR), e.g. `[\"billing\",\"urgent\"]`."
+          },
+          {
+            "in": "query",
+            "name": "tags_all",
+            "schema": {
+              "type": "string"
+            },
+            "description": "JSON-encoded array of tag names; returns tickets that have ALL of them (AND), e.g. `[\"billing\",\"urgent\"]`."
+          },
+          {
+            "in": "query",
+            "name": "tags_exclude",
+            "schema": {
+              "type": "string"
+            },
+            "description": "JSON-encoded array of tag names; returns tickets that have NONE of them (NOT), e.g. `[\"escalated\"]`."
           }
         ],
         "tags": [
@@ -54318,10 +54513,9 @@
             "in": "path",
             "name": "id",
             "schema": {
-              "type": "string",
-              "format": "uuid"
+              "type": "string"
             },
-            "description": "A UUID string identifying this ticket.",
+            "description": "The ticket's UUID or its numeric ticket number.",
             "required": true
           },
           {
@@ -54362,10 +54556,9 @@
             "in": "path",
             "name": "id",
             "schema": {
-              "type": "string",
-              "format": "uuid"
+              "type": "string"
             },
-            "description": "A UUID string identifying this ticket.",
+            "description": "The ticket's UUID or its numeric ticket number.",
             "required": true
           },
           {
@@ -54424,10 +54617,9 @@
             "in": "path",
             "name": "id",
             "schema": {
-              "type": "string",
-              "format": "uuid"
+              "type": "string"
             },
-            "description": "A UUID string identifying this ticket.",
+            "description": "The ticket's UUID or its numeric ticket number.",
             "required": true
           },
           {
@@ -54486,10 +54678,9 @@
             "in": "path",
             "name": "id",
             "schema": {
-              "type": "string",
-              "format": "uuid"
+              "type": "string"
             },
-            "description": "A UUID string identifying this ticket.",
+            "description": "The ticket's UUID or its numeric ticket number.",
             "required": true
           },
           {
@@ -54502,6 +54693,134 @@
         "responses": {
           "204": {
             "description": "No response body"
+          }
+        },
+        "x-product": [
+          "conversations"
+        ]
+      }
+    },
+    "/api/projects/{project_id}/conversations/tickets/{id}/messages/": {
+      "get": {
+        "operationId": "conversations_tickets_messages_list",
+        "description": "Return the message thread for a ticket, ordered chronologically (paginated).",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "description": "The ticket's UUID or its numeric ticket number.",
+            "required": true
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Number of results to return per page.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "offset",
+            "required": false,
+            "in": "query",
+            "description": "The initial index from which to return the results.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "conversations"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "ticket:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedTicketMessageList"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "conversations"
+        ]
+      }
+    },
+    "/api/projects/{project_id}/conversations/tickets/{id}/reply/": {
+      "post": {
+        "operationId": "conversations_tickets_reply_create",
+        "description": "Post a reply or internal note to a ticket.\n\nWith is_private=false, the reply is delivered to the customer via the\nticket's channel (email, Slack, Teams, GitHub). With is_private=true,\nthe message is stored as an internal note only visible to team members.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "description": "The ticket's UUID or its numeric ticket number.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "conversations"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TicketReplyRequest"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/TicketReplyRequest"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/TicketReplyRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "ticket:write"
+            ]
+          }
+        ],
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TicketMessage"
+                }
+              }
+            },
+            "description": ""
           }
         },
         "x-product": [
@@ -56043,7 +56362,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "Optional. Fuzzy match against dashboard `name` and `description` using Postgres trigram word similarity (handles typos, transpositions, and prefix-as-you-type). `name` matches rank above `description` matches. Results are ordered by relevance, then pinned status, then name. When omitted, dashboards are ordered by pinned status then alphabetical name. Capped at 200 characters; longer queries return a 400 error."
+            "description": "Optional. Match against dashboard `name`, `description`, and tag names. Returns case-insensitive substring matches and fuzzy trigram matches (typos, transpositions, prefix-as-you-type) together, ordered exact-first, then pinned status, then name; each result's `search_match_type` is `exact` or `similar`. When omitted, dashboards are ordered by pinned status then alphabetical name. Capped at 200 characters; longer queries return a 400 error."
           }
         ],
         "tags": [
@@ -56696,17 +57015,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/PatchedDashboard"
+                "$ref": "#/components/schemas/PatchedPatchedDashboardOpenApi"
               }
             },
             "application/x-www-form-urlencoded": {
               "schema": {
-                "$ref": "#/components/schemas/PatchedDashboard"
+                "$ref": "#/components/schemas/PatchedPatchedDashboardOpenApi"
               }
             },
             "multipart/form-data": {
               "schema": {
-                "$ref": "#/components/schemas/PatchedDashboard"
+                "$ref": "#/components/schemas/PatchedPatchedDashboardOpenApi"
               }
             }
           }
@@ -57823,7 +58142,7 @@
     "/api/projects/{project_id}/dashboards/widget_catalog/": {
       "get": {
         "operationId": "dashboards_widget_catalog_retrieve",
-        "description": "List registered dashboard widget types and config hints for agents.",
+        "description": "List registered dashboard widget types and per-type config_schema documentation for agents.",
         "parameters": [
           {
             "in": "query",
@@ -62429,6 +62748,99 @@
         ]
       }
     },
+    "/api/projects/{project_id}/endpoints/{name}/logs/": {
+      "get": {
+        "operationId": "endpoints_logs_retrieve",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "after",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "description": "Only return entries after this ISO 8601 timestamp."
+          },
+          {
+            "in": "query",
+            "name": "before",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "description": "Only return entries before this ISO 8601 timestamp."
+          },
+          {
+            "in": "query",
+            "name": "instance_id",
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "Filter logs to a specific execution instance."
+          },
+          {
+            "in": "query",
+            "name": "level",
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "Comma-separated log levels to include, e.g. 'WARN,ERROR'. Valid levels: DEBUG, LOG, INFO, WARN, ERROR."
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer",
+              "maximum": 500,
+              "minimum": 1,
+              "default": 50
+            },
+            "description": "Maximum number of log entries to return (1-500, default 50)."
+          },
+          {
+            "in": "path",
+            "name": "name",
+            "schema": {
+              "type": "string",
+              "description": "URL-safe name for the endpoint"
+            },
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          },
+          {
+            "in": "query",
+            "name": "search",
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "Case-insensitive substring search across log messages."
+          }
+        ],
+        "tags": [
+          "endpoints"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "endpoint:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response body"
+          }
+        },
+        "x-product": [
+          "endpoints"
+        ]
+      }
+    },
     "/api/projects/{project_id}/endpoints/{name}/materialization_preview/": {
       "post": {
         "operationId": "endpoints_materialization_preview_create",
@@ -65217,21 +65629,20 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/ErrorTrackingIssueFull"
+                "$ref": "#/components/schemas/ErrorTrackingIssueWrite"
               }
             },
             "application/x-www-form-urlencoded": {
               "schema": {
-                "$ref": "#/components/schemas/ErrorTrackingIssueFull"
+                "$ref": "#/components/schemas/ErrorTrackingIssueWrite"
               }
             },
             "multipart/form-data": {
               "schema": {
-                "$ref": "#/components/schemas/ErrorTrackingIssueFull"
+                "$ref": "#/components/schemas/ErrorTrackingIssueWrite"
               }
             }
-          },
-          "required": true
+          }
         },
         "security": [
           {
@@ -65280,17 +65691,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/PatchedErrorTrackingIssueFull"
+                "$ref": "#/components/schemas/PatchedErrorTrackingIssueWrite"
               }
             },
             "application/x-www-form-urlencoded": {
               "schema": {
-                "$ref": "#/components/schemas/PatchedErrorTrackingIssueFull"
+                "$ref": "#/components/schemas/PatchedErrorTrackingIssueWrite"
               }
             },
             "multipart/form-data": {
               "schema": {
-                "$ref": "#/components/schemas/PatchedErrorTrackingIssueFull"
+                "$ref": "#/components/schemas/PatchedErrorTrackingIssueWrite"
               }
             }
           }
@@ -96446,6 +96857,18 @@
         "tags": [
           "project_secret_api_keys"
         ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "project:write"
+            ]
+          },
+          {
+            "PersonalAPIKeyAuth": [
+              "project:write"
+            ]
+          }
+        ],
         "responses": {
           "200": {
             "content": {
@@ -100073,7 +100496,7 @@
     "/api/projects/{project_id}/signals/scout/runs/": {
       "get": {
         "operationId": "signals_scout_runs_list",
-        "description": "Return the most recent `SignalScoutRun` summaries for this project, newest first. Used by the headless scout to dedupe against work other runs already covered. ILIKE matches on `summary`. `date_from` / `date_to` are a half-open window on `created_at` (`>= date_from`, `< date_to`); pass `date_to` on subsequent calls to walk past the 100-row cap. Pass `emitted=true` to see only runs that surfaced at least one finding. Results capped at 100.",
+        "description": "Return the most recent `SignalScoutRun` summaries for this project, newest first. Used by the headless scout to dedupe against work other runs already covered. ILIKE matches on `summary`. `date_from` / `date_to` are a half-open window on `created_at` (`>= date_from`, `< date_to`); pass `date_to` on subsequent calls to walk past the 100-row cap. Pass `emitted=true` to see only runs that surfaced at least one finding. Pass `skill_name` (optionally with `skill_version`) to scope to a single scout. Results capped at 100.",
         "summary": "Search recent agent runs",
         "parameters": [
           {
@@ -100120,6 +100543,24 @@
           },
           {
             "in": "query",
+            "name": "skill_name",
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "Exact-match filter on the scout skill (e.g. `signals-scout-errors`). Narrows the run dump to a single scout — the primary scoping path when a specialist dedupes against its own past runs. Omit to span every scout on the team."
+          },
+          {
+            "in": "query",
+            "name": "skill_version",
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "description": "Exact-match filter on the skill version. Pair with `skill_name` to pin one version; omit for all."
+          },
+          {
+            "in": "query",
             "name": "text",
             "schema": {
               "type": "string",
@@ -100163,24 +100604,24 @@
         ]
       }
     },
-    "/api/projects/{project_id}/signals/scout/runs/{id}/": {
+    "/api/projects/{project_id}/signals/scout/runs/{run_id}/": {
       "get": {
         "operationId": "signals_scout_runs_retrieve",
         "description": "Return the full `SignalScoutRun` row. Status, timing, and error flow from the linked `tasks.TaskRun`. Strictly team-scoped — a UUID belonging to another team returns 404.",
         "summary": "Get a run by ID",
         "parameters": [
           {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          },
+          {
             "in": "path",
-            "name": "id",
+            "name": "run_id",
             "schema": {
               "type": "string",
               "format": "uuid"
             },
-            "description": "A UUID string identifying this Signal scout run.",
+            "description": "UUID of the `SignalScoutRun` bridge row.",
             "required": true
-          },
-          {
-            "$ref": "#/components/parameters/ProjectIdPath"
           }
         ],
         "tags": [
@@ -100218,24 +100659,24 @@
         ]
       }
     },
-    "/api/projects/{project_id}/signals/scout/runs/{id}/emissions/": {
+    "/api/projects/{project_id}/signals/scout/runs/{run_id}/emissions/": {
       "get": {
         "operationId": "signals_scout_runs_emissions",
         "description": "Return the findings a `SignalScoutRun` emitted to the inbox, newest first — one row per emit with its `description` (the finding text as surfaced), `weight`, `confidence`, `severity`, and the deterministic `source_id` that joins back to the underlying signal. Lets a team and its agents see *what* a run surfaced without parsing `emitted_finding_ids` or scanning the signal store. Strictly team-scoped — a run UUID belonging to another team returns 404.",
         "summary": "List a run's emitted findings",
         "parameters": [
           {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          },
+          {
             "in": "path",
-            "name": "id",
+            "name": "run_id",
             "schema": {
               "type": "string",
               "format": "uuid"
             },
-            "description": "A UUID string identifying this Signal scout run.",
+            "description": "UUID of the `SignalScoutRun` bridge row.",
             "required": true
-          },
-          {
-            "$ref": "#/components/parameters/ProjectIdPath"
           }
         ],
         "tags": [
@@ -100276,24 +100717,24 @@
         ]
       }
     },
-    "/api/projects/{project_id}/signals/scout/runs/{id}/emit-signal/": {
+    "/api/projects/{project_id}/signals/scout/runs/{run_id}/emit-signal/": {
       "post": {
         "operationId": "signals_scout_emit_signal",
         "description": "Fire `emit_signal` with `source_product = signals_scout`. The `finding_id` is baked into the deterministic `Signal.source_id = run:<id>:finding:<id>` for traceability, but this is NOT idempotent — a second call with the same `finding_id` emits a second signal, so do not retry an emit that may have already succeeded.",
         "summary": "Emit a finding for a run",
         "parameters": [
           {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          },
+          {
             "in": "path",
-            "name": "id",
+            "name": "run_id",
             "schema": {
               "type": "string",
               "format": "uuid"
             },
-            "description": "A UUID string identifying this Signal scout run.",
+            "description": "UUID of the `SignalScoutRun` bridge row.",
             "required": true
-          },
-          {
-            "$ref": "#/components/parameters/ProjectIdPath"
           }
         ],
         "tags": [
@@ -100357,9 +100798,26 @@
     "/api/projects/{project_id}/signals/scout/scratchpad/": {
       "get": {
         "operationId": "signals_scout_scratchpad_search",
-        "description": "Return `SignalScratchpad` entries for this project. ILIKE matches on `content` and `key`.",
+        "description": "Return `SignalScratchpad` entries for this project. ILIKE matches on `content` and `key`. Pass `keys_only=true` to scan keys without pulling entry bodies, or `content_max_chars` to cap each `content` to a preview — both keep a wide orientation scan from returning every entry's full prose.",
         "summary": "Search the scout scratchpad",
         "parameters": [
+          {
+            "in": "query",
+            "name": "content_max_chars",
+            "schema": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "description": "Truncate each entry's `content` to the first N characters (a preview). Omit for the full body. Ignored when `keys_only=true`."
+          },
+          {
+            "in": "query",
+            "name": "keys_only",
+            "schema": {
+              "type": "boolean"
+            },
+            "description": "When true, blank each entry's `content` and return only keys + metadata. Use to scan which memories exist without pulling their (potentially large) bodies, then re-query the ones worth a full read. Takes precedence over `content_max_chars`."
+          },
           {
             "in": "query",
             "name": "limit",
@@ -109337,6 +109795,14 @@
             "$ref": "#/components/parameters/ProjectIdPath"
           },
           {
+            "in": "query",
+            "name": "recent_days",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Window size in days for the coverage `recent_sessions` count. Clamped to [1, 365]. Defaults to 14 when omitted."
+          },
+          {
             "in": "path",
             "name": "scanner_id",
             "schema": {
@@ -118114,7 +118580,7 @@
             "items": {
               "$ref": "#/components/schemas/AddDashboardWidgetRequest"
             },
-            "description": "Widget tiles to add atomically. Supported widget_type values: error_tracking_list, session_replay_list. Use dashboard-widget-catalog-list for config_schema_hints per type. (1–10 per request).",
+            "description": "Widget tiles to add atomically. Supported widget_type values: error_tracking_list, session_replay_list. Use dashboard-widget-catalog-list for per-type config_schema documentation. (1–10 per request).",
             "maxItems": 10,
             "minItems": 1
           }
@@ -127765,6 +128231,18 @@
           "team_id": {
             "type": "integer",
             "readOnly": true
+          },
+          "search_match_type": {
+            "description": "How this row matched the `search` query parameter: `exact` (the term is a case-insensitive substring of a searched field) or `similar` (a fuzzy trigram match only). Results are ordered exact-first. Null when the list is not filtered by `search`.",
+            "readOnly": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/SearchMatchTypeEnum"
+              },
+              {
+                "$ref": "#/components/schemas/NullEnum"
+              }
+            ]
           }
         },
         "required": [
@@ -127784,6 +128262,7 @@
           "name",
           "pinned",
           "restriction_level",
+          "search_match_type",
           "team_id",
           "user_access_level"
         ]
@@ -127966,6 +128445,69 @@
         },
         "title": "DashboardFilter",
         "type": "object"
+      },
+      "DashboardPatchTileOpenApi": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Dashboard tile ID to update."
+          },
+          "widget": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/DashboardPatchWidgetOpenApi"
+              }
+            ],
+            "description": "Nested widget row updates."
+          }
+        }
+      },
+      "DashboardPatchWidgetOpenApi": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Existing widget row ID when updating a widget tile via dashboard PATCH."
+          },
+          "widget_type": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/DashboardPatchWidgetOpenApiWidgetTypeEnum"
+              }
+            ],
+            "description": "Widget type identifier (cannot be changed on update).\n\n* `error_tracking_list` - error_tracking_list\n* `session_replay_list` - session_replay_list"
+          },
+          "config": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/DashboardWidgetConfig"
+              }
+            ],
+            "description": "Widget-specific configuration. Shape depends on the tile's widget_type."
+          },
+          "name": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Optional custom display name for the widget tile.",
+            "maxLength": 400
+          },
+          "description": {
+            "type": "string",
+            "description": "Optional markdown description shown when show_description is enabled."
+          }
+        }
+      },
+      "DashboardPatchWidgetOpenApiWidgetTypeEnum": {
+        "enum": [
+          "error_tracking_list",
+          "session_replay_list"
+        ],
+        "type": "string",
+        "description": "* `error_tracking_list` - error_tracking_list\n* `session_replay_list` - session_replay_list"
       },
       "DashboardTemplate": {
         "type": "object",
@@ -131172,7 +131714,7 @@
                 "$ref": "#/components/schemas/ExternalDataSourceTypeEnum"
               }
             ],
-            "description": "The source type to validate against.\n\n* `Ashby` - Ashby\n* `Supabase` - Supabase\n* `CustomerIO` - CustomerIO\n* `Github` - Github\n* `Stripe` - Stripe\n* `Hubspot` - Hubspot\n* `Postgres` - Postgres\n* `Zendesk` - Zendesk\n* `Snowflake` - Snowflake\n* `Salesforce` - Salesforce\n* `MySQL` - MySQL\n* `MongoDB` - MongoDB\n* `MSSQL` - MSSQL\n* `Vitally` - Vitally\n* `BigQuery` - BigQuery\n* `Chargebee` - Chargebee\n* `Clerk` - Clerk\n* `GoogleAds` - GoogleAds\n* `GoogleSearchConsole` - GoogleSearchConsole\n* `TemporalIO` - TemporalIO\n* `DoIt` - DoIt\n* `GoogleSheets` - GoogleSheets\n* `MetaAds` - MetaAds\n* `Klaviyo` - Klaviyo\n* `Mailchimp` - Mailchimp\n* `Braze` - Braze\n* `Mailjet` - Mailjet\n* `Redshift` - Redshift\n* `Polar` - Polar\n* `RevenueCat` - RevenueCat\n* `LinkedinAds` - LinkedinAds\n* `RedditAds` - RedditAds\n* `TikTokAds` - TikTokAds\n* `BingAds` - BingAds\n* `Shopify` - Shopify\n* `Attio` - Attio\n* `SnapchatAds` - SnapchatAds\n* `Linear` - Linear\n* `Intercom` - Intercom\n* `Amplitude` - Amplitude\n* `Mixpanel` - Mixpanel\n* `Jira` - Jira\n* `ActiveCampaign` - ActiveCampaign\n* `Marketo` - Marketo\n* `Adjust` - Adjust\n* `AppsFlyer` - AppsFlyer\n* `Freshdesk` - Freshdesk\n* `GoogleAnalytics` - GoogleAnalytics\n* `Pipedrive` - Pipedrive\n* `SendGrid` - SendGrid\n* `Slack` - Slack\n* `PagerDuty` - PagerDuty\n* `Asana` - Asana\n* `Notion` - Notion\n* `Airtable` - Airtable\n* `Greenhouse` - Greenhouse\n* `BambooHR` - BambooHR\n* `Lever` - Lever\n* `GitLab` - GitLab\n* `Datadog` - Datadog\n* `Sentry` - Sentry\n* `Pendo` - Pendo\n* `FullStory` - FullStory\n* `AmazonAds` - AmazonAds\n* `PinterestAds` - PinterestAds\n* `AppleSearchAds` - AppleSearchAds\n* `QuickBooks` - QuickBooks\n* `Xero` - Xero\n* `NetSuite` - NetSuite\n* `WooCommerce` - WooCommerce\n* `BigCommerce` - BigCommerce\n* `PayPal` - PayPal\n* `Square` - Square\n* `Zoom` - Zoom\n* `Trello` - Trello\n* `Monday` - Monday\n* `ClickUp` - ClickUp\n* `Confluence` - Confluence\n* `Recurly` - Recurly\n* `SalesLoft` - SalesLoft\n* `Outreach` - Outreach\n* `Gong` - Gong\n* `Calendly` - Calendly\n* `Typeform` - Typeform\n* `Iterable` - Iterable\n* `ZohoCRM` - ZohoCRM\n* `Close` - Close\n* `Oracle` - Oracle\n* `DynamoDB` - DynamoDB\n* `Elasticsearch` - Elasticsearch\n* `Kafka` - Kafka\n* `LaunchDarkly` - LaunchDarkly\n* `Braintree` - Braintree\n* `Recharge` - Recharge\n* `HelpScout` - HelpScout\n* `Gorgias` - Gorgias\n* `Instagram` - Instagram\n* `YouTubeAnalytics` - YouTubeAnalytics\n* `FacebookPages` - FacebookPages\n* `TwitterAds` - TwitterAds\n* `Workday` - Workday\n* `ServiceNow` - ServiceNow\n* `Pardot` - Pardot\n* `Copper` - Copper\n* `Front` - Front\n* `ChartMogul` - ChartMogul\n* `Zuora` - Zuora\n* `Paddle` - Paddle\n* `CircleCI` - CircleCI\n* `CockroachDB` - CockroachDB\n* `Firebase` - Firebase\n* `AzureBlob` - AzureBlob\n* `GoogleDrive` - GoogleDrive\n* `OneDrive` - OneDrive\n* `SharePoint` - SharePoint\n* `Box` - Box\n* `SFTP` - SFTP\n* `MicrosoftTeams` - MicrosoftTeams\n* `Aircall` - Aircall\n* `Webflow` - Webflow\n* `Okta` - Okta\n* `Auth0` - Auth0\n* `Productboard` - Productboard\n* `Smartsheet` - Smartsheet\n* `Wrike` - Wrike\n* `Plaid` - Plaid\n* `SurveyMonkey` - SurveyMonkey\n* `Eventbrite` - Eventbrite\n* `RingCentral` - RingCentral\n* `Twilio` - Twilio\n* `Freshsales` - Freshsales\n* `Shortcut` - Shortcut\n* `ConvertKit` - ConvertKit\n* `Drip` - Drip\n* `CampaignMonitor` - CampaignMonitor\n* `MailerLite` - MailerLite\n* `Omnisend` - Omnisend\n* `Brevo` - Brevo\n* `Postmark` - Postmark\n* `Granola` - Granola\n* `BuildBetter` - BuildBetter\n* `Convex` - Convex\n* `ClickHouse` - ClickHouse\n* `Plain` - Plain\n* `Resend` - Resend\n* `PgAnalyze` - PgAnalyze\n* `WorkOS` - WorkOS\n* `Custom` - Custom"
+            "description": "The source type to validate against.\n\n* `Ashby` - Ashby\n* `Supabase` - Supabase\n* `CustomerIO` - CustomerIO\n* `Github` - Github\n* `Stripe` - Stripe\n* `Hubspot` - Hubspot\n* `Postgres` - Postgres\n* `Zendesk` - Zendesk\n* `Snowflake` - Snowflake\n* `Salesforce` - Salesforce\n* `MySQL` - MySQL\n* `MongoDB` - MongoDB\n* `MSSQL` - MSSQL\n* `Vitally` - Vitally\n* `BigQuery` - BigQuery\n* `Chargebee` - Chargebee\n* `Clerk` - Clerk\n* `GoogleAds` - GoogleAds\n* `GoogleSearchConsole` - GoogleSearchConsole\n* `TemporalIO` - TemporalIO\n* `DoIt` - DoIt\n* `GoogleSheets` - GoogleSheets\n* `MetaAds` - MetaAds\n* `Klaviyo` - Klaviyo\n* `Mailchimp` - Mailchimp\n* `Braze` - Braze\n* `Mailjet` - Mailjet\n* `Redshift` - Redshift\n* `Polar` - Polar\n* `RevenueCat` - RevenueCat\n* `LinkedinAds` - LinkedinAds\n* `RedditAds` - RedditAds\n* `TikTokAds` - TikTokAds\n* `BingAds` - BingAds\n* `Shopify` - Shopify\n* `Attio` - Attio\n* `SnapchatAds` - SnapchatAds\n* `Linear` - Linear\n* `Intercom` - Intercom\n* `Amplitude` - Amplitude\n* `Mixpanel` - Mixpanel\n* `Jira` - Jira\n* `ActiveCampaign` - ActiveCampaign\n* `Marketo` - Marketo\n* `Adjust` - Adjust\n* `AppsFlyer` - AppsFlyer\n* `Freshdesk` - Freshdesk\n* `GoogleAnalytics` - GoogleAnalytics\n* `Pipedrive` - Pipedrive\n* `SendGrid` - SendGrid\n* `Slack` - Slack\n* `PagerDuty` - PagerDuty\n* `Asana` - Asana\n* `Notion` - Notion\n* `Airtable` - Airtable\n* `Greenhouse` - Greenhouse\n* `BambooHR` - BambooHR\n* `Lever` - Lever\n* `GitLab` - GitLab\n* `Datadog` - Datadog\n* `Sentry` - Sentry\n* `Pendo` - Pendo\n* `FullStory` - FullStory\n* `AmazonAds` - AmazonAds\n* `PinterestAds` - PinterestAds\n* `AppleSearchAds` - AppleSearchAds\n* `QuickBooks` - QuickBooks\n* `Xero` - Xero\n* `NetSuite` - NetSuite\n* `WooCommerce` - WooCommerce\n* `BigCommerce` - BigCommerce\n* `PayPal` - PayPal\n* `Square` - Square\n* `Zoom` - Zoom\n* `Trello` - Trello\n* `Monday` - Monday\n* `ClickUp` - ClickUp\n* `Confluence` - Confluence\n* `Recurly` - Recurly\n* `SalesLoft` - SalesLoft\n* `Outreach` - Outreach\n* `Gong` - Gong\n* `Calendly` - Calendly\n* `Typeform` - Typeform\n* `Iterable` - Iterable\n* `ZohoCRM` - ZohoCRM\n* `Close` - Close\n* `Oracle` - Oracle\n* `DynamoDB` - DynamoDB\n* `Elasticsearch` - Elasticsearch\n* `Kafka` - Kafka\n* `LaunchDarkly` - LaunchDarkly\n* `Braintree` - Braintree\n* `Recharge` - Recharge\n* `HelpScout` - HelpScout\n* `Gorgias` - Gorgias\n* `Instagram` - Instagram\n* `YouTubeAnalytics` - YouTubeAnalytics\n* `FacebookPages` - FacebookPages\n* `TwitterAds` - TwitterAds\n* `Workday` - Workday\n* `ServiceNow` - ServiceNow\n* `Pardot` - Pardot\n* `Copper` - Copper\n* `Front` - Front\n* `ChartMogul` - ChartMogul\n* `Zuora` - Zuora\n* `Paddle` - Paddle\n* `CircleCI` - CircleCI\n* `CockroachDB` - CockroachDB\n* `Firebase` - Firebase\n* `AzureBlob` - AzureBlob\n* `GoogleDrive` - GoogleDrive\n* `OneDrive` - OneDrive\n* `SharePoint` - SharePoint\n* `Box` - Box\n* `SFTP` - SFTP\n* `MicrosoftTeams` - MicrosoftTeams\n* `Aircall` - Aircall\n* `Webflow` - Webflow\n* `Okta` - Okta\n* `Auth0` - Auth0\n* `Productboard` - Productboard\n* `Smartsheet` - Smartsheet\n* `Wrike` - Wrike\n* `Plaid` - Plaid\n* `SurveyMonkey` - SurveyMonkey\n* `Eventbrite` - Eventbrite\n* `RingCentral` - RingCentral\n* `Twilio` - Twilio\n* `Freshsales` - Freshsales\n* `Shortcut` - Shortcut\n* `ConvertKit` - ConvertKit\n* `Drip` - Drip\n* `CampaignMonitor` - CampaignMonitor\n* `MailerLite` - MailerLite\n* `Omnisend` - Omnisend\n* `Brevo` - Brevo\n* `Postmark` - Postmark\n* `Granola` - Granola\n* `BuildBetter` - BuildBetter\n* `Convex` - Convex\n* `ClickHouse` - ClickHouse\n* `Plain` - Plain\n* `Resend` - Resend\n* `PgAnalyze` - PgAnalyze\n* `WorkOS` - WorkOS\n* `AmazonS3` - AmazonS3\n* `GoogleCloudStorage` - GoogleCloudStorage\n* `Databricks` - Databricks\n* `Dynamics365` - Dynamics365\n* `SalesforceMarketingCloud` - SalesforceMarketingCloud\n* `Db2` - Db2\n* `Heap` - Heap\n* `AdobeAnalytics` - AdobeAnalytics\n* `Matomo` - Matomo\n* `Optimizely` - Optimizely\n* `Adyen` - Adyen\n* `GoCardless` - GoCardless\n* `Mollie` - Mollie\n* `CheckoutCom` - CheckoutCom\n* `Branch` - Branch\n* `Criteo` - Criteo\n* `Outbrain` - Outbrain\n* `Taboola` - Taboola\n* `AdRoll` - AdRoll\n* `DisplayVideo360` - DisplayVideo360\n* `GoogleAdManager` - GoogleAdManager\n* `CampaignManager360` - CampaignManager360\n* `SearchAds360` - SearchAds360\n* `AdobeCommerce` - AdobeCommerce\n* `AmazonSellingPartner` - AmazonSellingPartner\n* `Ebay` - Ebay\n* `Commercetools` - Commercetools\n* `LightspeedRetail` - LightspeedRetail\n* `ShipStation` - ShipStation\n* `ConstantContact` - ConstantContact\n* `Mailgun` - Mailgun\n* `Eloqua` - Eloqua\n* `Sailthru` - Sailthru\n* `Ortto` - Ortto\n* `Attentive` - Attentive\n* `Kustomer` - Kustomer\n* `Dixa` - Dixa\n* `Gladly` - Gladly\n* `Qualtrics` - Qualtrics\n* `Delighted` - Delighted\n* `AzureDevOps` - AzureDevOps\n* `Rollbar` - Rollbar\n* `Opsgenie` - Opsgenie\n* `IncidentIo` - IncidentIo\n* `Pingdom` - Pingdom\n* `Cloudflare` - Cloudflare\n* `CosmosDB` - CosmosDB\n* `PlanetScale` - PlanetScale\n* `SapHana` - SapHana\n* `Rippling` - Rippling\n* `HiBob` - HiBob\n* `Personio` - Personio\n* `Deel` - Deel\n* `AdpWorkforceNow` - AdpWorkforceNow\n* `Paylocity` - Paylocity\n* `Gusto` - Gusto\n* `CultureAmp` - CultureAmp\n* `Lattice` - Lattice\n* `SageIntacct` - SageIntacct\n* `FreshBooks` - FreshBooks\n* `Expensify` - Expensify\n* `Ramp` - Ramp\n* `Brex` - Brex\n* `Coupa` - Coupa\n* `SapConcur` - SapConcur\n* `Apollo` - Apollo\n* `Crunchbase` - Crunchbase\n* `ZoomInfo` - ZoomInfo\n* `Clari` - Clari\n* `Chorus` - Chorus\n* `Coda` - Coda\n* `Guru` - Guru\n* `Dropbox` - Dropbox\n* `Docusign` - Docusign\n* `PandaDoc` - PandaDoc\n* `SapErp` - SapErp\n* `SapSuccessFactors` - SapSuccessFactors\n* `OracleEbs` - OracleEbs\n* `OracleFusion` - OracleFusion\n* `Custom` - Custom"
           }
         },
         "required": [
@@ -131603,19 +132145,6 @@
           "team",
           "updated_at"
         ]
-      },
-      "DateFromEnum": {
-        "enum": [
-          "-14d",
-          "-1h",
-          "-24h",
-          "-30d",
-          "-3h",
-          "-7d",
-          "-90d"
-        ],
-        "type": "string",
-        "description": "* `-14d` - -14d\n* `-1h` - -1h\n* `-24h` - -24h\n* `-30d` - -30d\n* `-3h` - -3h\n* `-7d` - -7d\n* `-90d` - -90d"
       },
       "DateOperatorEnum": {
         "enum": [
@@ -133892,6 +134421,11 @@
           "name": {
             "type": "string",
             "description": "URL-safe endpoint name that was executed."
+          },
+          "execution_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier for this execution. Use it to find the matching entry in the endpoint's logs."
           },
           "results": {
             "type": "array",
@@ -137517,6 +138051,42 @@
         "type": "string",
         "description": "* `archived` - archived\n* `active` - active\n* `resolved` - resolved\n* `pending_release` - pending_release\n* `suppressed` - suppressed\n* `all` - all"
       },
+      "ErrorTrackingIssueWrite": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ErrorTrackingIssueWriteStatusEnum"
+              }
+            ],
+            "description": "Issue status to set. Deprecated archived and pending_release values are rejected.\n\n* `active` - active\n* `resolved` - resolved\n* `suppressed` - suppressed"
+          },
+          "name": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Optional issue display name."
+          },
+          "description": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Optional issue description."
+          }
+        }
+      },
+      "ErrorTrackingIssueWriteStatusEnum": {
+        "enum": [
+          "active",
+          "resolved",
+          "suppressed"
+        ],
+        "type": "string",
+        "description": "* `active` - active\n* `resolved` - resolved\n* `suppressed` - suppressed"
+      },
       "ErrorTrackingIssuesListQueryRequest": {
         "type": "object",
         "properties": {
@@ -137751,7 +138321,7 @@
             "description": "Whether to show the description on the dashboard tile."
           },
           "widget_type": {
-            "$ref": "#/components/schemas/ErrorTrackingListWidgetAddRequestOpenApiWidgetTypeEnum"
+            "$ref": "#/components/schemas/ErrorTrackingListWidgetTypeEnum"
           },
           "config": {
             "allOf": [
@@ -137759,7 +138329,7 @@
                 "$ref": "#/components/schemas/ErrorTrackingListWidgetConfig"
               }
             ],
-            "description": "Configuration for the error tracking list widget."
+            "description": "Configuration for the top issues widget."
           }
         },
         "required": [
@@ -137767,84 +138337,55 @@
           "widget_type"
         ]
       },
-      "ErrorTrackingListWidgetAddRequestOpenApiWidgetTypeEnum": {
+      "ErrorTrackingListWidgetCatalogEntryOpenApi": {
+        "type": "object",
+        "properties": {
+          "widget_type": {
+            "$ref": "#/components/schemas/ErrorTrackingListWidgetTypeEnum"
+          },
+          "group_id": {
+            "type": "string"
+          },
+          "group_label": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "config_schema": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ErrorTrackingListWidgetConfig"
+              }
+            ],
+            "readOnly": true,
+            "description": "OpenAPI config shape for this widget type (documentation; matches batch-add/PATCH schemas)."
+          },
+          "required_product_access": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "config_schema",
+          "description",
+          "group_id",
+          "group_label",
+          "label",
+          "widget_type"
+        ]
+      },
+      "ErrorTrackingListWidgetTypeEnum": {
         "enum": [
           "error_tracking_list"
         ],
         "type": "string",
         "description": "* `error_tracking_list` - error_tracking_list"
-      },
-      "ErrorTrackingListWidgetConfig": {
-        "type": "object",
-        "properties": {
-          "limit": {
-            "type": "integer",
-            "maximum": 25,
-            "minimum": 1,
-            "default": 10,
-            "description": "Maximum number of issues to return (page size)."
-          },
-          "orderBy": {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/ErrorTrackingIssueOrderByEnum"
-              }
-            ],
-            "default": "occurrences",
-            "description": "Issue ranking column.\n\n* `first_seen` - first_seen\n* `last_seen` - last_seen\n* `occurrences` - occurrences\n* `sessions` - sessions\n* `users` - users"
-          },
-          "orderDirection": {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/OrderDirectionEnum"
-              }
-            ],
-            "default": "DESC",
-            "description": "Sort direction for orderBy.\n\n* `ASC` - ASC\n* `DESC` - DESC"
-          },
-          "status": {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/ErrorTrackingIssueStatusEnum"
-              }
-            ],
-            "default": "active",
-            "description": "Issue status filter.\n\n* `archived` - archived\n* `active` - active\n* `resolved` - resolved\n* `pending_release` - pending_release\n* `suppressed` - suppressed\n* `all` - all"
-          },
-          "assignee": {
-            "oneOf": [
-              {
-                "$ref": "#/components/schemas/ErrorTrackingAssignee"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "description": "Filter by assignee ({type: user|role, id}). Omit for any assignee."
-          },
-          "widgetFilters": {
-            "type": "object",
-            "additionalProperties": {
-              "$ref": "#/components/schemas/WidgetFilterConfigEntry"
-            },
-            "description": "Widget filter selections keyed by filter id. Each key must match the entry's filterId. Configure filters in the product UI first, then copy filter id, option id, and property name here."
-          },
-          "dateRange": {
-            "oneOf": [
-              {
-                "$ref": "#/components/schemas/WidgetDateRange"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "description": "Relative date range for issues (date_from only on widgets)."
-          },
-          "filterTestAccounts": {
-            "type": "boolean",
-            "description": "When omitted, follows the project default for filtering test accounts."
-          }
-        }
       },
       "ErrorTrackingOrderBy": {
         "enum": [
@@ -142357,7 +142898,7 @@
           },
           "feature_flag_key": {
             "type": "string",
-            "description": "Unique key for the experiment's feature flag. Letters, numbers, hyphens, and underscores only. Search existing flags with the feature-flags-get-all tool first — reuse an existing flag when possible."
+            "description": "Unique key for the experiment's feature flag. Letters, numbers, hyphens, and underscores only. Search existing flags with the feature-flag-get-all tool first — reuse an existing flag when possible."
           },
           "feature_flag": {
             "allOf": [
@@ -142477,7 +143018,7 @@
                 "type": "null"
               }
             ],
-            "description": "Primary experiment metrics. Each metric must have kind='ExperimentMetric' and a metric_type: 'mean' (set source to an EventsNode with an event name), 'funnel' (set series to an array of EventsNode steps), 'ratio' (set numerator and denominator EventsNode entries), or 'retention' (set start_event and completion_event). Use the event-definitions-list tool to find available events in the project."
+            "description": "Primary experiment metrics. Each metric must have kind='ExperimentMetric' and a metric_type: 'mean' (set source to an EventsNode with an event name), 'funnel' (set series to an array of EventsNode steps), 'ratio' (set numerator and denominator EventsNode entries), or 'retention' (set start_event and completion_event). Use the read-data-schema tool with query kind 'events' to find available events in the project."
           },
           "metrics_secondary": {
             "oneOf": [
@@ -147163,7 +147704,7 @@
                 "$ref": "#/components/schemas/ExternalDataSourceTypeEnum"
               }
             ],
-            "description": "The source type (e.g. 'Postgres', 'Stripe').\n\n* `Ashby` - Ashby\n* `Supabase` - Supabase\n* `CustomerIO` - CustomerIO\n* `Github` - Github\n* `Stripe` - Stripe\n* `Hubspot` - Hubspot\n* `Postgres` - Postgres\n* `Zendesk` - Zendesk\n* `Snowflake` - Snowflake\n* `Salesforce` - Salesforce\n* `MySQL` - MySQL\n* `MongoDB` - MongoDB\n* `MSSQL` - MSSQL\n* `Vitally` - Vitally\n* `BigQuery` - BigQuery\n* `Chargebee` - Chargebee\n* `Clerk` - Clerk\n* `GoogleAds` - GoogleAds\n* `GoogleSearchConsole` - GoogleSearchConsole\n* `TemporalIO` - TemporalIO\n* `DoIt` - DoIt\n* `GoogleSheets` - GoogleSheets\n* `MetaAds` - MetaAds\n* `Klaviyo` - Klaviyo\n* `Mailchimp` - Mailchimp\n* `Braze` - Braze\n* `Mailjet` - Mailjet\n* `Redshift` - Redshift\n* `Polar` - Polar\n* `RevenueCat` - RevenueCat\n* `LinkedinAds` - LinkedinAds\n* `RedditAds` - RedditAds\n* `TikTokAds` - TikTokAds\n* `BingAds` - BingAds\n* `Shopify` - Shopify\n* `Attio` - Attio\n* `SnapchatAds` - SnapchatAds\n* `Linear` - Linear\n* `Intercom` - Intercom\n* `Amplitude` - Amplitude\n* `Mixpanel` - Mixpanel\n* `Jira` - Jira\n* `ActiveCampaign` - ActiveCampaign\n* `Marketo` - Marketo\n* `Adjust` - Adjust\n* `AppsFlyer` - AppsFlyer\n* `Freshdesk` - Freshdesk\n* `GoogleAnalytics` - GoogleAnalytics\n* `Pipedrive` - Pipedrive\n* `SendGrid` - SendGrid\n* `Slack` - Slack\n* `PagerDuty` - PagerDuty\n* `Asana` - Asana\n* `Notion` - Notion\n* `Airtable` - Airtable\n* `Greenhouse` - Greenhouse\n* `BambooHR` - BambooHR\n* `Lever` - Lever\n* `GitLab` - GitLab\n* `Datadog` - Datadog\n* `Sentry` - Sentry\n* `Pendo` - Pendo\n* `FullStory` - FullStory\n* `AmazonAds` - AmazonAds\n* `PinterestAds` - PinterestAds\n* `AppleSearchAds` - AppleSearchAds\n* `QuickBooks` - QuickBooks\n* `Xero` - Xero\n* `NetSuite` - NetSuite\n* `WooCommerce` - WooCommerce\n* `BigCommerce` - BigCommerce\n* `PayPal` - PayPal\n* `Square` - Square\n* `Zoom` - Zoom\n* `Trello` - Trello\n* `Monday` - Monday\n* `ClickUp` - ClickUp\n* `Confluence` - Confluence\n* `Recurly` - Recurly\n* `SalesLoft` - SalesLoft\n* `Outreach` - Outreach\n* `Gong` - Gong\n* `Calendly` - Calendly\n* `Typeform` - Typeform\n* `Iterable` - Iterable\n* `ZohoCRM` - ZohoCRM\n* `Close` - Close\n* `Oracle` - Oracle\n* `DynamoDB` - DynamoDB\n* `Elasticsearch` - Elasticsearch\n* `Kafka` - Kafka\n* `LaunchDarkly` - LaunchDarkly\n* `Braintree` - Braintree\n* `Recharge` - Recharge\n* `HelpScout` - HelpScout\n* `Gorgias` - Gorgias\n* `Instagram` - Instagram\n* `YouTubeAnalytics` - YouTubeAnalytics\n* `FacebookPages` - FacebookPages\n* `TwitterAds` - TwitterAds\n* `Workday` - Workday\n* `ServiceNow` - ServiceNow\n* `Pardot` - Pardot\n* `Copper` - Copper\n* `Front` - Front\n* `ChartMogul` - ChartMogul\n* `Zuora` - Zuora\n* `Paddle` - Paddle\n* `CircleCI` - CircleCI\n* `CockroachDB` - CockroachDB\n* `Firebase` - Firebase\n* `AzureBlob` - AzureBlob\n* `GoogleDrive` - GoogleDrive\n* `OneDrive` - OneDrive\n* `SharePoint` - SharePoint\n* `Box` - Box\n* `SFTP` - SFTP\n* `MicrosoftTeams` - MicrosoftTeams\n* `Aircall` - Aircall\n* `Webflow` - Webflow\n* `Okta` - Okta\n* `Auth0` - Auth0\n* `Productboard` - Productboard\n* `Smartsheet` - Smartsheet\n* `Wrike` - Wrike\n* `Plaid` - Plaid\n* `SurveyMonkey` - SurveyMonkey\n* `Eventbrite` - Eventbrite\n* `RingCentral` - RingCentral\n* `Twilio` - Twilio\n* `Freshsales` - Freshsales\n* `Shortcut` - Shortcut\n* `ConvertKit` - ConvertKit\n* `Drip` - Drip\n* `CampaignMonitor` - CampaignMonitor\n* `MailerLite` - MailerLite\n* `Omnisend` - Omnisend\n* `Brevo` - Brevo\n* `Postmark` - Postmark\n* `Granola` - Granola\n* `BuildBetter` - BuildBetter\n* `Convex` - Convex\n* `ClickHouse` - ClickHouse\n* `Plain` - Plain\n* `Resend` - Resend\n* `PgAnalyze` - PgAnalyze\n* `WorkOS` - WorkOS\n* `Custom` - Custom"
+            "description": "The source type (e.g. 'Postgres', 'Stripe').\n\n* `Ashby` - Ashby\n* `Supabase` - Supabase\n* `CustomerIO` - CustomerIO\n* `Github` - Github\n* `Stripe` - Stripe\n* `Hubspot` - Hubspot\n* `Postgres` - Postgres\n* `Zendesk` - Zendesk\n* `Snowflake` - Snowflake\n* `Salesforce` - Salesforce\n* `MySQL` - MySQL\n* `MongoDB` - MongoDB\n* `MSSQL` - MSSQL\n* `Vitally` - Vitally\n* `BigQuery` - BigQuery\n* `Chargebee` - Chargebee\n* `Clerk` - Clerk\n* `GoogleAds` - GoogleAds\n* `GoogleSearchConsole` - GoogleSearchConsole\n* `TemporalIO` - TemporalIO\n* `DoIt` - DoIt\n* `GoogleSheets` - GoogleSheets\n* `MetaAds` - MetaAds\n* `Klaviyo` - Klaviyo\n* `Mailchimp` - Mailchimp\n* `Braze` - Braze\n* `Mailjet` - Mailjet\n* `Redshift` - Redshift\n* `Polar` - Polar\n* `RevenueCat` - RevenueCat\n* `LinkedinAds` - LinkedinAds\n* `RedditAds` - RedditAds\n* `TikTokAds` - TikTokAds\n* `BingAds` - BingAds\n* `Shopify` - Shopify\n* `Attio` - Attio\n* `SnapchatAds` - SnapchatAds\n* `Linear` - Linear\n* `Intercom` - Intercom\n* `Amplitude` - Amplitude\n* `Mixpanel` - Mixpanel\n* `Jira` - Jira\n* `ActiveCampaign` - ActiveCampaign\n* `Marketo` - Marketo\n* `Adjust` - Adjust\n* `AppsFlyer` - AppsFlyer\n* `Freshdesk` - Freshdesk\n* `GoogleAnalytics` - GoogleAnalytics\n* `Pipedrive` - Pipedrive\n* `SendGrid` - SendGrid\n* `Slack` - Slack\n* `PagerDuty` - PagerDuty\n* `Asana` - Asana\n* `Notion` - Notion\n* `Airtable` - Airtable\n* `Greenhouse` - Greenhouse\n* `BambooHR` - BambooHR\n* `Lever` - Lever\n* `GitLab` - GitLab\n* `Datadog` - Datadog\n* `Sentry` - Sentry\n* `Pendo` - Pendo\n* `FullStory` - FullStory\n* `AmazonAds` - AmazonAds\n* `PinterestAds` - PinterestAds\n* `AppleSearchAds` - AppleSearchAds\n* `QuickBooks` - QuickBooks\n* `Xero` - Xero\n* `NetSuite` - NetSuite\n* `WooCommerce` - WooCommerce\n* `BigCommerce` - BigCommerce\n* `PayPal` - PayPal\n* `Square` - Square\n* `Zoom` - Zoom\n* `Trello` - Trello\n* `Monday` - Monday\n* `ClickUp` - ClickUp\n* `Confluence` - Confluence\n* `Recurly` - Recurly\n* `SalesLoft` - SalesLoft\n* `Outreach` - Outreach\n* `Gong` - Gong\n* `Calendly` - Calendly\n* `Typeform` - Typeform\n* `Iterable` - Iterable\n* `ZohoCRM` - ZohoCRM\n* `Close` - Close\n* `Oracle` - Oracle\n* `DynamoDB` - DynamoDB\n* `Elasticsearch` - Elasticsearch\n* `Kafka` - Kafka\n* `LaunchDarkly` - LaunchDarkly\n* `Braintree` - Braintree\n* `Recharge` - Recharge\n* `HelpScout` - HelpScout\n* `Gorgias` - Gorgias\n* `Instagram` - Instagram\n* `YouTubeAnalytics` - YouTubeAnalytics\n* `FacebookPages` - FacebookPages\n* `TwitterAds` - TwitterAds\n* `Workday` - Workday\n* `ServiceNow` - ServiceNow\n* `Pardot` - Pardot\n* `Copper` - Copper\n* `Front` - Front\n* `ChartMogul` - ChartMogul\n* `Zuora` - Zuora\n* `Paddle` - Paddle\n* `CircleCI` - CircleCI\n* `CockroachDB` - CockroachDB\n* `Firebase` - Firebase\n* `AzureBlob` - AzureBlob\n* `GoogleDrive` - GoogleDrive\n* `OneDrive` - OneDrive\n* `SharePoint` - SharePoint\n* `Box` - Box\n* `SFTP` - SFTP\n* `MicrosoftTeams` - MicrosoftTeams\n* `Aircall` - Aircall\n* `Webflow` - Webflow\n* `Okta` - Okta\n* `Auth0` - Auth0\n* `Productboard` - Productboard\n* `Smartsheet` - Smartsheet\n* `Wrike` - Wrike\n* `Plaid` - Plaid\n* `SurveyMonkey` - SurveyMonkey\n* `Eventbrite` - Eventbrite\n* `RingCentral` - RingCentral\n* `Twilio` - Twilio\n* `Freshsales` - Freshsales\n* `Shortcut` - Shortcut\n* `ConvertKit` - ConvertKit\n* `Drip` - Drip\n* `CampaignMonitor` - CampaignMonitor\n* `MailerLite` - MailerLite\n* `Omnisend` - Omnisend\n* `Brevo` - Brevo\n* `Postmark` - Postmark\n* `Granola` - Granola\n* `BuildBetter` - BuildBetter\n* `Convex` - Convex\n* `ClickHouse` - ClickHouse\n* `Plain` - Plain\n* `Resend` - Resend\n* `PgAnalyze` - PgAnalyze\n* `WorkOS` - WorkOS\n* `AmazonS3` - AmazonS3\n* `GoogleCloudStorage` - GoogleCloudStorage\n* `Databricks` - Databricks\n* `Dynamics365` - Dynamics365\n* `SalesforceMarketingCloud` - SalesforceMarketingCloud\n* `Db2` - Db2\n* `Heap` - Heap\n* `AdobeAnalytics` - AdobeAnalytics\n* `Matomo` - Matomo\n* `Optimizely` - Optimizely\n* `Adyen` - Adyen\n* `GoCardless` - GoCardless\n* `Mollie` - Mollie\n* `CheckoutCom` - CheckoutCom\n* `Branch` - Branch\n* `Criteo` - Criteo\n* `Outbrain` - Outbrain\n* `Taboola` - Taboola\n* `AdRoll` - AdRoll\n* `DisplayVideo360` - DisplayVideo360\n* `GoogleAdManager` - GoogleAdManager\n* `CampaignManager360` - CampaignManager360\n* `SearchAds360` - SearchAds360\n* `AdobeCommerce` - AdobeCommerce\n* `AmazonSellingPartner` - AmazonSellingPartner\n* `Ebay` - Ebay\n* `Commercetools` - Commercetools\n* `LightspeedRetail` - LightspeedRetail\n* `ShipStation` - ShipStation\n* `ConstantContact` - ConstantContact\n* `Mailgun` - Mailgun\n* `Eloqua` - Eloqua\n* `Sailthru` - Sailthru\n* `Ortto` - Ortto\n* `Attentive` - Attentive\n* `Kustomer` - Kustomer\n* `Dixa` - Dixa\n* `Gladly` - Gladly\n* `Qualtrics` - Qualtrics\n* `Delighted` - Delighted\n* `AzureDevOps` - AzureDevOps\n* `Rollbar` - Rollbar\n* `Opsgenie` - Opsgenie\n* `IncidentIo` - IncidentIo\n* `Pingdom` - Pingdom\n* `Cloudflare` - Cloudflare\n* `CosmosDB` - CosmosDB\n* `PlanetScale` - PlanetScale\n* `SapHana` - SapHana\n* `Rippling` - Rippling\n* `HiBob` - HiBob\n* `Personio` - Personio\n* `Deel` - Deel\n* `AdpWorkforceNow` - AdpWorkforceNow\n* `Paylocity` - Paylocity\n* `Gusto` - Gusto\n* `CultureAmp` - CultureAmp\n* `Lattice` - Lattice\n* `SageIntacct` - SageIntacct\n* `FreshBooks` - FreshBooks\n* `Expensify` - Expensify\n* `Ramp` - Ramp\n* `Brex` - Brex\n* `Coupa` - Coupa\n* `SapConcur` - SapConcur\n* `Apollo` - Apollo\n* `Crunchbase` - Crunchbase\n* `ZoomInfo` - ZoomInfo\n* `Clari` - Clari\n* `Chorus` - Chorus\n* `Coda` - Coda\n* `Guru` - Guru\n* `Dropbox` - Dropbox\n* `Docusign` - Docusign\n* `PandaDoc` - PandaDoc\n* `SapErp` - SapErp\n* `SapSuccessFactors` - SapSuccessFactors\n* `OracleEbs` - OracleEbs\n* `OracleFusion` - OracleFusion\n* `Custom` - Custom"
           },
           "payload": {
             "type": "object",
@@ -147555,10 +148096,89 @@
           "Resend",
           "PgAnalyze",
           "WorkOS",
+          "AmazonS3",
+          "GoogleCloudStorage",
+          "Databricks",
+          "Dynamics365",
+          "SalesforceMarketingCloud",
+          "Db2",
+          "Heap",
+          "AdobeAnalytics",
+          "Matomo",
+          "Optimizely",
+          "Adyen",
+          "GoCardless",
+          "Mollie",
+          "CheckoutCom",
+          "Branch",
+          "Criteo",
+          "Outbrain",
+          "Taboola",
+          "AdRoll",
+          "DisplayVideo360",
+          "GoogleAdManager",
+          "CampaignManager360",
+          "SearchAds360",
+          "AdobeCommerce",
+          "AmazonSellingPartner",
+          "Ebay",
+          "Commercetools",
+          "LightspeedRetail",
+          "ShipStation",
+          "ConstantContact",
+          "Mailgun",
+          "Eloqua",
+          "Sailthru",
+          "Ortto",
+          "Attentive",
+          "Kustomer",
+          "Dixa",
+          "Gladly",
+          "Qualtrics",
+          "Delighted",
+          "AzureDevOps",
+          "Rollbar",
+          "Opsgenie",
+          "IncidentIo",
+          "Pingdom",
+          "Cloudflare",
+          "CosmosDB",
+          "PlanetScale",
+          "SapHana",
+          "Rippling",
+          "HiBob",
+          "Personio",
+          "Deel",
+          "AdpWorkforceNow",
+          "Paylocity",
+          "Gusto",
+          "CultureAmp",
+          "Lattice",
+          "SageIntacct",
+          "FreshBooks",
+          "Expensify",
+          "Ramp",
+          "Brex",
+          "Coupa",
+          "SapConcur",
+          "Apollo",
+          "Crunchbase",
+          "ZoomInfo",
+          "Clari",
+          "Chorus",
+          "Coda",
+          "Guru",
+          "Dropbox",
+          "Docusign",
+          "PandaDoc",
+          "SapErp",
+          "SapSuccessFactors",
+          "OracleEbs",
+          "OracleFusion",
           "Custom"
         ],
         "type": "string",
-        "description": "* `Ashby` - Ashby\n* `Supabase` - Supabase\n* `CustomerIO` - CustomerIO\n* `Github` - Github\n* `Stripe` - Stripe\n* `Hubspot` - Hubspot\n* `Postgres` - Postgres\n* `Zendesk` - Zendesk\n* `Snowflake` - Snowflake\n* `Salesforce` - Salesforce\n* `MySQL` - MySQL\n* `MongoDB` - MongoDB\n* `MSSQL` - MSSQL\n* `Vitally` - Vitally\n* `BigQuery` - BigQuery\n* `Chargebee` - Chargebee\n* `Clerk` - Clerk\n* `GoogleAds` - GoogleAds\n* `GoogleSearchConsole` - GoogleSearchConsole\n* `TemporalIO` - TemporalIO\n* `DoIt` - DoIt\n* `GoogleSheets` - GoogleSheets\n* `MetaAds` - MetaAds\n* `Klaviyo` - Klaviyo\n* `Mailchimp` - Mailchimp\n* `Braze` - Braze\n* `Mailjet` - Mailjet\n* `Redshift` - Redshift\n* `Polar` - Polar\n* `RevenueCat` - RevenueCat\n* `LinkedinAds` - LinkedinAds\n* `RedditAds` - RedditAds\n* `TikTokAds` - TikTokAds\n* `BingAds` - BingAds\n* `Shopify` - Shopify\n* `Attio` - Attio\n* `SnapchatAds` - SnapchatAds\n* `Linear` - Linear\n* `Intercom` - Intercom\n* `Amplitude` - Amplitude\n* `Mixpanel` - Mixpanel\n* `Jira` - Jira\n* `ActiveCampaign` - ActiveCampaign\n* `Marketo` - Marketo\n* `Adjust` - Adjust\n* `AppsFlyer` - AppsFlyer\n* `Freshdesk` - Freshdesk\n* `GoogleAnalytics` - GoogleAnalytics\n* `Pipedrive` - Pipedrive\n* `SendGrid` - SendGrid\n* `Slack` - Slack\n* `PagerDuty` - PagerDuty\n* `Asana` - Asana\n* `Notion` - Notion\n* `Airtable` - Airtable\n* `Greenhouse` - Greenhouse\n* `BambooHR` - BambooHR\n* `Lever` - Lever\n* `GitLab` - GitLab\n* `Datadog` - Datadog\n* `Sentry` - Sentry\n* `Pendo` - Pendo\n* `FullStory` - FullStory\n* `AmazonAds` - AmazonAds\n* `PinterestAds` - PinterestAds\n* `AppleSearchAds` - AppleSearchAds\n* `QuickBooks` - QuickBooks\n* `Xero` - Xero\n* `NetSuite` - NetSuite\n* `WooCommerce` - WooCommerce\n* `BigCommerce` - BigCommerce\n* `PayPal` - PayPal\n* `Square` - Square\n* `Zoom` - Zoom\n* `Trello` - Trello\n* `Monday` - Monday\n* `ClickUp` - ClickUp\n* `Confluence` - Confluence\n* `Recurly` - Recurly\n* `SalesLoft` - SalesLoft\n* `Outreach` - Outreach\n* `Gong` - Gong\n* `Calendly` - Calendly\n* `Typeform` - Typeform\n* `Iterable` - Iterable\n* `ZohoCRM` - ZohoCRM\n* `Close` - Close\n* `Oracle` - Oracle\n* `DynamoDB` - DynamoDB\n* `Elasticsearch` - Elasticsearch\n* `Kafka` - Kafka\n* `LaunchDarkly` - LaunchDarkly\n* `Braintree` - Braintree\n* `Recharge` - Recharge\n* `HelpScout` - HelpScout\n* `Gorgias` - Gorgias\n* `Instagram` - Instagram\n* `YouTubeAnalytics` - YouTubeAnalytics\n* `FacebookPages` - FacebookPages\n* `TwitterAds` - TwitterAds\n* `Workday` - Workday\n* `ServiceNow` - ServiceNow\n* `Pardot` - Pardot\n* `Copper` - Copper\n* `Front` - Front\n* `ChartMogul` - ChartMogul\n* `Zuora` - Zuora\n* `Paddle` - Paddle\n* `CircleCI` - CircleCI\n* `CockroachDB` - CockroachDB\n* `Firebase` - Firebase\n* `AzureBlob` - AzureBlob\n* `GoogleDrive` - GoogleDrive\n* `OneDrive` - OneDrive\n* `SharePoint` - SharePoint\n* `Box` - Box\n* `SFTP` - SFTP\n* `MicrosoftTeams` - MicrosoftTeams\n* `Aircall` - Aircall\n* `Webflow` - Webflow\n* `Okta` - Okta\n* `Auth0` - Auth0\n* `Productboard` - Productboard\n* `Smartsheet` - Smartsheet\n* `Wrike` - Wrike\n* `Plaid` - Plaid\n* `SurveyMonkey` - SurveyMonkey\n* `Eventbrite` - Eventbrite\n* `RingCentral` - RingCentral\n* `Twilio` - Twilio\n* `Freshsales` - Freshsales\n* `Shortcut` - Shortcut\n* `ConvertKit` - ConvertKit\n* `Drip` - Drip\n* `CampaignMonitor` - CampaignMonitor\n* `MailerLite` - MailerLite\n* `Omnisend` - Omnisend\n* `Brevo` - Brevo\n* `Postmark` - Postmark\n* `Granola` - Granola\n* `BuildBetter` - BuildBetter\n* `Convex` - Convex\n* `ClickHouse` - ClickHouse\n* `Plain` - Plain\n* `Resend` - Resend\n* `PgAnalyze` - PgAnalyze\n* `WorkOS` - WorkOS\n* `Custom` - Custom"
+        "description": "* `Ashby` - Ashby\n* `Supabase` - Supabase\n* `CustomerIO` - CustomerIO\n* `Github` - Github\n* `Stripe` - Stripe\n* `Hubspot` - Hubspot\n* `Postgres` - Postgres\n* `Zendesk` - Zendesk\n* `Snowflake` - Snowflake\n* `Salesforce` - Salesforce\n* `MySQL` - MySQL\n* `MongoDB` - MongoDB\n* `MSSQL` - MSSQL\n* `Vitally` - Vitally\n* `BigQuery` - BigQuery\n* `Chargebee` - Chargebee\n* `Clerk` - Clerk\n* `GoogleAds` - GoogleAds\n* `GoogleSearchConsole` - GoogleSearchConsole\n* `TemporalIO` - TemporalIO\n* `DoIt` - DoIt\n* `GoogleSheets` - GoogleSheets\n* `MetaAds` - MetaAds\n* `Klaviyo` - Klaviyo\n* `Mailchimp` - Mailchimp\n* `Braze` - Braze\n* `Mailjet` - Mailjet\n* `Redshift` - Redshift\n* `Polar` - Polar\n* `RevenueCat` - RevenueCat\n* `LinkedinAds` - LinkedinAds\n* `RedditAds` - RedditAds\n* `TikTokAds` - TikTokAds\n* `BingAds` - BingAds\n* `Shopify` - Shopify\n* `Attio` - Attio\n* `SnapchatAds` - SnapchatAds\n* `Linear` - Linear\n* `Intercom` - Intercom\n* `Amplitude` - Amplitude\n* `Mixpanel` - Mixpanel\n* `Jira` - Jira\n* `ActiveCampaign` - ActiveCampaign\n* `Marketo` - Marketo\n* `Adjust` - Adjust\n* `AppsFlyer` - AppsFlyer\n* `Freshdesk` - Freshdesk\n* `GoogleAnalytics` - GoogleAnalytics\n* `Pipedrive` - Pipedrive\n* `SendGrid` - SendGrid\n* `Slack` - Slack\n* `PagerDuty` - PagerDuty\n* `Asana` - Asana\n* `Notion` - Notion\n* `Airtable` - Airtable\n* `Greenhouse` - Greenhouse\n* `BambooHR` - BambooHR\n* `Lever` - Lever\n* `GitLab` - GitLab\n* `Datadog` - Datadog\n* `Sentry` - Sentry\n* `Pendo` - Pendo\n* `FullStory` - FullStory\n* `AmazonAds` - AmazonAds\n* `PinterestAds` - PinterestAds\n* `AppleSearchAds` - AppleSearchAds\n* `QuickBooks` - QuickBooks\n* `Xero` - Xero\n* `NetSuite` - NetSuite\n* `WooCommerce` - WooCommerce\n* `BigCommerce` - BigCommerce\n* `PayPal` - PayPal\n* `Square` - Square\n* `Zoom` - Zoom\n* `Trello` - Trello\n* `Monday` - Monday\n* `ClickUp` - ClickUp\n* `Confluence` - Confluence\n* `Recurly` - Recurly\n* `SalesLoft` - SalesLoft\n* `Outreach` - Outreach\n* `Gong` - Gong\n* `Calendly` - Calendly\n* `Typeform` - Typeform\n* `Iterable` - Iterable\n* `ZohoCRM` - ZohoCRM\n* `Close` - Close\n* `Oracle` - Oracle\n* `DynamoDB` - DynamoDB\n* `Elasticsearch` - Elasticsearch\n* `Kafka` - Kafka\n* `LaunchDarkly` - LaunchDarkly\n* `Braintree` - Braintree\n* `Recharge` - Recharge\n* `HelpScout` - HelpScout\n* `Gorgias` - Gorgias\n* `Instagram` - Instagram\n* `YouTubeAnalytics` - YouTubeAnalytics\n* `FacebookPages` - FacebookPages\n* `TwitterAds` - TwitterAds\n* `Workday` - Workday\n* `ServiceNow` - ServiceNow\n* `Pardot` - Pardot\n* `Copper` - Copper\n* `Front` - Front\n* `ChartMogul` - ChartMogul\n* `Zuora` - Zuora\n* `Paddle` - Paddle\n* `CircleCI` - CircleCI\n* `CockroachDB` - CockroachDB\n* `Firebase` - Firebase\n* `AzureBlob` - AzureBlob\n* `GoogleDrive` - GoogleDrive\n* `OneDrive` - OneDrive\n* `SharePoint` - SharePoint\n* `Box` - Box\n* `SFTP` - SFTP\n* `MicrosoftTeams` - MicrosoftTeams\n* `Aircall` - Aircall\n* `Webflow` - Webflow\n* `Okta` - Okta\n* `Auth0` - Auth0\n* `Productboard` - Productboard\n* `Smartsheet` - Smartsheet\n* `Wrike` - Wrike\n* `Plaid` - Plaid\n* `SurveyMonkey` - SurveyMonkey\n* `Eventbrite` - Eventbrite\n* `RingCentral` - RingCentral\n* `Twilio` - Twilio\n* `Freshsales` - Freshsales\n* `Shortcut` - Shortcut\n* `ConvertKit` - ConvertKit\n* `Drip` - Drip\n* `CampaignMonitor` - CampaignMonitor\n* `MailerLite` - MailerLite\n* `Omnisend` - Omnisend\n* `Brevo` - Brevo\n* `Postmark` - Postmark\n* `Granola` - Granola\n* `BuildBetter` - BuildBetter\n* `Convex` - Convex\n* `ClickHouse` - ClickHouse\n* `Plain` - Plain\n* `Resend` - Resend\n* `PgAnalyze` - PgAnalyze\n* `WorkOS` - WorkOS\n* `AmazonS3` - AmazonS3\n* `GoogleCloudStorage` - GoogleCloudStorage\n* `Databricks` - Databricks\n* `Dynamics365` - Dynamics365\n* `SalesforceMarketingCloud` - SalesforceMarketingCloud\n* `Db2` - Db2\n* `Heap` - Heap\n* `AdobeAnalytics` - AdobeAnalytics\n* `Matomo` - Matomo\n* `Optimizely` - Optimizely\n* `Adyen` - Adyen\n* `GoCardless` - GoCardless\n* `Mollie` - Mollie\n* `CheckoutCom` - CheckoutCom\n* `Branch` - Branch\n* `Criteo` - Criteo\n* `Outbrain` - Outbrain\n* `Taboola` - Taboola\n* `AdRoll` - AdRoll\n* `DisplayVideo360` - DisplayVideo360\n* `GoogleAdManager` - GoogleAdManager\n* `CampaignManager360` - CampaignManager360\n* `SearchAds360` - SearchAds360\n* `AdobeCommerce` - AdobeCommerce\n* `AmazonSellingPartner` - AmazonSellingPartner\n* `Ebay` - Ebay\n* `Commercetools` - Commercetools\n* `LightspeedRetail` - LightspeedRetail\n* `ShipStation` - ShipStation\n* `ConstantContact` - ConstantContact\n* `Mailgun` - Mailgun\n* `Eloqua` - Eloqua\n* `Sailthru` - Sailthru\n* `Ortto` - Ortto\n* `Attentive` - Attentive\n* `Kustomer` - Kustomer\n* `Dixa` - Dixa\n* `Gladly` - Gladly\n* `Qualtrics` - Qualtrics\n* `Delighted` - Delighted\n* `AzureDevOps` - AzureDevOps\n* `Rollbar` - Rollbar\n* `Opsgenie` - Opsgenie\n* `IncidentIo` - IncidentIo\n* `Pingdom` - Pingdom\n* `Cloudflare` - Cloudflare\n* `CosmosDB` - CosmosDB\n* `PlanetScale` - PlanetScale\n* `SapHana` - SapHana\n* `Rippling` - Rippling\n* `HiBob` - HiBob\n* `Personio` - Personio\n* `Deel` - Deel\n* `AdpWorkforceNow` - AdpWorkforceNow\n* `Paylocity` - Paylocity\n* `Gusto` - Gusto\n* `CultureAmp` - CultureAmp\n* `Lattice` - Lattice\n* `SageIntacct` - SageIntacct\n* `FreshBooks` - FreshBooks\n* `Expensify` - Expensify\n* `Ramp` - Ramp\n* `Brex` - Brex\n* `Coupa` - Coupa\n* `SapConcur` - SapConcur\n* `Apollo` - Apollo\n* `Crunchbase` - Crunchbase\n* `ZoomInfo` - ZoomInfo\n* `Clari` - Clari\n* `Chorus` - Chorus\n* `Coda` - Coda\n* `Guru` - Guru\n* `Dropbox` - Dropbox\n* `Docusign` - Docusign\n* `PandaDoc` - PandaDoc\n* `SapErp` - SapErp\n* `SapSuccessFactors` - SapSuccessFactors\n* `OracleEbs` - OracleEbs\n* `OracleFusion` - OracleFusion\n* `Custom` - Custom"
       },
       "ExternalQueryError": {
         "additionalProperties": false,
@@ -147668,8 +148288,7 @@
           "experiment_set_metadata": {
             "type": "array",
             "items": {
-              "type": "object",
-              "additionalProperties": true
+              "$ref": "#/components/schemas/FeatureFlagExperimentSetMetadata"
             },
             "readOnly": true
           },
@@ -147982,6 +148601,13 @@
               "type": "string"
             },
             "description": "Evaluation contexts that control where this flag evaluates at runtime."
+          },
+          "is_remote_configuration": {
+            "type": [
+              "boolean",
+              "null"
+            ],
+            "description": "Whether this flag is a remote configuration flag that delivers a payload rather than gating a feature."
           }
         }
       },
@@ -147996,6 +148622,28 @@
         ],
         "type": "string",
         "description": "* `feature_flags` - feature_flags\n* `experiments` - experiments\n* `surveys` - surveys\n* `early_access_features` - early_access_features\n* `web_experiments` - web_experiments\n* `product_tours` - product_tours"
+      },
+      "FeatureFlagExperimentSetMetadata": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "ID of the experiment linked to this flag."
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the experiment linked to this flag."
+          },
+          "is_running": {
+            "type": "boolean",
+            "description": "Whether the experiment is currently running (started and not yet stopped). A running experiment blocks deletion of the linked flag."
+          }
+        },
+        "required": [
+          "id",
+          "is_running",
+          "name"
+        ]
       },
       "FeatureFlagFilterPropertyCohortInSchema": {
         "type": "object",
@@ -154712,7 +155360,7 @@
                 "type": "null"
               }
             ],
-            "description": "Optional dedup: {hash: <HogQL template>, ttl: <seconds, 60-94608000>, threshold?: <int>}. Server compiles bytecode from hash. Omit to disable."
+            "description": "Optional dedup/throttle on an already-matched trigger: {hash: <HogQL template>, ttl: <seconds, 60-94608000>, threshold?: <int>}. Without threshold: fire once per hash, then suppress repeats within ttl (hash '{person.id}' = once per person per ttl). With threshold N: fire once per N matches of the same hash — a sampler, the 1st then every Nth. Throttles an already-qualifying trigger; it doesn't decide who enters. Server compiles bytecode from hash; omit to disable."
           },
           "conversion": {
             "description": "Conversion goal: {filters: [<cond>, ...], window_minutes}. <cond>: {key, value, operator, type: event|person|group}. Empty filters = any event in window. Required for exit_on_conversion / exit_on_trigger_not_matched_or_conversion. bytecode compiled server-side."
@@ -154993,18 +155641,18 @@
             ],
             "maximum": 94608000,
             "minimum": 60,
-            "description": "Hash TTL in seconds (60 to ~94M / 3y)."
+            "description": "Seconds (60 to ~94M / 3y) to suppress repeat firings of the same hash."
           },
           "threshold": {
             "type": [
               "integer",
               "null"
             ],
-            "description": "Min matching events before triggering (k-anonymity)."
+            "description": "Fire once per N matches of the same hash within ttl — a sampler: N=3 fires on the 1st, 4th, 7th… match. Omit to fire on the first match, then suppress repeats within ttl."
           },
           "hash": {
             "type": "string",
-            "description": "HogQL template, e.g. '{person.properties.email}'."
+            "description": "HogQL template defining the dedup/grouping key, e.g. '{person.id}' (once per person) within ttl."
           },
           "bytecode": {
             "description": "Auto-compiled from hash. Do not set."
@@ -159982,6 +160630,51 @@
         "title": "Kind1",
         "type": "string"
       },
+      "KnowledgeDocumentWindow": {
+        "type": "object",
+        "description": "One chunk in a drill-down window over a single knowledge document.\n\nOutput-only — the rows come from the `get_document_window` logic helper\n(a `KnowledgeSearchResult` dataclass), not the ORM, so this is a plain\nread serializer rather than a `ModelSerializer`.",
+        "properties": {
+          "chunk_id": {
+            "type": "string",
+            "format": "uuid",
+            "readOnly": true,
+            "description": "Stable identifier of this chunk. Same value used in search results."
+          },
+          "ordinal": {
+            "type": "integer",
+            "readOnly": true,
+            "description": "Zero-based position of this chunk within its document. Use it as `around_ordinal` to recenter the window."
+          },
+          "content": {
+            "type": "string",
+            "readOnly": true,
+            "description": "The chunk's text content."
+          },
+          "heading_path": {
+            "type": "string",
+            "readOnly": true,
+            "description": "Breadcrumb of section headings this chunk sits under. Empty when the document has no heading structure."
+          },
+          "source_name": {
+            "type": "string",
+            "readOnly": true,
+            "description": "Human label of the knowledge source this chunk belongs to."
+          },
+          "document_title": {
+            "type": "string",
+            "readOnly": true,
+            "description": "Title of the document this chunk belongs to."
+          }
+        },
+        "required": [
+          "chunk_id",
+          "content",
+          "document_title",
+          "heading_path",
+          "ordinal",
+          "source_name"
+        ]
+      },
       "KnowledgeSource": {
         "type": "object",
         "properties": {
@@ -162156,6 +162849,19 @@
             ],
             "default": false,
             "title": "Showlegend"
+          },
+          "showPercentagesOnSeries": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Append per-band percentage to each value label (e.g. `580 (42%)`). Requires `showValuesOnSeries` — on its own it has no visible effect.",
+            "title": "Showpercentagesonseries"
           },
           "showValuesOnSeries": {
             "anyOf": [
@@ -168633,6 +169339,18 @@
             "type": "string",
             "format": "date-time",
             "readOnly": true
+          },
+          "search_match_type": {
+            "description": "How this row matched the `search` query parameter: `exact` (the term is a case-insensitive substring of a searched field) or `similar` (a fuzzy trigram match only). Results are ordered exact-first. Null when the list is not filtered by `search`.",
+            "readOnly": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/SearchMatchTypeEnum"
+              },
+              {
+                "$ref": "#/components/schemas/NullEnum"
+              }
+            ]
           }
         },
         "required": [
@@ -168641,6 +169359,7 @@
           "is_2fa_enabled",
           "joined_at",
           "last_login",
+          "search_match_type",
           "updated_at",
           "user"
         ]
@@ -173524,6 +174243,41 @@
           }
         }
       },
+      "PaginatedTicketMessageList": {
+        "type": "object",
+        "required": [
+          "count",
+          "results"
+        ],
+        "properties": {
+          "count": {
+            "type": "integer",
+            "example": 123
+          },
+          "next": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uri",
+            "example": "http://api.example.org/accounts/?offset=400&limit=100"
+          },
+          "previous": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uri",
+            "example": "http://api.example.org/accounts/?offset=200&limit=100"
+          },
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TicketMessage"
+            }
+          }
+        }
+      },
       "PaginatedTicketViewList": {
         "type": "object",
         "required": [
@@ -175137,202 +175891,6 @@
           }
         }
       },
-      "PatchedDashboard": {
-        "type": "object",
-        "description": "Serializer mixin that handles tags for objects.",
-        "properties": {
-          "id": {
-            "type": "integer",
-            "readOnly": true
-          },
-          "name": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "maxLength": 400
-          },
-          "description": {
-            "type": "string"
-          },
-          "pinned": {
-            "type": "boolean"
-          },
-          "created_at": {
-            "type": "string",
-            "format": "date-time",
-            "readOnly": true
-          },
-          "created_by": {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/UserBasic"
-              }
-            ],
-            "readOnly": true
-          },
-          "last_accessed_at": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "format": "date-time"
-          },
-          "last_viewed_at": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "format": "date-time",
-            "readOnly": true
-          },
-          "is_shared": {
-            "type": "boolean",
-            "readOnly": true
-          },
-          "deleted": {
-            "type": "boolean"
-          },
-          "creation_mode": {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/CreationModeEnum"
-              }
-            ],
-            "readOnly": true
-          },
-          "filters": {
-            "type": "object",
-            "additionalProperties": true,
-            "readOnly": true
-          },
-          "variables": {
-            "type": [
-              "object",
-              "null"
-            ],
-            "additionalProperties": true,
-            "readOnly": true
-          },
-          "breakdown_colors": {
-            "description": "Custom color mapping for breakdown values."
-          },
-          "data_color_theme_id": {
-            "type": [
-              "integer",
-              "null"
-            ],
-            "description": "ID of the color theme used for chart visualizations."
-          },
-          "tags": {
-            "type": "array",
-            "items": {}
-          },
-          "restriction_level": {
-            "$ref": "#/components/schemas/RestrictionLevelEnum"
-          },
-          "effective_restriction_level": {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/EffectivePrivilegeLevelEnum"
-              }
-            ],
-            "readOnly": true
-          },
-          "effective_privilege_level": {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/EffectivePrivilegeLevelEnum"
-              }
-            ],
-            "readOnly": true
-          },
-          "user_access_level": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "readOnly": true,
-            "description": "The effective access level the user has for this object"
-          },
-          "access_control_version": {
-            "type": "string",
-            "readOnly": true
-          },
-          "last_refresh": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "format": "date-time"
-          },
-          "persisted_filters": {
-            "type": [
-              "object",
-              "null"
-            ],
-            "additionalProperties": true,
-            "readOnly": true
-          },
-          "persisted_variables": {
-            "type": [
-              "object",
-              "null"
-            ],
-            "additionalProperties": true,
-            "readOnly": true
-          },
-          "team_id": {
-            "type": "integer",
-            "readOnly": true
-          },
-          "quick_filter_ids": {
-            "type": [
-              "array",
-              "null"
-            ],
-            "items": {
-              "type": "string"
-            },
-            "description": "List of quick filter IDs associated with this dashboard"
-          },
-          "tiles": {
-            "type": [
-              "array",
-              "null"
-            ],
-            "items": {
-              "type": "object",
-              "additionalProperties": true
-            },
-            "readOnly": true
-          },
-          "use_template": {
-            "type": "string",
-            "writeOnly": true,
-            "description": "Template key to create the dashboard from a predefined template."
-          },
-          "use_dashboard": {
-            "type": [
-              "integer",
-              "null"
-            ],
-            "writeOnly": true,
-            "description": "ID of an existing dashboard to duplicate."
-          },
-          "delete_insights": {
-            "type": "boolean",
-            "writeOnly": true,
-            "default": false,
-            "description": "When deleting, also delete insights that are only on this dashboard."
-          },
-          "_create_in_folder": {
-            "type": "string",
-            "writeOnly": true,
-            "title": " create in folder"
-          }
-        }
-      },
       "PatchedDashboardTemplate": {
         "type": "object",
         "properties": {
@@ -176631,6 +177189,33 @@
           }
         }
       },
+      "PatchedErrorTrackingIssueWrite": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ErrorTrackingIssueWriteStatusEnum"
+              }
+            ],
+            "description": "Issue status to set. Deprecated archived and pending_release values are rejected.\n\n* `active` - active\n* `resolved` - resolved\n* `suppressed` - suppressed"
+          },
+          "name": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Optional issue display name."
+          },
+          "description": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Optional issue description."
+          }
+        }
+      },
       "PatchedErrorTrackingRelease": {
         "type": "object",
         "properties": {
@@ -177096,7 +177681,7 @@
           },
           "feature_flag_key": {
             "type": "string",
-            "description": "Unique key for the experiment's feature flag. Letters, numbers, hyphens, and underscores only. Search existing flags with the feature-flags-get-all tool first — reuse an existing flag when possible."
+            "description": "Unique key for the experiment's feature flag. Letters, numbers, hyphens, and underscores only. Search existing flags with the feature-flag-get-all tool first — reuse an existing flag when possible."
           },
           "feature_flag": {
             "allOf": [
@@ -177216,7 +177801,7 @@
                 "type": "null"
               }
             ],
-            "description": "Primary experiment metrics. Each metric must have kind='ExperimentMetric' and a metric_type: 'mean' (set source to an EventsNode with an event name), 'funnel' (set series to an array of EventsNode steps), 'ratio' (set numerator and denominator EventsNode entries), or 'retention' (set start_event and completion_event). Use the event-definitions-list tool to find available events in the project."
+            "description": "Primary experiment metrics. Each metric must have kind='ExperimentMetric' and a metric_type: 'mean' (set source to an EventsNode with an event name), 'funnel' (set series to an array of EventsNode steps), 'ratio' (set numerator and denominator EventsNode entries), or 'retention' (set start_event and completion_event). Use the read-data-schema tool with query kind 'events' to find available events in the project."
           },
           "metrics_secondary": {
             "oneOf": [
@@ -177761,6 +178346,13 @@
               "type": "string"
             },
             "description": "Evaluation contexts that control where this flag evaluates at runtime."
+          },
+          "is_remote_configuration": {
+            "type": [
+              "boolean",
+              "null"
+            ],
+            "description": "Whether this flag is a remote configuration flag that delivers a payload rather than gating a feature."
           }
         }
       },
@@ -178117,7 +178709,7 @@
                 "type": "null"
               }
             ],
-            "description": "Optional dedup: {hash: <HogQL template>, ttl: <seconds, 60-94608000>, threshold?: <int>}. Server compiles bytecode from hash. Omit to disable."
+            "description": "Optional dedup/throttle on an already-matched trigger: {hash: <HogQL template>, ttl: <seconds, 60-94608000>, threshold?: <int>}. Without threshold: fire once per hash, then suppress repeats within ttl (hash '{person.id}' = once per person per ttl). With threshold N: fire once per N matches of the same hash — a sampler, the 1st then every Nth. Throttles an already-qualifying trigger; it doesn't decide who enters. Server compiles bytecode from hash; omit to disable."
           },
           "conversion": {
             "description": "Conversion goal: {filters: [<cond>, ...], window_minutes}. <cond>: {key, value, operator, type: event|person|group}. Empty filters = any event in window. Required for exit_on_conversion / exit_on_trigger_not_matched_or_conversion. bytecode compiled server-side."
@@ -179952,6 +180544,18 @@
             "type": "string",
             "format": "date-time",
             "readOnly": true
+          },
+          "search_match_type": {
+            "description": "How this row matched the `search` query parameter: `exact` (the term is a case-insensitive substring of a searched field) or `similar` (a fuzzy trigram match only). Results are ordered exact-first. Null when the list is not filtered by `search`.",
+            "readOnly": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/SearchMatchTypeEnum"
+              },
+              {
+                "$ref": "#/components/schemas/NullEnum"
+              }
+            ]
           }
         }
       },
@@ -179996,6 +180600,77 @@
             ],
             "format": "date-time",
             "readOnly": true
+          }
+        }
+      },
+      "PatchedPatchedDashboardOpenApi": {
+        "type": "object",
+        "description": "OpenAPI-only PATCH body for dashboards (agents/MCP).\n\nMust be a superset of ``dashboard_patch_runtime_openapi_field_names()`` — ``extend_schema(request=...)``\nreplaces the inferred schema entirely. Contract: ``test_dashboard_openapi.py``.",
+        "properties": {
+          "name": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 400
+          },
+          "description": {
+            "type": "string"
+          },
+          "pinned": {
+            "type": "boolean"
+          },
+          "breakdown_colors": {
+            "description": "Custom color mapping for breakdown values."
+          },
+          "data_color_theme_id": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "description": "ID of the color theme used for chart visualizations."
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "restriction_level": {
+            "$ref": "#/components/schemas/EffectivePrivilegeLevelEnum"
+          },
+          "quick_filter_ids": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "description": "List of quick filter IDs associated with this dashboard."
+          },
+          "tiles": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DashboardPatchTileOpenApi"
+            },
+            "description": "Dashboard tiles to update. Widget tiles accept nested widget.config patches."
+          },
+          "use_template": {
+            "type": "string",
+            "description": "Template key to create the dashboard from a predefined template."
+          },
+          "use_dashboard": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "description": "ID of an existing dashboard to duplicate."
+          },
+          "delete_insights": {
+            "type": "boolean",
+            "default": false,
+            "description": "When deleting, also delete insights that are only on this dashboard."
           }
         }
       },
@@ -180673,7 +181348,8 @@
             "type": "array",
             "items": {
               "type": "string"
-            }
+            },
+            "description": "Project-wide API scopes granted to this key. Project secret API keys do not honor object-level access controls, so a scope can access resources of that type even when per-resource RBAC would hide them from an individual user."
           }
         }
       },
@@ -186768,7 +187444,8 @@
             "type": "array",
             "items": {
               "type": "string"
-            }
+            },
+            "description": "Project-wide API scopes granted to this key. Project secret API keys do not honor object-level access controls, so a scope can access resources of that type even when per-resource RBAC would hide them from an individual user."
           }
         },
         "required": [
@@ -214688,7 +215365,7 @@
           },
           "content": {
             "type": "string",
-            "description": "Prose content for prompt injection."
+            "description": "Prose content for prompt injection. Blank when the search projected it out (`keys_only=true`); truncated to a preview when `content_max_chars` was set."
           },
           "created_at": {
             "type": [
@@ -216373,7 +217050,7 @@
             "description": "Whether to show the description on the dashboard tile."
           },
           "widget_type": {
-            "$ref": "#/components/schemas/SessionReplayListWidgetAddRequestOpenApiWidgetTypeEnum"
+            "$ref": "#/components/schemas/SessionReplayListWidgetTypeEnum"
           },
           "config": {
             "allOf": [
@@ -216381,7 +217058,7 @@
                 "$ref": "#/components/schemas/SessionReplayListWidgetConfig"
               }
             ],
-            "description": "Configuration for the session replay list widget."
+            "description": "Configuration for the recent recordings widget."
           }
         },
         "required": [
@@ -216389,76 +217066,55 @@
           "widget_type"
         ]
       },
-      "SessionReplayListWidgetAddRequestOpenApiWidgetTypeEnum": {
+      "SessionReplayListWidgetCatalogEntryOpenApi": {
+        "type": "object",
+        "properties": {
+          "widget_type": {
+            "$ref": "#/components/schemas/SessionReplayListWidgetTypeEnum"
+          },
+          "group_id": {
+            "type": "string"
+          },
+          "group_label": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "config_schema": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/SessionReplayListWidgetConfig"
+              }
+            ],
+            "readOnly": true,
+            "description": "OpenAPI config shape for this widget type (documentation; matches batch-add/PATCH schemas)."
+          },
+          "required_product_access": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "config_schema",
+          "description",
+          "group_id",
+          "group_label",
+          "label",
+          "widget_type"
+        ]
+      },
+      "SessionReplayListWidgetTypeEnum": {
         "enum": [
           "session_replay_list"
         ],
         "type": "string",
         "description": "* `session_replay_list` - session_replay_list"
-      },
-      "SessionReplayListWidgetConfig": {
-        "type": "object",
-        "properties": {
-          "limit": {
-            "type": "integer",
-            "maximum": 25,
-            "minimum": 1,
-            "default": 10,
-            "description": "Maximum number of recordings to return."
-          },
-          "orderBy": {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/SessionReplayListWidgetConfigOrderByEnum"
-              }
-            ],
-            "default": "start_time",
-            "description": "Recording ranking column.\n\n* `activity_score` - activity_score\n* `click_count` - click_count\n* `console_error_count` - console_error_count\n* `duration` - duration\n* `recording_duration` - recording_duration\n* `start_time` - start_time"
-          },
-          "orderDirection": {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/OrderDirectionEnum"
-              }
-            ],
-            "default": "DESC",
-            "description": "Sort direction for orderBy.\n\n* `ASC` - ASC\n* `DESC` - DESC"
-          },
-          "dateRange": {
-            "oneOf": [
-              {
-                "$ref": "#/components/schemas/WidgetDateRange"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "description": "Optional relative date range override."
-          },
-          "widgetFilters": {
-            "type": "object",
-            "additionalProperties": {
-              "$ref": "#/components/schemas/WidgetFilterConfigEntry"
-            },
-            "description": "Widget filter selections keyed by filter id. Each key must match the entry's filterId. Configure filters in the product UI first, then copy filter id, option id, and property name here."
-          },
-          "filterTestAccounts": {
-            "type": "boolean",
-            "description": "When omitted, follows the project default for filtering test accounts."
-          }
-        }
-      },
-      "SessionReplayListWidgetConfigOrderByEnum": {
-        "enum": [
-          "activity_score",
-          "click_count",
-          "console_error_count",
-          "duration",
-          "recording_duration",
-          "start_time"
-        ],
-        "type": "string",
-        "description": "* `activity_score` - activity_score\n* `click_count` - click_count\n* `console_error_count` - console_error_count\n* `duration` - duration\n* `recording_duration` - recording_duration\n* `start_time` - start_time"
       },
       "SessionSummaries": {
         "type": "object",
@@ -217875,6 +218531,20 @@
             "type": "string",
             "description": "One-paragraph close-out the scout wrote at end-of-run. Empty string for runs that errored before close-out. The dedupe key for non-emitting runs."
           },
+          "error": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Full `error_message` from the linked TaskRun, surfaced only for failed/cancelled runs (null otherwise, including on success). Use `failure_reason` for a concise scan-friendly summary."
+          },
+          "failure_reason": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Concise derived reason the run didn't complete cleanly — the first line of `error` (bounded), or a status-derived fallback. Null unless the run terminated failed/cancelled. Read this to see at a glance *why* a run emitted nothing without pulling full stack traces."
+          },
           "emitted_count": {
             "type": "integer",
             "description": "Number of findings this run actually emitted to the inbox. 0 for runs that investigated but surfaced nothing, or ran dry-run / before AI approval. `> 0` means the run produced at least one `Signal`."
@@ -217954,6 +218624,20 @@
           "summary": {
             "type": "string",
             "description": "One-paragraph close-out the scout wrote at end-of-run. Empty string for runs that errored before close-out. The dedupe key for non-emitting runs."
+          },
+          "error": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Full `error_message` from the linked TaskRun, surfaced only for failed/cancelled runs (null otherwise, including on success). Use `failure_reason` for a concise scan-friendly summary."
+          },
+          "failure_reason": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Concise derived reason the run didn't complete cleanly — the first line of `error` (bounded), or a status-derived fallback. Null unless the run terminated failed/cancelled. Read this to see at a glance *why* a run emitted nothing without pulling full stack traces."
           },
           "emitted_count": {
             "type": "integer",
@@ -226380,6 +227064,56 @@
           "user"
         ]
       },
+      "TicketMessage": {
+        "type": "object",
+        "description": "A single message in a ticket thread (output-only).",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "readOnly": true,
+            "description": "Message (comment) UUID."
+          },
+          "content": {
+            "type": "string",
+            "readOnly": true,
+            "description": "Plain-text message body."
+          },
+          "rich_content": {
+            "readOnly": true,
+            "description": "TipTap rich content JSON, if any."
+          },
+          "author_type": {
+            "type": "string",
+            "readOnly": true,
+            "description": "One of: customer, support, AI."
+          },
+          "author_name": {
+            "type": "string",
+            "readOnly": true,
+            "description": "Display name of the author."
+          },
+          "is_private": {
+            "type": "boolean",
+            "readOnly": true,
+            "description": "True for internal notes not visible to the customer."
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          }
+        },
+        "required": [
+          "author_name",
+          "author_type",
+          "content",
+          "created_at",
+          "id",
+          "is_private",
+          "rich_content"
+        ]
+      },
       "TicketPerson": {
         "type": "object",
         "description": "Minimal person serializer for embedding in ticket responses.",
@@ -226422,6 +227156,28 @@
           "is_identified",
           "name",
           "properties"
+        ]
+      },
+      "TicketReplyRequest": {
+        "type": "object",
+        "description": "Payload for posting a reply or internal note to a ticket.",
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "Reply content in markdown.",
+            "maxLength": 5000
+          },
+          "is_private": {
+            "type": "boolean",
+            "default": false,
+            "description": "If true, store as an internal note (not sent to the customer). If false, the reply is delivered to the customer over the ticket's channel."
+          },
+          "rich_content": {
+            "description": "Optional TipTap rich content JSON for formatted messages."
+          }
+        },
+        "required": [
+          "message"
         ]
       },
       "TicketStatusEnum": {
@@ -227641,6 +228397,14 @@
         "title": "TraceNeighborsQueryResponse",
         "type": "object"
       },
+      "TraceOrderColumn": {
+        "enum": [
+          "timestamp",
+          "duration"
+        ],
+        "title": "TraceOrderColumn",
+        "type": "string"
+      },
       "TraceQuery": {
         "additionalProperties": false,
         "properties": {
@@ -228574,13 +229338,26 @@
           "orderBy": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/LogsOrderBy"
+                "$ref": "#/components/schemas/TraceOrderColumn"
               },
               {
                 "type": "null"
               }
             ],
-            "default": null
+            "default": null,
+            "description": "Column to order by. Defaults to timestamp. `timestamp` paginates via keyset cursor (`after`); other columns via `offset`."
+          },
+          "orderDirection": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/OrderDirection2"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Order direction. Defaults to DESC."
           },
           "prefetchSpans": {
             "anyOf": [
@@ -236968,47 +237745,21 @@
         ]
       },
       "WidgetCatalogEntry": {
-        "type": "object",
-        "properties": {
-          "widget_type": {
-            "type": "string",
-            "description": "Stable widget type identifier used in API requests."
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/ErrorTrackingListWidgetCatalogEntryOpenApi"
           },
-          "group_id": {
-            "type": "string",
-            "description": "Product area key for grouping related widget variants."
-          },
-          "group_label": {
-            "type": "string",
-            "description": "Human-readable product area label."
-          },
-          "label": {
-            "type": "string",
-            "description": "Widget variant label within the product area."
-          },
-          "description": {
-            "type": "string",
-            "description": "Short description of what the widget shows."
-          },
-          "config_schema_hints": {
-            "description": "JSON schema hints for config fields (types, choices, bounds). Not a strict validator."
-          },
-          "required_product_access": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "description": "Product access resource required to view or run this widget, if any."
+          {
+            "$ref": "#/components/schemas/SessionReplayListWidgetCatalogEntryOpenApi"
           }
-        },
-        "required": [
-          "config_schema_hints",
-          "description",
-          "group_id",
-          "group_label",
-          "label",
-          "widget_type"
-        ]
+        ],
+        "discriminator": {
+          "propertyName": "widget_type",
+          "mapping": {
+            "error_tracking_list": "#/components/schemas/ErrorTrackingListWidgetCatalogEntryOpenApi",
+            "session_replay_list": "#/components/schemas/SessionReplayListWidgetCatalogEntryOpenApi"
+          }
+        }
       },
       "WidgetCatalogResponse": {
         "type": "object",
@@ -237023,52 +237774,6 @@
         },
         "required": [
           "results"
-        ]
-      },
-      "WidgetDateRange": {
-        "type": "object",
-        "properties": {
-          "date_from": {
-            "description": "Relative lookback window (for example '-7d'). Omit to use the project default range.\n\n* `-14d` - -14d\n* `-1h` - -1h\n* `-24h` - -24h\n* `-30d` - -30d\n* `-3h` - -3h\n* `-7d` - -7d\n* `-90d` - -90d",
-            "oneOf": [
-              {
-                "$ref": "#/components/schemas/DateFromEnum"
-              },
-              {
-                "$ref": "#/components/schemas/NullEnum"
-              }
-            ]
-          }
-        }
-      },
-      "WidgetFilterConfigEntry": {
-        "type": "object",
-        "properties": {
-          "filterId": {
-            "type": "string",
-            "description": "Filter UUID; must match the widgetFilters map key."
-          },
-          "propertyName": {
-            "type": "string",
-            "description": "Event property key (for example $environment)."
-          },
-          "optionId": {
-            "type": "string",
-            "description": "Selected option id from the filter definition."
-          },
-          "operator": {
-            "type": "string",
-            "description": "Property filter operator (for example exact, is_not, icontains)."
-          },
-          "value": {
-            "description": "Filter value as a string, list of strings, or null."
-          }
-        },
-        "required": [
-          "filterId",
-          "operator",
-          "optionId",
-          "propertyName"
         ]
       },
       "WidgetTypeEnum": {
@@ -239031,10 +239736,18 @@
           "orderBy": {
             "allOf": [
               {
-                "$ref": "#/components/schemas/OrderByEnum"
+                "$ref": "#/components/schemas/_TracingQueryBodyOrderByEnum"
               }
             ],
-            "description": "Order results by timestamp. Defaults to latest.\n\n* `latest` - latest\n* `earliest` - earliest"
+            "description": "Column to order by. Defaults to timestamp. Ordering by timestamp paginates via the keyset cursor ('after'); ordering by duration paginates via 'offset'.\n\n* `timestamp` - timestamp\n* `duration` - duration"
+          },
+          "orderDirection": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/OrderDirectionEnum"
+              }
+            ],
+            "description": "Order direction. Defaults to DESC (e.g. timestamp+DESC = newest first, duration+DESC = slowest first).\n\n* `ASC` - ASC\n* `DESC` - DESC"
           },
           "filterGroup": {
             "type": "array",
@@ -239055,7 +239768,12 @@
           },
           "after": {
             "type": "string",
-            "description": "Pagination cursor from previous response."
+            "description": "Keyset pagination cursor from a previous timestamp-ordered response."
+          },
+          "offset": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Pagination offset, used when ordering by a column (e.g. duration). Defaults to 0."
           },
           "rootSpans": {
             "type": "boolean",
@@ -239072,6 +239790,14 @@
             "description": "Omit the per-span attributes map from results to keep payloads compact. Defaults to false."
           }
         }
+      },
+      "_TracingQueryBodyOrderByEnum": {
+        "enum": [
+          "timestamp",
+          "duration"
+        ],
+        "type": "string",
+        "description": "* `timestamp` - timestamp\n* `duration` - duration"
       },
       "_TracingQueryRequest": {
         "type": "object",
@@ -239378,6 +240104,292 @@
             "description": "Layout for the small (mobile) breakpoint. The grid is 1 column wide."
           }
         }
+      },
+      "WidgetFilterEntry": {
+        "additionalProperties": false,
+        "properties": {
+          "filterId": {
+            "minLength": 1,
+            "title": "Filterid",
+            "type": "string"
+          },
+          "propertyName": {
+            "minLength": 1,
+            "title": "Propertyname",
+            "type": "string"
+          },
+          "optionId": {
+            "minLength": 1,
+            "title": "Optionid",
+            "type": "string"
+          },
+          "operator": {
+            "$ref": "#/components/schemas/PropertyOperator"
+          },
+          "value": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Value"
+          }
+        },
+        "required": [
+          "filterId",
+          "propertyName",
+          "optionId",
+          "operator"
+        ],
+        "title": "WidgetFilterEntry",
+        "type": "object"
+      },
+      "WidgetAssigneeFilter": {
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "type": {
+            "enum": [
+              "user",
+              "role"
+            ],
+            "title": "Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "type"
+        ],
+        "title": "WidgetAssigneeFilter",
+        "type": "object"
+      },
+      "WidgetDateRange": {
+        "additionalProperties": false,
+        "properties": {
+          "date_from": {
+            "anyOf": [
+              {
+                "enum": [
+                  "-1h",
+                  "-3h",
+                  "-24h",
+                  "-7d",
+                  "-14d",
+                  "-30d",
+                  "-90d"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Date From"
+          }
+        },
+        "title": "WidgetDateRange",
+        "type": "object"
+      },
+      "ErrorTrackingListWidgetConfig": {
+        "additionalProperties": false,
+        "properties": {
+          "dateRange": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/WidgetDateRange"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "filterTestAccounts": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Filtertestaccounts"
+          },
+          "widgetFilters": {
+            "anyOf": [
+              {
+                "additionalProperties": {
+                  "$ref": "#/components/schemas/WidgetFilterEntry"
+                },
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Widgetfilters"
+          },
+          "limit": {
+            "default": 10,
+            "description": "Maximum number of issues to return.",
+            "maximum": 25,
+            "minimum": 1,
+            "title": "Limit",
+            "type": "integer"
+          },
+          "orderBy": {
+            "default": "occurrences",
+            "description": "Issue ranking column.",
+            "enum": [
+              "last_seen",
+              "first_seen",
+              "occurrences",
+              "users",
+              "sessions"
+            ],
+            "title": "Orderby",
+            "type": "string"
+          },
+          "orderDirection": {
+            "default": "DESC",
+            "description": "Sort direction for orderBy.",
+            "enum": [
+              "ASC",
+              "DESC"
+            ],
+            "title": "Orderdirection",
+            "type": "string"
+          },
+          "status": {
+            "default": "active",
+            "description": "Issue status filter.",
+            "enum": [
+              "archived",
+              "active",
+              "resolved",
+              "pending_release",
+              "suppressed",
+              "all"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "assignee": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/WidgetAssigneeFilter"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Filter by assignee ({type: user|role, id}). Omit for any assignee."
+          }
+        },
+        "title": "ErrorTrackingListWidgetConfig",
+        "type": "object"
+      },
+      "SessionReplayListWidgetConfig": {
+        "additionalProperties": false,
+        "properties": {
+          "dateRange": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/WidgetDateRange"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "filterTestAccounts": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Filtertestaccounts"
+          },
+          "widgetFilters": {
+            "anyOf": [
+              {
+                "additionalProperties": {
+                  "$ref": "#/components/schemas/WidgetFilterEntry"
+                },
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Widgetfilters"
+          },
+          "limit": {
+            "default": 10,
+            "description": "Maximum number of recordings to return.",
+            "maximum": 25,
+            "minimum": 1,
+            "title": "Limit",
+            "type": "integer"
+          },
+          "orderBy": {
+            "default": "start_time",
+            "description": "Recording ranking column.",
+            "enum": [
+              "start_time",
+              "activity_score",
+              "recording_duration",
+              "duration",
+              "click_count",
+              "console_error_count"
+            ],
+            "title": "Orderby",
+            "type": "string"
+          },
+          "orderDirection": {
+            "default": "DESC",
+            "description": "Sort direction for orderBy.",
+            "enum": [
+              "ASC",
+              "DESC"
+            ],
+            "title": "Orderdirection",
+            "type": "string"
+          }
+        },
+        "title": "SessionReplayListWidgetConfig",
+        "type": "object"
       }
     },
     "securitySchemes": {
