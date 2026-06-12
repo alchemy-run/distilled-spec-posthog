@@ -16306,6 +16306,13 @@
           },
           "required": true
         },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "file_system:read"
+            ]
+          }
+        ],
         "responses": {
           "200": {
             "description": "No response body"
@@ -16358,6 +16365,13 @@
           },
           "required": true
         },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "file_system:write"
+            ]
+          }
+        ],
         "responses": {
           "200": {
             "description": "No response body"
@@ -16410,6 +16424,13 @@
           },
           "required": true
         },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "file_system:write"
+            ]
+          }
+        ],
         "responses": {
           "200": {
             "description": "No response body"
@@ -16453,6 +16474,13 @@
           },
           "required": true
         },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "file_system:read"
+            ]
+          }
+        ],
         "responses": {
           "200": {
             "description": "No response body"
@@ -16474,6 +16502,13 @@
         ],
         "tags": [
           "file_system"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "file_system:write"
+            ]
+          }
         ],
         "responses": {
           "200": {
@@ -16515,6 +16550,13 @@
           },
           "required": true
         },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "file_system:write"
+            ]
+          }
+        ],
         "responses": {
           "200": {
             "description": "No response body"
@@ -16557,6 +16599,13 @@
           },
           "required": true
         },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "file_system:write"
+            ]
+          }
+        ],
         "responses": {
           "200": {
             "description": "No response body"
@@ -16578,6 +16627,13 @@
         ],
         "tags": [
           "file_system"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "file_system:read"
+            ]
+          }
         ],
         "responses": {
           "200": {
@@ -36812,6 +36868,55 @@
         ]
       }
     },
+    "/api/environments/{environment_id}/tracing/spans/duration-histogram/": {
+      "post": {
+        "operationId": "environments_tracing_spans_duration_histogram_create",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/EnvironmentIdPath"
+          }
+        ],
+        "tags": [
+          "tracing"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/_TracingQueryRequest"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/_TracingQueryRequest"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/_TracingQueryRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "tracing:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response body"
+          }
+        },
+        "deprecated": true,
+        "x-product": [
+          "tracing"
+        ]
+      }
+    },
     "/api/environments/{environment_id}/tracing/spans/has_spans/": {
       "get": {
         "operationId": "environments_tracing_spans_has_spans_retrieve",
@@ -44680,7 +44785,7 @@
     "/api/organizations/{organization_id}/cimd_verification_tokens/": {
       "get": {
         "operationId": "cimd_verification_tokens_list",
-        "description": "Manage CIMD verification tokens for an organization.\n\nA partner embeds the plaintext token in their CIMD metadata document under\n`posthog_verification_token`. When PostHog fetches the metadata, matching\nthe token links the partner app to this organization and grants a higher\ndefault rate limit for account provisioning.\n\nThe plaintext value is only available on creation; we store a hash.",
+        "description": "Manage CIMD verification tokens for an organization.\n\nA partner embeds the plaintext token in their CIMD metadata document as\n`verification_token` inside the `com.posthog` object (the legacy top-level\n`posthog_verification_token` field still works as a fallback). When PostHog fetches\nthe metadata, matching the token links the partner app to this organization and\ngrants a higher default rate limit for account provisioning.\n\nThe plaintext value is only available on creation; we store a hash.",
         "parameters": [
           {
             "name": "limit",
@@ -44733,7 +44838,7 @@
       },
       "post": {
         "operationId": "cimd_verification_tokens_create",
-        "description": "Manage CIMD verification tokens for an organization.\n\nA partner embeds the plaintext token in their CIMD metadata document under\n`posthog_verification_token`. When PostHog fetches the metadata, matching\nthe token links the partner app to this organization and grants a higher\ndefault rate limit for account provisioning.\n\nThe plaintext value is only available on creation; we store a hash.",
+        "description": "Manage CIMD verification tokens for an organization.\n\nA partner embeds the plaintext token in their CIMD metadata document as\n`verification_token` inside the `com.posthog` object (the legacy top-level\n`posthog_verification_token` field still works as a fallback). When PostHog fetches\nthe metadata, matching the token links the partner app to this organization and\ngrants a higher default rate limit for account provisioning.\n\nThe plaintext value is only available on creation; we store a hash.",
         "parameters": [
           {
             "$ref": "#/components/parameters/OrganizationIdPath"
@@ -44790,7 +44895,7 @@
     "/api/organizations/{organization_id}/cimd_verification_tokens/{id}/": {
       "get": {
         "operationId": "cimd_verification_tokens_retrieve",
-        "description": "Manage CIMD verification tokens for an organization.\n\nA partner embeds the plaintext token in their CIMD metadata document under\n`posthog_verification_token`. When PostHog fetches the metadata, matching\nthe token links the partner app to this organization and grants a higher\ndefault rate limit for account provisioning.\n\nThe plaintext value is only available on creation; we store a hash.",
+        "description": "Manage CIMD verification tokens for an organization.\n\nA partner embeds the plaintext token in their CIMD metadata document as\n`verification_token` inside the `com.posthog` object (the legacy top-level\n`posthog_verification_token` field still works as a fallback). When PostHog fetches\nthe metadata, matching the token links the partner app to this organization and\ngrants a higher default rate limit for account provisioning.\n\nThe plaintext value is only available on creation; we store a hash.",
         "parameters": [
           {
             "in": "path",
@@ -44835,7 +44940,7 @@
       },
       "delete": {
         "operationId": "cimd_verification_tokens_destroy",
-        "description": "Manage CIMD verification tokens for an organization.\n\nA partner embeds the plaintext token in their CIMD metadata document under\n`posthog_verification_token`. When PostHog fetches the metadata, matching\nthe token links the partner app to this organization and grants a higher\ndefault rate limit for account provisioning.\n\nThe plaintext value is only available on creation; we store a hash.",
+        "description": "Manage CIMD verification tokens for an organization.\n\nA partner embeds the plaintext token in their CIMD metadata document as\n`verification_token` inside the `com.posthog` object (the legacy top-level\n`posthog_verification_token` field still works as a fallback). When PostHog fetches\nthe metadata, matching the token links the partner app to this organization and\ngrants a higher default rate limit for account provisioning.\n\nThe plaintext value is only available on creation; we store a hash.",
         "parameters": [
           {
             "in": "path",
@@ -46925,10 +47030,395 @@
         ]
       }
     },
+    "/api/organizations/{organization_id}/projects/{id}/default_evaluation_contexts/": {
+      "get": {
+        "operationId": "organizations_projects_default_evaluation_contexts_retrieve",
+        "description": "Manage default evaluation contexts for a project.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "integer",
+              "maximum": 9223372036854776000,
+              "minimum": -9223372036854776000,
+              "format": "int64"
+            },
+            "description": "A unique value identifying this project.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/OrganizationIdPath"
+          }
+        ],
+        "tags": [
+          "organizations",
+          "projects"
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectBackwardCompat"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "core"
+        ]
+      },
+      "post": {
+        "operationId": "organizations_projects_default_evaluation_contexts_create",
+        "description": "Manage default evaluation contexts for a project.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "integer",
+              "maximum": 9223372036854776000,
+              "minimum": -9223372036854776000,
+              "format": "int64"
+            },
+            "description": "A unique value identifying this project.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/OrganizationIdPath"
+          }
+        ],
+        "tags": [
+          "organizations",
+          "projects"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProjectBackwardCompat"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/ProjectBackwardCompat"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/ProjectBackwardCompat"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectBackwardCompat"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "core"
+        ]
+      },
+      "delete": {
+        "operationId": "organizations_projects_default_evaluation_contexts_destroy",
+        "description": "Manage default evaluation contexts for a project.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "integer",
+              "maximum": 9223372036854776000,
+              "minimum": -9223372036854776000,
+              "format": "int64"
+            },
+            "description": "A unique value identifying this project.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/OrganizationIdPath"
+          }
+        ],
+        "tags": [
+          "organizations",
+          "projects"
+        ],
+        "responses": {
+          "204": {
+            "description": "No response body"
+          }
+        },
+        "x-product": [
+          "core"
+        ]
+      }
+    },
+    "/api/organizations/{organization_id}/projects/{id}/default_release_conditions/": {
+      "get": {
+        "operationId": "organizations_projects_default_release_conditions_retrieve",
+        "description": "Manage default release conditions for new feature flags in this project.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "integer",
+              "maximum": 9223372036854776000,
+              "minimum": -9223372036854776000,
+              "format": "int64"
+            },
+            "description": "A unique value identifying this project.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/OrganizationIdPath"
+          }
+        ],
+        "tags": [
+          "organizations",
+          "projects"
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectBackwardCompat"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "core"
+        ]
+      },
+      "put": {
+        "operationId": "organizations_projects_default_release_conditions_update",
+        "description": "Manage default release conditions for new feature flags in this project.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "integer",
+              "maximum": 9223372036854776000,
+              "minimum": -9223372036854776000,
+              "format": "int64"
+            },
+            "description": "A unique value identifying this project.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/OrganizationIdPath"
+          }
+        ],
+        "tags": [
+          "organizations",
+          "projects"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProjectBackwardCompat"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/ProjectBackwardCompat"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/ProjectBackwardCompat"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectBackwardCompat"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "core"
+        ]
+      }
+    },
     "/api/organizations/{organization_id}/projects/{id}/delete_secret_token_backup/": {
       "patch": {
         "operationId": "organizations_projects_delete_secret_token_backup_partial_update",
         "description": "Projects for the current organization.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "integer",
+              "maximum": 9223372036854776000,
+              "minimum": -9223372036854776000,
+              "format": "int64"
+            },
+            "description": "A unique value identifying this project.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/OrganizationIdPath"
+          }
+        ],
+        "tags": [
+          "organizations",
+          "projects"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchedProjectBackwardCompat"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchedProjectBackwardCompat"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchedProjectBackwardCompat"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectBackwardCompat"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "core"
+        ]
+      }
+    },
+    "/api/organizations/{organization_id}/projects/{id}/event_ingestion_restrictions/": {
+      "get": {
+        "operationId": "organizations_projects_event_ingestion_restrictions_retrieve",
+        "description": "Projects for the current organization.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "integer",
+              "maximum": 9223372036854776000,
+              "minimum": -9223372036854776000,
+              "format": "int64"
+            },
+            "description": "A unique value identifying this project.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/OrganizationIdPath"
+          }
+        ],
+        "tags": [
+          "organizations",
+          "projects"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "project:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectBackwardCompat"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "core"
+        ]
+      }
+    },
+    "/api/organizations/{organization_id}/projects/{id}/experiments_config/": {
+      "get": {
+        "operationId": "organizations_projects_experiments_config_retrieve",
+        "description": "Manage experiment configuration for this project.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "integer",
+              "maximum": 9223372036854776000,
+              "minimum": -9223372036854776000,
+              "format": "int64"
+            },
+            "description": "A unique value identifying this project.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/OrganizationIdPath"
+          }
+        ],
+        "tags": [
+          "organizations",
+          "projects"
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectBackwardCompat"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "core"
+        ]
+      },
+      "patch": {
+        "operationId": "organizations_projects_experiments_config_partial_update",
+        "description": "Manage experiment configuration for this project.",
         "parameters": [
           {
             "in": "path",
@@ -47344,6 +47834,48 @@
             }
           }
         },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectBackwardCompat"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "core"
+        ]
+      }
+    },
+    "/api/organizations/{organization_id}/projects/{id}/settings_as_of/": {
+      "get": {
+        "operationId": "organizations_projects_settings_as_of_retrieve",
+        "description": "Return the project settings as of the provided timestamp.\nQuery params:\n- at: ISO8601 datetime (required)\n- scope: optional, one or multiple keys to filter the returned settings",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "integer",
+              "maximum": 9223372036854776000,
+              "minimum": -9223372036854776000,
+              "format": "int64"
+            },
+            "description": "A unique value identifying this project.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/OrganizationIdPath"
+          }
+        ],
+        "tags": [
+          "organizations",
+          "projects"
+        ],
         "responses": {
           "200": {
             "content": {
@@ -52401,7 +52933,7 @@
     "/api/projects/{project_id}/business_knowledge/documents/{id}/window/": {
       "get": {
         "operationId": "business_knowledge_documents_window_list",
-        "description": "Read-only access to parsed knowledge documents. Currently exposes only the\n`window` drill-down so an agent (PHAI or MCP) can pull a wider context span\naround a chunk it found via search.",
+        "description": "Read-only access to parsed knowledge documents. Exposes hybrid search\n(``search``) and a drill-down window (``window``) so an agent (PHAI or\nMCP) can find and explore business knowledge chunks.",
         "parameters": [
           {
             "in": "query",
@@ -52452,6 +52984,62 @@
                   "type": "array",
                   "items": {
                     "$ref": "#/components/schemas/KnowledgeDocumentWindow"
+                  }
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "business_knowledge"
+        ]
+      }
+    },
+    "/api/projects/{project_id}/business_knowledge/documents/search/": {
+      "get": {
+        "operationId": "business_knowledge_documents_search_list",
+        "description": "Read-only access to parsed knowledge documents. Exposes hybrid search\n(``search``) and a drill-down window (``window``) so an agent (PHAI or\nMCP) can find and explore business knowledge chunks.",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Maximum number of ranked chunks to return. Defaults to 10, capped at 20."
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          },
+          {
+            "in": "query",
+            "name": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Natural-language search query. Runs hybrid (semantic + full-text) retrieval over all SAFE, READY knowledge chunks in this project.",
+            "required": true
+          }
+        ],
+        "tags": [
+          "business_knowledge"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "business_knowledge:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/KnowledgeSearchResult"
                   }
                 }
               }
@@ -53711,6 +54299,48 @@
         "responses": {
           "200": {
             "description": "No response body"
+          }
+        },
+        "x-product": []
+      }
+    },
+    "/api/projects/{project_id}/cohorts/{id}/used_in/": {
+      "get": {
+        "operationId": "cohorts_used_in_retrieve",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "A unique integer value identifying this cohort.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "cohorts"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "cohort:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CohortUsedInResponse"
+                }
+              }
+            },
+            "description": ""
           }
         },
         "x-product": []
@@ -60079,6 +60709,13 @@
           },
           "required": true
         },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "file_system:read"
+            ]
+          }
+        ],
         "responses": {
           "200": {
             "description": "No response body"
@@ -60414,6 +61051,13 @@
           },
           "required": true
         },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "file_system:write"
+            ]
+          }
+        ],
         "responses": {
           "200": {
             "description": "No response body"
@@ -60466,6 +61110,13 @@
           },
           "required": true
         },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "file_system:write"
+            ]
+          }
+        ],
         "responses": {
           "200": {
             "description": "No response body"
@@ -60508,6 +61159,13 @@
           },
           "required": true
         },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "file_system:read"
+            ]
+          }
+        ],
         "responses": {
           "200": {
             "description": "No response body"
@@ -60529,6 +61187,13 @@
         ],
         "tags": [
           "desktop_file_system"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "file_system:write"
+            ]
+          }
         ],
         "responses": {
           "200": {
@@ -60570,6 +61235,13 @@
           },
           "required": true
         },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "file_system:write"
+            ]
+          }
+        ],
         "responses": {
           "200": {
             "description": "No response body"
@@ -60612,6 +61284,13 @@
           },
           "required": true
         },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "file_system:write"
+            ]
+          }
+        ],
         "responses": {
           "200": {
             "description": "No response body"
@@ -60633,6 +61312,13 @@
         ],
         "tags": [
           "desktop_file_system"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "file_system:read"
+            ]
+          }
         ],
         "responses": {
           "200": {
@@ -75787,6 +76473,13 @@
           },
           "required": true
         },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "file_system:read"
+            ]
+          }
+        ],
         "responses": {
           "200": {
             "description": "No response body"
@@ -75838,6 +76531,13 @@
           },
           "required": true
         },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "file_system:write"
+            ]
+          }
+        ],
         "responses": {
           "200": {
             "description": "No response body"
@@ -75889,6 +76589,13 @@
           },
           "required": true
         },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "file_system:write"
+            ]
+          }
+        ],
         "responses": {
           "200": {
             "description": "No response body"
@@ -75931,6 +76638,13 @@
           },
           "required": true
         },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "file_system:read"
+            ]
+          }
+        ],
         "responses": {
           "200": {
             "description": "No response body"
@@ -75951,6 +76665,13 @@
         ],
         "tags": [
           "file_system"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "file_system:write"
+            ]
+          }
         ],
         "responses": {
           "200": {
@@ -75991,6 +76712,13 @@
           },
           "required": true
         },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "file_system:write"
+            ]
+          }
+        ],
         "responses": {
           "200": {
             "description": "No response body"
@@ -76032,6 +76760,13 @@
           },
           "required": true
         },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "file_system:write"
+            ]
+          }
+        ],
         "responses": {
           "200": {
             "description": "No response body"
@@ -76052,6 +76787,13 @@
         ],
         "tags": [
           "file_system"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "file_system:read"
+            ]
+          }
         ],
         "responses": {
           "200": {
@@ -100323,7 +101065,7 @@
     "/api/projects/{project_id}/signals/scout/configs/": {
       "get": {
         "operationId": "signals_scout_config_list",
-        "description": "List the per-(team, skill) scout configs for this project — schedule (`run_interval_minutes`), `enabled`, and `emit` posture per scout.",
+        "description": "List the per-(team, skill) scout configs for this project — schedule (`run_interval_minutes`), `enabled`, and `emit` posture per scout. A freshly authored scout skill appears here once its config is registered, either explicitly via create or by the coordinator's next tick.",
         "summary": "List scout configs",
         "parameters": [
           {
@@ -100358,6 +101100,79 @@
               }
             },
             "description": "Per-scout configs for this project, ordered by skill name."
+          }
+        },
+        "x-product": [
+          "signals"
+        ]
+      },
+      "post": {
+        "operationId": "signals_scout_config_create",
+        "description": "Register the config for a `signals-scout-*` skill immediately, without waiting for the coordinator to auto-register it — optionally setting `run_interval_minutes`, `enabled`, and `emit` in the same call. The skill must already exist on this project. Upsert: if a config already exists for the skill, the provided fields are applied to it.",
+        "summary": "Create a scout config",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "signals"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SignalScoutConfigCreate"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/SignalScoutConfigCreate"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/SignalScoutConfigCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "signal_scout:write"
+            ]
+          },
+          {
+            "PersonalAPIKeyAuth": [
+              "signal_scout:write"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SignalScoutConfig"
+                }
+              }
+            },
+            "description": "A config already existed for this skill; the provided fields were applied to it."
+          },
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SignalScoutConfig"
+                }
+              }
+            },
+            "description": "Created config."
+          },
+          "400": {
+            "description": "No such skill on this project, or the name lacks the `signals-scout-` prefix."
           }
         },
         "x-product": [
@@ -104533,80 +105348,6 @@
         ]
       }
     },
-    "/api/projects/{project_id}/tasks/{id}/file/": {
-      "post": {
-        "operationId": "tasks_file_create",
-        "description": "Add this task to the desktop project tree so it can be organized into folders. Optionally pass a destination folder path. Idempotent — re-filing updates the existing entry.",
-        "summary": "File a task into the project tree",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "id",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            },
-            "description": "A UUID string identifying this task.",
-            "required": true
-          },
-          {
-            "$ref": "#/components/parameters/ProjectIdPath"
-          }
-        ],
-        "tags": [
-          "tasks"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/TaskFileRequest"
-              }
-            },
-            "application/x-www-form-urlencoded": {
-              "schema": {
-                "$ref": "#/components/schemas/TaskFileRequest"
-              }
-            },
-            "multipart/form-data": {
-              "schema": {
-                "$ref": "#/components/schemas/TaskFileRequest"
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "PersonalAPIKeyAuth": [
-              "task:write"
-            ]
-          },
-          {
-            "PersonalAPIKeyAuth": [
-              "task:write"
-            ]
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/TaskFileResponse"
-                }
-              }
-            },
-            "description": "Task filed into the desktop project tree"
-          },
-          "404": {
-            "description": "Task not found"
-          }
-        },
-        "x-product": [
-          "tasks"
-        ]
-      }
-    },
     "/api/projects/{project_id}/tasks/{id}/presence/": {
       "post": {
         "operationId": "tasks_presence_create",
@@ -104978,51 +105719,6 @@
           },
           "404": {
             "description": "Task not found"
-          }
-        },
-        "x-product": [
-          "tasks"
-        ]
-      }
-    },
-    "/api/projects/{project_id}/tasks/{id}/unfile/": {
-      "post": {
-        "operationId": "tasks_unfile_create",
-        "description": "Remove this task's entry from the desktop project tree. The task itself is not deleted.",
-        "summary": "Remove a task from the project tree",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "id",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            },
-            "description": "A UUID string identifying this task.",
-            "required": true
-          },
-          {
-            "$ref": "#/components/parameters/ProjectIdPath"
-          }
-        ],
-        "tags": [
-          "tasks"
-        ],
-        "security": [
-          {
-            "PersonalAPIKeyAuth": [
-              "task:write"
-            ]
-          },
-          {
-            "PersonalAPIKeyAuth": [
-              "task:write"
-            ]
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "Task removed from the project tree"
           }
         },
         "x-product": [
@@ -107114,6 +107810,54 @@
               }
             },
             "description": ""
+          }
+        },
+        "x-product": [
+          "tracing"
+        ]
+      }
+    },
+    "/api/projects/{project_id}/tracing/spans/duration-histogram/": {
+      "post": {
+        "operationId": "tracing_spans_duration_histogram_create",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "tracing"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/_TracingQueryRequest"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/_TracingQueryRequest"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/_TracingQueryRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "tracing:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "No response body"
           }
         },
         "x-product": [
@@ -114479,7 +115223,7 @@
             "name": "session_id",
             "schema": {
               "type": "string",
-              "pattern": "^(?!stream$)[^/]+$"
+              "pattern": "^(?!(?:stream|latest)$)[^/]+$"
             },
             "required": true
           }
@@ -114507,6 +115251,62 @@
           },
           "404": {
             "description": "No session with that id for this project."
+          }
+        },
+        "x-product": [
+          "wizard"
+        ]
+      }
+    },
+    "/api/projects/{project_id}/wizard/sessions/latest/": {
+      "get": {
+        "operationId": "wizard_sessions_latest_retrieve",
+        "description": "Return the single most-recent wizard session for a workflow (and optional skill), or 204 if none exists. Unlike `list`, this is a point lookup the app shell uses to decide whether to open the live SSE stream — it never returns a collection, and 'no run' is a 204 rather than a 404 so clients don't conflate it with a missing endpoint.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          },
+          {
+            "in": "query",
+            "name": "skill_id",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter to a single skill within the workflow (e.g. 'nextjs')."
+          },
+          {
+            "in": "query",
+            "name": "workflow_id",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter to a single workflow (e.g. 'posthog-integration').",
+            "required": true
+          }
+        ],
+        "tags": [
+          "wizard"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "wizard_session:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WizardSessionDTO"
+                }
+              }
+            },
+            "description": ""
+          },
+          "204": {
+            "description": "No session for this workflow/skill in this project."
           }
         },
         "x-product": [
@@ -115135,7 +115935,7 @@
     "/api/users/{uuid}/credentials_review_complete/": {
       "post": {
         "operationId": "users_credentials_review_complete_create",
-        "description": "Mark the user as having reviewed their existing credentials. Idempotent. Flips `requires_credential_review` to False so the post-login interstitial isn't shown again. Does not modify any credentials; the user revokes individual Personal API Keys via the existing PAT endpoints from the same screen.",
+        "description": "Mark the user as having reviewed their existing credentials. Idempotent. Flips `requires_credential_review` to False so the post-login interstitial isn't shown again. Does not modify any credentials; the user revokes individual Personal API Keys and passkeys via their existing endpoints from the same screen.",
         "parameters": [
           {
             "in": "path",
@@ -124981,6 +125781,179 @@
         "type": "string",
         "description": "* `static` - static\n* `person_property` - person_property\n* `behavioral` - behavioral\n* `realtime` - realtime\n* `analytical` - analytical"
       },
+      "CohortUsedInCohort": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Cohort database ID"
+          },
+          "name": {
+            "type": "string",
+            "description": "Cohort display name; falls back to 'Unnamed' when empty"
+          }
+        },
+        "required": [
+          "id",
+          "name"
+        ]
+      },
+      "CohortUsedInCohortsBlock": {
+        "type": "object",
+        "properties": {
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CohortUsedInCohort"
+            },
+            "description": "Cohorts that include this cohort as a criterion, capped at 100 results"
+          },
+          "total": {
+            "type": "integer",
+            "description": "Total number of cohorts referencing this cohort, before truncation"
+          },
+          "has_more": {
+            "type": "boolean",
+            "description": "True when more cohorts exist beyond the truncation cap"
+          }
+        },
+        "required": [
+          "has_more",
+          "results",
+          "total"
+        ]
+      },
+      "CohortUsedInFlag": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Feature flag database ID"
+          },
+          "key": {
+            "type": "string",
+            "description": "Feature flag key (URL slug)"
+          },
+          "name": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Feature flag display name"
+          }
+        },
+        "required": [
+          "id",
+          "key",
+          "name"
+        ]
+      },
+      "CohortUsedInFlagsBlock": {
+        "type": "object",
+        "properties": {
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CohortUsedInFlag"
+            },
+            "description": "Feature flags referencing this cohort, capped at 100 results"
+          },
+          "total": {
+            "type": "integer",
+            "description": "Total number of feature flags referencing this cohort, before truncation"
+          },
+          "has_more": {
+            "type": "boolean",
+            "description": "True when more feature flags exist beyond the truncation cap"
+          }
+        },
+        "required": [
+          "has_more",
+          "results",
+          "total"
+        ]
+      },
+      "CohortUsedInInsight": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Insight database ID"
+          },
+          "short_id": {
+            "type": "string",
+            "description": "Insight short ID used for routing in the frontend"
+          },
+          "name": {
+            "type": "string",
+            "description": "Insight display name; falls back to derived name, then to 'Unnamed' when both are empty"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "short_id"
+        ]
+      },
+      "CohortUsedInInsightsBlock": {
+        "type": "object",
+        "properties": {
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CohortUsedInInsight"
+            },
+            "description": "Insights referencing this cohort, capped at 100 results"
+          },
+          "total": {
+            "type": "integer",
+            "description": "Total number of insights referencing this cohort, before truncation"
+          },
+          "has_more": {
+            "type": "boolean",
+            "description": "True when more insights exist beyond the truncation cap"
+          }
+        },
+        "required": [
+          "has_more",
+          "results",
+          "total"
+        ]
+      },
+      "CohortUsedInResponse": {
+        "type": "object",
+        "properties": {
+          "feature_flags": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CohortUsedInFlagsBlock"
+              }
+            ],
+            "description": "Feature flags (active and inactive, excluding soft-deleted) that reference this cohort in their targeting conditions, with truncation metadata"
+          },
+          "insights": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CohortUsedInInsightsBlock"
+              }
+            ],
+            "description": "Insights referencing this cohort with truncation metadata"
+          },
+          "cohorts": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CohortUsedInCohortsBlock"
+              }
+            ],
+            "description": "Other cohorts that include this cohort as a criterion, with truncation metadata"
+          }
+        },
+        "required": [
+          "cohorts",
+          "feature_flags",
+          "insights"
+        ]
+      },
       "ColorMode": {
         "enum": [
           "light",
@@ -125328,6 +126301,18 @@
             "readOnly": true,
             "description": "Title of the conversation."
           },
+          "topic": {
+            "readOnly": true,
+            "description": "Product domain the conversation is about, classified from the first question.\n\n* `web_analytics` - Web analytics\n* `product_analytics` - Product analytics\n* `session_replay` - Session replay\n* `surveys` - Surveys\n* `feature_flags` - Feature flags\n* `experiments` - Experiments\n* `error_tracking` - Error tracking\n* `data_warehouse` - Data warehouse\n* `other` - Other",
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/TopicEnum"
+              },
+              {
+                "$ref": "#/components/schemas/NullEnum"
+              }
+            ]
+          },
           "user": {
             "allOf": [
               {
@@ -125430,6 +126415,7 @@
           "slack_workspace_domain",
           "status",
           "title",
+          "topic",
           "type",
           "updated_at",
           "user"
@@ -125458,6 +126444,18 @@
             ],
             "readOnly": true,
             "description": "Title of the conversation."
+          },
+          "topic": {
+            "readOnly": true,
+            "description": "Product domain the conversation is about, classified from the first question.\n\n* `web_analytics` - Web analytics\n* `product_analytics` - Product analytics\n* `session_replay` - Session replay\n* `surveys` - Surveys\n* `feature_flags` - Feature flags\n* `experiments` - Experiments\n* `error_tracking` - Error tracking\n* `data_warehouse` - Data warehouse\n* `other` - Other",
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/TopicEnum"
+              },
+              {
+                "$ref": "#/components/schemas/NullEnum"
+              }
+            ]
           },
           "user": {
             "allOf": [
@@ -125524,6 +126522,7 @@
           "slack_workspace_domain",
           "status",
           "title",
+          "topic",
           "type",
           "updated_at",
           "user"
@@ -133878,6 +134877,15 @@
               "type": "string"
             },
             "description": "Optional keys for downstream dedupe (e.g. `error_tracking_issue:<id>`)."
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 50
+            },
+            "description": "Optional category tags as lowercase kebab-case slugs (e.g. `cost-spike`, `silent-failure`), max 10. Reuse the vocabulary in your `tags:<domain>:taxonomy` scratchpad entry when a tag fits; coin a new slug when a genuinely new category emerges. Near-miss formats are normalized to slugs; persisted in the signal's `extra.tags` and on the emission row.",
+            "maxItems": 10
           },
           "time_range": {
             "oneOf": [
@@ -156021,6 +157029,18 @@
             ],
             "format": "uuid",
             "readOnly": true
+          },
+          "search_match_type": {
+            "description": "How this row matched the `search` query parameter: `exact` (the term is a case-insensitive substring of a searched field) or `similar` (a fuzzy trigram match only). Results are ordered exact-first. Null when the list is not filtered by `search`.",
+            "readOnly": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/SearchMatchTypeEnum"
+              },
+              {
+                "$ref": "#/components/schemas/NullEnum"
+              }
+            ]
           }
         },
         "required": [
@@ -156029,6 +157049,7 @@
           "created_at",
           "created_by",
           "id",
+          "search_match_type",
           "status",
           "template",
           "transpiled",
@@ -156299,6 +157320,18 @@
               "null"
             ],
             "readOnly": true
+          },
+          "search_match_type": {
+            "description": "How this row matched the `search` query parameter: `exact` (the term is a case-insensitive substring of a searched field) or `similar` (a fuzzy trigram match only). Results are ordered exact-first. Null when the list is not filtered by `search`.",
+            "readOnly": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/SearchMatchTypeEnum"
+              },
+              {
+                "$ref": "#/components/schemas/NullEnum"
+              }
+            ]
           }
         },
         "required": [
@@ -156312,6 +157345,7 @@
           "icon_url",
           "id",
           "name",
+          "search_match_type",
           "status",
           "template",
           "type",
@@ -160675,6 +161709,71 @@
           "source_name"
         ]
       },
+      "KnowledgeSearchResult": {
+        "type": "object",
+        "description": "One ranked chunk from a business knowledge search.\n\nOutput-only — the rows come from the ``search_knowledge_for_team`` logic\nhelper (a ``KnowledgeSearchResult`` dataclass), not the ORM.",
+        "properties": {
+          "chunk_id": {
+            "type": "string",
+            "format": "uuid",
+            "readOnly": true,
+            "description": "Stable identifier of this chunk."
+          },
+          "document_id": {
+            "type": "string",
+            "format": "uuid",
+            "readOnly": true,
+            "description": "ID of the parent document. Pass to the document-window endpoint with `around_ordinal` to drill down."
+          },
+          "ordinal": {
+            "type": "integer",
+            "readOnly": true,
+            "description": "Zero-based position of this chunk within its document. Use as `around_ordinal` in the document-window endpoint."
+          },
+          "source_id": {
+            "type": "string",
+            "format": "uuid",
+            "readOnly": true,
+            "description": "ID of the knowledge source this chunk belongs to."
+          },
+          "source_name": {
+            "type": "string",
+            "readOnly": true,
+            "description": "Human label of the knowledge source this chunk belongs to."
+          },
+          "source_type": {
+            "type": "string",
+            "readOnly": true,
+            "description": "Source type (text, url, or file)."
+          },
+          "document_title": {
+            "type": "string",
+            "readOnly": true,
+            "description": "Title of the document this chunk belongs to."
+          },
+          "heading_path": {
+            "type": "string",
+            "readOnly": true,
+            "description": "Breadcrumb of section headings this chunk sits under. Empty when the document has no heading structure."
+          },
+          "content": {
+            "type": "string",
+            "readOnly": true,
+            "description": "The chunk's text content."
+          }
+        },
+        "required": [
+          "chunk_id",
+          "content",
+          "document_id",
+          "document_title",
+          "heading_path",
+          "ordinal",
+          "source_id",
+          "source_name",
+          "source_type"
+        ]
+      },
       "KnowledgeSource": {
         "type": "object",
         "properties": {
@@ -164402,7 +165501,7 @@
                 "$ref": "#/components/schemas/NotificationDestinationTypeEnum"
               }
             ],
-            "description": "Destination type — slack or webhook.\n\n* `slack` - slack\n* `webhook` - webhook"
+            "description": "Destination type — slack, webhook, or teams.\n\n* `slack` - slack\n* `webhook` - webhook\n* `teams` - teams"
           },
           "slack_workspace_id": {
             "type": "integer",
@@ -164419,7 +165518,7 @@
           "webhook_url": {
             "type": "string",
             "format": "uri",
-            "description": "HTTPS endpoint to POST to. Required when type=webhook."
+            "description": "HTTPS endpoint to POST to. Required when type=webhook, or the Teams webhook URL when type=teams."
           }
         },
         "required": [
@@ -168155,10 +169254,11 @@
       "NotificationDestinationTypeEnum": {
         "enum": [
           "slack",
-          "webhook"
+          "webhook",
+          "teams"
         ],
         "type": "string",
-        "description": "* `slack` - slack\n* `webhook` - webhook"
+        "description": "* `slack` - slack\n* `webhook` - webhook\n* `teams` - teams"
       },
       "NullEnum": {
         "type": "null"
@@ -175730,6 +176830,18 @@
             "readOnly": true,
             "description": "Title of the conversation."
           },
+          "topic": {
+            "readOnly": true,
+            "description": "Product domain the conversation is about, classified from the first question.\n\n* `web_analytics` - Web analytics\n* `product_analytics` - Product analytics\n* `session_replay` - Session replay\n* `surveys` - Surveys\n* `feature_flags` - Feature flags\n* `experiments` - Experiments\n* `error_tracking` - Error tracking\n* `data_warehouse` - Data warehouse\n* `other` - Other",
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/TopicEnum"
+              },
+              {
+                "$ref": "#/components/schemas/NullEnum"
+              }
+            ]
+          },
           "user": {
             "allOf": [
               {
@@ -178993,6 +180105,18 @@
             ],
             "format": "uuid",
             "readOnly": true
+          },
+          "search_match_type": {
+            "description": "How this row matched the `search` query parameter: `exact` (the term is a case-insensitive substring of a searched field) or `similar` (a fuzzy trigram match only). Results are ordered exact-first. Null when the list is not filtered by `search`.",
+            "readOnly": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/SearchMatchTypeEnum"
+              },
+              {
+                "$ref": "#/components/schemas/NullEnum"
+              }
+            ]
           }
         }
       },
@@ -181290,6 +182414,105 @@
             ],
             "readOnly": true,
             "description": "Set to True when project deletion has been initiated. Blocks UI access to this project until the async task completes."
+          },
+          "project_id": {
+            "type": "integer",
+            "readOnly": true,
+            "description": "ID of the project this environment belongs to."
+          },
+          "user_access_level": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "readOnly": true,
+            "description": "The effective access level the user has for this object"
+          },
+          "managed_viewsets": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "boolean"
+            },
+            "readOnly": true
+          },
+          "revenue_analytics_config": {
+            "$ref": "#/components/schemas/TeamRevenueAnalyticsConfig"
+          },
+          "marketing_analytics_config": {
+            "$ref": "#/components/schemas/TeamMarketingAnalyticsConfig"
+          },
+          "customer_analytics_config": {
+            "$ref": "#/components/schemas/TeamCustomerAnalyticsConfig"
+          },
+          "workflows_config": {
+            "$ref": "#/components/schemas/TeamWorkflowsConfig"
+          },
+          "base_currency": {
+            "$ref": "#/components/schemas/BaseCurrencyEnum"
+          },
+          "capture_dead_clicks": {
+            "type": [
+              "boolean",
+              "null"
+            ],
+            "description": "Enables capturing clicks that had no effect (rage-click detection)."
+          },
+          "cookieless_server_hash_mode": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/CookielessServerHashModeEnum"
+              },
+              {
+                "$ref": "#/components/schemas/NullEnum"
+              }
+            ]
+          },
+          "human_friendly_comparison_periods": {
+            "type": [
+              "boolean",
+              "null"
+            ]
+          },
+          "feature_flag_confirmation_enabled": {
+            "type": [
+              "boolean",
+              "null"
+            ]
+          },
+          "feature_flag_confirmation_message": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "default_evaluation_contexts_enabled": {
+            "type": [
+              "boolean",
+              "null"
+            ],
+            "description": "Whether to automatically apply default evaluation contexts to new feature flags"
+          },
+          "require_evaluation_contexts": {
+            "type": [
+              "boolean",
+              "null"
+            ],
+            "description": "Whether to require at least one evaluation context tag when creating new feature flags"
+          },
+          "default_data_theme": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "maximum": 2147483647,
+            "minimum": -2147483648
+          },
+          "onboarding_tasks": {},
+          "web_analytics_pre_aggregated_tables_enabled": {
+            "type": [
+              "boolean",
+              "null"
+            ]
           }
         }
       },
@@ -181429,6 +182652,14 @@
             "type": "integer",
             "readOnly": true,
             "description": "Increments on every config-changing save. Observations snapshot this value."
+          },
+          "estimated_monthly_observations": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "readOnly": true,
+            "description": "Latest projected observations/month for this scanner. Null until first computed."
           },
           "last_swept_at": {
             "type": "string",
@@ -181956,6 +183187,11 @@
             },
             "description": "Load external references (linked issues) for this recording",
             "readOnly": true
+          },
+          "matches_filters": {
+            "type": "boolean",
+            "readOnly": true,
+            "description": "Whether this recording matched the filters of the listing query that returned it. False only when a recording requested via session_recording_id was included despite not matching the filters."
           }
         }
       },
@@ -182099,6 +183335,11 @@
             "type": "string",
             "readOnly": true,
             "description": "The `signals-scout-*` skill this config controls. Set at creation, not editable."
+          },
+          "description": {
+            "type": "string",
+            "readOnly": true,
+            "description": "Human-readable summary of what this scout investigates, sourced from the scout skill's `description` metadata. Use it for a quick steer on the scout's focus without loading the full skill body. Empty if the skill is not currently present on the team or carries no description."
           },
           "enabled": {
             "type": "boolean",
@@ -184123,7 +185364,7 @@
           "requires_credential_review": {
             "type": "boolean",
             "readOnly": true,
-            "description": "True if the user has at least one Personal API Key and has not yet acknowledged their existing credentials. Used to gate a one-shot review screen on first post-provisioning login. Becomes False once the user POSTs to `/api/users/@me/credentials_review_complete/`. Read-only."
+            "description": "True if the user has at least one Personal API Key or passkey and has not yet acknowledged their existing credentials. Used to gate a one-shot review screen on first post-provisioning login. Becomes False once the user POSTs to `/api/users/@me/credentials_review_complete/`. Read-only."
           }
         }
       },
@@ -187044,6 +188285,105 @@
             ],
             "readOnly": true,
             "description": "Set to True when project deletion has been initiated. Blocks UI access to this project until the async task completes."
+          },
+          "project_id": {
+            "type": "integer",
+            "readOnly": true,
+            "description": "ID of the project this environment belongs to."
+          },
+          "user_access_level": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "readOnly": true,
+            "description": "The effective access level the user has for this object"
+          },
+          "managed_viewsets": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "boolean"
+            },
+            "readOnly": true
+          },
+          "revenue_analytics_config": {
+            "$ref": "#/components/schemas/TeamRevenueAnalyticsConfig"
+          },
+          "marketing_analytics_config": {
+            "$ref": "#/components/schemas/TeamMarketingAnalyticsConfig"
+          },
+          "customer_analytics_config": {
+            "$ref": "#/components/schemas/TeamCustomerAnalyticsConfig"
+          },
+          "workflows_config": {
+            "$ref": "#/components/schemas/TeamWorkflowsConfig"
+          },
+          "base_currency": {
+            "$ref": "#/components/schemas/BaseCurrencyEnum"
+          },
+          "capture_dead_clicks": {
+            "type": [
+              "boolean",
+              "null"
+            ],
+            "description": "Enables capturing clicks that had no effect (rage-click detection)."
+          },
+          "cookieless_server_hash_mode": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/CookielessServerHashModeEnum"
+              },
+              {
+                "$ref": "#/components/schemas/NullEnum"
+              }
+            ]
+          },
+          "human_friendly_comparison_periods": {
+            "type": [
+              "boolean",
+              "null"
+            ]
+          },
+          "feature_flag_confirmation_enabled": {
+            "type": [
+              "boolean",
+              "null"
+            ]
+          },
+          "feature_flag_confirmation_message": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "default_evaluation_contexts_enabled": {
+            "type": [
+              "boolean",
+              "null"
+            ],
+            "description": "Whether to automatically apply default evaluation contexts to new feature flags"
+          },
+          "require_evaluation_contexts": {
+            "type": [
+              "boolean",
+              "null"
+            ],
+            "description": "Whether to require at least one evaluation context tag when creating new feature flags"
+          },
+          "default_data_theme": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "maximum": 2147483647,
+            "minimum": -2147483648
+          },
+          "onboarding_tasks": {},
+          "web_analytics_pre_aggregated_tables_enabled": {
+            "type": [
+              "boolean",
+              "null"
+            ]
           }
         },
         "required": [
@@ -187058,12 +188398,15 @@
           "ingested_event",
           "is_pending_deletion",
           "live_events_token",
+          "managed_viewsets",
           "organization",
           "person_on_events_querying_enabled",
           "product_intents",
+          "project_id",
           "secret_api_token",
           "secret_api_token_backup",
           "updated_at",
+          "user_access_level",
           "uuid"
         ]
       },
@@ -187084,6 +188427,11 @@
             "type": "string",
             "format": "uuid",
             "readOnly": true
+          },
+          "project_id": {
+            "type": "integer",
+            "readOnly": true,
+            "description": "ID of the project this environment belongs to."
           },
           "api_token": {
             "type": "string",
@@ -187131,6 +188479,7 @@
           "is_demo",
           "name",
           "organization",
+          "project_id",
           "timezone",
           "uuid"
         ]
@@ -205423,6 +206772,14 @@
             "readOnly": true,
             "description": "Increments on every config-changing save. Observations snapshot this value."
           },
+          "estimated_monthly_observations": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "readOnly": true,
+            "description": "Latest projected observations/month for this scanner. Null until first computed."
+          },
           "last_swept_at": {
             "type": "string",
             "format": "date-time",
@@ -205455,6 +206812,7 @@
         "required": [
           "created_at",
           "created_by",
+          "estimated_monthly_observations",
           "id",
           "last_swept_at",
           "model",
@@ -216466,6 +217824,11 @@
             },
             "description": "Load external references (linked issues) for this recording",
             "readOnly": true
+          },
+          "matches_filters": {
+            "type": "boolean",
+            "readOnly": true,
+            "description": "Whether this recording matched the filters of the listing query that returned it. False only when a recording requested via session_recording_id was included despite not matching the filters."
           }
         },
         "required": [
@@ -216483,6 +217846,7 @@
           "id",
           "inactive_seconds",
           "keypress_count",
+          "matches_filters",
           "mouse_activity_count",
           "ongoing",
           "recording_duration",
@@ -216856,6 +218220,19 @@
             ],
             "default": null,
             "title": "Keypress Count"
+          },
+          "matches_filters": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "False when the recording was included in list results via a direct link despite not matching the filters.",
+            "title": "Matches Filters"
           },
           "matching_events": {
             "anyOf": [
@@ -218371,6 +219748,11 @@
             "readOnly": true,
             "description": "The `signals-scout-*` skill this config controls. Set at creation, not editable."
           },
+          "description": {
+            "type": "string",
+            "readOnly": true,
+            "description": "Human-readable summary of what this scout investigates, sourced from the scout skill's `description` metadata. Use it for a quick steer on the scout's focus without loading the full skill body. Empty if the skill is not currently present on the team or carries no description."
+          },
           "enabled": {
             "type": "boolean",
             "description": "Whether this scout runs on its schedule. Disabled scouts are skipped by the coordinator."
@@ -218402,8 +219784,37 @@
         },
         "required": [
           "created_at",
+          "description",
           "id",
           "last_run_at",
+          "skill_name"
+        ]
+      },
+      "SignalScoutConfigCreate": {
+        "type": "object",
+        "description": "Request body for registering a scout config without waiting for the coordinator tick.\n\nUpsert keyed on `skill_name`: if the coordinator (or a concurrent caller) already\nregistered the row, the provided tunables are applied to it instead.",
+        "properties": {
+          "skill_name": {
+            "type": "string",
+            "description": "The `signals-scout-*` skill to register a config for. The skill must already exist on this project — author it via the skills store first.",
+            "maxLength": 200
+          },
+          "enabled": {
+            "type": "boolean",
+            "description": "Whether this scout runs on its schedule. Defaults to true."
+          },
+          "emit": {
+            "type": "boolean",
+            "description": "Whether the scout writes findings to the inbox. False = dry-run: it runs and logs but emits nothing. Defaults to true."
+          },
+          "run_interval_minutes": {
+            "type": "integer",
+            "maximum": 43200,
+            "minimum": 10,
+            "description": "Minutes between runs (10–43200). Defaults to 60 (hourly)."
+          }
+        },
+        "required": [
           "skill_name"
         ]
       },
@@ -218453,6 +219864,13 @@
               }
             ]
           },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Slug tags the scout attached to this finding (lowercase kebab-case, e.g. `cost-spike`). Empty list when the run set none."
+          },
           "source_id": {
             "type": "string",
             "description": "Deterministic `run:<run_id>:finding:<finding_id>` — the join key into the underlying signal store."
@@ -218472,6 +219890,7 @@
           "run_id",
           "severity",
           "source_id",
+          "tags",
           "weight"
         ]
       },
@@ -223980,48 +225399,6 @@
         "type": "string",
         "description": "* `interactive` - interactive\n* `background` - background"
       },
-      "TaskFileRequest": {
-        "type": "object",
-        "properties": {
-          "folder": {
-            "type": "string",
-            "description": "Destination folder path in the project tree (e.g. 'Tasks/Bugs'). Defaults to 'Tasks'."
-          }
-        }
-      },
-      "TaskFileResponse": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "format": "uuid",
-            "description": "Identifier of the project-tree entry for this task."
-          },
-          "path": {
-            "type": "string",
-            "description": "Full slash-separated path of the filed task in the project tree."
-          },
-          "type": {
-            "type": "string",
-            "description": "File system entry type. Always 'task'."
-          },
-          "ref": {
-            "type": "string",
-            "description": "Identifier of the task this entry points to."
-          },
-          "href": {
-            "type": "string",
-            "description": "In-app link to the task."
-          }
-        },
-        "required": [
-          "href",
-          "id",
-          "path",
-          "ref",
-          "type"
-        ]
-      },
       "TaskPresenceBeaconRequest": {
         "type": "object",
         "description": "Request body for the presence beacon and beacon-leave endpoints.\n\n`device_id` is the UUID of the caller's `UserPushToken` row, which the\nclient received when it registered for push via `/api/users/@me/push_tokens/`.\nThe client is expected to use the same identifier on the beacon and leave\ncalls; if the user has unregistered the underlying push token, the value\nwon't resolve and the call returns 404 — at which point pushes were\nalready not going there anyway.",
@@ -228119,6 +229496,21 @@
           "name",
           "visitors"
         ]
+      },
+      "TopicEnum": {
+        "enum": [
+          "web_analytics",
+          "product_analytics",
+          "session_replay",
+          "surveys",
+          "feature_flags",
+          "experiments",
+          "error_tracking",
+          "data_warehouse",
+          "other"
+        ],
+        "type": "string",
+        "description": "* `web_analytics` - Web analytics\n* `product_analytics` - Product analytics\n* `session_replay` - Session replay\n* `surveys` - Surveys\n* `feature_flags` - Feature flags\n* `experiments` - Experiments\n* `error_tracking` - Error tracking\n* `data_warehouse` - Data warehouse\n* `other` - Other"
       },
       "TraceNeighborsQuery": {
         "additionalProperties": false,
@@ -232312,7 +233704,7 @@
           "requires_credential_review": {
             "type": "boolean",
             "readOnly": true,
-            "description": "True if the user has at least one Personal API Key and has not yet acknowledged their existing credentials. Used to gate a one-shot review screen on first post-provisioning login. Becomes False once the user POSTs to `/api/users/@me/credentials_review_complete/`. Read-only."
+            "description": "True if the user has at least one Personal API Key or passkey and has not yet acknowledged their existing credentials. Used to gate a one-shot review screen on first post-provisioning login. Becomes False once the user POSTs to `/api/users/@me/credentials_review_complete/`. Read-only."
           }
         },
         "required": [
@@ -233537,6 +234929,11 @@
             "format": "date-time",
             "readOnly": true,
             "description": "First moment of the next quota period (UTC); the current period's exclusive upper bound."
+          },
+          "projected_monthly_observations": {
+            "type": "integer",
+            "readOnly": true,
+            "description": "Sum of enabled scanners' projected observations/month across the organization. Scanners without a computed estimate contribute 0."
           }
         },
         "required": [
@@ -233544,6 +234941,7 @@
           "monthly_quota",
           "period_end",
           "period_start",
+          "projected_monthly_observations",
           "remaining",
           "usage_this_month"
         ]
