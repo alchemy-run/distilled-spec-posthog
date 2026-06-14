@@ -61213,6 +61213,116 @@
         ]
       }
     },
+    "/api/projects/{project_id}/desktop_file_system/{id}/context_generation/": {
+      "get": {
+        "operationId": "desktop_file_system_context_generation_retrieve",
+        "description": "Return the Task currently generating this folder's CONTEXT.md, or null if none.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "A UUID string identifying this file system.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "desktop_file_system"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "file_system:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContextGeneration"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "core"
+        ]
+      },
+      "put": {
+        "operationId": "desktop_file_system_context_generation_update",
+        "description": "Set or clear the Task associated with this folder's CONTEXT.md generation.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "A UUID string identifying this file system.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "desktop_file_system"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ContextGenerationSet"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/ContextGenerationSet"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/ContextGenerationSet"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "file_system:write"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContextGeneration"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "core"
+        ]
+      }
+    },
     "/api/projects/{project_id}/desktop_file_system/{id}/count/": {
       "post": {
         "operationId": "desktop_file_system_count_create",
@@ -127819,6 +127929,38 @@
         "type": "string",
         "description": "* `utf-8` - utf-8\n* `base64` - base64"
       },
+      "ContextGeneration": {
+        "type": "object",
+        "properties": {
+          "task_id": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uuid",
+            "description": "ID of the Task currently generating this folder's CONTEXT.md, or null if none."
+          }
+        },
+        "required": [
+          "task_id"
+        ]
+      },
+      "ContextGenerationSet": {
+        "type": "object",
+        "properties": {
+          "task_id": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uuid",
+            "description": "ID of the Task generating this folder's CONTEXT.md. Must reference a Task in the same team. Set to null to clear the association."
+          }
+        },
+        "required": [
+          "task_id"
+        ]
+      },
       "Conversation": {
         "type": "object",
         "properties": {
@@ -189950,6 +190092,18 @@
           },
           "archived": {
             "type": "boolean"
+          },
+          "search_match_type": {
+            "description": "How this row matched the `search` query parameter: `exact` (the term is a case-insensitive substring of a searched field) or `similar` (a fuzzy trigram match only). Results are ordered exact-first. Null when the list is not filtered by `search`.",
+            "readOnly": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/SearchMatchTypeEnum"
+              },
+              {
+                "$ref": "#/components/schemas/NullEnum"
+              }
+            ]
           }
         },
         "required": [
@@ -189961,6 +190115,7 @@
           "internal_targeting_flag",
           "linked_flag",
           "name",
+          "search_match_type",
           "targeting_flag_filters",
           "updated_at"
         ]
@@ -225511,7 +225666,19 @@
             "readOnly": true,
             "description": "The effective access level the user has for this object"
           },
-          "form_content": {}
+          "form_content": {},
+          "search_match_type": {
+            "description": "How this row matched the `search` query parameter: `exact` (the term is a case-insensitive substring of a searched field) or `similar` (a fuzzy trigram match only). Results are ordered exact-first. Null when the list is not filtered by `search`.",
+            "readOnly": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/SearchMatchTypeEnum"
+              },
+              {
+                "$ref": "#/components/schemas/NullEnum"
+              }
+            ]
+          }
         },
         "required": [
           "conditions",
@@ -225522,6 +225689,7 @@
           "internal_targeting_flag",
           "linked_flag",
           "name",
+          "search_match_type",
           "targeting_flag",
           "type",
           "user_access_level"
