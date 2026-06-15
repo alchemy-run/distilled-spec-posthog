@@ -102816,7 +102816,7 @@
             "description": "Created config."
           },
           "400": {
-            "description": "No such skill on this project, or the name lacks the `signals-scout-` prefix."
+            "description": "No such skill on this project, the name lacks the `signals-scout-` prefix, or the project is already at its enabled-scouts maximum."
           }
         },
         "x-product": [
@@ -102888,6 +102888,9 @@
               }
             },
             "description": "Updated config."
+          },
+          "400": {
+            "description": "Invalid fields, or enabling would exceed the project's enabled-scouts maximum."
           },
           "404": {
             "description": "Config not found for this project."
