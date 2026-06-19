@@ -4494,6 +4494,14 @@
           },
           {
             "in": "query",
+            "name": "folder",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Optional. Return only dashboards filed directly in this project-tree folder, e.g. 'Unfiled/Dashboards'. An empty string matches dashboards at the project root. Nested sub-folders are not included."
+          },
+          {
+            "in": "query",
             "name": "format",
             "schema": {
               "type": "string",
@@ -9687,10 +9695,8 @@
             "in": "path",
             "name": "id",
             "schema": {
-              "type": "string",
-              "format": "uuid"
+              "type": "string"
             },
-            "description": "A UUID string identifying this error tracking assignment rule.",
             "required": true
           }
         ],
@@ -9731,10 +9737,8 @@
             "in": "path",
             "name": "id",
             "schema": {
-              "type": "string",
-              "format": "uuid"
+              "type": "string"
             },
-            "description": "A UUID string identifying this error tracking assignment rule.",
             "required": true
           }
         ],
@@ -9787,10 +9791,8 @@
             "in": "path",
             "name": "id",
             "schema": {
-              "type": "string",
-              "format": "uuid"
+              "type": "string"
             },
-            "description": "A UUID string identifying this error tracking assignment rule.",
             "required": true
           }
         ],
@@ -9843,10 +9845,8 @@
             "in": "path",
             "name": "id",
             "schema": {
-              "type": "string",
-              "format": "uuid"
+              "type": "string"
             },
-            "description": "A UUID string identifying this error tracking assignment rule.",
             "required": true
           }
         ],
@@ -10280,10 +10280,8 @@
             "in": "path",
             "name": "id",
             "schema": {
-              "type": "string",
-              "format": "uuid"
+              "type": "string"
             },
-            "description": "A UUID string identifying this error tracking grouping rule.",
             "required": true
           }
         ],
@@ -10324,10 +10322,8 @@
             "in": "path",
             "name": "id",
             "schema": {
-              "type": "string",
-              "format": "uuid"
+              "type": "string"
             },
-            "description": "A UUID string identifying this error tracking grouping rule.",
             "required": true
           }
         ],
@@ -10380,10 +10376,8 @@
             "in": "path",
             "name": "id",
             "schema": {
-              "type": "string",
-              "format": "uuid"
+              "type": "string"
             },
-            "description": "A UUID string identifying this error tracking grouping rule.",
             "required": true
           }
         ],
@@ -10436,10 +10430,8 @@
             "in": "path",
             "name": "id",
             "schema": {
-              "type": "string",
-              "format": "uuid"
+              "type": "string"
             },
-            "description": "A UUID string identifying this error tracking grouping rule.",
             "required": true
           }
         ],
@@ -11684,17 +11676,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/ErrorTrackingRelease"
+                "$ref": "#/components/schemas/ErrorTrackingReleaseCreateRequest"
               }
             },
             "application/x-www-form-urlencoded": {
               "schema": {
-                "$ref": "#/components/schemas/ErrorTrackingRelease"
+                "$ref": "#/components/schemas/ErrorTrackingReleaseCreateRequest"
               }
             },
             "multipart/form-data": {
               "schema": {
-                "$ref": "#/components/schemas/ErrorTrackingRelease"
+                "$ref": "#/components/schemas/ErrorTrackingReleaseCreateRequest"
               }
             }
           },
@@ -11736,10 +11728,8 @@
             "in": "path",
             "name": "id",
             "schema": {
-              "type": "string",
-              "format": "uuid"
+              "type": "string"
             },
-            "description": "A UUID string identifying this error tracking release.",
             "required": true
           }
         ],
@@ -11780,10 +11770,8 @@
             "in": "path",
             "name": "id",
             "schema": {
-              "type": "string",
-              "format": "uuid"
+              "type": "string"
             },
-            "description": "A UUID string identifying this error tracking release.",
             "required": true
           }
         ],
@@ -11794,21 +11782,20 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/ErrorTrackingRelease"
+                "$ref": "#/components/schemas/ErrorTrackingReleaseUpdateRequest"
               }
             },
             "application/x-www-form-urlencoded": {
               "schema": {
-                "$ref": "#/components/schemas/ErrorTrackingRelease"
+                "$ref": "#/components/schemas/ErrorTrackingReleaseUpdateRequest"
               }
             },
             "multipart/form-data": {
               "schema": {
-                "$ref": "#/components/schemas/ErrorTrackingRelease"
+                "$ref": "#/components/schemas/ErrorTrackingReleaseUpdateRequest"
               }
             }
-          },
-          "required": true
+          }
         },
         "security": [
           {
@@ -11818,15 +11805,8 @@
           }
         ],
         "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorTrackingRelease"
-                }
-              }
-            },
-            "description": ""
+          "204": {
+            "description": "No response body"
           }
         },
         "deprecated": true,
@@ -11844,10 +11824,8 @@
             "in": "path",
             "name": "id",
             "schema": {
-              "type": "string",
-              "format": "uuid"
+              "type": "string"
             },
-            "description": "A UUID string identifying this error tracking release.",
             "required": true
           }
         ],
@@ -11858,17 +11836,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/PatchedErrorTrackingRelease"
+                "$ref": "#/components/schemas/PatchedErrorTrackingReleaseUpdateRequest"
               }
             },
             "application/x-www-form-urlencoded": {
               "schema": {
-                "$ref": "#/components/schemas/PatchedErrorTrackingRelease"
+                "$ref": "#/components/schemas/PatchedErrorTrackingReleaseUpdateRequest"
               }
             },
             "multipart/form-data": {
               "schema": {
-                "$ref": "#/components/schemas/PatchedErrorTrackingRelease"
+                "$ref": "#/components/schemas/PatchedErrorTrackingReleaseUpdateRequest"
               }
             }
           }
@@ -11881,15 +11859,8 @@
           }
         ],
         "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorTrackingRelease"
-                }
-              }
-            },
-            "description": ""
+          "204": {
+            "description": "No response body"
           }
         },
         "deprecated": true,
@@ -11907,10 +11878,8 @@
             "in": "path",
             "name": "id",
             "schema": {
-              "type": "string",
-              "format": "uuid"
+              "type": "string"
             },
-            "description": "A UUID string identifying this error tracking release.",
             "required": true
           }
         ],
@@ -12269,10 +12238,8 @@
             "in": "path",
             "name": "id",
             "schema": {
-              "type": "string",
-              "format": "uuid"
+              "type": "string"
             },
-            "description": "A UUID string identifying this error tracking stack frame.",
             "required": true
           }
         ],
@@ -12314,10 +12281,8 @@
             "in": "path",
             "name": "id",
             "schema": {
-              "type": "string",
-              "format": "uuid"
+              "type": "string"
             },
-            "description": "A UUID string identifying this error tracking stack frame.",
             "required": true
           }
         ],
@@ -12350,17 +12315,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/ErrorTrackingStackFrame"
+                "$ref": "#/components/schemas/ErrorTrackingStackFrameBatchGetRequest"
               }
             },
             "application/x-www-form-urlencoded": {
               "schema": {
-                "$ref": "#/components/schemas/ErrorTrackingStackFrame"
+                "$ref": "#/components/schemas/ErrorTrackingStackFrameBatchGetRequest"
               }
             },
             "multipart/form-data": {
               "schema": {
-                "$ref": "#/components/schemas/ErrorTrackingStackFrame"
+                "$ref": "#/components/schemas/ErrorTrackingStackFrameBatchGetRequest"
               }
             }
           },
@@ -12375,7 +12340,14 @@
         ],
         "responses": {
           "200": {
-            "description": "No response body"
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorTrackingStackFrameBatchGetResponse"
+                }
+              }
+            },
+            "description": ""
           }
         },
         "deprecated": true,
@@ -12502,10 +12474,8 @@
             "in": "path",
             "name": "id",
             "schema": {
-              "type": "string",
-              "format": "uuid"
+              "type": "string"
             },
-            "description": "A UUID string identifying this error tracking suppression rule.",
             "required": true
           }
         ],
@@ -12546,10 +12516,8 @@
             "in": "path",
             "name": "id",
             "schema": {
-              "type": "string",
-              "format": "uuid"
+              "type": "string"
             },
-            "description": "A UUID string identifying this error tracking suppression rule.",
             "required": true
           }
         ],
@@ -12602,10 +12570,8 @@
             "in": "path",
             "name": "id",
             "schema": {
-              "type": "string",
-              "format": "uuid"
+              "type": "string"
             },
-            "description": "A UUID string identifying this error tracking suppression rule.",
             "required": true
           }
         ],
@@ -12658,10 +12624,8 @@
             "in": "path",
             "name": "id",
             "schema": {
-              "type": "string",
-              "format": "uuid"
+              "type": "string"
             },
-            "description": "A UUID string identifying this error tracking suppression rule.",
             "required": true
           }
         ],
@@ -62939,6 +62903,14 @@
         "parameters": [
           {
             "in": "query",
+            "name": "folder",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Optional. Return only dashboards filed directly in this project-tree folder, e.g. 'Unfiled/Dashboards'. An empty string matches dashboards at the project root. Nested sub-folders are not included."
+          },
+          {
+            "in": "query",
             "name": "format",
             "schema": {
               "type": "string",
@@ -71626,10 +71598,8 @@
             "in": "path",
             "name": "id",
             "schema": {
-              "type": "string",
-              "format": "uuid"
+              "type": "string"
             },
-            "description": "A UUID string identifying this error tracking assignment rule.",
             "required": true
           },
           {
@@ -71669,10 +71639,8 @@
             "in": "path",
             "name": "id",
             "schema": {
-              "type": "string",
-              "format": "uuid"
+              "type": "string"
             },
-            "description": "A UUID string identifying this error tracking assignment rule.",
             "required": true
           },
           {
@@ -71724,10 +71692,8 @@
             "in": "path",
             "name": "id",
             "schema": {
-              "type": "string",
-              "format": "uuid"
+              "type": "string"
             },
-            "description": "A UUID string identifying this error tracking assignment rule.",
             "required": true
           },
           {
@@ -71779,10 +71745,8 @@
             "in": "path",
             "name": "id",
             "schema": {
-              "type": "string",
-              "format": "uuid"
+              "type": "string"
             },
-            "description": "A UUID string identifying this error tracking assignment rule.",
             "required": true
           },
           {
@@ -72207,10 +72171,8 @@
             "in": "path",
             "name": "id",
             "schema": {
-              "type": "string",
-              "format": "uuid"
+              "type": "string"
             },
-            "description": "A UUID string identifying this error tracking grouping rule.",
             "required": true
           },
           {
@@ -72250,10 +72212,8 @@
             "in": "path",
             "name": "id",
             "schema": {
-              "type": "string",
-              "format": "uuid"
+              "type": "string"
             },
-            "description": "A UUID string identifying this error tracking grouping rule.",
             "required": true
           },
           {
@@ -72305,10 +72265,8 @@
             "in": "path",
             "name": "id",
             "schema": {
-              "type": "string",
-              "format": "uuid"
+              "type": "string"
             },
-            "description": "A UUID string identifying this error tracking grouping rule.",
             "required": true
           },
           {
@@ -72360,10 +72318,8 @@
             "in": "path",
             "name": "id",
             "schema": {
-              "type": "string",
-              "format": "uuid"
+              "type": "string"
             },
-            "description": "A UUID string identifying this error tracking grouping rule.",
             "required": true
           },
           {
@@ -73586,17 +73542,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/ErrorTrackingRelease"
+                "$ref": "#/components/schemas/ErrorTrackingReleaseCreateRequest"
               }
             },
             "application/x-www-form-urlencoded": {
               "schema": {
-                "$ref": "#/components/schemas/ErrorTrackingRelease"
+                "$ref": "#/components/schemas/ErrorTrackingReleaseCreateRequest"
               }
             },
             "multipart/form-data": {
               "schema": {
-                "$ref": "#/components/schemas/ErrorTrackingRelease"
+                "$ref": "#/components/schemas/ErrorTrackingReleaseCreateRequest"
               }
             }
           },
@@ -73634,10 +73590,8 @@
             "in": "path",
             "name": "id",
             "schema": {
-              "type": "string",
-              "format": "uuid"
+              "type": "string"
             },
-            "description": "A UUID string identifying this error tracking release.",
             "required": true
           },
           {
@@ -73677,10 +73631,8 @@
             "in": "path",
             "name": "id",
             "schema": {
-              "type": "string",
-              "format": "uuid"
+              "type": "string"
             },
-            "description": "A UUID string identifying this error tracking release.",
             "required": true
           },
           {
@@ -73694,21 +73646,20 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/ErrorTrackingRelease"
+                "$ref": "#/components/schemas/ErrorTrackingReleaseUpdateRequest"
               }
             },
             "application/x-www-form-urlencoded": {
               "schema": {
-                "$ref": "#/components/schemas/ErrorTrackingRelease"
+                "$ref": "#/components/schemas/ErrorTrackingReleaseUpdateRequest"
               }
             },
             "multipart/form-data": {
               "schema": {
-                "$ref": "#/components/schemas/ErrorTrackingRelease"
+                "$ref": "#/components/schemas/ErrorTrackingReleaseUpdateRequest"
               }
             }
-          },
-          "required": true
+          }
         },
         "security": [
           {
@@ -73718,15 +73669,8 @@
           }
         ],
         "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorTrackingRelease"
-                }
-              }
-            },
-            "description": ""
+          "204": {
+            "description": "No response body"
           }
         },
         "x-product": [
@@ -73740,10 +73684,8 @@
             "in": "path",
             "name": "id",
             "schema": {
-              "type": "string",
-              "format": "uuid"
+              "type": "string"
             },
-            "description": "A UUID string identifying this error tracking release.",
             "required": true
           },
           {
@@ -73757,17 +73699,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/PatchedErrorTrackingRelease"
+                "$ref": "#/components/schemas/PatchedErrorTrackingReleaseUpdateRequest"
               }
             },
             "application/x-www-form-urlencoded": {
               "schema": {
-                "$ref": "#/components/schemas/PatchedErrorTrackingRelease"
+                "$ref": "#/components/schemas/PatchedErrorTrackingReleaseUpdateRequest"
               }
             },
             "multipart/form-data": {
               "schema": {
-                "$ref": "#/components/schemas/PatchedErrorTrackingRelease"
+                "$ref": "#/components/schemas/PatchedErrorTrackingReleaseUpdateRequest"
               }
             }
           }
@@ -73780,15 +73722,8 @@
           }
         ],
         "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorTrackingRelease"
-                }
-              }
-            },
-            "description": ""
+          "204": {
+            "description": "No response body"
           }
         },
         "x-product": [
@@ -73802,10 +73737,8 @@
             "in": "path",
             "name": "id",
             "schema": {
-              "type": "string",
-              "format": "uuid"
+              "type": "string"
             },
-            "description": "A UUID string identifying this error tracking release.",
             "required": true
           },
           {
@@ -74156,10 +74089,8 @@
             "in": "path",
             "name": "id",
             "schema": {
-              "type": "string",
-              "format": "uuid"
+              "type": "string"
             },
-            "description": "A UUID string identifying this error tracking stack frame.",
             "required": true
           },
           {
@@ -74200,10 +74131,8 @@
             "in": "path",
             "name": "id",
             "schema": {
-              "type": "string",
-              "format": "uuid"
+              "type": "string"
             },
-            "description": "A UUID string identifying this error tracking stack frame.",
             "required": true
           },
           {
@@ -74238,17 +74167,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/ErrorTrackingStackFrame"
+                "$ref": "#/components/schemas/ErrorTrackingStackFrameBatchGetRequest"
               }
             },
             "application/x-www-form-urlencoded": {
               "schema": {
-                "$ref": "#/components/schemas/ErrorTrackingStackFrame"
+                "$ref": "#/components/schemas/ErrorTrackingStackFrameBatchGetRequest"
               }
             },
             "multipart/form-data": {
               "schema": {
-                "$ref": "#/components/schemas/ErrorTrackingStackFrame"
+                "$ref": "#/components/schemas/ErrorTrackingStackFrameBatchGetRequest"
               }
             }
           },
@@ -74263,7 +74192,14 @@
         ],
         "responses": {
           "200": {
-            "description": "No response body"
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorTrackingStackFrameBatchGetResponse"
+                }
+              }
+            },
+            "description": ""
           }
         },
         "x-product": [
@@ -74384,10 +74320,8 @@
             "in": "path",
             "name": "id",
             "schema": {
-              "type": "string",
-              "format": "uuid"
+              "type": "string"
             },
-            "description": "A UUID string identifying this error tracking suppression rule.",
             "required": true
           },
           {
@@ -74427,10 +74361,8 @@
             "in": "path",
             "name": "id",
             "schema": {
-              "type": "string",
-              "format": "uuid"
+              "type": "string"
             },
-            "description": "A UUID string identifying this error tracking suppression rule.",
             "required": true
           },
           {
@@ -74482,10 +74414,8 @@
             "in": "path",
             "name": "id",
             "schema": {
-              "type": "string",
-              "format": "uuid"
+              "type": "string"
             },
-            "description": "A UUID string identifying this error tracking suppression rule.",
             "required": true
           },
           {
@@ -74537,10 +74467,8 @@
             "in": "path",
             "name": "id",
             "schema": {
-              "type": "string",
-              "format": "uuid"
+              "type": "string"
             },
-            "description": "A UUID string identifying this error tracking suppression rule.",
             "required": true
           },
           {
@@ -110180,7 +110108,7 @@
               "type": "string",
               "format": "date-time"
             },
-            "description": "ISO-8601 exclusive upper bound on `created_at`. Pass to walk back past the result cap on subsequent calls (cursor-style: set to the `started_at` of the oldest run from the prior page)."
+            "description": "ISO-8601 exclusive upper bound on `created_at`. Pass to walk back past the result cap on subsequent calls (cursor-style: set to the `created_at` of the oldest run from the prior page)."
           },
           {
             "in": "query",
@@ -123927,6 +123855,166 @@
         ]
       }
     },
+    "/api/projects/{project_id}/web_analytics_achievements/acknowledge_celebration/": {
+      "post": {
+        "operationId": "web_analytics_achievements_acknowledge_celebration",
+        "description": "Clears a pending celebration for the given track and stage once the client has shown it, so it isn't celebrated again. Idempotent.",
+        "summary": "Acknowledge an achievement celebration",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "web_analytics_achievements"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AcknowledgeCelebrationRequest"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/AcknowledgeCelebrationRequest"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/AcknowledgeCelebrationRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AcknowledgeCelebrationResponse"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "web_analytics"
+        ]
+      }
+    },
+    "/api/projects/{project_id}/web_analytics_achievements/overview/": {
+      "get": {
+        "operationId": "web_analytics_achievements_overview",
+        "description": "Returns the achievement track definitions (thresholds resolved for the requesting user's streak-cadence arm), the user's and team's progress, and any newly unlocked stages awaiting an in-session celebration.",
+        "summary": "Get Web analytics achievements overview",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "web_analytics_achievements"
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AchievementsListResponse"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "web_analytics"
+        ]
+      }
+    },
+    "/api/projects/{project_id}/web_analytics_achievements/record_interaction/": {
+      "post": {
+        "operationId": "web_analytics_achievements_record_interaction",
+        "description": "Idempotently increments the requesting user's first-party counter for an in-product Web analytics interaction (slicing data, or opening a session recording), which drives the Data Hog and Detective Hog achievement tracks.",
+        "summary": "Record a Web analytics interaction",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "web_analytics_achievements"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RecordInteractionRequest"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/RecordInteractionRequest"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/RecordInteractionRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RecordInteractionResponse"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "web_analytics"
+        ]
+      }
+    },
+    "/api/projects/{project_id}/web_analytics_achievements/record_visit/": {
+      "post": {
+        "operationId": "web_analytics_achievements_record_visit",
+        "description": "Idempotently records that the requesting user opened Web analytics today (team-local date) and schedules a debounced achievement recompute. Intended to be called once per session.",
+        "summary": "Record a Web analytics visit",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "web_analytics_achievements"
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RecordVisitResponse"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "web_analytics"
+        ]
+      }
+    },
     "/api/projects/{project_id}/web_experiments/": {
       "get": {
         "operationId": "web_experiments_list",
@@ -127240,6 +127328,181 @@
         ],
         "title": "AccountsQueryResponse",
         "type": "object"
+      },
+      "AchievementDefinition": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string",
+            "description": "Stable track identifier, e.g. 'hog_streak'."
+          },
+          "display_name": {
+            "type": "string",
+            "description": "Human-readable track name."
+          },
+          "description": {
+            "type": "string",
+            "description": "One-line description of what the track rewards."
+          },
+          "scope": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/AchievementDefinitionScopeEnum"
+              }
+            ],
+            "description": "Whether the track is tracked per user or per team.\n\n* `user` - user\n* `team` - team"
+          },
+          "is_experiment_track": {
+            "type": "boolean",
+            "description": "True for the streak track, whose thresholds vary by the streak-cadence experiment arm."
+          },
+          "stages": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AchievementStage"
+            },
+            "description": "The five stages of this track, in ascending threshold order."
+          }
+        },
+        "required": [
+          "description",
+          "display_name",
+          "is_experiment_track",
+          "key",
+          "scope",
+          "stages"
+        ]
+      },
+      "AchievementDefinitionScopeEnum": {
+        "enum": [
+          "user",
+          "team"
+        ],
+        "type": "string",
+        "description": "* `user` - user\n* `team` - team"
+      },
+      "AchievementProgress": {
+        "type": "object",
+        "properties": {
+          "track_key": {
+            "type": "string",
+            "description": "Track this progress row belongs to."
+          },
+          "current_stage": {
+            "type": "integer",
+            "description": "Highest stage unlocked so far, 0-5."
+          },
+          "progress_value": {
+            "type": "integer",
+            "description": "Most recently computed progress value for the track."
+          },
+          "last_computed_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time",
+            "description": "When the track was last recomputed, or null if it never has been."
+          }
+        },
+        "required": [
+          "current_stage",
+          "last_computed_at",
+          "progress_value",
+          "track_key"
+        ]
+      },
+      "AchievementStage": {
+        "type": "object",
+        "properties": {
+          "stage": {
+            "type": "integer",
+            "description": "Stage number within the track, 1-5."
+          },
+          "name": {
+            "type": "string",
+            "description": "Hog-themed stage name, e.g. 'Spike Streak'."
+          },
+          "threshold": {
+            "type": "integer",
+            "description": "Progress value needed to unlock this stage, resolved for the user's streak arm."
+          }
+        },
+        "required": [
+          "name",
+          "stage",
+          "threshold"
+        ]
+      },
+      "AchievementsListResponse": {
+        "type": "object",
+        "properties": {
+          "definitions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AchievementDefinition"
+            },
+            "description": "All Wave-1 track definitions, thresholds resolved for the user's streak arm."
+          },
+          "user_progress": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AchievementProgress"
+            },
+            "description": "The requesting user's progress on per-user tracks."
+          },
+          "team_progress": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AchievementProgress"
+            },
+            "description": "The team's progress on per-team tracks."
+          },
+          "pending_celebrations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PendingCelebration"
+            },
+            "description": "Newly unlocked stages awaiting an in-session celebration; acknowledge each to clear it."
+          }
+        },
+        "required": [
+          "definitions",
+          "pending_celebrations",
+          "team_progress",
+          "user_progress"
+        ]
+      },
+      "AcknowledgeCelebrationRequest": {
+        "type": "object",
+        "properties": {
+          "track_key": {
+            "type": "string",
+            "description": "Track of the celebration being acknowledged."
+          },
+          "stage": {
+            "type": "integer",
+            "maximum": 5,
+            "minimum": 1,
+            "description": "Stage number being acknowledged, 1-5."
+          }
+        },
+        "required": [
+          "stage",
+          "track_key"
+        ]
+      },
+      "AcknowledgeCelebrationResponse": {
+        "type": "object",
+        "properties": {
+          "acknowledged": {
+            "type": "boolean",
+            "description": "True if a matching pending celebration was cleared (idempotent)."
+          }
+        },
+        "required": [
+          "acknowledged"
+        ]
       },
       "Action": {
         "type": "object",
@@ -132940,10 +133203,14 @@
           "configure_endpoint",
           "test_endpoint",
           "create_early_access_feature",
-          "update_feature_stage"
+          "update_feature_stage",
+          "use_posthog_ai",
+          "use_posthog_code",
+          "use_posthog_mcp",
+          "use_posthog_in_slack"
         ],
         "type": "string",
-        "description": "* `ingest_first_event` - ingest_first_event\n* `set_up_reverse_proxy` - set_up_reverse_proxy\n* `create_first_insight` - create_first_insight\n* `create_first_dashboard` - create_first_dashboard\n* `track_custom_events` - track_custom_events\n* `define_actions` - define_actions\n* `set_up_cohorts` - set_up_cohorts\n* `explore_trends_insight` - explore_trends_insight\n* `create_funnel` - create_funnel\n* `explore_retention_insight` - explore_retention_insight\n* `explore_paths_insight` - explore_paths_insight\n* `explore_stickiness_insight` - explore_stickiness_insight\n* `explore_lifecycle_insight` - explore_lifecycle_insight\n* `add_authorized_domain` - add_authorized_domain\n* `set_up_web_vitals` - set_up_web_vitals\n* `review_web_analytics_dashboard` - review_web_analytics_dashboard\n* `filter_web_analytics` - filter_web_analytics\n* `set_up_web_analytics_conversion_goals` - set_up_web_analytics_conversion_goals\n* `visit_web_vitals_dashboard` - visit_web_vitals_dashboard\n* `setup_session_recordings` - setup_session_recordings\n* `watch_session_recording` - watch_session_recording\n* `configure_recording_settings` - configure_recording_settings\n* `create_recording_playlist` - create_recording_playlist\n* `enable_console_logs` - enable_console_logs\n* `create_feature_flag` - create_feature_flag\n* `implement_flag_in_code` - implement_flag_in_code\n* `update_feature_flag_release_conditions` - update_feature_flag_release_conditions\n* `create_multivariate_flag` - create_multivariate_flag\n* `set_up_flag_payloads` - set_up_flag_payloads\n* `set_up_flag_evaluation_runtimes` - set_up_flag_evaluation_runtimes\n* `create_experiment` - create_experiment\n* `implement_experiment_variants` - implement_experiment_variants\n* `launch_experiment` - launch_experiment\n* `review_experiment_results` - review_experiment_results\n* `create_survey` - create_survey\n* `launch_survey` - launch_survey\n* `collect_survey_responses` - collect_survey_responses\n* `connect_source` - connect_source\n* `run_first_query` - run_first_query\n* `join_external_data` - join_external_data\n* `create_saved_view` - create_saved_view\n* `enable_error_tracking` - enable_error_tracking\n* `upload_source_maps` - upload_source_maps\n* `view_first_error` - view_first_error\n* `resolve_first_error` - resolve_first_error\n* `ingest_first_llm_event` - ingest_first_llm_event\n* `view_first_trace` - view_first_trace\n* `track_costs` - track_costs\n* `set_up_llm_evaluation` - set_up_llm_evaluation\n* `run_ai_playground` - run_ai_playground\n* `enable_revenue_analytics_viewset` - enable_revenue_analytics_viewset\n* `connect_revenue_source` - connect_revenue_source\n* `set_up_revenue_goal` - set_up_revenue_goal\n* `enable_log_capture` - enable_log_capture\n* `view_first_logs` - view_first_logs\n* `create_first_workflow` - create_first_workflow\n* `set_up_first_workflow_channel` - set_up_first_workflow_channel\n* `configure_workflow_trigger` - configure_workflow_trigger\n* `add_workflow_action` - add_workflow_action\n* `launch_workflow` - launch_workflow\n* `create_first_endpoint` - create_first_endpoint\n* `configure_endpoint` - configure_endpoint\n* `test_endpoint` - test_endpoint\n* `create_early_access_feature` - create_early_access_feature\n* `update_feature_stage` - update_feature_stage"
+        "description": "* `ingest_first_event` - ingest_first_event\n* `set_up_reverse_proxy` - set_up_reverse_proxy\n* `create_first_insight` - create_first_insight\n* `create_first_dashboard` - create_first_dashboard\n* `track_custom_events` - track_custom_events\n* `define_actions` - define_actions\n* `set_up_cohorts` - set_up_cohorts\n* `explore_trends_insight` - explore_trends_insight\n* `create_funnel` - create_funnel\n* `explore_retention_insight` - explore_retention_insight\n* `explore_paths_insight` - explore_paths_insight\n* `explore_stickiness_insight` - explore_stickiness_insight\n* `explore_lifecycle_insight` - explore_lifecycle_insight\n* `add_authorized_domain` - add_authorized_domain\n* `set_up_web_vitals` - set_up_web_vitals\n* `review_web_analytics_dashboard` - review_web_analytics_dashboard\n* `filter_web_analytics` - filter_web_analytics\n* `set_up_web_analytics_conversion_goals` - set_up_web_analytics_conversion_goals\n* `visit_web_vitals_dashboard` - visit_web_vitals_dashboard\n* `setup_session_recordings` - setup_session_recordings\n* `watch_session_recording` - watch_session_recording\n* `configure_recording_settings` - configure_recording_settings\n* `create_recording_playlist` - create_recording_playlist\n* `enable_console_logs` - enable_console_logs\n* `create_feature_flag` - create_feature_flag\n* `implement_flag_in_code` - implement_flag_in_code\n* `update_feature_flag_release_conditions` - update_feature_flag_release_conditions\n* `create_multivariate_flag` - create_multivariate_flag\n* `set_up_flag_payloads` - set_up_flag_payloads\n* `set_up_flag_evaluation_runtimes` - set_up_flag_evaluation_runtimes\n* `create_experiment` - create_experiment\n* `implement_experiment_variants` - implement_experiment_variants\n* `launch_experiment` - launch_experiment\n* `review_experiment_results` - review_experiment_results\n* `create_survey` - create_survey\n* `launch_survey` - launch_survey\n* `collect_survey_responses` - collect_survey_responses\n* `connect_source` - connect_source\n* `run_first_query` - run_first_query\n* `join_external_data` - join_external_data\n* `create_saved_view` - create_saved_view\n* `enable_error_tracking` - enable_error_tracking\n* `upload_source_maps` - upload_source_maps\n* `view_first_error` - view_first_error\n* `resolve_first_error` - resolve_first_error\n* `ingest_first_llm_event` - ingest_first_llm_event\n* `view_first_trace` - view_first_trace\n* `track_costs` - track_costs\n* `set_up_llm_evaluation` - set_up_llm_evaluation\n* `run_ai_playground` - run_ai_playground\n* `enable_revenue_analytics_viewset` - enable_revenue_analytics_viewset\n* `connect_revenue_source` - connect_revenue_source\n* `set_up_revenue_goal` - set_up_revenue_goal\n* `enable_log_capture` - enable_log_capture\n* `view_first_logs` - view_first_logs\n* `create_first_workflow` - create_first_workflow\n* `set_up_first_workflow_channel` - set_up_first_workflow_channel\n* `configure_workflow_trigger` - configure_workflow_trigger\n* `add_workflow_action` - add_workflow_action\n* `launch_workflow` - launch_workflow\n* `create_first_endpoint` - create_first_endpoint\n* `configure_endpoint` - configure_endpoint\n* `test_endpoint` - test_endpoint\n* `create_early_access_feature` - create_early_access_feature\n* `update_feature_stage` - update_feature_stage\n* `use_posthog_ai` - use_posthog_ai\n* `use_posthog_code` - use_posthog_code\n* `use_posthog_mcp` - use_posthog_mcp\n* `use_posthog_in_slack` - use_posthog_in_slack"
       },
       "AzureBlobDestinationConfig": {
         "type": "object",
@@ -136660,6 +136927,7 @@
           "ActionsAreaGraph",
           "ActionsLineGraphCumulative",
           "BoldNumber",
+          "Metric",
           "ActionsPie",
           "ActionsBarValue",
           "ActionsTable",
@@ -141181,6 +141449,14 @@
             "format": "date-time",
             "readOnly": true
           },
+          "folder": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "readOnly": true,
+            "description": "Path of the project-tree folder this dashboard is filed under in the file system, e.g. 'Unfiled/Dashboards'. An empty string means the project root; null means the dashboard has no file system entry. The dashboard's own name is not part of the path."
+          },
           "is_shared": {
             "type": "boolean",
             "readOnly": true
@@ -141335,6 +141611,7 @@
           "effective_privilege_level",
           "effective_restriction_level",
           "filters",
+          "folder",
           "id",
           "is_shared",
           "last_viewed_at",
@@ -141400,6 +141677,14 @@
             ],
             "format": "date-time",
             "readOnly": true
+          },
+          "folder": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "readOnly": true,
+            "description": "Path of the project-tree folder this dashboard is filed under in the file system, e.g. 'Unfiled/Dashboards'. An empty string means the project root; null means the dashboard has no file system entry. The dashboard's own name is not part of the path."
           },
           "is_shared": {
             "type": "boolean",
@@ -141492,6 +141777,7 @@
           "description",
           "effective_privilege_level",
           "effective_restriction_level",
+          "folder",
           "id",
           "is_shared",
           "last_accessed_at",
@@ -149504,9 +149790,7 @@
             "readOnly": true
           },
           "order_key": {
-            "type": "integer",
-            "maximum": 2147483647,
-            "minimum": -2147483648
+            "type": "integer"
           },
           "disabled_data": {},
           "created_at": {
@@ -149523,6 +149807,7 @@
         "required": [
           "assignee",
           "created_at",
+          "disabled_data",
           "filters",
           "id",
           "order_key",
@@ -150193,9 +150478,7 @@
             "readOnly": true
           },
           "order_key": {
-            "type": "integer",
-            "maximum": 2147483647,
-            "minimum": -2147483648
+            "type": "integer"
           },
           "disabled_data": {},
           "created_at": {
@@ -150212,6 +150495,8 @@
         "required": [
           "assignee",
           "created_at",
+          "description",
+          "disabled_data",
           "filters",
           "id",
           "issue",
@@ -152471,22 +152756,25 @@
         "properties": {
           "id": {
             "type": "string",
-            "format": "uuid",
-            "readOnly": true
+            "format": "uuid"
           },
           "hash_id": {
             "type": "string"
           },
           "team_id": {
-            "type": "integer",
-            "readOnly": true
+            "type": "integer"
           },
           "created_at": {
             "type": "string",
-            "format": "date-time",
-            "readOnly": true
+            "format": "date-time"
           },
-          "metadata": {},
+          "metadata": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "additionalProperties": true
+          },
           "version": {
             "type": "string"
           },
@@ -152498,10 +152786,79 @@
           "created_at",
           "hash_id",
           "id",
+          "metadata",
           "project",
           "team_id",
           "version"
         ]
+      },
+      "ErrorTrackingReleaseCreateRequest": {
+        "type": "object",
+        "properties": {
+          "version": {
+            "type": "string",
+            "description": "Human-readable release version, e.g. a semver string or build number."
+          },
+          "project": {
+            "type": "string",
+            "description": "Identifier of the project this release belongs to."
+          },
+          "hash_id": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Optional client-supplied release hash (e.g. a git commit SHA). Generated server-side when omitted.",
+            "maxLength": 128
+          },
+          "metadata": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "additionalProperties": true,
+            "description": "Optional free-form metadata object stored alongside the release."
+          }
+        },
+        "required": [
+          "project",
+          "version"
+        ]
+      },
+      "ErrorTrackingReleaseUpdateRequest": {
+        "type": "object",
+        "properties": {
+          "version": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Human-readable release version. Omit to preserve the current value."
+          },
+          "project": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Project identifier. Omit to preserve the current value."
+          },
+          "hash_id": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Release hash (e.g. a git commit SHA). Omit to preserve the current value.",
+            "maxLength": 128
+          },
+          "metadata": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "additionalProperties": true,
+            "description": "Free-form metadata object. Omit to preserve the current value."
+          }
+        }
       },
       "ErrorTrackingSettings": {
         "type": "object",
@@ -152866,30 +153223,21 @@
         "properties": {
           "id": {
             "type": "string",
-            "format": "uuid",
-            "readOnly": true
+            "format": "uuid"
           },
           "issue": {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/ErrorTrackingSpikeEventIssue"
-              }
-            ],
-            "readOnly": true
+            "$ref": "#/components/schemas/ErrorTrackingSpikeEventIssue"
           },
           "detected_at": {
             "type": "string",
-            "format": "date-time",
-            "readOnly": true
+            "format": "date-time"
           },
           "computed_baseline": {
             "type": "number",
-            "format": "double",
-            "readOnly": true
+            "format": "double"
           },
           "current_bucket_value": {
-            "type": "integer",
-            "readOnly": true
+            "type": "integer"
           }
         },
         "required": [
@@ -152905,22 +153253,19 @@
         "properties": {
           "id": {
             "type": "string",
-            "format": "uuid",
-            "readOnly": true
+            "format": "uuid"
           },
           "name": {
             "type": [
               "string",
               "null"
-            ],
-            "readOnly": true
+            ]
           },
           "description": {
             "type": [
               "string",
               "null"
-            ],
-            "readOnly": true
+            ]
           }
         },
         "required": [
@@ -152934,43 +153279,92 @@
         "properties": {
           "id": {
             "type": "string",
-            "format": "uuid",
-            "readOnly": true
+            "format": "uuid"
           },
           "raw_id": {
-            "type": "string",
-            "description": "Raw frame ID in 'hash/part' format",
-            "readOnly": true
+            "type": "string"
           },
           "created_at": {
             "type": "string",
-            "format": "date-time",
-            "readOnly": true
+            "format": "date-time"
           },
-          "contents": {},
+          "contents": {
+            "type": "object",
+            "additionalProperties": true
+          },
           "resolved": {
             "type": "boolean"
           },
-          "context": {},
+          "context": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "additionalProperties": true
+          },
           "symbol_set_ref": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "release": {
-            "allOf": [
+            "oneOf": [
               {
                 "$ref": "#/components/schemas/ErrorTrackingRelease"
+              },
+              {
+                "type": "null"
               }
-            ],
-            "readOnly": true
+            ]
           }
         },
         "required": [
           "contents",
+          "context",
           "created_at",
           "id",
           "raw_id",
           "release",
-          "resolved"
+          "resolved",
+          "symbol_set_ref"
+        ]
+      },
+      "ErrorTrackingStackFrameBatchGetRequest": {
+        "type": "object",
+        "properties": {
+          "raw_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Raw frame IDs in 'hash/part' format to resolve in a single request."
+          },
+          "symbol_set": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Optional symbol set reference to scope the lookup to a single symbol set."
+          }
+        },
+        "required": [
+          "raw_ids"
+        ]
+      },
+      "ErrorTrackingStackFrameBatchGetResponse": {
+        "type": "object",
+        "properties": {
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ErrorTrackingStackFrame"
+            },
+            "description": "Resolved stack frames for the requested raw IDs."
+          }
+        },
+        "required": [
+          "results"
         ]
       },
       "ErrorTrackingSuppressionRule": {
@@ -152983,9 +153377,7 @@
           },
           "filters": {},
           "order_key": {
-            "type": "integer",
-            "maximum": 2147483647,
-            "minimum": -2147483648
+            "type": "integer"
           },
           "disabled_data": {},
           "sampling_rate": {
@@ -153005,9 +153397,11 @@
         },
         "required": [
           "created_at",
+          "disabled_data",
           "filters",
           "id",
           "order_key",
+          "sampling_rate",
           "updated_at"
         ]
       },
@@ -153362,7 +153756,7 @@
                 "$ref": "#/components/schemas/EvaluationTypeEnum"
               }
             ],
-            "description": "'llm_judge' uses an LLM to score outputs against a prompt; 'hog' runs deterministic Hog code.\n\n* `llm_judge` - LLM as a judge\n* `hog` - Hog"
+            "description": "'llm_judge' uses an LLM to score outputs against a prompt; 'hog' runs deterministic Hog code; 'sentiment' classifies user-message sentiment.\n\n* `llm_judge` - LLM as a judge\n* `hog` - Hog\n* `sentiment` - Sentiment analysis"
           },
           "evaluation_config": {
             "oneOf": [
@@ -153395,9 +153789,24 @@
                   }
                 },
                 "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "title": "Sentiment config",
+                "properties": {
+                  "source": {
+                    "type": "string",
+                    "enum": [
+                      "user_messages"
+                    ],
+                    "description": "Classify sentiment from user messages in the generation input.",
+                    "default": "user_messages"
+                  }
+                },
+                "additionalProperties": false
               }
             ],
-            "description": "Configuration dict. For 'llm_judge': {prompt}. For 'hog': {source}."
+            "description": "Configuration dict. For 'llm_judge': {prompt}; for 'hog': {source}; for 'sentiment': {source: 'user_messages'}."
           },
           "output_type": {
             "allOf": [
@@ -153405,7 +153814,7 @@
                 "$ref": "#/components/schemas/OutputTypeEnum"
               }
             ],
-            "description": "Output format. Currently only 'boolean' is supported.\n\n* `boolean` - Boolean (Pass/Fail)"
+            "description": "Output format. Use 'boolean' for pass/fail evaluations and 'sentiment' for sentiment analysis.\n\n* `boolean` - Boolean (Pass/Fail)\n* `sentiment` - Sentiment"
           },
           "output_config": {
             "type": "object",
@@ -153980,10 +154389,11 @@
       "EvaluationTypeEnum": {
         "enum": [
           "llm_judge",
-          "hog"
+          "hog",
+          "sentiment"
         ],
         "type": "string",
-        "description": "* `llm_judge` - LLM as a judge\n* `hog` - Hog"
+        "description": "* `llm_judge` - LLM as a judge\n* `hog` - Hog\n* `sentiment` - Sentiment analysis"
       },
       "EventDefinition": {
         "additionalProperties": false,
@@ -157150,6 +157560,19 @@
             ],
             "default": null
           },
+          "threshold": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "For mean metrics: when set, reports the percentage of users whose per-user summed/counted value reaches or exceeds this threshold. Only meaningful for sum/count math types.",
+            "title": "Threshold"
+          },
           "upper_bound_percentile": {
             "anyOf": [
               {
@@ -158739,6 +159162,19 @@
             ],
             "title": "Source"
           },
+          "threshold": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "When set, reports the percentage of users whose per-user summed/counted value reaches or exceeds this threshold. Only meaningful for sum/count math types.",
+            "title": "Threshold"
+          },
           "upper_bound_percentile": {
             "anyOf": [
               {
@@ -158923,11 +159359,11 @@
           "trigger": {
             "allOf": [
               {
-                "$ref": "#/components/schemas/ExperimentMetricsRecalculationTriggerEnum"
+                "$ref": "#/components/schemas/TriggerEnum"
               }
             ],
             "readOnly": true,
-            "description": "What triggered this recalculation\n\n* `manual` - Manual\n* `experiment_launch` - Experiment Launch\n* `experiment_stop` - Experiment Stop\n* `experiment_update` - Experiment Update"
+            "description": "What triggered this recalculation\n\n* `manual` - Manual\n* `cold_run` - Cold Run\n* `stale_refresh` - Stale Refresh\n* `auto_refresh` - Auto Refresh\n* `config_change` - Config Change\n* `experiment_launch` - Experiment Launch\n* `experiment_stop` - Experiment Stop\n* `experiment_update` - Experiment Update"
           },
           "created_at": {
             "type": "string",
@@ -158953,6 +159389,15 @@
             "readOnly": true,
             "description": "When processing completed"
           },
+          "query_to": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time",
+            "readOnly": true,
+            "description": "Upper time bound the metrics in this run were calculated against (the data freshness cutoff). Shared by every metric in the run; null until processing starts"
+          },
           "is_existing": {
             "type": "boolean",
             "readOnly": true,
@@ -158976,6 +159421,7 @@
           "id",
           "is_existing",
           "metric_errors",
+          "query_to",
           "results",
           "started_at",
           "status",
@@ -158992,16 +159438,6 @@
         ],
         "type": "string",
         "description": "* `pending` - Pending\n* `in_progress` - In Progress\n* `completed` - Completed\n* `failed` - Failed"
-      },
-      "ExperimentMetricsRecalculationTriggerEnum": {
-        "enum": [
-          "manual",
-          "experiment_launch",
-          "experiment_stop",
-          "experiment_update"
-        ],
-        "type": "string",
-        "description": "* `manual` - Manual\n* `experiment_launch` - Experiment Launch\n* `experiment_stop` - Experiment Stop\n* `experiment_update` - Experiment Update"
       },
       "ExperimentParameters": {
         "additionalProperties": false,
@@ -161322,7 +161758,7 @@
             "readOnly": true
           },
           "sync_type": {
-            "description": "Sync strategy: incremental, full_refresh, append, or cdc.\n\n* `full_refresh` - full_refresh\n* `incremental` - incremental\n* `append` - append\n* `webhook` - webhook\n* `cdc` - cdc",
+            "description": "Sync strategy: incremental, full_refresh, append, or cdc.\n\n* `full_refresh` - full_refresh\n* `incremental` - incremental\n* `append` - append\n* `webhook` - webhook\n* `cdc` - cdc\n* `xmin` - xmin",
             "oneOf": [
               {
                 "$ref": "#/components/schemas/SyncTypeEnum"
@@ -161340,7 +161776,7 @@
             "description": "Column name used to track sync progress."
           },
           "incremental_field_type": {
-            "description": "Data type of the incremental field.\n\n* `integer` - integer\n* `numeric` - numeric\n* `datetime` - datetime\n* `date` - date\n* `timestamp` - timestamp\n* `objectid` - objectid",
+            "description": "Data type of the incremental field.\n\n* `integer` - integer\n* `numeric` - numeric\n* `datetime` - datetime\n* `date` - date\n* `timestamp` - timestamp\n* `objectid` - objectid\n* `xid` - xid",
             "oneOf": [
               {
                 "$ref": "#/components/schemas/IncrementalFieldTypeEnum"
@@ -161509,7 +161945,7 @@
             "description": "Whether the schema should be queryable/synced."
           },
           "sync_type": {
-            "description": "Requested sync mode for the schema.\n\n* `full_refresh` - full_refresh\n* `incremental` - incremental\n* `append` - append\n* `webhook` - webhook\n* `cdc` - cdc",
+            "description": "Requested sync mode for the schema.\n\n* `full_refresh` - full_refresh\n* `incremental` - incremental\n* `append` - append\n* `webhook` - webhook\n* `cdc` - cdc\n* `xmin` - xmin",
             "oneOf": [
               {
                 "$ref": "#/components/schemas/SyncTypeEnum"
@@ -173464,10 +173900,11 @@
           "datetime",
           "date",
           "timestamp",
-          "objectid"
+          "objectid",
+          "xid"
         ],
         "type": "string",
-        "description": "* `integer` - integer\n* `numeric` - numeric\n* `datetime` - datetime\n* `date` - date\n* `timestamp` - timestamp\n* `objectid` - objectid"
+        "description": "* `integer` - integer\n* `numeric` - numeric\n* `datetime` - datetime\n* `date` - date\n* `timestamp` - timestamp\n* `objectid` - objectid\n* `xid` - xid"
       },
       "InlineCohortCalculation": {
         "enum": [
@@ -175071,6 +175508,14 @@
         ],
         "type": "string",
         "description": "* `anthropic` - Anthropic\n* `apns` - Apple Push\n* `azure-blob` - Azure Blob\n* `bing-ads` - Bing Ads\n* `clickup` - Clickup\n* `customerio-app` - Customerio App\n* `customerio-track` - Customerio Track\n* `customerio-webhook` - Customerio Webhook\n* `databricks` - Databricks\n* `email` - Email\n* `firebase` - Firebase\n* `github` - Github\n* `gitlab` - Gitlab\n* `google-ads` - Google Ads\n* `google-analytics` - Google Analytics\n* `google-cloud-service-account` - Google Cloud Service Account\n* `google-cloud-storage` - Google Cloud Storage\n* `google-pubsub` - Google Pubsub\n* `google-search-console` - Google Search Console\n* `google-sheets` - Google Sheets\n* `hubspot` - Hubspot\n* `intercom` - Intercom\n* `jira` - Jira\n* `linear` - Linear\n* `linkedin-ads` - Linkedin Ads\n* `meta-ads` - Meta Ads\n* `pinterest-ads` - Pinterest Ads\n* `postgresql` - Postgresql\n* `reddit-ads` - Reddit Ads\n* `salesforce` - Salesforce\n* `slack` - Slack\n* `slack-posthog-code` - Slack Posthog Code\n* `snapchat` - Snapchat\n* `stripe` - Stripe\n* `tiktok-ads` - Tiktok Ads\n* `twilio` - Twilio\n* `vercel` - Vercel"
+      },
+      "InteractionKindEnum": {
+        "enum": [
+          "data",
+          "recording"
+        ],
+        "type": "string",
+        "description": "* `data` - data\n* `recording` - recording"
       },
       "InterestingNote": {
         "type": "object",
@@ -185593,10 +186038,11 @@
       },
       "OutputTypeEnum": {
         "enum": [
-          "boolean"
+          "boolean",
+          "sentiment"
         ],
         "type": "string",
-        "description": "* `boolean` - Boolean (Pass/Fail)"
+        "description": "* `boolean` - Boolean (Pass/Fail)\n* `sentiment` - Sentiment"
       },
       "OverallHealthEnum": {
         "enum": [
@@ -194673,9 +195119,7 @@
             "readOnly": true
           },
           "order_key": {
-            "type": "integer",
-            "maximum": 2147483647,
-            "minimum": -2147483648
+            "type": "integer"
           },
           "disabled_data": {},
           "created_at": {
@@ -194771,9 +195215,7 @@
             "readOnly": true
           },
           "order_key": {
-            "type": "integer",
-            "maximum": 2147483647,
-            "minimum": -2147483648
+            "type": "integer"
           },
           "disabled_data": {},
           "created_at": {
@@ -194884,32 +195326,38 @@
           }
         }
       },
-      "PatchedErrorTrackingRelease": {
+      "PatchedErrorTrackingReleaseUpdateRequest": {
         "type": "object",
         "properties": {
-          "id": {
-            "type": "string",
-            "format": "uuid",
-            "readOnly": true
-          },
-          "hash_id": {
-            "type": "string"
-          },
-          "team_id": {
-            "type": "integer",
-            "readOnly": true
-          },
-          "created_at": {
-            "type": "string",
-            "format": "date-time",
-            "readOnly": true
-          },
-          "metadata": {},
           "version": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Human-readable release version. Omit to preserve the current value."
           },
           "project": {
-            "type": "string"
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Project identifier. Omit to preserve the current value."
+          },
+          "hash_id": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Release hash (e.g. a git commit SHA). Omit to preserve the current value.",
+            "maxLength": 128
+          },
+          "metadata": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "additionalProperties": true,
+            "description": "Free-form metadata object. Omit to preserve the current value."
           }
         }
       },
@@ -194980,9 +195428,7 @@
           },
           "filters": {},
           "order_key": {
-            "type": "integer",
-            "maximum": 2147483647,
-            "minimum": -2147483648
+            "type": "integer"
           },
           "disabled_data": {},
           "sampling_rate": {
@@ -195067,7 +195513,7 @@
                 "$ref": "#/components/schemas/EvaluationTypeEnum"
               }
             ],
-            "description": "'llm_judge' uses an LLM to score outputs against a prompt; 'hog' runs deterministic Hog code.\n\n* `llm_judge` - LLM as a judge\n* `hog` - Hog"
+            "description": "'llm_judge' uses an LLM to score outputs against a prompt; 'hog' runs deterministic Hog code; 'sentiment' classifies user-message sentiment.\n\n* `llm_judge` - LLM as a judge\n* `hog` - Hog\n* `sentiment` - Sentiment analysis"
           },
           "evaluation_config": {
             "oneOf": [
@@ -195100,9 +195546,24 @@
                   }
                 },
                 "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "title": "Sentiment config",
+                "properties": {
+                  "source": {
+                    "type": "string",
+                    "enum": [
+                      "user_messages"
+                    ],
+                    "description": "Classify sentiment from user messages in the generation input.",
+                    "default": "user_messages"
+                  }
+                },
+                "additionalProperties": false
               }
             ],
-            "description": "Configuration dict. For 'llm_judge': {prompt}. For 'hog': {source}."
+            "description": "Configuration dict. For 'llm_judge': {prompt}; for 'hog': {source}; for 'sentiment': {source: 'user_messages'}."
           },
           "output_type": {
             "allOf": [
@@ -195110,7 +195571,7 @@
                 "$ref": "#/components/schemas/OutputTypeEnum"
               }
             ],
-            "description": "Output format. Currently only 'boolean' is supported.\n\n* `boolean` - Boolean (Pass/Fail)"
+            "description": "Output format. Use 'boolean' for pass/fail evaluations and 'sentiment' for sentiment analysis.\n\n* `boolean` - Boolean (Pass/Fail)\n* `sentiment` - Sentiment"
           },
           "output_config": {
             "type": "object",
@@ -195707,7 +196168,7 @@
             "readOnly": true
           },
           "sync_type": {
-            "description": "Sync strategy: incremental, full_refresh, append, or cdc.\n\n* `full_refresh` - full_refresh\n* `incremental` - incremental\n* `append` - append\n* `webhook` - webhook\n* `cdc` - cdc",
+            "description": "Sync strategy: incremental, full_refresh, append, or cdc.\n\n* `full_refresh` - full_refresh\n* `incremental` - incremental\n* `append` - append\n* `webhook` - webhook\n* `cdc` - cdc\n* `xmin` - xmin",
             "oneOf": [
               {
                 "$ref": "#/components/schemas/SyncTypeEnum"
@@ -195725,7 +196186,7 @@
             "description": "Column name used to track sync progress."
           },
           "incremental_field_type": {
-            "description": "Data type of the incremental field.\n\n* `integer` - integer\n* `numeric` - numeric\n* `datetime` - datetime\n* `date` - date\n* `timestamp` - timestamp\n* `objectid` - objectid",
+            "description": "Data type of the incremental field.\n\n* `integer` - integer\n* `numeric` - numeric\n* `datetime` - datetime\n* `date` - date\n* `timestamp` - timestamp\n* `objectid` - objectid\n* `xid` - xid",
             "oneOf": [
               {
                 "$ref": "#/components/schemas/IncrementalFieldTypeEnum"
@@ -203228,6 +203689,28 @@
           "timestamp"
         ]
       },
+      "PendingCelebration": {
+        "type": "object",
+        "properties": {
+          "track_key": {
+            "type": "string",
+            "description": "Track whose stage was newly unlocked."
+          },
+          "stage": {
+            "type": "integer",
+            "description": "Newly unlocked stage number, 1-5."
+          },
+          "stage_name": {
+            "type": "string",
+            "description": "Name of the unlocked stage, shown in the celebration UI."
+          }
+        },
+        "required": [
+          "stage",
+          "stage_name",
+          "track_key"
+        ]
+      },
       "PendingInvite": {
         "type": "object",
         "description": "Shape of each item in UserSerializer.pending_invites.",
@@ -206879,6 +207362,22 @@
               "type": "string"
             },
             "description": "GitHub label names on the pull request."
+          },
+          "pushes": {
+            "type": "integer",
+            "description": "CI triggers attributed to this PR: distinct head SHAs across its workflow runs. Fork-PR runs are unattributed."
+          },
+          "rerun_cycles": {
+            "type": "integer",
+            "description": "Workflow runs attributed to this PR that were a 2nd+ attempt (a re-run)."
+          },
+          "estimated_cost_usd": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "format": "double",
+            "description": "Estimated Depot CI cost in USD. Null until the job-level warehouse source (github_workflow_jobs) lands; run-level data carries no runner tier, so no honest figure exists yet."
           }
         },
         "required": [
@@ -206890,7 +207389,9 @@
           "merged_at",
           "number",
           "open_to_merge_seconds",
+          "pushes",
           "repo",
+          "rerun_cycles",
           "state",
           "title"
         ]
@@ -222234,23 +222735,13 @@
           "trigger": {
             "allOf": [
               {
-                "$ref": "#/components/schemas/RecalculateMetricsRequestTriggerEnum"
+                "$ref": "#/components/schemas/TriggerEnum"
               }
             ],
             "default": "manual",
-            "description": "What triggered this recalculation (manual is the default for user-initiated runs)\n\n* `manual` - manual\n* `experiment_launch` - experiment_launch\n* `experiment_stop` - experiment_stop\n* `experiment_update` - experiment_update"
+            "description": "What triggered this recalculation (manual is the default for user-initiated runs)\n\n* `manual` - Manual\n* `cold_run` - Cold Run\n* `stale_refresh` - Stale Refresh\n* `auto_refresh` - Auto Refresh\n* `config_change` - Config Change\n* `experiment_launch` - Experiment Launch\n* `experiment_stop` - Experiment Stop\n* `experiment_update` - Experiment Update"
           }
         }
-      },
-      "RecalculateMetricsRequestTriggerEnum": {
-        "enum": [
-          "manual",
-          "experiment_launch",
-          "experiment_stop",
-          "experiment_update"
-        ],
-        "type": "string",
-        "description": "* `manual` - manual\n* `experiment_launch` - experiment_launch\n* `experiment_stop` - experiment_stop\n* `experiment_update` - experiment_update"
       },
       "RecentActionEntry": {
         "type": "object",
@@ -222923,6 +223414,46 @@
           "counts_changed",
           "run",
           "unresolved"
+        ]
+      },
+      "RecordInteractionRequest": {
+        "type": "object",
+        "properties": {
+          "interaction_kind": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/InteractionKindEnum"
+              }
+            ],
+            "description": "Which interaction counter to increment: 'data' (slicing/filtering the dashboard) or 'recording' (opening a session recording).\n\n* `data` - data\n* `recording` - recording"
+          }
+        },
+        "required": [
+          "interaction_kind"
+        ]
+      },
+      "RecordInteractionResponse": {
+        "type": "object",
+        "properties": {
+          "recorded": {
+            "type": "boolean",
+            "description": "True once the interaction has been counted for the user."
+          }
+        },
+        "required": [
+          "recorded"
+        ]
+      },
+      "RecordVisitResponse": {
+        "type": "object",
+        "properties": {
+          "recorded": {
+            "type": "boolean",
+            "description": "True once today's visit row exists for the user."
+          }
+        },
+        "required": [
+          "recorded"
         ]
       },
       "RecordingOrder": {
@@ -237422,6 +237953,10 @@
             "type": "string",
             "description": "Status from the linked TaskRun: not_started | queued | in_progress | completed | failed | cancelled."
           },
+          "created_at": {
+            "type": "string",
+            "description": "ISO-8601 timestamp the bridge row was created — the field `date_from` / `date_to` filter and order on. Use this (not `started_at`) as the `date_to` cursor when walking past the 100-row cap, so runs created in the gap between a boundary run's TaskRun and its bridge row aren't skipped."
+          },
           "started_at": {
             "type": "string",
             "description": "ISO-8601 timestamp the TaskRun was created."
@@ -237486,6 +238021,7 @@
         },
         "required": [
           "completed_at",
+          "created_at",
           "emitted_count",
           "emitted_finding_ids",
           "run_id",
@@ -237516,6 +238052,10 @@
             "type": "string",
             "description": "Status from the linked TaskRun: not_started | queued | in_progress | completed | failed | cancelled."
           },
+          "created_at": {
+            "type": "string",
+            "description": "ISO-8601 timestamp the bridge row was created — the field `date_from` / `date_to` filter and order on. Use this (not `started_at`) as the `date_to` cursor when walking past the 100-row cap, so runs created in the gap between a boundary run's TaskRun and its bridge row aren't skipped."
+          },
           "started_at": {
             "type": "string",
             "description": "ISO-8601 timestamp the TaskRun was created."
@@ -237580,6 +238120,7 @@
         },
         "required": [
           "completed_at",
+          "created_at",
           "emitted_count",
           "emitted_finding_ids",
           "run_id",
@@ -242348,10 +242889,11 @@
           "incremental",
           "append",
           "webhook",
-          "cdc"
+          "cdc",
+          "xmin"
         ],
         "type": "string",
-        "description": "* `full_refresh` - full_refresh\n* `incremental` - incremental\n* `append` - append\n* `webhook` - webhook\n* `cdc` - cdc"
+        "description": "* `full_refresh` - full_refresh\n* `incremental` - incremental\n* `append` - append\n* `webhook` - webhook\n* `cdc` - cdc\n* `xmin` - xmin"
       },
       "Table": {
         "type": "object",
@@ -250191,6 +250733,84 @@
             "default": false,
             "title": "Hideweekends"
           },
+          "metricChangeDecreaseColor": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Metric display: change pill color when the metric decreased. Defaults to red.",
+            "title": "Metricchangedecreasecolor"
+          },
+          "metricChangeIncreaseColor": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Metric display: change pill color when the metric increased. Defaults to green.",
+            "title": "Metricchangeincreasecolor"
+          },
+          "metricColorByDirection": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": false,
+            "description": "Metric display: color the sparkline by whether the metric increased or decreased.",
+            "title": "Metriccolorbydirection"
+          },
+          "metricLineDecreaseColor": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Metric display: line color when the metric decreased. Defaults to red.",
+            "title": "Metriclinedecreasecolor"
+          },
+          "metricLineIncreaseColor": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Metric display: line color when the metric increased. Defaults to green.",
+            "title": "Metriclineincreasecolor"
+          },
+          "metricShowChange": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": true,
+            "description": "Show the period-over-period change pill on the Metric display.",
+            "title": "Metricshowchange"
+          },
           "minDecimalPlaces": {
             "anyOf": [
               {
@@ -250939,6 +251559,20 @@
           "job_type",
           "payload"
         ]
+      },
+      "TriggerEnum": {
+        "enum": [
+          "manual",
+          "cold_run",
+          "stale_refresh",
+          "auto_refresh",
+          "config_change",
+          "experiment_launch",
+          "experiment_stop",
+          "experiment_update"
+        ],
+        "type": "string",
+        "description": "* `manual` - Manual\n* `cold_run` - Cold Run\n* `stale_refresh` - Stale Refresh\n* `auto_refresh` - Auto Refresh\n* `config_change` - Config Change\n* `experiment_launch` - Experiment Launch\n* `experiment_stop` - Experiment Stop\n* `experiment_update` - Experiment Update"
       },
       "UnmatchedUtmSample": {
         "type": "object",
@@ -261536,6 +262170,9 @@
       "name": "web_analytics"
     },
     {
+      "name": "web_analytics_achievements"
+    },
+    {
       "name": "web_experiments"
     },
     {
@@ -261702,6 +262339,7 @@
         "warehouse_view_link",
         "warehouse_view_links",
         "web_analytics",
+        "web_analytics_achievements",
         "web_experiments",
         "web_vitals",
         "welcome",
