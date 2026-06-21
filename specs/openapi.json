@@ -110139,7 +110139,7 @@
     "/api/projects/{project_id}/signals/reports/{id}/state/": {
       "post": {
         "operationId": "signals_reports_state_create",
-        "description": "Transition a report to a new state. The model validates allowed transitions.\n\nThe request body is validated by SignalReportStateRequestSerializer — only the\nfields it declares (state, dismissal_reason, dismissal_note, snooze_for) are read,\nand only snooze_for is ever forwarded to transition_to. Any other key is ignored,\nso internal transition_to kwargs (reset_weight, error, ...) can't be injected.\n\nBody: {\n    \"state\": \"suppressed\" | \"potential\",\n    # Optional dismissal feedback (honored when state == \"suppressed\" or \"potential\"):\n    \"dismissal_reason\": \"<any string code, owned by the caller>\",\n    \"dismissal_note\": \"free-form text\",\n    # Optional, only honored for state == \"potential\":\n    \"snooze_for\": <number of additional signals before re-promotion>,\n}",
+        "description": "Transition a report to a new state. The model validates allowed transitions.\n\nThe request body is validated by SignalReportStateRequestSerializer — only the\nfields it declares (state, dismissal_reason, dismissal_note, snooze_for) are read,\nand only snooze_for is ever forwarded to transition_to. Any other key is ignored,\nso internal transition_to kwargs (reset_weight, error, ...) can't be injected.\n\nBody: {\n    \"state\": \"suppressed\" | \"potential\",\n    # Optional dismissal feedback (honored when state == \"suppressed\" or \"potential\"):\n    \"dismissal_reason\": \"<canonical reason code, see SIGNAL_REPORT_DISMISSAL_REASON_CHOICES>\",\n    \"dismissal_note\": \"free-form text\",\n    # Optional, only honored for state == \"potential\":\n    \"snooze_for\": <number of additional signals before re-promotion>,\n}",
         "parameters": [
           {
             "in": "path",
@@ -110196,6 +110196,67 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/SignalReport"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "signals"
+        ]
+      }
+    },
+    "/api/projects/{project_id}/signals/reports/bulk-state/": {
+      "post": {
+        "operationId": "signals_reports_bulk_state_create",
+        "description": "Transition many reports to a new state in one call.\n\nEach id is processed independently: a report whose transition isn't allowed from its\ncurrent status is reported as `skipped` (a 409 on the single-report endpoint) and the\nrest still go through. Returns one result per requested id (in request order, after\nde-duplication) plus per-outcome counts. The whole call is 200 even on partial failure —\ninspect `results` / the counts to see what happened.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "signals"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SignalReportBulkStateRequest"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/SignalReportBulkStateRequest"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/SignalReportBulkStateRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "task:write"
+            ]
+          },
+          {
+            "PersonalAPIKeyAuth": [
+              "task:write"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SignalReportBulkStateResponse"
                 }
               }
             },
@@ -146888,6 +146949,18 @@
           "x",
           "y"
         ]
+      },
+      "DismissalReasonEnum": {
+        "enum": [
+          "already_fixed",
+          "report_unclear",
+          "analysis_wrong",
+          "wontfix_intentional",
+          "wontfix_irrelevant",
+          "other"
+        ],
+        "type": "string",
+        "description": "* `already_fixed` - Already fixed\n* `report_unclear` - Report is unclear to me\n* `analysis_wrong` - Agent's analysis is wrong\n* `wontfix_intentional` - Won't fix - intentional behavior\n* `wontfix_irrelevant` - Won't fix - issue is real but insignificant\n* `other` - Something else…"
       },
       "DisplayType": {
         "enum": [
@@ -238728,20 +238801,144 @@
           "updated_at"
         ]
       },
+      "SignalReportBulkStateRequest": {
+        "type": "object",
+        "properties": {
+          "state": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/SignalReportStateEnum"
+              }
+            ],
+            "description": "Target state for the report. Use 'suppressed' to dismiss the report from the inbox, or 'potential' to snooze/reopen it for later review.\n\n* `suppressed` - suppressed\n* `potential` - potential"
+          },
+          "dismissal_reason": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/DismissalReasonEnum"
+              }
+            ],
+            "description": "Optional canonical reason code for the dismissal. Must be one of: already_fixed, report_unclear, analysis_wrong, wontfix_intentional, wontfix_irrelevant, other — these match the inbox UI so the rationale renders as a labelled chip rather than a raw code. 'already_fixed' is a snooze, not a dismissal: pair it with state='potential' (restore) so the report reappears if the issue recurs. Use 'other' together with a dismissal_note for anything that doesn't fit a code.\n\n* `already_fixed` - Already fixed\n* `report_unclear` - Report is unclear to me\n* `analysis_wrong` - Agent's analysis is wrong\n* `wontfix_intentional` - Won't fix - intentional behavior\n* `wontfix_irrelevant` - Won't fix - issue is real but insignificant\n* `other` - Something else…"
+          },
+          "dismissal_note": {
+            "type": "string",
+            "description": "Optional free-form note explaining the dismissal. Capped at 4000 characters.",
+            "maxLength": 4000
+          },
+          "snooze_for": {
+            "type": "integer",
+            "maximum": 100000,
+            "minimum": 1,
+            "description": "Optional, only honored when state is 'potential'. Number of additional signals the report must accumulate before it is re-promoted into the pipeline — effectively snoozing it until then. Omit to let the report re-enter the pipeline on the next matching signal."
+          },
+          "ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "Report ids to transition to `state` in one call (1–100). Duplicates are de-duplicated; each id is processed independently so one disallowed transition does not block the rest. `dismissal_reason`, `dismissal_note` and `snooze_for` apply to every id.",
+            "maxItems": 100
+          }
+        },
+        "required": [
+          "ids",
+          "state"
+        ]
+      },
+      "SignalReportBulkStateResponse": {
+        "type": "object",
+        "properties": {
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SignalReportBulkStateResult"
+            },
+            "description": "One result per requested id, in request order (after de-duplication)."
+          },
+          "transitioned_count": {
+            "type": "integer",
+            "description": "Number of reports whose state was changed."
+          },
+          "skipped_count": {
+            "type": "integer",
+            "description": "Number of reports whose transition was not allowed."
+          },
+          "failed_count": {
+            "type": "integer",
+            "description": "Number of reports that failed on invalid request data."
+          },
+          "not_found_count": {
+            "type": "integer",
+            "description": "Number of requested ids not visible to the caller."
+          }
+        },
+        "required": [
+          "failed_count",
+          "not_found_count",
+          "results",
+          "skipped_count",
+          "transitioned_count"
+        ]
+      },
+      "SignalReportBulkStateResult": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "The report id this result refers to."
+          },
+          "outcome": {
+            "type": "string",
+            "description": "One of: transitioned, skipped, failed, not_found. transitioned: the state change was applied. skipped: the transition was not allowed from the report's current status (a 409 on the single-report endpoint). failed: the request data was invalid for this report. not_found: no report with this id is visible to you."
+          },
+          "status": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The report's status after the transition. Present only when outcome is 'transitioned'."
+          },
+          "detail": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Human-readable explanation for non-transitioned outcomes (skipped / failed / not_found)."
+          }
+        },
+        "required": [
+          "id",
+          "outcome"
+        ]
+      },
+      "SignalReportStateEnum": {
+        "enum": [
+          "suppressed",
+          "potential"
+        ],
+        "type": "string",
+        "description": "* `suppressed` - suppressed\n* `potential` - potential"
+      },
       "SignalReportStateRequest": {
         "type": "object",
         "properties": {
           "state": {
             "allOf": [
               {
-                "$ref": "#/components/schemas/SignalReportStateRequestStateEnum"
+                "$ref": "#/components/schemas/SignalReportStateEnum"
               }
             ],
             "description": "Target state for the report. Use 'suppressed' to dismiss the report from the inbox, or 'potential' to snooze/reopen it for later review.\n\n* `suppressed` - suppressed\n* `potential` - potential"
           },
           "dismissal_reason": {
-            "type": "string",
-            "description": "Optional short reason code for the dismissal (e.g. 'not_a_bug', 'wont_fix', 'duplicate'). The set of reason codes is owned by the caller and is not validated server-side."
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/DismissalReasonEnum"
+              }
+            ],
+            "description": "Optional canonical reason code for the dismissal. Must be one of: already_fixed, report_unclear, analysis_wrong, wontfix_intentional, wontfix_irrelevant, other — these match the inbox UI so the rationale renders as a labelled chip rather than a raw code. 'already_fixed' is a snooze, not a dismissal: pair it with state='potential' (restore) so the report reappears if the issue recurs. Use 'other' together with a dismissal_note for anything that doesn't fit a code.\n\n* `already_fixed` - Already fixed\n* `report_unclear` - Report is unclear to me\n* `analysis_wrong` - Agent's analysis is wrong\n* `wontfix_intentional` - Won't fix - intentional behavior\n* `wontfix_irrelevant` - Won't fix - issue is real but insignificant\n* `other` - Something else…"
           },
           "dismissal_note": {
             "type": "string",
@@ -238758,14 +238955,6 @@
         "required": [
           "state"
         ]
-      },
-      "SignalReportStateRequestStateEnum": {
-        "enum": [
-          "suppressed",
-          "potential"
-        ],
-        "type": "string",
-        "description": "* `suppressed` - suppressed\n* `potential` - potential"
       },
       "SignalReportStatusEnum": {
         "enum": [
@@ -245193,6 +245382,11 @@
               }
             ],
             "description": "Initial permission mode for the agent session. Claude runtimes accept PostHog permission presets like 'plan'. Codex runtimes accept native Codex modes like 'auto' and 'read-only'.\n\n* `default` - default\n* `acceptEdits` - acceptEdits\n* `plan` - plan\n* `bypassPermissions` - bypassPermissions\n* `auto` - auto\n* `read-only` - read-only\n* `full-access` - full-access"
+          },
+          "home_quick_action": {
+            "type": "string",
+            "description": "Label of the Home-tab quick action that started this run (e.g. 'Fix CI'), surfaced on the workstream.",
+            "maxLength": 120
           }
         }
       },
