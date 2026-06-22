@@ -66784,6 +66784,71 @@
         ]
       }
     },
+    "/api/projects/{project_id}/desktop_file_system/{id}/canvas/": {
+      "patch": {
+        "operationId": "desktop_file_system_canvas_partial_update",
+        "description": "Publish a new version of a freeform canvas's React source.\n\nMerges into the dashboard row's `meta` (never replaces it), so existing\nkeys like `channelId`/`templateId` survive. Appends a full-file version\nsnapshot and points `currentVersionId` at it — the server-side mirror of\nthe app's dashboardsService.saveFreeform.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "A UUID string identifying this file system.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "desktop_file_system"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchedCanvasPublish"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchedCanvasPublish"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchedCanvasPublish"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "file_system:write"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FileSystem"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "core"
+        ]
+      }
+    },
     "/api/projects/{project_id}/desktop_file_system/{id}/context_generation/": {
       "get": {
         "operationId": "desktop_file_system_context_generation_retrieve",
@@ -108501,164 +108566,6 @@
           }
         },
         "x-product": []
-      }
-    },
-    "/api/projects/{project_id}/session_recording_exports/": {
-      "get": {
-        "operationId": "session_recording_exports_list",
-        "parameters": [
-          {
-            "name": "limit",
-            "required": false,
-            "in": "query",
-            "description": "Number of results to return per page.",
-            "schema": {
-              "type": "integer"
-            }
-          },
-          {
-            "name": "offset",
-            "required": false,
-            "in": "query",
-            "description": "The initial index from which to return the results.",
-            "schema": {
-              "type": "integer"
-            }
-          },
-          {
-            "$ref": "#/components/parameters/ProjectIdPath"
-          }
-        ],
-        "tags": [
-          "replay",
-          "session_recording_exports"
-        ],
-        "security": [
-          {
-            "PersonalAPIKeyAuth": [
-              "session_recording:read"
-            ]
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PaginatedExportedRecordingList"
-                }
-              }
-            },
-            "description": ""
-          }
-        },
-        "x-product": [
-          "replay"
-        ]
-      },
-      "post": {
-        "operationId": "session_recording_exports_create",
-        "summary": "Trigger a session recording export",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/ProjectIdPath"
-          }
-        ],
-        "tags": [
-          "replay",
-          "session_recording_exports"
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ExportedRecordingCreate"
-              }
-            },
-            "application/x-www-form-urlencoded": {
-              "schema": {
-                "$ref": "#/components/schemas/ExportedRecordingCreate"
-              }
-            },
-            "multipart/form-data": {
-              "schema": {
-                "$ref": "#/components/schemas/ExportedRecordingCreate"
-              }
-            }
-          },
-          "required": true
-        },
-        "security": [
-          {
-            "PersonalAPIKeyAuth": [
-              "session_recording:write"
-            ]
-          }
-        ],
-        "responses": {
-          "201": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ExportedRecording"
-                }
-              }
-            },
-            "description": ""
-          },
-          "502": {
-            "description": "The export was recorded but the export workflow failed to start."
-          }
-        },
-        "x-product": [
-          "replay"
-        ]
-      }
-    },
-    "/api/projects/{project_id}/session_recording_exports/{id}/": {
-      "get": {
-        "operationId": "session_recording_exports_retrieve",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "id",
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            },
-            "description": "A UUID string identifying this exported recording.",
-            "required": true
-          },
-          {
-            "$ref": "#/components/parameters/ProjectIdPath"
-          }
-        ],
-        "tags": [
-          "replay",
-          "session_recording_exports"
-        ],
-        "security": [
-          {
-            "PersonalAPIKeyAuth": [
-              "session_recording:read"
-            ]
-          }
-        ],
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ExportedRecording"
-                }
-              }
-            },
-            "description": ""
-          }
-        },
-        "x-product": [
-          "replay"
-        ]
       }
     },
     "/api/projects/{project_id}/session_recording_playlists/": {
@@ -162378,111 +162285,6 @@
           "id"
         ]
       },
-      "ExportedRecording": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "format": "uuid",
-            "readOnly": true,
-            "description": "Unique identifier for this export job."
-          },
-          "session_id": {
-            "type": "string",
-            "readOnly": true,
-            "description": "The `$session_id` of the recording being exported."
-          },
-          "reason": {
-            "type": "string",
-            "readOnly": true,
-            "description": "Human-provided justification for the export, kept for audit purposes."
-          },
-          "status": {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/ExportedRecordingStatusEnum"
-              }
-            ],
-            "readOnly": true,
-            "description": "Lifecycle status of the export: pending, running, complete, or failed.\n\n* `pending` - Pending\n* `running` - Running\n* `complete` - Complete\n* `failed` - Failed"
-          },
-          "export_location": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "readOnly": true,
-            "description": "Storage location of the exported data once the job completes; null until status is complete."
-          },
-          "error_message": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "readOnly": true,
-            "description": "Failure detail when status is failed; null otherwise."
-          },
-          "created_at": {
-            "type": "string",
-            "format": "date-time",
-            "readOnly": true,
-            "description": "When the export was requested."
-          },
-          "created_by": {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/UserBasic"
-              }
-            ],
-            "readOnly": true,
-            "description": "The user who triggered the export."
-          },
-          "is_expired": {
-            "type": "boolean",
-            "readOnly": true,
-            "description": "True when the export is older than 7 days and its downloadable data may have been purged."
-          }
-        },
-        "required": [
-          "created_at",
-          "created_by",
-          "error_message",
-          "export_location",
-          "id",
-          "is_expired",
-          "reason",
-          "session_id",
-          "status"
-        ]
-      },
-      "ExportedRecordingCreate": {
-        "type": "object",
-        "properties": {
-          "session_id": {
-            "type": "string",
-            "description": "The `$session_id` of the recording to export.",
-            "maxLength": 200
-          },
-          "reason": {
-            "type": "string",
-            "description": "Why this recording is being exported. Recorded for audit purposes."
-          }
-        },
-        "required": [
-          "reason",
-          "session_id"
-        ]
-      },
-      "ExportedRecordingStatusEnum": {
-        "enum": [
-          "pending",
-          "running",
-          "complete",
-          "failed"
-        ],
-        "type": "string",
-        "description": "* `pending` - Pending\n* `running` - Running\n* `complete` - Complete\n* `failed` - Failed"
-      },
       "ExternalDataSchema": {
         "type": "object",
         "properties": {
@@ -189018,41 +188820,6 @@
           }
         }
       },
-      "PaginatedExportedRecordingList": {
-        "type": "object",
-        "required": [
-          "count",
-          "results"
-        ],
-        "properties": {
-          "count": {
-            "type": "integer",
-            "example": 123
-          },
-          "next": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "format": "uri",
-            "example": "http://api.example.org/accounts/?offset=400&limit=100"
-          },
-          "previous": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "format": "uri",
-            "example": "http://api.example.org/accounts/?offset=200&limit=100"
-          },
-          "results": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/ExportedRecording"
-            }
-          }
-        }
-      },
       "PaginatedExternalDataSchemaList": {
         "type": "object",
         "required": [
@@ -194532,6 +194299,21 @@
             "maximum": 23,
             "minimum": 0,
             "description": "Hour-of-day offset (0-23) for daily and weekly intervals."
+          }
+        }
+      },
+      "PatchedCanvasPublish": {
+        "type": "object",
+        "description": "Payload for publishing a freeform canvas's React source via the agent.",
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "prompt": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
           }
         }
       },
@@ -225301,7 +225083,7 @@
               "null"
             ],
             "format": "uuid",
-            "description": "Run that authored this memory; persisted as `created_by_run_id` for lineage. Must reference a run on this same project — cross-project run UUIDs are rejected."
+            "description": "Run that authored this memory; persisted as `created_by_run_id` for lineage. Best-effort — a `run_id` that isn't a run on this project is dropped (lineage left null), not rejected, so the memory write is never lost."
           }
         },
         "required": [
@@ -263335,9 +263117,6 @@
       "name": "session_group_summaries"
     },
     {
-      "name": "session_recording_exports"
-    },
-    {
       "name": "session_recording_playlists"
     },
     {
@@ -263566,7 +263345,6 @@
         "schema_property_groups",
         "sdk_health",
         "session_group_summaries",
-        "session_recording_exports",
         "session_recording_playlists",
         "session_recordings",
         "session_summaries",
