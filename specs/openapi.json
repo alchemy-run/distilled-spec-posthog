@@ -282,6 +282,28 @@
             "schema": {
               "type": "integer"
             }
+          },
+          {
+            "in": "query",
+            "name": "ordering",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "-created_at",
+                "-created_by",
+                "created_at",
+                "created_by"
+              ]
+            },
+            "description": "Sort by creation date or author. Defaults to '-created_at'."
+          },
+          {
+            "in": "query",
+            "name": "search",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Full-text search across notebook title and content."
           }
         ],
         "tags": [
@@ -1094,7 +1116,8 @@
         "security": [
           {
             "PersonalAPIKeyAuth": [
-              "alert:read"
+              "alert:read",
+              "insight:read"
             ]
           }
         ],
@@ -3908,6 +3931,316 @@
         ]
       }
     },
+    "/api/environments/{environment_id}/custom_property_definitions/": {
+      "get": {
+        "operationId": "environments_custom_property_definitions_list",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/EnvironmentIdPath"
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Number of results to return per page.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "offset",
+            "required": false,
+            "in": "query",
+            "description": "The initial index from which to return the results.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "tags": [
+          "custom_property_definitions"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "account:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedCustomPropertyDefinitionList"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "deprecated": true,
+        "x-product": [
+          "customer_analytics"
+        ]
+      },
+      "post": {
+        "operationId": "environments_custom_property_definitions_create",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/EnvironmentIdPath"
+          }
+        ],
+        "tags": [
+          "custom_property_definitions"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CustomPropertyDefinition"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/CustomPropertyDefinition"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/CustomPropertyDefinition"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "account:write"
+            ]
+          }
+        ],
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomPropertyDefinition"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "deprecated": true,
+        "x-product": [
+          "customer_analytics"
+        ]
+      }
+    },
+    "/api/environments/{environment_id}/custom_property_definitions/{id}/": {
+      "get": {
+        "operationId": "environments_custom_property_definitions_retrieve",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/EnvironmentIdPath"
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "tags": [
+          "custom_property_definitions"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "account:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomPropertyDefinition"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "deprecated": true,
+        "x-product": [
+          "customer_analytics"
+        ]
+      },
+      "put": {
+        "operationId": "environments_custom_property_definitions_update",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/EnvironmentIdPath"
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "tags": [
+          "custom_property_definitions"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CustomPropertyDefinition"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/CustomPropertyDefinition"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/CustomPropertyDefinition"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "account:write"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomPropertyDefinition"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "deprecated": true,
+        "x-product": [
+          "customer_analytics"
+        ]
+      },
+      "patch": {
+        "operationId": "environments_custom_property_definitions_partial_update",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/EnvironmentIdPath"
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "tags": [
+          "custom_property_definitions"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchedCustomPropertyDefinition"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchedCustomPropertyDefinition"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchedCustomPropertyDefinition"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "account:write"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomPropertyDefinition"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "deprecated": true,
+        "x-product": [
+          "customer_analytics"
+        ]
+      },
+      "delete": {
+        "operationId": "environments_custom_property_definitions_destroy",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/EnvironmentIdPath"
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "tags": [
+          "custom_property_definitions"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "account:write"
+            ]
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No response body"
+          }
+        },
+        "deprecated": true,
+        "x-product": [
+          "customer_analytics"
+        ]
+      }
+    },
     "/api/environments/{environment_id}/customer_journeys/": {
       "get": {
         "operationId": "environments_customer_journeys_list",
@@ -6215,6 +6548,87 @@
               "text/event-stream": {
                 "schema": {
                   "$ref": "#/components/schemas/AddDashboardWidgetsBatchResponse"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "deprecated": true,
+        "x-product": [
+          "dashboards"
+        ]
+      }
+    },
+    "/api/environments/{environment_id}/dashboards/{id}/widgets/batch_update/": {
+      "patch": {
+        "operationId": "environments_dashboards_update_widgets_batch",
+        "description": "Update the settings of existing widgets in place, atomically — config, name, and description.\n\nEach entry targets a widget by its tile_id and reuses the same write path as the dashboard PATCH endpoint.\nThe widget_type is immutable. This edits widget settings only (config, name, description); tile placement\n(layouts, show_description) is a dashboard concern — use the dashboard PATCH endpoint or reorder_tiles for\nthat. All updates succeed or fail together. To add new widgets, use the widgets/batch POST endpoint; to\nremove one, use delete_tile.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/EnvironmentIdPath"
+          },
+          {
+            "in": "query",
+            "name": "format",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "json",
+                "txt"
+              ]
+            }
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "A unique integer value identifying this dashboard.",
+            "required": true
+          }
+        ],
+        "tags": [
+          "dashboards"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchedUpdateDashboardWidgetsBatchRequestOpenApi"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchedUpdateDashboardWidgetsBatchRequestOpenApi"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchedUpdateDashboardWidgetsBatchRequestOpenApi"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "dashboard:write"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateDashboardWidgetsBatchResponse"
+                }
+              },
+              "text/event-stream": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateDashboardWidgetsBatchResponse"
                 }
               }
             },
@@ -23384,6 +23798,7 @@
               "enum": [
                 "anthropic",
                 "apns",
+                "aws-s3",
                 "azure-blob",
                 "bing-ads",
                 "clickup",
@@ -23411,6 +23826,7 @@
                 "pinterest-ads",
                 "postgresql",
                 "reddit-ads",
+                "s3-compatible",
                 "salesforce",
                 "slack",
                 "slack-posthog-code",
@@ -23421,7 +23837,7 @@
                 "vercel"
               ]
             },
-            "description": "* `anthropic` - Anthropic\n* `apns` - Apple Push\n* `azure-blob` - Azure Blob\n* `bing-ads` - Bing Ads\n* `clickup` - Clickup\n* `customerio-app` - Customerio App\n* `customerio-track` - Customerio Track\n* `customerio-webhook` - Customerio Webhook\n* `databricks` - Databricks\n* `email` - Email\n* `firebase` - Firebase\n* `github` - Github\n* `gitlab` - Gitlab\n* `google-ads` - Google Ads\n* `google-analytics` - Google Analytics\n* `google-cloud-service-account` - Google Cloud Service Account\n* `google-cloud-storage` - Google Cloud Storage\n* `google-pubsub` - Google Pubsub\n* `google-search-console` - Google Search Console\n* `google-sheets` - Google Sheets\n* `hubspot` - Hubspot\n* `intercom` - Intercom\n* `jira` - Jira\n* `linear` - Linear\n* `linkedin-ads` - Linkedin Ads\n* `meta-ads` - Meta Ads\n* `pinterest-ads` - Pinterest Ads\n* `postgresql` - Postgresql\n* `reddit-ads` - Reddit Ads\n* `salesforce` - Salesforce\n* `slack` - Slack\n* `slack-posthog-code` - Slack Posthog Code\n* `snapchat` - Snapchat\n* `stripe` - Stripe\n* `tiktok-ads` - Tiktok Ads\n* `twilio` - Twilio\n* `vercel` - Vercel"
+            "description": "* `anthropic` - Anthropic\n* `apns` - Apple Push\n* `aws-s3` - Aws S3\n* `azure-blob` - Azure Blob\n* `bing-ads` - Bing Ads\n* `clickup` - Clickup\n* `customerio-app` - Customerio App\n* `customerio-track` - Customerio Track\n* `customerio-webhook` - Customerio Webhook\n* `databricks` - Databricks\n* `email` - Email\n* `firebase` - Firebase\n* `github` - Github\n* `gitlab` - Gitlab\n* `google-ads` - Google Ads\n* `google-analytics` - Google Analytics\n* `google-cloud-service-account` - Google Cloud Service Account\n* `google-cloud-storage` - Google Cloud Storage\n* `google-pubsub` - Google Pubsub\n* `google-search-console` - Google Search Console\n* `google-sheets` - Google Sheets\n* `hubspot` - Hubspot\n* `intercom` - Intercom\n* `jira` - Jira\n* `linear` - Linear\n* `linkedin-ads` - Linkedin Ads\n* `meta-ads` - Meta Ads\n* `pinterest-ads` - Pinterest Ads\n* `postgresql` - Postgresql\n* `reddit-ads` - Reddit Ads\n* `s3-compatible` - S3 Compatible\n* `salesforce` - Salesforce\n* `slack` - Slack\n* `slack-posthog-code` - Slack Posthog Code\n* `snapchat` - Snapchat\n* `stripe` - Stripe\n* `tiktok-ads` - Tiktok Ads\n* `twilio` - Twilio\n* `vercel` - Vercel"
           },
           {
             "name": "limit",
@@ -51140,6 +51556,119 @@
         ]
       }
     },
+    "/api/projects/{project_id}/accounts/{account_id}/custom_property_values/": {
+      "get": {
+        "operationId": "accounts_custom_property_values_list",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "account_id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "UUID of the parent account.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "customer_analytics",
+          "accounts"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "account:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CustomPropertyValue"
+                  }
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "customer_analytics"
+        ]
+      },
+      "post": {
+        "operationId": "accounts_custom_property_values_create",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "account_id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "UUID of the parent account.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "customer_analytics",
+          "accounts"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CustomPropertyValueWrite"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/CustomPropertyValueWrite"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/CustomPropertyValueWrite"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "account:write"
+            ]
+          }
+        ],
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomPropertyValue"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "customer_analytics"
+        ]
+      }
+    },
     "/api/projects/{project_id}/accounts/{account_id}/notebooks/": {
       "get": {
         "operationId": "accounts_notebooks_list",
@@ -51173,7 +51702,29 @@
             }
           },
           {
+            "in": "query",
+            "name": "ordering",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "-created_at",
+                "-created_by",
+                "created_at",
+                "created_by"
+              ]
+            },
+            "description": "Sort by creation date or author. Defaults to '-created_at'."
+          },
+          {
             "$ref": "#/components/parameters/ProjectIdPath"
+          },
+          {
+            "in": "query",
+            "name": "search",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Full-text search across notebook title and content."
           }
         ],
         "tags": [
@@ -56843,7 +57394,8 @@
         "security": [
           {
             "PersonalAPIKeyAuth": [
-              "alert:read"
+              "alert:read",
+              "insight:read"
             ]
           }
         ],
@@ -62352,6 +62904,310 @@
         ]
       }
     },
+    "/api/projects/{project_id}/custom_property_definitions/": {
+      "get": {
+        "operationId": "custom_property_definitions_list",
+        "parameters": [
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Number of results to return per page.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "offset",
+            "required": false,
+            "in": "query",
+            "description": "The initial index from which to return the results.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "custom_property_definitions"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "account:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedCustomPropertyDefinitionList"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "customer_analytics"
+        ]
+      },
+      "post": {
+        "operationId": "custom_property_definitions_create",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "custom_property_definitions"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CustomPropertyDefinition"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/CustomPropertyDefinition"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/CustomPropertyDefinition"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "account:write"
+            ]
+          }
+        ],
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomPropertyDefinition"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "customer_analytics"
+        ]
+      }
+    },
+    "/api/projects/{project_id}/custom_property_definitions/{id}/": {
+      "get": {
+        "operationId": "custom_property_definitions_retrieve",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "custom_property_definitions"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "account:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomPropertyDefinition"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "customer_analytics"
+        ]
+      },
+      "put": {
+        "operationId": "custom_property_definitions_update",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "custom_property_definitions"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CustomPropertyDefinition"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/CustomPropertyDefinition"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/CustomPropertyDefinition"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "account:write"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomPropertyDefinition"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "customer_analytics"
+        ]
+      },
+      "patch": {
+        "operationId": "custom_property_definitions_partial_update",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "custom_property_definitions"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchedCustomPropertyDefinition"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchedCustomPropertyDefinition"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchedCustomPropertyDefinition"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "account:write"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomPropertyDefinition"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "customer_analytics"
+        ]
+      },
+      "delete": {
+        "operationId": "custom_property_definitions_destroy",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "custom_property_definitions"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "account:write"
+            ]
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No response body"
+          }
+        },
+        "x-product": [
+          "customer_analytics"
+        ]
+      }
+    },
     "/api/projects/{project_id}/customer_journeys/": {
       "get": {
         "operationId": "customer_journeys_list",
@@ -65042,6 +65898,86 @@
               "text/event-stream": {
                 "schema": {
                   "$ref": "#/components/schemas/AddDashboardWidgetsBatchResponse"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "dashboards"
+        ]
+      }
+    },
+    "/api/projects/{project_id}/dashboards/{id}/widgets/batch_update/": {
+      "patch": {
+        "operationId": "dashboards_update_widgets_batch",
+        "description": "Update the settings of existing widgets in place, atomically — config, name, and description.\n\nEach entry targets a widget by its tile_id and reuses the same write path as the dashboard PATCH endpoint.\nThe widget_type is immutable. This edits widget settings only (config, name, description); tile placement\n(layouts, show_description) is a dashboard concern — use the dashboard PATCH endpoint or reorder_tiles for\nthat. All updates succeed or fail together. To add new widgets, use the widgets/batch POST endpoint; to\nremove one, use delete_tile.",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "format",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "json",
+                "txt"
+              ]
+            }
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "A unique integer value identifying this dashboard.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "dashboards"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchedUpdateDashboardWidgetsBatchRequestOpenApi"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchedUpdateDashboardWidgetsBatchRequestOpenApi"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchedUpdateDashboardWidgetsBatchRequestOpenApi"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "dashboard:write"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateDashboardWidgetsBatchResponse"
+                }
+              },
+              "text/event-stream": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateDashboardWidgetsBatchResponse"
                 }
               }
             },
@@ -77184,7 +78120,7 @@
         "security": [
           {
             "PersonalAPIKeyAuth": [
-              "experiment:read"
+              "experiment_holdout:read"
             ]
           }
         ],
@@ -77237,7 +78173,7 @@
         "security": [
           {
             "PersonalAPIKeyAuth": [
-              "experiment:write"
+              "experiment_holdout:write"
             ]
           }
         ],
@@ -77281,7 +78217,7 @@
         "security": [
           {
             "PersonalAPIKeyAuth": [
-              "experiment:read"
+              "experiment_holdout:read"
             ]
           }
         ],
@@ -77343,7 +78279,7 @@
         "security": [
           {
             "PersonalAPIKeyAuth": [
-              "experiment:write"
+              "experiment_holdout:write"
             ]
           }
         ],
@@ -77404,7 +78340,7 @@
         "security": [
           {
             "PersonalAPIKeyAuth": [
-              "experiment:write"
+              "experiment_holdout:write"
             ]
           }
         ],
@@ -77446,7 +78382,7 @@
         "security": [
           {
             "PersonalAPIKeyAuth": [
-              "experiment:write"
+              "experiment_holdout:write"
             ]
           }
         ],
@@ -90953,6 +91889,7 @@
               "enum": [
                 "anthropic",
                 "apns",
+                "aws-s3",
                 "azure-blob",
                 "bing-ads",
                 "clickup",
@@ -90980,6 +91917,7 @@
                 "pinterest-ads",
                 "postgresql",
                 "reddit-ads",
+                "s3-compatible",
                 "salesforce",
                 "slack",
                 "slack-posthog-code",
@@ -90990,7 +91928,7 @@
                 "vercel"
               ]
             },
-            "description": "* `anthropic` - Anthropic\n* `apns` - Apple Push\n* `azure-blob` - Azure Blob\n* `bing-ads` - Bing Ads\n* `clickup` - Clickup\n* `customerio-app` - Customerio App\n* `customerio-track` - Customerio Track\n* `customerio-webhook` - Customerio Webhook\n* `databricks` - Databricks\n* `email` - Email\n* `firebase` - Firebase\n* `github` - Github\n* `gitlab` - Gitlab\n* `google-ads` - Google Ads\n* `google-analytics` - Google Analytics\n* `google-cloud-service-account` - Google Cloud Service Account\n* `google-cloud-storage` - Google Cloud Storage\n* `google-pubsub` - Google Pubsub\n* `google-search-console` - Google Search Console\n* `google-sheets` - Google Sheets\n* `hubspot` - Hubspot\n* `intercom` - Intercom\n* `jira` - Jira\n* `linear` - Linear\n* `linkedin-ads` - Linkedin Ads\n* `meta-ads` - Meta Ads\n* `pinterest-ads` - Pinterest Ads\n* `postgresql` - Postgresql\n* `reddit-ads` - Reddit Ads\n* `salesforce` - Salesforce\n* `slack` - Slack\n* `slack-posthog-code` - Slack Posthog Code\n* `snapchat` - Snapchat\n* `stripe` - Stripe\n* `tiktok-ads` - Tiktok Ads\n* `twilio` - Twilio\n* `vercel` - Vercel"
+            "description": "* `anthropic` - Anthropic\n* `apns` - Apple Push\n* `aws-s3` - Aws S3\n* `azure-blob` - Azure Blob\n* `bing-ads` - Bing Ads\n* `clickup` - Clickup\n* `customerio-app` - Customerio App\n* `customerio-track` - Customerio Track\n* `customerio-webhook` - Customerio Webhook\n* `databricks` - Databricks\n* `email` - Email\n* `firebase` - Firebase\n* `github` - Github\n* `gitlab` - Gitlab\n* `google-ads` - Google Ads\n* `google-analytics` - Google Analytics\n* `google-cloud-service-account` - Google Cloud Service Account\n* `google-cloud-storage` - Google Cloud Storage\n* `google-pubsub` - Google Pubsub\n* `google-search-console` - Google Search Console\n* `google-sheets` - Google Sheets\n* `hubspot` - Hubspot\n* `intercom` - Intercom\n* `jira` - Jira\n* `linear` - Linear\n* `linkedin-ads` - Linkedin Ads\n* `meta-ads` - Meta Ads\n* `pinterest-ads` - Pinterest Ads\n* `postgresql` - Postgresql\n* `reddit-ads` - Reddit Ads\n* `s3-compatible` - S3 Compatible\n* `salesforce` - Salesforce\n* `slack` - Slack\n* `slack-posthog-code` - Slack Posthog Code\n* `snapchat` - Snapchat\n* `stripe` - Stripe\n* `tiktok-ads` - Tiktok Ads\n* `twilio` - Twilio\n* `vercel` - Vercel"
           },
           {
             "name": "limit",
@@ -111847,7 +112785,7 @@
     "/api/projects/{project_id}/signals/scout/scratchpad/": {
       "get": {
         "operationId": "signals_scout_scratchpad_search",
-        "description": "Return `SignalScratchpad` entries for this project. ILIKE matches on `content` and `key`. Pass `keys_only=true` to scan keys without pulling entry bodies, or `content_max_chars` to cap each `content` to a preview — both keep a wide orientation scan from returning every entry's full prose.",
+        "description": "Return `SignalScratchpad` entries for this project, newest-first. ILIKE matches on `content` and `key`. `date_from` / `date_to` are a half-open window on `updated_at` (`>= date_from`, `< date_to`); pass `date_to` (the `updated_at` of the oldest entry seen) on subsequent calls to walk past the cap. Pass `keys_only=true` to scan keys without pulling entry bodies, or `content_max_chars` to cap each `content` to a preview — both keep a wide orientation scan from returning every entry's full prose. Results capped at 500.",
         "summary": "Search the scout scratchpad",
         "parameters": [
           {
@@ -111858,6 +112796,24 @@
               "minimum": 0
             },
             "description": "Truncate each entry's `content` to the first N characters (a preview). Omit for the full body. Ignored when `keys_only=true`."
+          },
+          {
+            "in": "query",
+            "name": "date_from",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "description": "ISO-8601 inclusive lower bound on `updated_at`. Omit to skip the lower bound."
+          },
+          {
+            "in": "query",
+            "name": "date_to",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "description": "ISO-8601 exclusive upper bound on `updated_at`. Pass to walk back past the result cap on subsequent calls (cursor-style: set to the `updated_at` of the oldest entry from the prior page)."
           },
           {
             "in": "query",
@@ -111872,10 +112828,10 @@
             "name": "limit",
             "schema": {
               "type": "integer",
-              "maximum": 100,
+              "maximum": 500,
               "minimum": 1
             },
-            "description": "Max rows to return (default 20, hard cap 100)."
+            "description": "Max rows to return (default 20, hard cap 500)."
           },
           {
             "$ref": "#/components/parameters/ProjectIdPath"
@@ -117955,6 +118911,69 @@
         ]
       }
     },
+    "/api/projects/{project_id}/tasks/warm/": {
+      "post": {
+        "operationId": "tasks_warm_create",
+        "description": "Warm a full idling Run for a Code-app cloud task while the user composes: boot a sandbox, clone the repo, check out the branch, and start the agent, then idle awaiting the first message. On submit the normal create+run path transparently reuses and activates this Run; abandoned warms are reaped by the Run's inactivity timeout. Best-effort: returns an empty body when the feature flag is off, the warm pool is full, or the GitHub integration doesn't belong to the team.",
+        "summary": "Warm a task sandbox",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "tasks",
+          "tasks"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WarmTaskRequest"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/WarmTaskRequest"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/WarmTaskRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "task:write"
+            ]
+          },
+          {
+            "PersonalAPIKeyAuth": [
+              "task:write"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WarmTaskResponse"
+                }
+              }
+            },
+            "description": "Warm Run provisioned (`task_id`/`run_id` to activate on submit), or an empty body when the feature is off, capped, or the integration didn't resolve."
+          }
+        },
+        "x-product": [
+          "tasks"
+        ]
+      }
+    },
     "/api/projects/{project_id}/tracing/spans/aggregate/": {
       "post": {
         "operationId": "tracing_spans_aggregate_create",
@@ -120243,6 +121262,15 @@
           },
           {
             "$ref": "#/components/parameters/ProjectIdPath"
+          },
+          {
+            "in": "query",
+            "name": "scanner",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "Filter to the actions belonging to one scanner."
           }
         ],
         "tags": [
@@ -127567,9 +128595,21 @@
     "/api/users/{uuid}/integrations/": {
       "get": {
         "operationId": "users_integrations_list",
-        "description": "`/api/users/@me/integrations/` — manage the user's personal GitHub integrations.",
-        "summary": "List personal GitHub integrations",
+        "description": "Return the authenticated user's personal integrations of a given\n``kind`` (``github`` or ``slack``).\n\nThe response shape varies per kind because the underlying ``UserIntegration``\nrows carry different identity fields — GitHub rows expose\n``installation_id`` / ``account`` / ``uses_shared_installation``; Slack\nrows expose ``slack_user_id`` / ``slack_team_id`` / ``slack_team_name``.\nKind-specific destroy and start actions remain split so their distinct\nsemantics (e.g. Slack's lack of \"uninstall on last reference\") stay\nexplicit at the URL layer.\n\nDefault of ``kind=github`` is load-bearing: mobile (``apps/mobile/...``)\nand the Code SDK (``packages/api-client/...``) both call this endpoint\nwithout a query param today and rely on receiving GitHub rows.",
+        "summary": "List the user's personal integrations of a given kind",
         "parameters": [
+          {
+            "in": "query",
+            "name": "kind",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "github",
+                "slack"
+              ]
+            },
+            "description": "Integration kind to list. Defaults to `github` for back-compat with mobile and the Code SDK, which call this endpoint without a query param and expect GitHub-shaped items."
+          },
           {
             "name": "limit",
             "required": false,
@@ -127947,6 +128987,156 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/UserGitHubLinkStartResponse"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "core"
+        ]
+      }
+    },
+    "/api/users/{uuid}/integrations/slack/{slack_user_id}/": {
+      "delete": {
+        "operationId": "users_integrations_slack_destroy",
+        "description": "Remove a Slack identity link by Slack user id. Idempotent and\nflag-agnostic — users must always be able to unlink even after the\nfeature flag is turned off.",
+        "summary": "Unlink a Slack identity",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "slack_user_id",
+            "schema": {
+              "type": "string",
+              "pattern": "^[UW][A-Z0-9]+$"
+            },
+            "required": true
+          },
+          {
+            "in": "path",
+            "name": "uuid",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "tags": [
+          "users",
+          "users"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "user:write"
+            ]
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Slack link removed."
+          }
+        },
+        "x-product": [
+          "core"
+        ]
+      }
+    },
+    "/api/users/{uuid}/integrations/slack/linkable_workspaces/": {
+      "get": {
+        "operationId": "users_integrations_slack_linkable_workspaces_retrieve",
+        "description": "Return Slack workspaces in the user's organizations that they have\nnot yet linked. The settings UI uses this list to decide whether to\nshow a \"Link my Slack account\" button (non-empty list) and what to\noffer in the picker when several are connectable.",
+        "summary": "List Slack workspaces this user could link to",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "uuid",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "tags": [
+          "users",
+          "users"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "user:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserSlackLinkableWorkspaceListResponse"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "core"
+        ]
+      }
+    },
+    "/api/users/{uuid}/integrations/slack/start/": {
+      "post": {
+        "operationId": "users_integrations_slack_start_create",
+        "description": "Mint a Sign-in-with-Slack invite URL initiated from settings, without\nSlack-DM context. The returned URL takes the user through PostHog login\n(already satisfied here), then to Slack OAuth, then back to our callback\nwhich writes the ``UserIntegration`` row.\n\nWithout body params, falls back to the user's ``current_team`` and that\nteam's first Slack ``Integration`` — works when there's exactly one\nlinkable workspace. With ``team_id`` + ``slack_team_id``, links against\nthe exact pair (what the frontend uses when a picker is shown).\n\nRefuses if the target team has no matching Slack workspace, if the\nfeature flag is off for the workspace, or if the user is already linked\nto it.",
+        "summary": "Start Slack identity link from settings",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "uuid",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "tags": [
+          "users",
+          "users"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserSlackLinkStartRequest"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/UserSlackLinkStartRequest"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/UserSlackLinkStartRequest"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "user:write"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserSlackLinkStartResponse"
                 }
               }
             },
@@ -128722,6 +129912,18 @@
           "$ai_generation_clusters"
         ],
         "title": "AIEventType",
+        "type": "string"
+      },
+      "AccessControlLevel": {
+        "enum": [
+          "none",
+          "member",
+          "admin",
+          "viewer",
+          "editor",
+          "manager"
+        ],
+        "title": "AccessControlLevel",
         "type": "string"
       },
       "AccessLevelEnum": {
@@ -130397,6 +131599,42 @@
         ],
         "type": "string",
         "description": "* `activity_events_list` - activity_events_list"
+      },
+      "ActivityEventsListWidgetUpdateRequestOpenApi": {
+        "type": "object",
+        "properties": {
+          "tile_id": {
+            "type": "integer",
+            "description": "ID of the widget tile to update. Use dashboard-get to look up widget tile IDs."
+          },
+          "name": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "New display name for the widget. Empty string or null clears it; omit to leave unchanged.",
+            "maxLength": 400
+          },
+          "description": {
+            "type": "string",
+            "description": "New markdown description for the widget. Omit to leave unchanged."
+          },
+          "widget_type": {
+            "$ref": "#/components/schemas/ActivityEventsListWidgetTypeEnum"
+          },
+          "config": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ActivityEventsListWidgetConfig"
+              }
+            ],
+            "description": "New configuration for the recent events widget. Omit to leave unchanged."
+          }
+        },
+        "required": [
+          "tile_id",
+          "widget_type"
+        ]
       },
       "ActivityLog": {
         "type": "object",
@@ -134626,14 +135864,25 @@
           "series_index": {
             "type": "integer",
             "default": 0,
-            "description": "Zero-based index of the series to analyze."
+            "description": "Zero-based index of the series to analyze (trends insights only)."
           },
           "date_from": {
             "type": [
               "string",
               "null"
             ],
-            "description": "Relative date string for how far back to simulate (e.g. '-24h', '-30d', '-4w'). If not provided, uses the detector's minimum required samples."
+            "description": "Relative date string for how far back to simulate (e.g. '-24h', '-30d', '-4w'). If not provided, uses the detector's minimum required samples. Trends insights only — a SQL query's own rows are the series."
+          },
+          "config": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/AlertConfigUnion"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Per-insight-kind alert config. For SQL insights, selects the evaluated column and read direction (last_row/first_row) so the preview matches the alert; ignored for trends."
           }
         },
         "required": [
@@ -134837,6 +136086,13 @@
             ],
             "description": "Optional emoji shown in place of the default badge when this annotation is surfaced on a chart.",
             "maxLength": 16
+          },
+          "hidden_in_user_interface": {
+            "type": [
+              "boolean",
+              "null"
+            ],
+            "description": "When true, the annotation is hidden from the PostHog UI (charts and the annotations list) but still readable over the API and MCP. Use for high-frequency markers like deployments that would otherwise crowd the UI. Null (the default) means the annotation is shown."
           }
         },
         "required": [
@@ -143654,6 +144910,172 @@
         "title": "CustomEventConversionGoal",
         "type": "object"
       },
+      "CustomPropertyDefinition": {
+        "type": "object",
+        "description": "A team-scoped definition of a custom account property — the attribute side of the model.\n\nHolds only the property's shape (name, display type, big-number flag). Per-account values are\nstored separately, so this serializer never reads or writes account values. The numeric-only\nbig-number rule and the unique-name conflict are enforced behind the facade.",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "readOnly": true
+          },
+          "name": {
+            "type": "string",
+            "description": "Human-readable name of the custom property. Unique within the team.",
+            "maxLength": 400
+          },
+          "description": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Optional description of what the property represents."
+          },
+          "display_type": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CustomPropertyDisplayTypeEnum"
+              }
+            ],
+            "description": "How the property is interpreted and rendered: 'text', 'number', 'currency', 'percent', 'date', 'datetime', or 'boolean'.\n\n* `text` - text\n* `number` - number\n* `currency` - currency\n* `percent` - percent\n* `date` - date\n* `datetime` - datetime\n* `boolean` - boolean"
+          },
+          "is_big_number": {
+            "type": "boolean",
+            "default": false,
+            "description": "Abbreviate large numbers (e.g. 10,000 → 10K). Only applies to numeric properties."
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          },
+          "created_by": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "readOnly": true
+          },
+          "updated_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time",
+            "readOnly": true
+          }
+        },
+        "required": [
+          "created_at",
+          "created_by",
+          "display_type",
+          "id",
+          "name",
+          "updated_at"
+        ]
+      },
+      "CustomPropertyDisplayTypeEnum": {
+        "enum": [
+          "text",
+          "number",
+          "currency",
+          "percent",
+          "date",
+          "datetime",
+          "boolean"
+        ],
+        "type": "string",
+        "description": "* `text` - text\n* `number` - number\n* `currency` - currency\n* `percent` - percent\n* `date` - date\n* `datetime` - datetime\n* `boolean` - boolean"
+      },
+      "CustomPropertyValue": {
+        "type": "object",
+        "description": "An account's current value for a custom property (read shape).",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "readOnly": true,
+            "description": "Unique id of this value record."
+          },
+          "account_id": {
+            "type": "string",
+            "format": "uuid",
+            "readOnly": true,
+            "description": "Account the value belongs to."
+          },
+          "definition_id": {
+            "type": "string",
+            "format": "uuid",
+            "readOnly": true,
+            "description": "Custom property definition the value is for."
+          },
+          "value": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "boolean"
+              }
+            ],
+            "readOnly": true,
+            "description": "The stored value, typed per the property's data type."
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true,
+            "description": "When this value was set."
+          },
+          "created_by_id": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "readOnly": true,
+            "description": "Id of the user who set this value, if known."
+          }
+        },
+        "required": [
+          "account_id",
+          "created_at",
+          "created_by_id",
+          "definition_id",
+          "id",
+          "value"
+        ]
+      },
+      "CustomPropertyValueWrite": {
+        "type": "object",
+        "properties": {
+          "definition": {
+            "type": "string",
+            "format": "uuid",
+            "description": "UUID of the custom property definition whose value to set for this account."
+          },
+          "value": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "boolean"
+              }
+            ],
+            "description": "Value to store, matching the definition's type: a number for number/currency/percent, a boolean for boolean, an ISO-8601 string for date/datetime, or text for text properties."
+          }
+        },
+        "required": [
+          "definition",
+          "value"
+        ]
+      },
       "CustomerJourney": {
         "type": "object",
         "properties": {
@@ -144320,6 +145742,29 @@
         },
         "title": "DashboardFilter",
         "type": "object"
+      },
+      "DashboardFiltersOpenApi": {
+        "type": "object",
+        "description": "OpenAPI-only shape for a dashboard's filters object (agents/MCP).\n\nDocuments the dashboard-level filters that act as the single source of truth for the\ndashboard's tiles. Runtime persistence reads the raw ``filters`` dict from the request body, so\nextra keys are accepted, but these are the ones agents should set.",
+        "properties": {
+          "date_from": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Dashboard-level start of the date range, e.g. '-30d', '-7d', or an ISO date. Applies to all tiles."
+          },
+          "date_to": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Dashboard-level end of the date range, e.g. '-1d' or an ISO date. Null/omitted means up to now."
+          },
+          "properties": {
+            "description": "Dashboard-level property filters applied to every tile (PostHog property filter group)."
+          }
+        }
       },
       "DashboardPatchTileOpenApi": {
         "type": "object",
@@ -154551,6 +155996,42 @@
         "type": "string",
         "description": "* `error_tracking_list` - error_tracking_list"
       },
+      "ErrorTrackingListWidgetUpdateRequestOpenApi": {
+        "type": "object",
+        "properties": {
+          "tile_id": {
+            "type": "integer",
+            "description": "ID of the widget tile to update. Use dashboard-get to look up widget tile IDs."
+          },
+          "name": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "New display name for the widget. Empty string or null clears it; omit to leave unchanged.",
+            "maxLength": 400
+          },
+          "description": {
+            "type": "string",
+            "description": "New markdown description for the widget. Omit to leave unchanged."
+          },
+          "widget_type": {
+            "$ref": "#/components/schemas/ErrorTrackingListWidgetTypeEnum"
+          },
+          "config": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ErrorTrackingListWidgetConfig"
+              }
+            ],
+            "description": "New configuration for the top issues widget. Omit to leave unchanged."
+          }
+        },
+        "required": [
+          "tile_id",
+          "widget_type"
+        ]
+      },
       "ErrorTrackingOrderBy": {
         "enum": [
           "last_seen",
@@ -161507,6 +162988,7 @@
       },
       "ExperimentHoldout": {
         "type": "object",
+        "description": "A holdout group — a stable slice of users excluded from experiment exposure.",
         "properties": {
           "id": {
             "type": "integer",
@@ -161541,6 +163023,14 @@
             "type": "string",
             "format": "date-time",
             "readOnly": true
+          },
+          "user_access_level": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "readOnly": true,
+            "description": "The effective access level the user has for this object"
           }
         },
         "required": [
@@ -161548,7 +163038,8 @@
           "created_by",
           "id",
           "name",
-          "updated_at"
+          "updated_at",
+          "user_access_level"
         ]
       },
       "ExperimentHoldoutType": {
@@ -161615,6 +163106,18 @@
             ],
             "default": null,
             "title": "Updated At"
+          },
+          "user_access_level": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/AccessControlLevel"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Read-only, server-computed effective access level; absent on a not-yet-created holdout."
           }
         },
         "required": [
@@ -162866,6 +164369,42 @@
         ],
         "type": "string",
         "description": "* `experiment_results` - experiment_results"
+      },
+      "ExperimentResultsWidgetUpdateRequestOpenApi": {
+        "type": "object",
+        "properties": {
+          "tile_id": {
+            "type": "integer",
+            "description": "ID of the widget tile to update. Use dashboard-get to look up widget tile IDs."
+          },
+          "name": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "New display name for the widget. Empty string or null clears it; omit to leave unchanged.",
+            "maxLength": 400
+          },
+          "description": {
+            "type": "string",
+            "description": "New markdown description for the widget. Omit to leave unchanged."
+          },
+          "widget_type": {
+            "$ref": "#/components/schemas/ExperimentResultsWidgetTypeEnum"
+          },
+          "config": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ExperimentResultsWidgetConfig"
+              }
+            ],
+            "description": "New configuration for the experiment results widget. Omit to leave unchanged."
+          }
+        },
+        "required": [
+          "tile_id",
+          "widget_type"
+        ]
       },
       "ExperimentRetentionMetric": {
         "additionalProperties": false,
@@ -164259,6 +165798,42 @@
         ],
         "type": "string",
         "description": "* `experiments_list` - experiments_list"
+      },
+      "ExperimentsListWidgetUpdateRequestOpenApi": {
+        "type": "object",
+        "properties": {
+          "tile_id": {
+            "type": "integer",
+            "description": "ID of the widget tile to update. Use dashboard-get to look up widget tile IDs."
+          },
+          "name": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "New display name for the widget. Empty string or null clears it; omit to leave unchanged.",
+            "maxLength": 400
+          },
+          "description": {
+            "type": "string",
+            "description": "New markdown description for the widget. Omit to leave unchanged."
+          },
+          "widget_type": {
+            "$ref": "#/components/schemas/ExperimentsListWidgetTypeEnum"
+          },
+          "config": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ExperimentsListWidgetConfig"
+              }
+            ],
+            "description": "New configuration for the experiments list widget. Omit to leave unchanged."
+          }
+        },
+        "required": [
+          "tile_id",
+          "widget_type"
+        ]
       },
       "ExplainRequest": {
         "type": "object",
@@ -169346,6 +170921,18 @@
       "FunnelsActorsQuery": {
         "additionalProperties": false,
         "properties": {
+          "compare": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Compare"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "When the source funnel has compare-to-previous enabled, scopes the actors to a single period. The runner resolves `'previous'` to the shifted date range; `'current'` (or unset) uses the source's own date range."
+          },
           "funnelStep": {
             "anyOf": [
               {
@@ -172782,6 +174369,10 @@
           "deleted": {
             "type": "boolean",
             "description": "Soft-delete flag; deleted heatmaps are hidden from the list."
+          },
+          "block_consent_modals": {
+            "type": "boolean",
+            "description": "Whether the headless browser dismisses cookie/consent banners before capturing the screenshot. Only applies to 'screenshot' heatmaps."
           },
           "created_by": {
             "allOf": [
@@ -178119,7 +179710,7 @@
                 "$ref": "#/components/schemas/IntegrationKindEnum"
               }
             ],
-            "description": "The kind of integration the member is requesting be connected (e.g. 'slack', 'github').\n\n* `anthropic` - Anthropic\n* `apns` - Apple Push\n* `azure-blob` - Azure Blob\n* `bing-ads` - Bing Ads\n* `clickup` - Clickup\n* `customerio-app` - Customerio App\n* `customerio-track` - Customerio Track\n* `customerio-webhook` - Customerio Webhook\n* `databricks` - Databricks\n* `email` - Email\n* `firebase` - Firebase\n* `github` - Github\n* `gitlab` - Gitlab\n* `google-ads` - Google Ads\n* `google-analytics` - Google Analytics\n* `google-cloud-service-account` - Google Cloud Service Account\n* `google-cloud-storage` - Google Cloud Storage\n* `google-pubsub` - Google Pubsub\n* `google-search-console` - Google Search Console\n* `google-sheets` - Google Sheets\n* `hubspot` - Hubspot\n* `intercom` - Intercom\n* `jira` - Jira\n* `linear` - Linear\n* `linkedin-ads` - Linkedin Ads\n* `meta-ads` - Meta Ads\n* `pinterest-ads` - Pinterest Ads\n* `postgresql` - Postgresql\n* `reddit-ads` - Reddit Ads\n* `salesforce` - Salesforce\n* `slack` - Slack\n* `slack-posthog-code` - Slack Posthog Code\n* `snapchat` - Snapchat\n* `stripe` - Stripe\n* `tiktok-ads` - Tiktok Ads\n* `twilio` - Twilio\n* `vercel` - Vercel"
+            "description": "The kind of integration the member is requesting be connected (e.g. 'slack', 'github').\n\n* `anthropic` - Anthropic\n* `apns` - Apple Push\n* `aws-s3` - Aws S3\n* `azure-blob` - Azure Blob\n* `bing-ads` - Bing Ads\n* `clickup` - Clickup\n* `customerio-app` - Customerio App\n* `customerio-track` - Customerio Track\n* `customerio-webhook` - Customerio Webhook\n* `databricks` - Databricks\n* `email` - Email\n* `firebase` - Firebase\n* `github` - Github\n* `gitlab` - Gitlab\n* `google-ads` - Google Ads\n* `google-analytics` - Google Analytics\n* `google-cloud-service-account` - Google Cloud Service Account\n* `google-cloud-storage` - Google Cloud Storage\n* `google-pubsub` - Google Pubsub\n* `google-search-console` - Google Search Console\n* `google-sheets` - Google Sheets\n* `hubspot` - Hubspot\n* `intercom` - Intercom\n* `jira` - Jira\n* `linear` - Linear\n* `linkedin-ads` - Linkedin Ads\n* `meta-ads` - Meta Ads\n* `pinterest-ads` - Pinterest Ads\n* `postgresql` - Postgresql\n* `reddit-ads` - Reddit Ads\n* `s3-compatible` - S3 Compatible\n* `salesforce` - Salesforce\n* `slack` - Slack\n* `slack-posthog-code` - Slack Posthog Code\n* `snapchat` - Snapchat\n* `stripe` - Stripe\n* `tiktok-ads` - Tiktok Ads\n* `twilio` - Twilio\n* `vercel` - Vercel"
           },
           "reason": {
             "type": "string",
@@ -178337,6 +179928,7 @@
         "enum": [
           "anthropic",
           "apns",
+          "aws-s3",
           "azure-blob",
           "bing-ads",
           "clickup",
@@ -178364,6 +179956,7 @@
           "pinterest-ads",
           "postgresql",
           "reddit-ads",
+          "s3-compatible",
           "salesforce",
           "slack",
           "slack-posthog-code",
@@ -178374,7 +179967,7 @@
           "vercel"
         ],
         "type": "string",
-        "description": "* `anthropic` - Anthropic\n* `apns` - Apple Push\n* `azure-blob` - Azure Blob\n* `bing-ads` - Bing Ads\n* `clickup` - Clickup\n* `customerio-app` - Customerio App\n* `customerio-track` - Customerio Track\n* `customerio-webhook` - Customerio Webhook\n* `databricks` - Databricks\n* `email` - Email\n* `firebase` - Firebase\n* `github` - Github\n* `gitlab` - Gitlab\n* `google-ads` - Google Ads\n* `google-analytics` - Google Analytics\n* `google-cloud-service-account` - Google Cloud Service Account\n* `google-cloud-storage` - Google Cloud Storage\n* `google-pubsub` - Google Pubsub\n* `google-search-console` - Google Search Console\n* `google-sheets` - Google Sheets\n* `hubspot` - Hubspot\n* `intercom` - Intercom\n* `jira` - Jira\n* `linear` - Linear\n* `linkedin-ads` - Linkedin Ads\n* `meta-ads` - Meta Ads\n* `pinterest-ads` - Pinterest Ads\n* `postgresql` - Postgresql\n* `reddit-ads` - Reddit Ads\n* `salesforce` - Salesforce\n* `slack` - Slack\n* `slack-posthog-code` - Slack Posthog Code\n* `snapchat` - Snapchat\n* `stripe` - Stripe\n* `tiktok-ads` - Tiktok Ads\n* `twilio` - Twilio\n* `vercel` - Vercel"
+        "description": "* `anthropic` - Anthropic\n* `apns` - Apple Push\n* `aws-s3` - Aws S3\n* `azure-blob` - Azure Blob\n* `bing-ads` - Bing Ads\n* `clickup` - Clickup\n* `customerio-app` - Customerio App\n* `customerio-track` - Customerio Track\n* `customerio-webhook` - Customerio Webhook\n* `databricks` - Databricks\n* `email` - Email\n* `firebase` - Firebase\n* `github` - Github\n* `gitlab` - Gitlab\n* `google-ads` - Google Ads\n* `google-analytics` - Google Analytics\n* `google-cloud-service-account` - Google Cloud Service Account\n* `google-cloud-storage` - Google Cloud Storage\n* `google-pubsub` - Google Pubsub\n* `google-search-console` - Google Search Console\n* `google-sheets` - Google Sheets\n* `hubspot` - Hubspot\n* `intercom` - Intercom\n* `jira` - Jira\n* `linear` - Linear\n* `linkedin-ads` - Linkedin Ads\n* `meta-ads` - Meta Ads\n* `pinterest-ads` - Pinterest Ads\n* `postgresql` - Postgresql\n* `reddit-ads` - Reddit Ads\n* `s3-compatible` - S3 Compatible\n* `salesforce` - Salesforce\n* `slack` - Slack\n* `slack-posthog-code` - Slack Posthog Code\n* `snapchat` - Snapchat\n* `stripe` - Stripe\n* `tiktok-ads` - Tiktok Ads\n* `twilio` - Twilio\n* `vercel` - Vercel"
       },
       "InteractionKindEnum": {
         "enum": [
@@ -190150,6 +191743,41 @@
           }
         }
       },
+      "PaginatedCustomPropertyDefinitionList": {
+        "type": "object",
+        "required": [
+          "count",
+          "results"
+        ],
+        "properties": {
+          "count": {
+            "type": "integer",
+            "example": 123
+          },
+          "next": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uri",
+            "example": "http://api.example.org/accounts/?offset=400&limit=100"
+          },
+          "previous": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uri",
+            "example": "http://api.example.org/accounts/?offset=200&limit=100"
+          },
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CustomPropertyDefinition"
+            }
+          }
+        }
+      },
       "PaginatedCustomerJourneyList": {
         "type": "object",
         "required": [
@@ -196858,6 +198486,13 @@
             ],
             "description": "Optional emoji shown in place of the default badge when this annotation is surfaced on a chart.",
             "maxLength": 16
+          },
+          "hidden_in_user_interface": {
+            "type": [
+              "boolean",
+              "null"
+            ],
+            "description": "When true, the annotation is hidden from the PostHog UI (charts and the annotations list) but still readable over the API and MCP. Use for high-frequency markers like deployments that would otherwise crowd the UI. Null (the default) means the annotation is shown."
           }
         }
       },
@@ -197409,6 +199044,62 @@
                 "type": "null"
               }
             ],
+            "readOnly": true
+          }
+        }
+      },
+      "PatchedCustomPropertyDefinition": {
+        "type": "object",
+        "description": "A team-scoped definition of a custom account property — the attribute side of the model.\n\nHolds only the property's shape (name, display type, big-number flag). Per-account values are\nstored separately, so this serializer never reads or writes account values. The numeric-only\nbig-number rule and the unique-name conflict are enforced behind the facade.",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "readOnly": true
+          },
+          "name": {
+            "type": "string",
+            "description": "Human-readable name of the custom property. Unique within the team.",
+            "maxLength": 400
+          },
+          "description": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Optional description of what the property represents."
+          },
+          "display_type": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CustomPropertyDisplayTypeEnum"
+              }
+            ],
+            "description": "How the property is interpreted and rendered: 'text', 'number', 'currency', 'percent', 'date', 'datetime', or 'boolean'.\n\n* `text` - text\n* `number` - number\n* `currency` - currency\n* `percent` - percent\n* `date` - date\n* `datetime` - datetime\n* `boolean` - boolean"
+          },
+          "is_big_number": {
+            "type": "boolean",
+            "default": false,
+            "description": "Abbreviate large numbers (e.g. 10,000 → 10K). Only applies to numeric properties."
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          },
+          "created_by": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "readOnly": true
+          },
+          "updated_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time",
             "readOnly": true
           }
         }
@@ -199542,6 +201233,7 @@
       },
       "PatchedExperimentHoldout": {
         "type": "object",
+        "description": "A holdout group — a stable slice of users excluded from experiment exposure.",
         "properties": {
           "id": {
             "type": "integer",
@@ -199576,6 +201268,14 @@
             "type": "string",
             "format": "date-time",
             "readOnly": true
+          },
+          "user_access_level": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "readOnly": true,
+            "description": "The effective access level the user has for this object"
           }
         }
       },
@@ -202573,6 +204273,14 @@
           "pinned": {
             "type": "boolean"
           },
+          "filters": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/DashboardFiltersOpenApi"
+              }
+            ],
+            "description": "Dashboard-level filters (date range and properties) applied across all tiles as the source of truth."
+          },
           "breakdown_colors": {
             "description": "Custom color mapping for breakdown values."
           },
@@ -203813,6 +205521,10 @@
           "deleted": {
             "type": "boolean",
             "description": "Set true to soft-delete the saved heatmap."
+          },
+          "block_consent_modals": {
+            "type": "boolean",
+            "description": "When true, ask the headless browser to dismiss cookie/consent banners before capturing the screenshot. Off by default: the blocker can stall the render on some sites and time out. Only applies to 'screenshot' heatmaps."
           }
         }
       },
@@ -205171,6 +206883,15 @@
               "null"
             ],
             "description": "Custom prompt for CI fixes. If blank, a default prompt will be used."
+          },
+          "branch": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "writeOnly": true,
+            "description": "Branch the user has selected for this cloud task. Write-only and not persisted on the task itself: used only to reuse a matching pre-warmed sandbox Run on creation (the branch is otherwise carried on the run). Omit to match a warm Run on the default branch.",
+            "maxLength": 255
           }
         }
       },
@@ -205705,6 +207426,10 @@
               "null"
             ]
           },
+          "ai_triage": {
+            "readOnly": true,
+            "description": "AI support pipeline triage and outcome (status, result, ticket_type, confidence, attempts, etc.)."
+          },
           "created_at": {
             "type": "string",
             "format": "date-time",
@@ -205881,6 +207606,21 @@
             ],
             "format": "uuid",
             "description": "Optional review queue ID for queue-context saves. When provided, the matching pending queue item is cleared after the review is saved. If omitted, any pending queue item for the same trace is cleared."
+          }
+        }
+      },
+      "PatchedUpdateDashboardWidgetsBatchRequestOpenApi": {
+        "type": "object",
+        "description": "OpenAPI-only batch-update schema with widget_type-discriminated config shapes for agents.",
+        "properties": {
+          "widgets": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UpdateDashboardWidgetRequest"
+            },
+            "description": "Widget tiles to update atomically, each identified by its tile_id. config shape is per widget_type; see dashboard-widget-catalog-list for per-type config_schema (1–10 per request).",
+            "maxItems": 10,
+            "minItems": 1
           }
         }
       },
@@ -237307,6 +239047,10 @@
           "deleted": {
             "type": "boolean",
             "description": "Set true to soft-delete the saved heatmap."
+          },
+          "block_consent_modals": {
+            "type": "boolean",
+            "description": "When true, ask the headless browser to dismiss cookie/consent banners before capturing the screenshot. Off by default: the blocker can stall the render on some sites and time out. Only applies to 'screenshot' heatmaps."
           }
         },
         "required": [
@@ -238717,6 +240461,20 @@
               "null"
             ],
             "description": "Run that wrote this entry, or null if human-authored."
+          },
+          "created_by_skill": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Canonical skill name of the scout that created this entry (e.g. `signals-scout-apm`), or null if human-authored."
+          },
+          "created_by_run_url": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Relative Tasks UI deep-link to the run that created this entry, or null if the run linkage isn't captured."
           }
         },
         "required": [
@@ -240510,6 +242268,42 @@
         ],
         "type": "string",
         "description": "* `session_replay_list` - session_replay_list"
+      },
+      "SessionReplayListWidgetUpdateRequestOpenApi": {
+        "type": "object",
+        "properties": {
+          "tile_id": {
+            "type": "integer",
+            "description": "ID of the widget tile to update. Use dashboard-get to look up widget tile IDs."
+          },
+          "name": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "New display name for the widget. Empty string or null clears it; omit to leave unchanged.",
+            "maxLength": 400
+          },
+          "description": {
+            "type": "string",
+            "description": "New markdown description for the widget. Omit to leave unchanged."
+          },
+          "widget_type": {
+            "$ref": "#/components/schemas/SessionReplayListWidgetTypeEnum"
+          },
+          "config": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/SessionReplayListWidgetConfig"
+              }
+            ],
+            "description": "New configuration for the recent recordings widget. Omit to leave unchanged."
+          }
+        },
+        "required": [
+          "tile_id",
+          "widget_type"
+        ]
       },
       "SessionSummaries": {
         "type": "object",
@@ -249421,6 +251215,15 @@
               "null"
             ],
             "description": "Custom prompt for CI fixes. If blank, a default prompt will be used."
+          },
+          "branch": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "writeOnly": true,
+            "description": "Branch the user has selected for this cloud task. Write-only and not persisted on the task itself: used only to reuse a matching pre-warmed sandbox Run on creation (the branch is otherwise carried on the run). Omit to match a warm Run on the default branch.",
+            "maxLength": 255
           }
         }
       },
@@ -251026,6 +252829,10 @@
               "null"
             ]
           },
+          "ai_triage": {
+            "readOnly": true,
+            "description": "AI support pipeline triage and outcome (status, result, ticket_type, confidence, attempts, etc.)."
+          },
           "created_at": {
             "type": "string",
             "format": "date-time",
@@ -251165,6 +252972,7 @@
           }
         },
         "required": [
+          "ai_triage",
           "assignee",
           "cc_participants",
           "channel_detail",
@@ -256185,6 +257993,50 @@
           "suggested_integration"
         ]
       },
+      "UpdateDashboardWidgetRequest": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/ActivityEventsListWidgetUpdateRequestOpenApi"
+          },
+          {
+            "$ref": "#/components/schemas/ErrorTrackingListWidgetUpdateRequestOpenApi"
+          },
+          {
+            "$ref": "#/components/schemas/SessionReplayListWidgetUpdateRequestOpenApi"
+          },
+          {
+            "$ref": "#/components/schemas/ExperimentsListWidgetUpdateRequestOpenApi"
+          },
+          {
+            "$ref": "#/components/schemas/ExperimentResultsWidgetUpdateRequestOpenApi"
+          }
+        ],
+        "discriminator": {
+          "propertyName": "widget_type",
+          "mapping": {
+            "activity_events_list": "#/components/schemas/ActivityEventsListWidgetUpdateRequestOpenApi",
+            "error_tracking_list": "#/components/schemas/ErrorTrackingListWidgetUpdateRequestOpenApi",
+            "session_replay_list": "#/components/schemas/SessionReplayListWidgetUpdateRequestOpenApi",
+            "experiments_list": "#/components/schemas/ExperimentsListWidgetUpdateRequestOpenApi",
+            "experiment_results": "#/components/schemas/ExperimentResultsWidgetUpdateRequestOpenApi"
+          }
+        }
+      },
+      "UpdateDashboardWidgetsBatchResponse": {
+        "type": "object",
+        "properties": {
+          "tiles": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DashboardTile"
+            },
+            "description": "Updated dashboard widget tiles in request order."
+          }
+        },
+        "required": [
+          "tiles"
+        ]
+      },
       "UpdateTextTileRequest": {
         "type": "object",
         "properties": {
@@ -256992,6 +258844,15 @@
             "readOnly": true,
             "description": "Identifier used to revoke this login session."
           },
+          "created_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time",
+            "readOnly": true,
+            "description": "When this login session was first created — the original sign-in time."
+          },
           "last_activity": {
             "type": "string",
             "format": "date-time",
@@ -257020,6 +258881,7 @@
           }
         },
         "required": [
+          "created_at",
           "device",
           "id",
           "is_current",
@@ -257655,6 +259517,87 @@
         },
         "required": [
           "token"
+        ]
+      },
+      "UserSlackLinkStartRequest": {
+        "type": "object",
+        "description": "Settings-initiated link can target a specific PostHog team + Slack workspace.\n\nBoth are optional — when omitted we fall back to the user's ``current_team``\nand that team's first Slack ``Integration`` (mirrors ``github_start`` for\nthe simple case). The frontend passes both explicitly once it has the\nlinkable-workspace list and the user has picked a workspace.",
+        "properties": {
+          "team_id": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "description": "Optional team/project id to link against; defaults to the user's current team."
+          },
+          "slack_team_id": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Specific Slack workspace id to link against, scoped to the team. Disambiguates when one team has multiple Slack integrations (rare)."
+          }
+        }
+      },
+      "UserSlackLinkStartResponse": {
+        "type": "object",
+        "properties": {
+          "install_url": {
+            "type": "string",
+            "description": "URL to open in the browser to start the Sign-in-with-Slack flow."
+          }
+        },
+        "required": [
+          "install_url"
+        ]
+      },
+      "UserSlackLinkableWorkspaceItem": {
+        "type": "object",
+        "properties": {
+          "posthog_team_id": {
+            "type": "integer",
+            "description": "PostHog team/project id owning the Slack workspace install."
+          },
+          "posthog_team_name": {
+            "type": "string",
+            "description": "PostHog team/project name, for display in a picker."
+          },
+          "posthog_organization_name": {
+            "type": "string",
+            "description": "PostHog organization name owning the team, for picker disambiguation."
+          },
+          "slack_team_id": {
+            "type": "string",
+            "description": "Slack workspace (team) id."
+          },
+          "slack_team_name": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Slack workspace display name as known by PostHog."
+          }
+        },
+        "required": [
+          "posthog_organization_name",
+          "posthog_team_id",
+          "posthog_team_name",
+          "slack_team_id"
+        ]
+      },
+      "UserSlackLinkableWorkspaceListResponse": {
+        "type": "object",
+        "properties": {
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UserSlackLinkableWorkspaceItem"
+            },
+            "description": "Slack workspaces the user could link to but hasn't yet."
+          }
+        },
+        "required": [
+          "results"
         ]
       },
       "UtmAuditResponse": {
@@ -258611,6 +260554,53 @@
         ],
         "type": "string",
         "description": "* `pending` - pending\n* `provisioning` - provisioning\n* `ready` - ready\n* `failed` - failed\n* `deleting` - deleting\n* `deleted` - deleted"
+      },
+      "WarmTaskRequest": {
+        "type": "object",
+        "description": "Request body for warming a full idling Run while composing a Code-app cloud task.\n\nCollection-level: no task exists yet at typing time. The warmer births a draft Task and an\ninteractive Run that boots, clones, checks out `branch`, and starts the agent, then idles awaiting\nthe first message. `github_integration` is a plain integration PK (an integer); the view re-scopes\nit to the caller's team before use.",
+        "properties": {
+          "repository": {
+            "type": "string",
+            "description": "Target GitHub repository to clone, in `organization/repo` format (e.g. `posthog/posthog`).",
+            "maxLength": 255
+          },
+          "github_integration": {
+            "type": "integer",
+            "description": "Primary key of the team's GitHub integration to clone with."
+          },
+          "branch": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Branch to check out in the warm sandbox. Defaults to the repository's default branch when omitted.",
+            "maxLength": 255
+          }
+        },
+        "required": [
+          "github_integration",
+          "repository"
+        ]
+      },
+      "WarmTaskResponse": {
+        "type": "object",
+        "description": "Response for a successful warm request — the draft Task + idling warm Run reused on submit.",
+        "properties": {
+          "task_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Id of the draft Task birthed for the warm Run."
+          },
+          "run_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Id of the idling warm Run. The normal create+run path reuses and activates it on submit."
+          }
+        },
+        "required": [
+          "run_id",
+          "task_id"
+        ]
       },
       "WebAnalyticsExternalSummaryQuery": {
         "additionalProperties": false,
@@ -266752,6 +268742,9 @@
       "name": "conversations"
     },
     {
+      "name": "custom_property_definitions"
+    },
+    {
       "name": "customer_analytics"
     },
     {
@@ -267183,6 +269176,7 @@
         "cohorts",
         "comments",
         "conversations",
+        "custom_property_definitions",
         "customer_analytics",
         "customer_journeys",
         "customer_profile_configs",
