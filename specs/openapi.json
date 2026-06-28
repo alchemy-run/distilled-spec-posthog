@@ -176560,6 +176560,12 @@
                 "$ref": "#/components/schemas/MCPToolDescriptionsQuery"
               },
               {
+                "$ref": "#/components/schemas/MCPToolSampleIntentsQuery"
+              },
+              {
+                "$ref": "#/components/schemas/MCPToolNeighborsQuery"
+              },
+              {
                 "type": "null"
               }
             ],
@@ -177061,6 +177067,12 @@
               },
               {
                 "$ref": "#/components/schemas/MCPToolDescriptionsQuery"
+              },
+              {
+                "$ref": "#/components/schemas/MCPToolSampleIntentsQuery"
+              },
+              {
+                "$ref": "#/components/schemas/MCPToolNeighborsQuery"
               },
               {
                 "type": "null"
@@ -186195,6 +186207,19 @@
             ],
             "default": null
           },
+          "toolName": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "When set, scope to a single effective tool's new-SDK calls (the per-tool \"By harness\" table).",
+            "title": "Toolname"
+          },
           "version": {
             "anyOf": [
               {
@@ -187766,6 +187791,465 @@
           "results"
         ],
         "title": "MCPToolFailuresQueryResponse",
+        "type": "object"
+      },
+      "MCPToolNeighborItem": {
+        "additionalProperties": false,
+        "properties": {
+          "co_occurrences": {
+            "title": "Co Occurrences",
+            "type": "integer"
+          },
+          "neighbor_tool": {
+            "title": "Neighbor Tool",
+            "type": "string"
+          }
+        },
+        "required": [
+          "co_occurrences",
+          "neighbor_tool"
+        ],
+        "title": "MCPToolNeighborItem",
+        "type": "object"
+      },
+      "MCPToolNeighborsQuery": {
+        "additionalProperties": false,
+        "properties": {
+          "dateRange": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/DateRange"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "kind": {
+            "const": "MCPToolNeighborsQuery",
+            "default": "MCPToolNeighborsQuery",
+            "title": "Kind",
+            "type": "string"
+          },
+          "modifiers": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/HogQLQueryModifiers"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Modifiers used when performing the query"
+          },
+          "neighborDirection": {
+            "$ref": "#/components/schemas/NeighborDirection",
+            "description": "Whether to count tools called immediately before or after the target tool."
+          },
+          "response": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/MCPToolNeighborsQueryResponse"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "tags": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/QueryLogTags"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "toolName": {
+            "description": "The effective tool name to scope to (matched against the single-exec-resolved tool name).",
+            "title": "Toolname",
+            "type": "string"
+          },
+          "version": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "version of the node, used for schema migrations",
+            "title": "Version"
+          }
+        },
+        "required": [
+          "neighborDirection",
+          "toolName"
+        ],
+        "title": "MCPToolNeighborsQuery",
+        "type": "object"
+      },
+      "MCPToolNeighborsQueryResponse": {
+        "additionalProperties": false,
+        "properties": {
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Query error. Returned only if 'explain' or `modifiers.debug` is true. Throws an error otherwise.",
+            "title": "Error"
+          },
+          "hogql": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Generated HogQL query.",
+            "title": "Hogql"
+          },
+          "modifiers": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/HogQLQueryModifiers"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Modifiers used when performing the query"
+          },
+          "query_status": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/QueryStatus"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Query status indicates whether next to the provided data, a query is still running."
+          },
+          "resolved_compare_date_range": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ResolvedDateRangeResponse"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "The resolved previous/comparison period date range, when comparing against another period"
+          },
+          "resolved_date_range": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ResolvedDateRangeResponse"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "The date range used for the query"
+          },
+          "results": {
+            "items": {
+              "$ref": "#/components/schemas/MCPToolNeighborItem"
+            },
+            "title": "Results",
+            "type": "array"
+          },
+          "timings": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/QueryTiming"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Measured timings for different parts of the query generation process",
+            "title": "Timings"
+          },
+          "warnings": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/DataWarehouseSyncWarning"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Warnings about data warehouse sources referenced by the query whose latest sync failed, is paused, hit a billing limit, or is otherwise stale. Results may not reflect current source data. Accumulated across every HogQL execution that contributes to this response — so insights backed by warehouse tables (Trends, Funnels, etc.) receive the same warnings as raw HogQL queries.",
+            "title": "Warnings"
+          }
+        },
+        "required": [
+          "results"
+        ],
+        "title": "MCPToolNeighborsQueryResponse",
+        "type": "object"
+      },
+      "MCPToolSampleIntentItem": {
+        "additionalProperties": false,
+        "properties": {
+          "harness": {
+            "description": "Resolved harness label for the call.",
+            "title": "Harness",
+            "type": "string"
+          },
+          "intent": {
+            "description": "JSON-encoded intent payload as reported by the client.",
+            "title": "Intent",
+            "type": "string"
+          },
+          "intent_source": {
+            "title": "Intent Source",
+            "type": "string"
+          },
+          "timestamp": {
+            "title": "Timestamp",
+            "type": "string"
+          }
+        },
+        "required": [
+          "harness",
+          "intent",
+          "intent_source",
+          "timestamp"
+        ],
+        "title": "MCPToolSampleIntentItem",
+        "type": "object"
+      },
+      "MCPToolSampleIntentsQuery": {
+        "additionalProperties": false,
+        "properties": {
+          "dateRange": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/DateRange"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "kind": {
+            "const": "MCPToolSampleIntentsQuery",
+            "default": "MCPToolSampleIntentsQuery",
+            "title": "Kind",
+            "type": "string"
+          },
+          "modifiers": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/HogQLQueryModifiers"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Modifiers used when performing the query"
+          },
+          "response": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/MCPToolSampleIntentsQueryResponse"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "tags": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/QueryLogTags"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "toolName": {
+            "description": "The effective tool name to scope to (matched against the single-exec-resolved tool name).",
+            "title": "Toolname",
+            "type": "string"
+          },
+          "version": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "version of the node, used for schema migrations",
+            "title": "Version"
+          }
+        },
+        "required": [
+          "toolName"
+        ],
+        "title": "MCPToolSampleIntentsQuery",
+        "type": "object"
+      },
+      "MCPToolSampleIntentsQueryResponse": {
+        "additionalProperties": false,
+        "properties": {
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Query error. Returned only if 'explain' or `modifiers.debug` is true. Throws an error otherwise.",
+            "title": "Error"
+          },
+          "hogql": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Generated HogQL query.",
+            "title": "Hogql"
+          },
+          "modifiers": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/HogQLQueryModifiers"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Modifiers used when performing the query"
+          },
+          "query_status": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/QueryStatus"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Query status indicates whether next to the provided data, a query is still running."
+          },
+          "resolved_compare_date_range": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ResolvedDateRangeResponse"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "The resolved previous/comparison period date range, when comparing against another period"
+          },
+          "resolved_date_range": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ResolvedDateRangeResponse"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "The date range used for the query"
+          },
+          "results": {
+            "items": {
+              "$ref": "#/components/schemas/MCPToolSampleIntentItem"
+            },
+            "title": "Results",
+            "type": "array"
+          },
+          "timings": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/QueryTiming"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Measured timings for different parts of the query generation process",
+            "title": "Timings"
+          },
+          "warnings": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/DataWarehouseSyncWarning"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Warnings about data warehouse sources referenced by the query whose latest sync failed, is paused, hit a billing limit, or is otherwise stale. Results may not reflect current source data. Accumulated across every HogQL execution that contributes to this response — so insights backed by warehouse tables (Trends, Funnels, etc.) receive the same warnings as raw HogQL queries.",
+            "title": "Warnings"
+          }
+        },
+        "required": [
+          "results"
+        ],
+        "title": "MCPToolSampleIntentsQueryResponse",
         "type": "object"
       },
       "MCPToolStatsItem": {
@@ -190240,6 +190724,14 @@
           "feature_flag",
           "value"
         ]
+      },
+      "NeighborDirection": {
+        "enum": [
+          "before",
+          "after"
+        ],
+        "title": "NeighborDirection",
+        "type": "string"
       },
       "NetworkAccessLevelEnum": {
         "enum": [
@@ -215021,6 +215513,8 @@
                 "MCPToolDailyStatsQuery": "#/components/schemas/MCPToolDailyStatsQuery",
                 "MCPToolDescriptionsQuery": "#/components/schemas/MCPToolDescriptionsQuery",
                 "MCPToolFailuresQuery": "#/components/schemas/MCPToolFailuresQuery",
+                "MCPToolNeighborsQuery": "#/components/schemas/MCPToolNeighborsQuery",
+                "MCPToolSampleIntentsQuery": "#/components/schemas/MCPToolSampleIntentsQuery",
                 "MCPToolStatsQuery": "#/components/schemas/MCPToolStatsQuery",
                 "MCPToolTopUsersQuery": "#/components/schemas/MCPToolTopUsersQuery",
                 "MarketingAnalyticsAggregatedQuery": "#/components/schemas/MarketingAnalyticsAggregatedQuery",
@@ -215322,6 +215816,12 @@
               },
               {
                 "$ref": "#/components/schemas/MCPToolDescriptionsQuery"
+              },
+              {
+                "$ref": "#/components/schemas/MCPToolSampleIntentsQuery"
+              },
+              {
+                "$ref": "#/components/schemas/MCPToolNeighborsQuery"
               },
               {
                 "$ref": "#/components/schemas/PropertyValuesQuery"
@@ -215658,6 +216158,12 @@
           },
           {
             "$ref": "#/components/schemas/QueryResponseAlternative102"
+          },
+          {
+            "$ref": "#/components/schemas/QueryResponseAlternative103"
+          },
+          {
+            "$ref": "#/components/schemas/QueryResponseAlternative104"
           }
         ],
         "title": "QueryResponseAlternative"
@@ -216206,7 +216712,7 @@
           },
           "results": {
             "items": {
-              "$ref": "#/components/schemas/PropertyValueItem"
+              "$ref": "#/components/schemas/MCPToolSampleIntentItem"
             },
             "title": "Results",
             "type": "array"
@@ -216248,6 +216754,252 @@
           "results"
         ],
         "title": "QueryResponseAlternative102",
+        "type": "object"
+      },
+      "QueryResponseAlternative103": {
+        "additionalProperties": false,
+        "properties": {
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Query error. Returned only if 'explain' or `modifiers.debug` is true. Throws an error otherwise.",
+            "title": "Error"
+          },
+          "hogql": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Generated HogQL query.",
+            "title": "Hogql"
+          },
+          "modifiers": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/HogQLQueryModifiers"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Modifiers used when performing the query"
+          },
+          "query_status": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/QueryStatus"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Query status indicates whether next to the provided data, a query is still running."
+          },
+          "resolved_compare_date_range": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ResolvedDateRangeResponse"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "The resolved previous/comparison period date range, when comparing against another period"
+          },
+          "resolved_date_range": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ResolvedDateRangeResponse"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "The date range used for the query"
+          },
+          "results": {
+            "items": {
+              "$ref": "#/components/schemas/MCPToolNeighborItem"
+            },
+            "title": "Results",
+            "type": "array"
+          },
+          "timings": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/QueryTiming"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Measured timings for different parts of the query generation process",
+            "title": "Timings"
+          },
+          "warnings": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/DataWarehouseSyncWarning"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Warnings about data warehouse sources referenced by the query whose latest sync failed, is paused, hit a billing limit, or is otherwise stale. Results may not reflect current source data. Accumulated across every HogQL execution that contributes to this response — so insights backed by warehouse tables (Trends, Funnels, etc.) receive the same warnings as raw HogQL queries.",
+            "title": "Warnings"
+          }
+        },
+        "required": [
+          "results"
+        ],
+        "title": "QueryResponseAlternative103",
+        "type": "object"
+      },
+      "QueryResponseAlternative104": {
+        "additionalProperties": false,
+        "properties": {
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Query error. Returned only if 'explain' or `modifiers.debug` is true. Throws an error otherwise.",
+            "title": "Error"
+          },
+          "hogql": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Generated HogQL query.",
+            "title": "Hogql"
+          },
+          "modifiers": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/HogQLQueryModifiers"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Modifiers used when performing the query"
+          },
+          "query_status": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/QueryStatus"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Query status indicates whether next to the provided data, a query is still running."
+          },
+          "resolved_compare_date_range": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ResolvedDateRangeResponse"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "The resolved previous/comparison period date range, when comparing against another period"
+          },
+          "resolved_date_range": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ResolvedDateRangeResponse"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "The date range used for the query"
+          },
+          "results": {
+            "items": {
+              "$ref": "#/components/schemas/PropertyValueItem"
+            },
+            "title": "Results",
+            "type": "array"
+          },
+          "timings": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/QueryTiming"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Measured timings for different parts of the query generation process",
+            "title": "Timings"
+          },
+          "warnings": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/DataWarehouseSyncWarning"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Warnings about data warehouse sources referenced by the query whose latest sync failed, is paused, hit a billing limit, or is otherwise stale. Results may not reflect current source data. Accumulated across every HogQL execution that contributes to this response — so insights backed by warehouse tables (Trends, Funnels, etc.) receive the same warnings as raw HogQL queries.",
+            "title": "Warnings"
+          }
+        },
+        "required": [
+          "results"
+        ],
+        "title": "QueryResponseAlternative104",
         "type": "object"
       },
       "QueryResponseAlternative11": {
@@ -230098,6 +230850,8 @@
                 "MCPToolDailyStatsQuery": "#/components/schemas/MCPToolDailyStatsQuery",
                 "MCPToolDescriptionsQuery": "#/components/schemas/MCPToolDescriptionsQuery",
                 "MCPToolFailuresQuery": "#/components/schemas/MCPToolFailuresQuery",
+                "MCPToolNeighborsQuery": "#/components/schemas/MCPToolNeighborsQuery",
+                "MCPToolSampleIntentsQuery": "#/components/schemas/MCPToolSampleIntentsQuery",
                 "MCPToolStatsQuery": "#/components/schemas/MCPToolStatsQuery",
                 "MCPToolTopUsersQuery": "#/components/schemas/MCPToolTopUsersQuery",
                 "MarketingAnalyticsAggregatedQuery": "#/components/schemas/MarketingAnalyticsAggregatedQuery",
@@ -230399,6 +231153,12 @@
               },
               {
                 "$ref": "#/components/schemas/MCPToolDescriptionsQuery"
+              },
+              {
+                "$ref": "#/components/schemas/MCPToolSampleIntentsQuery"
+              },
+              {
+                "$ref": "#/components/schemas/MCPToolNeighborsQuery"
               },
               {
                 "$ref": "#/components/schemas/PropertyValuesQuery"
@@ -230462,6 +231222,8 @@
                 "MCPToolDailyStatsQuery": "#/components/schemas/MCPToolDailyStatsQuery",
                 "MCPToolDescriptionsQuery": "#/components/schemas/MCPToolDescriptionsQuery",
                 "MCPToolFailuresQuery": "#/components/schemas/MCPToolFailuresQuery",
+                "MCPToolNeighborsQuery": "#/components/schemas/MCPToolNeighborsQuery",
+                "MCPToolSampleIntentsQuery": "#/components/schemas/MCPToolSampleIntentsQuery",
                 "MCPToolStatsQuery": "#/components/schemas/MCPToolStatsQuery",
                 "MCPToolTopUsersQuery": "#/components/schemas/MCPToolTopUsersQuery",
                 "MarketingAnalyticsAggregatedQuery": "#/components/schemas/MarketingAnalyticsAggregatedQuery",
@@ -230763,6 +231525,12 @@
               },
               {
                 "$ref": "#/components/schemas/MCPToolDescriptionsQuery"
+              },
+              {
+                "$ref": "#/components/schemas/MCPToolSampleIntentsQuery"
+              },
+              {
+                "$ref": "#/components/schemas/MCPToolNeighborsQuery"
               },
               {
                 "$ref": "#/components/schemas/PropertyValuesQuery"
@@ -246841,13 +247609,29 @@
               "type": "string"
             },
             "description": "The `finding_id`s behind `emitted_count`, in emit order. Each maps to a `Signal` with `source_id = run:<run_id>:finding:<finding_id>`. Empty for non-emitting runs."
+          },
+          "emitted_report_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "The `SignalReport` ids this run authored directly via the `emit_report` channel, in emit order. Separate from `emitted_finding_ids` (weak `emit_signal` findings) — a report-authoring scout writes a full report here instead. Empty for runs that authored no report."
+          },
+          "edited_report_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "The `SignalReport` ids this run mutated via the `edit_report` channel (rewrote title/summary and/or appended a note), deduped. Distinct from `emitted_report_ids`: edit can target any inbox report, so these are generally not reports the run authored. Empty for runs that edited no report."
           }
         },
         "required": [
           "completed_at",
           "created_at",
+          "edited_report_ids",
           "emitted_count",
           "emitted_finding_ids",
+          "emitted_report_ids",
           "run_id",
           "skill_name",
           "skill_version",
@@ -246940,13 +247724,29 @@
               "type": "string"
             },
             "description": "The `finding_id`s behind `emitted_count`, in emit order. Each maps to a `Signal` with `source_id = run:<run_id>:finding:<finding_id>`. Empty for non-emitting runs."
+          },
+          "emitted_report_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "The `SignalReport` ids this run authored directly via the `emit_report` channel, in emit order. Separate from `emitted_finding_ids` (weak `emit_signal` findings) — a report-authoring scout writes a full report here instead. Empty for runs that authored no report."
+          },
+          "edited_report_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "The `SignalReport` ids this run mutated via the `edit_report` channel (rewrote title/summary and/or appended a note), deduped. Distinct from `emitted_report_ids`: edit can target any inbox report, so these are generally not reports the run authored. Empty for runs that edited no report."
           }
         },
         "required": [
           "completed_at",
           "created_at",
+          "edited_report_ids",
           "emitted_count",
           "emitted_finding_ids",
+          "emitted_report_ids",
           "run_id",
           "skill_name",
           "skill_version",
