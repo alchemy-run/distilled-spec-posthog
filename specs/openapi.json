@@ -41837,6 +41837,7 @@
               "enum": [
                 "-completed_at",
                 "-created_at",
+                "-recording_subject_email",
                 "-result_score",
                 "-result_verdict",
                 "-scanner_version",
@@ -41844,6 +41845,7 @@
                 "-status",
                 "completed_at",
                 "created_at",
+                "recording_subject_email",
                 "result_score",
                 "result_verdict",
                 "scanner_version",
@@ -41851,7 +41853,7 @@
                 "status"
               ]
             },
-            "description": "Sort observations. Plain keys: created_at, started_at, completed_at, status. JSONB keys: result_score (scorer), result_verdict (monitor), scanner_version. Prefix with `-` for descending."
+            "description": "Sort observations. Plain keys: created_at, started_at, completed_at, status, recording_subject_email. JSONB keys: result_score (scorer), result_verdict (monitor), scanner_version. Prefix with `-` for descending."
           },
           {
             "in": "query",
@@ -42403,6 +42405,7 @@
               "enum": [
                 "-completed_at",
                 "-created_at",
+                "-recording_subject_email",
                 "-result_score",
                 "-result_verdict",
                 "-scanner_version",
@@ -42410,6 +42413,7 @@
                 "-status",
                 "completed_at",
                 "created_at",
+                "recording_subject_email",
                 "result_score",
                 "result_verdict",
                 "scanner_version",
@@ -42417,7 +42421,15 @@
                 "status"
               ]
             },
-            "description": "Sort observations. Plain keys: created_at, started_at, completed_at, status. JSONB keys: result_score (scorer), result_verdict (monitor), scanner_version. Prefix with `-` for descending."
+            "description": "Sort observations. Plain keys: created_at, started_at, completed_at, status, recording_subject_email. JSONB keys: result_score (scorer), result_verdict (monitor), scanner_version. Prefix with `-` for descending."
+          },
+          {
+            "in": "query",
+            "name": "recording_subject",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter to observations whose recording subject email contains this value (case-insensitive)."
           },
           {
             "in": "path",
@@ -42570,6 +42582,14 @@
               "type": "integer"
             },
             "description": "Window size in days for the coverage `recent_sessions` count. Clamped to [1, 365]. Defaults to 14 when omitted."
+          },
+          {
+            "in": "query",
+            "name": "recording_subject",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter to observations whose recording subject email contains this value (case-insensitive)."
           },
           {
             "in": "path",
@@ -121233,6 +121253,7 @@
               "enum": [
                 "-completed_at",
                 "-created_at",
+                "-recording_subject_email",
                 "-result_score",
                 "-result_verdict",
                 "-scanner_version",
@@ -121240,6 +121261,7 @@
                 "-status",
                 "completed_at",
                 "created_at",
+                "recording_subject_email",
                 "result_score",
                 "result_verdict",
                 "scanner_version",
@@ -121247,7 +121269,7 @@
                 "status"
               ]
             },
-            "description": "Sort observations. Plain keys: created_at, started_at, completed_at, status. JSONB keys: result_score (scorer), result_verdict (monitor), scanner_version. Prefix with `-` for descending."
+            "description": "Sort observations. Plain keys: created_at, started_at, completed_at, status, recording_subject_email. JSONB keys: result_score (scorer), result_verdict (monitor), scanner_version. Prefix with `-` for descending."
           },
           {
             "$ref": "#/components/parameters/ProjectIdPath"
@@ -121790,6 +121812,7 @@
               "enum": [
                 "-completed_at",
                 "-created_at",
+                "-recording_subject_email",
                 "-result_score",
                 "-result_verdict",
                 "-scanner_version",
@@ -121797,6 +121820,7 @@
                 "-status",
                 "completed_at",
                 "created_at",
+                "recording_subject_email",
                 "result_score",
                 "result_verdict",
                 "scanner_version",
@@ -121804,10 +121828,18 @@
                 "status"
               ]
             },
-            "description": "Sort observations. Plain keys: created_at, started_at, completed_at, status. JSONB keys: result_score (scorer), result_verdict (monitor), scanner_version. Prefix with `-` for descending."
+            "description": "Sort observations. Plain keys: created_at, started_at, completed_at, status, recording_subject_email. JSONB keys: result_score (scorer), result_verdict (monitor), scanner_version. Prefix with `-` for descending."
           },
           {
             "$ref": "#/components/parameters/ProjectIdPath"
+          },
+          {
+            "in": "query",
+            "name": "recording_subject",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter to observations whose recording subject email contains this value (case-insensitive)."
           },
           {
             "in": "path",
@@ -121958,6 +121990,14 @@
               "type": "integer"
             },
             "description": "Window size in days for the coverage `recent_sessions` count. Clamped to [1, 365]. Defaults to 14 when omitted."
+          },
+          {
+            "in": "query",
+            "name": "recording_subject",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter to observations whose recording subject email contains this value (case-insensitive)."
           },
           {
             "in": "path",
@@ -233413,6 +233453,40 @@
             "readOnly": true,
             "description": "User who triggered an on-demand observation; null for scheduled observations."
           },
+          "distinct_id": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "readOnly": true,
+            "description": "Distinct id of the person in the recorded session (the subject being watched); null if unknown."
+          },
+          "recording_subject_email": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "readOnly": true,
+            "description": "Email of the person in the recorded session (the subject being watched, not the user who triggered the observation), captured at scan time. Null when the session had no identified person."
+          },
+          "previous_observation_id": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uuid",
+            "readOnly": true,
+            "description": "Id of the newer sibling observation for the same scanner (prev/next nav); only set on retrieve, null at the start."
+          },
+          "next_observation_id": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uuid",
+            "readOnly": true,
+            "description": "Id of the older sibling observation for the same scanner (prev/next nav); only set on retrieve, null at the end."
+          },
           "started_at": {
             "type": [
               "string",
@@ -233435,8 +233509,12 @@
         },
         "required": [
           "created_at",
+          "distinct_id",
           "error_reason",
           "id",
+          "next_observation_id",
+          "previous_observation_id",
+          "recording_subject_email",
           "scanner_id",
           "scanner_result",
           "scanner_snapshot",
