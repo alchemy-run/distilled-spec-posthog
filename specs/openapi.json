@@ -10012,6 +10012,342 @@
         ]
       }
     },
+    "/api/environments/{environment_id}/error_tracking/bypass_rules/": {
+      "get": {
+        "operationId": "environments_error_tracking_bypass_rules_list",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/EnvironmentIdPath"
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Number of results to return per page.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "offset",
+            "required": false,
+            "in": "query",
+            "description": "The initial index from which to return the results.",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "tags": [
+          "error_tracking"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "error_tracking:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedErrorTrackingBypassRuleList"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "deprecated": true,
+        "x-product": [
+          "error_tracking"
+        ]
+      },
+      "post": {
+        "operationId": "environments_error_tracking_bypass_rules_create",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/EnvironmentIdPath"
+          }
+        ],
+        "tags": [
+          "error_tracking"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ErrorTrackingBypassRuleCreateRequest"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/ErrorTrackingBypassRuleCreateRequest"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/ErrorTrackingBypassRuleCreateRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "error_tracking:write"
+            ]
+          }
+        ],
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorTrackingBypassRule"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "deprecated": true,
+        "x-product": [
+          "error_tracking"
+        ]
+      }
+    },
+    "/api/environments/{environment_id}/error_tracking/bypass_rules/{id}/": {
+      "get": {
+        "operationId": "environments_error_tracking_bypass_rules_retrieve",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/EnvironmentIdPath"
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "tags": [
+          "error_tracking"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "error_tracking:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorTrackingBypassRule"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "deprecated": true,
+        "x-product": [
+          "error_tracking"
+        ]
+      },
+      "put": {
+        "operationId": "environments_error_tracking_bypass_rules_update",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/EnvironmentIdPath"
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "tags": [
+          "error_tracking"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ErrorTrackingBypassRuleUpdateRequest"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/ErrorTrackingBypassRuleUpdateRequest"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/ErrorTrackingBypassRuleUpdateRequest"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "error_tracking:write"
+            ]
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No response body"
+          }
+        },
+        "deprecated": true,
+        "x-product": [
+          "error_tracking"
+        ]
+      },
+      "patch": {
+        "operationId": "environments_error_tracking_bypass_rules_partial_update",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/EnvironmentIdPath"
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "tags": [
+          "error_tracking"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchedErrorTrackingBypassRuleUpdateRequest"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchedErrorTrackingBypassRuleUpdateRequest"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchedErrorTrackingBypassRuleUpdateRequest"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "error_tracking:write"
+            ]
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No response body"
+          }
+        },
+        "deprecated": true,
+        "x-product": [
+          "error_tracking"
+        ]
+      },
+      "delete": {
+        "operationId": "environments_error_tracking_bypass_rules_destroy",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/EnvironmentIdPath"
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "tags": [
+          "error_tracking"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "error_tracking:write"
+            ]
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No response body"
+          }
+        },
+        "deprecated": true,
+        "x-product": [
+          "error_tracking"
+        ]
+      }
+    },
+    "/api/environments/{environment_id}/error_tracking/bypass_rules/reorder/": {
+      "patch": {
+        "operationId": "environments_error_tracking_bypass_rules_reorder_partial_update",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/EnvironmentIdPath"
+          }
+        ],
+        "tags": [
+          "error_tracking"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchedErrorTrackingBypassRule"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchedErrorTrackingBypassRule"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchedErrorTrackingBypassRule"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "No response body"
+          }
+        },
+        "deprecated": true,
+        "x-product": [
+          "error_tracking"
+        ]
+      }
+    },
     "/api/environments/{environment_id}/error_tracking/external_references/": {
       "get": {
         "operationId": "environments_error_tracking_external_references_list",
@@ -33225,28 +33561,32 @@
             "$ref": "#/components/parameters/EnvironmentIdPath"
           },
           {
-            "name": "limit",
-            "required": false,
             "in": "query",
-            "description": "Number of results to return per page.",
+            "name": "limit",
             "schema": {
-              "type": "integer"
-            }
+              "type": "integer",
+              "maximum": 500,
+              "minimum": 1,
+              "default": 100
+            },
+            "description": "Maximum number of sessions to return per page. Defaults to 100; values above 500 are rejected."
           },
           {
-            "name": "offset",
-            "required": false,
             "in": "query",
-            "description": "The initial index from which to return the results.",
+            "name": "offset",
             "schema": {
-              "type": "integer"
-            }
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            },
+            "description": "Number of sessions to skip before returning results. Combine with limit to page through sessions; the response's has_next flag indicates whether more remain."
           },
           {
             "in": "query",
             "name": "order_by",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "default": ""
             },
             "description": "Sort column. Allowed: session_id, session_start, session_end, duration_seconds, tool_call_count, mcp_client_name, distinct_id. Prefix with '-' for descending. Defaults to '-session_start' (newest sessions first)."
           },
@@ -33254,7 +33594,8 @@
             "in": "query",
             "name": "search",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "default": ""
             },
             "description": "Case-insensitive substring filter matched against session_id, distinct_id, mcp_client_name, and tools_used."
           }
@@ -64155,6 +64496,309 @@
         ]
       }
     },
+    "/api/projects/{project_id}/custom_property_sources/": {
+      "get": {
+        "operationId": "custom_property_sources_list",
+        "parameters": [
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Number of results to return per page.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "offset",
+            "required": false,
+            "in": "query",
+            "description": "The initial index from which to return the results.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "custom_property_sources"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "account:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedCustomPropertySourceList"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "customer_analytics"
+        ]
+      },
+      "post": {
+        "operationId": "custom_property_sources_create",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "custom_property_sources"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CustomPropertySource"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/CustomPropertySource"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/CustomPropertySource"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "account:write"
+            ]
+          }
+        ],
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomPropertySource"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "customer_analytics"
+        ]
+      }
+    },
+    "/api/projects/{project_id}/custom_property_sources/{id}/": {
+      "get": {
+        "operationId": "custom_property_sources_retrieve",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "custom_property_sources"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "account:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomPropertySource"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "customer_analytics"
+        ]
+      },
+      "put": {
+        "operationId": "custom_property_sources_update",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "custom_property_sources"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CustomPropertySourceUpdate"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/CustomPropertySourceUpdate"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/CustomPropertySourceUpdate"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "account:write"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomPropertySource"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "customer_analytics"
+        ]
+      },
+      "patch": {
+        "operationId": "custom_property_sources_partial_update",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "custom_property_sources"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchedCustomPropertySourceUpdate"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchedCustomPropertySourceUpdate"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchedCustomPropertySourceUpdate"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "account:write"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomPropertySource"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "customer_analytics"
+        ]
+      },
+      "delete": {
+        "operationId": "custom_property_sources_destroy",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "custom_property_sources"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "account:write"
+            ]
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No response body"
+          }
+        },
+        "x-product": [
+          "customer_analytics"
+        ]
+      }
+    },
     "/api/projects/{project_id}/customer_journeys/": {
       "get": {
         "operationId": "customer_journeys_list",
@@ -72301,7 +72945,7 @@
             "schema": {
               "type": "string"
             },
-            "description": "Optional exact git branch (head_branch) to scope workflow health to, e.g. 'main'. Omit or leave blank to aggregate across all branches."
+            "description": "Optional exact git branch (head_branch) to scope results to, e.g. 'main'. Omit or leave blank to aggregate across all branches."
           },
           {
             "in": "query",
@@ -72496,11 +73140,110 @@
         ]
       }
     },
+    "/api/projects/{project_id}/engineering_analytics/workflow_run_activity/": {
+      "get": {
+        "operationId": "engineering_analytics_workflow_run_activity",
+        "description": "Compact per-run points for a single workflow over a window (date_from default -30d), newest first, for the run-activity chart: each run's start time, duration, conclusion, branch, and attributed PR. Optionally scope to a single git branch via `branch`, matching workflow_runs. Leaner and higher-capped than workflow_runs so the chart spans the full window even on busy workflows; `truncated` is true when the cap is hit, so the chart covers only the most recent runs.",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "branch",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Optional exact git branch (head_branch) to scope results to, e.g. 'main'. Omit or leave blank to aggregate across all branches."
+          },
+          {
+            "in": "query",
+            "name": "date_from",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Window start: relative ('-30d', '-8w') or ISO8601. Defaults to -30d."
+          },
+          {
+            "in": "query",
+            "name": "date_to",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Window end: relative or ISO8601. Defaults to now."
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          },
+          {
+            "in": "query",
+            "name": "repo",
+            "schema": {
+              "type": "string"
+            },
+            "description": "'owner/name' repository the workflow belongs to.",
+            "required": true
+          },
+          {
+            "in": "query",
+            "name": "source_id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "Connected GitHub data warehouse source to read from. Defaults to the oldest connected GitHub source when the team has more than one."
+          },
+          {
+            "in": "query",
+            "name": "workflow_name",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Workflow name to load run activity for.",
+            "required": true
+          }
+        ],
+        "tags": [
+          "engineering_analytics",
+          "engineering_analytics"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "engineering_analytics:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkflowRunActivity"
+                }
+              }
+            },
+            "description": ""
+          },
+          "400": {
+            "description": "Missing workflow_name/repo, or invalid date or source_id."
+          }
+        },
+        "x-product": [
+          "engineering_analytics"
+        ]
+      }
+    },
     "/api/projects/{project_id}/engineering_analytics/workflow_runner_costs/": {
       "get": {
         "operationId": "engineering_analytics_workflow_runner_costs",
-        "description": "A workflow's estimated CI cost broken down by runner tier over a window (date_from default -30d), highest spend first. Returns an empty list when the job-level source isn't synced.",
+        "description": "A workflow's estimated CI cost broken down by runner tier over a window (date_from default -30d), highest spend first. Optionally scope to a single git branch via `branch`. Returns an empty list when the job-level source isn't synced.",
         "parameters": [
+          {
+            "in": "query",
+            "name": "branch",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Optional exact git branch (head_branch) to scope results to, e.g. 'main'. Omit or leave blank to aggregate across all branches."
+          },
           {
             "in": "query",
             "name": "date_from",
@@ -72585,8 +73328,16 @@
     "/api/projects/{project_id}/engineering_analytics/workflow_runs/": {
       "get": {
         "operationId": "engineering_analytics_workflow_runs",
-        "description": "Runs of a single workflow within a repo over a window (date_from default -30d), newest first. Each row is run-level — per-job and per-step detail are not tracked yet. Use this as the GitHub 'workflow' page between the workflow list and a single run.",
+        "description": "Runs of a single workflow within a repo over a window (date_from default -30d), newest first. Optionally scope to a single git branch via `branch`. Each row is run-level — per-job and per-step detail are not tracked yet. Use this as the GitHub 'workflow' page between the workflow list and a single run.",
         "parameters": [
+          {
+            "in": "query",
+            "name": "branch",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Optional exact git branch (head_branch) to scope results to, e.g. 'main'. Omit or leave blank to aggregate across all branches."
+          },
           {
             "in": "query",
             "name": "date_from",
@@ -74144,6 +74895,335 @@
             "multipart/form-data": {
               "schema": {
                 "$ref": "#/components/schemas/PatchedErrorTrackingAssignmentRule"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "No response body"
+          }
+        },
+        "x-product": [
+          "error_tracking"
+        ]
+      }
+    },
+    "/api/projects/{project_id}/error_tracking/bypass_rules/": {
+      "get": {
+        "operationId": "error_tracking_bypass_rules_list",
+        "parameters": [
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Number of results to return per page.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "offset",
+            "required": false,
+            "in": "query",
+            "description": "The initial index from which to return the results.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "error_tracking"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "error_tracking:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedErrorTrackingBypassRuleList"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "error_tracking"
+        ]
+      },
+      "post": {
+        "operationId": "error_tracking_bypass_rules_create",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "error_tracking"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ErrorTrackingBypassRuleCreateRequest"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/ErrorTrackingBypassRuleCreateRequest"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/ErrorTrackingBypassRuleCreateRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "error_tracking:write"
+            ]
+          }
+        ],
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorTrackingBypassRule"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "error_tracking"
+        ]
+      }
+    },
+    "/api/projects/{project_id}/error_tracking/bypass_rules/{id}/": {
+      "get": {
+        "operationId": "error_tracking_bypass_rules_retrieve",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "error_tracking"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "error_tracking:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorTrackingBypassRule"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "error_tracking"
+        ]
+      },
+      "put": {
+        "operationId": "error_tracking_bypass_rules_update",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "error_tracking"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ErrorTrackingBypassRuleUpdateRequest"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/ErrorTrackingBypassRuleUpdateRequest"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/ErrorTrackingBypassRuleUpdateRequest"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "error_tracking:write"
+            ]
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No response body"
+          }
+        },
+        "x-product": [
+          "error_tracking"
+        ]
+      },
+      "patch": {
+        "operationId": "error_tracking_bypass_rules_partial_update",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "error_tracking"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchedErrorTrackingBypassRuleUpdateRequest"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchedErrorTrackingBypassRuleUpdateRequest"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchedErrorTrackingBypassRuleUpdateRequest"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "error_tracking:write"
+            ]
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No response body"
+          }
+        },
+        "x-product": [
+          "error_tracking"
+        ]
+      },
+      "delete": {
+        "operationId": "error_tracking_bypass_rules_destroy",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "error_tracking"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "error_tracking:write"
+            ]
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No response body"
+          }
+        },
+        "x-product": [
+          "error_tracking"
+        ]
+      }
+    },
+    "/api/projects/{project_id}/error_tracking/bypass_rules/reorder/": {
+      "patch": {
+        "operationId": "error_tracking_bypass_rules_reorder_partial_update",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "error_tracking"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchedErrorTrackingBypassRule"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchedErrorTrackingBypassRule"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchedErrorTrackingBypassRule"
               }
             }
           }
@@ -79396,6 +80476,14 @@
       "get": {
         "operationId": "experiment_saved_metrics_list",
         "parameters": [
+          {
+            "in": "query",
+            "name": "event",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter to shared metrics whose query references this event name. Matches events used directly in metric queries as well as events behind any actions those metrics reference. Use this for reuse discovery (find a metric by what it measures); distinct from 'search', which matches the metric's own name/description/tags."
+          },
           {
             "name": "limit",
             "required": false,
@@ -103170,28 +104258,32 @@
             "description": "End of the window. PostHog date string or absolute ISO timestamp. Defaults to now."
           },
           {
-            "name": "limit",
-            "required": false,
             "in": "query",
-            "description": "Number of results to return per page.",
+            "name": "limit",
             "schema": {
-              "type": "integer"
-            }
+              "type": "integer",
+              "maximum": 500,
+              "minimum": 1,
+              "default": 100
+            },
+            "description": "Maximum number of sessions to return per page. Defaults to 100; values above 500 are rejected."
           },
           {
-            "name": "offset",
-            "required": false,
             "in": "query",
-            "description": "The initial index from which to return the results.",
+            "name": "offset",
             "schema": {
-              "type": "integer"
-            }
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            },
+            "description": "Number of sessions to skip before returning results. Combine with limit to page through sessions; the response's has_next flag indicates whether more remain."
           },
           {
             "in": "query",
             "name": "order_by",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "default": ""
             },
             "description": "Sort column. Allowed: session_id, session_start, session_end, duration_seconds, tool_call_count, mcp_client_name, distinct_id. Prefix with '-' for descending. Defaults to '-session_start' (newest sessions first)."
           },
@@ -103202,7 +104294,8 @@
             "in": "query",
             "name": "search",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "default": ""
             },
             "description": "Case-insensitive substring filter matched against session_id, distinct_id, mcp_client_name, and tools_used."
           }
@@ -107867,6 +108960,61 @@
         },
         "x-product": [
           "cdp"
+        ]
+      }
+    },
+    "/api/projects/{project_id}/product_enablement/": {
+      "post": {
+        "operationId": "product_enablement_create",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "product_enablement"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProductEnablement"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/ProductEnablement"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/ProductEnablement"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "product_enablement:write"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductEnablementResult"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "core"
         ]
       }
     },
@@ -113774,6 +114922,70 @@
           },
           "404": {
             "description": "Config not found for this project."
+          }
+        },
+        "x-product": [
+          "signals"
+        ]
+      }
+    },
+    "/api/projects/{project_id}/signals/scout/configs/{id}/run/": {
+      "post": {
+        "operationId": "signals_scout_config_run",
+        "description": "Dispatch one on-demand run of this scout immediately, regardless of its schedule. Useful to test a scout right after authoring it, or to refresh its findings on demand. The run executes asynchronously on the worker and inherits every guard the scheduled path has: it is forbidden if scouts are not enabled for the project (403), and skipped if the project is over its Signals credits quota or daily run budget (429) or a run for this scout is already in progress (409). A manual run counts against the same daily run budget as scheduled runs, so repeated manual runs of the same scout can exhaust the project's daily allowance. A manual run does not change the scout's schedule or `last_run_at`. A disabled scout can still be run this way (to test before enabling). Returns immediately with the workflow id — poll the scout's runs for the result.",
+        "summary": "Run a scout now",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "A UUID string identifying this Signal scout config.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "signals"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "signal_scout:write"
+            ]
+          },
+          {
+            "PersonalAPIKeyAuth": [
+              "signal_scout:write"
+            ]
+          }
+        ],
+        "responses": {
+          "202": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SignalScoutManualRun"
+                }
+              }
+            },
+            "description": "A run was dispatched. It executes asynchronously; poll the scout's runs for the result."
+          },
+          "403": {
+            "description": "Signals scouts are not enabled for this project."
+          },
+          "404": {
+            "description": "Config not found for this project (or the scout is withheld)."
+          },
+          "409": {
+            "description": "A run for this scout is already in progress."
+          },
+          "429": {
+            "description": "The project is over its Signals credits quota or daily scout run budget; try again later."
           }
         },
         "x-product": [
@@ -123836,7 +125048,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PaginatedVisionActionRunList"
+                  "$ref": "#/components/schemas/PaginatedVisionActionRunListList"
                 }
               }
             },
@@ -137207,7 +138419,7 @@
                 "type": "null"
               }
             ],
-            "description": "Per-insight-kind alert configuration, discriminated by `type`. TrendsAlertConfig: series_index (which series to monitor) and check_ongoing_interval (whether to check the current incomplete interval). HogQLAlertConfig (SQL insights): column (which result column to evaluate, defaults to the single numeric column), evaluation ('last_row' checks the latest value of an oldest->newest query, 'first_row' checks the first value of a newest->oldest query, 'any_row' fires if any row breaches), and label_column (names the evaluated row(s) in breach messages, in every evaluation mode). FunnelsAlertConfig (funnel insights): funnel_step (the step to monitor, null for the overall last step) and metric ('conversion_from_start' or 'conversion_from_previous'); funnel alerts only support absolute_value conditions."
+            "description": "Per-insight-kind alert configuration, discriminated by `type`. TrendsAlertConfig: series_index (which series to monitor) and check_ongoing_interval (whether to check the current incomplete interval). HogQLAlertConfig (SQL insights): column (which result column to evaluate, defaults to the single numeric column), evaluation ('last_row' checks the latest value of an oldest->newest query, 'first_row' checks the first value of a newest->oldest query, 'any_row' fires if any row breaches), and label_column (names the evaluated row(s) in breach messages, in every evaluation mode). FunnelsAlertConfig (funnel insights): funnel_step (the step to monitor, null for the overall last step), metric ('conversion_from_start' or 'conversion_from_previous'), and check_ongoing_interval (historical-trend funnels: also evaluate the current in-progress period). Steps funnels support only absolute_value conditions; historical-trend funnels also support relative_increase/relative_decrease (compared against the prior period)."
           },
           "detector_config": {
             "oneOf": [
@@ -146701,7 +147913,7 @@
       },
       "CustomPropertyDefinition": {
         "type": "object",
-        "description": "A team-scoped definition of a custom account property — the attribute side of the model.\n\nHolds only the property's shape (name, display type, big-number flag). Per-account values are\nstored separately, so this serializer never reads or writes account values. The numeric-only\nbig-number rule and the unique-name conflict are enforced behind the facade.",
+        "description": "A team-scoped definition of a custom account property — the attribute side of the model.\n\nHolds only the property's shape (name, display type, big-number flag). Per-account values are\nstored separately, so this serializer never reads or writes account values.",
         "properties": {
           "id": {
             "type": "string",
@@ -146732,6 +147944,18 @@
             "type": "boolean",
             "default": false,
             "description": "Abbreviate large numbers (e.g. 10,000 → 10K). Only applies to numeric properties."
+          },
+          "source": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/CustomPropertySource"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "readOnly": true,
+            "description": "The data-warehouse view-sync binding feeding this property, or null when values are set manually."
           },
           "created_at": {
             "type": "string",
@@ -146769,6 +147993,7 @@
           "id",
           "name",
           "references",
+          "source",
           "updated_at"
         ]
       },
@@ -146816,6 +148041,117 @@
           "status",
           "type"
         ]
+      },
+      "CustomPropertySource": {
+        "type": "object",
+        "description": "Binds a materialized data-warehouse view column to a custom property definition; the view's\nvalues are synced onto matching accounts on each materialization.",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "readOnly": true
+          },
+          "definition": {
+            "type": "string",
+            "format": "uuid",
+            "description": "UUID of the custom property definition this source feeds. One source per definition."
+          },
+          "saved_query": {
+            "type": "string",
+            "format": "uuid",
+            "description": "UUID of the data-warehouse saved query (materialized view) to read values from."
+          },
+          "source_column": {
+            "type": "string",
+            "description": "Column in the view whose value is written to the property.",
+            "maxLength": 400
+          },
+          "key_column": {
+            "type": "string",
+            "description": "Column in the view whose value matches an account's external_id.",
+            "maxLength": 400
+          },
+          "is_enabled": {
+            "type": "boolean",
+            "default": true,
+            "description": "Whether the source syncs. Auto-disabled after repeated failures or a missing view; re-enabling resets the failure count."
+          },
+          "consecutive_failures": {
+            "type": "integer",
+            "readOnly": true,
+            "description": "Consecutive failed sync runs; the source auto-disables at the cap."
+          },
+          "last_synced_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time",
+            "readOnly": true,
+            "description": "When the most recent sync run finished."
+          },
+          "last_sync_error": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "readOnly": true,
+            "description": "Error summary from the last run, or null if it succeeded."
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          },
+          "created_by": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "readOnly": true
+          },
+          "updated_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time",
+            "readOnly": true
+          }
+        },
+        "required": [
+          "consecutive_failures",
+          "created_at",
+          "created_by",
+          "definition",
+          "id",
+          "key_column",
+          "last_sync_error",
+          "last_synced_at",
+          "saved_query",
+          "source_column",
+          "updated_at"
+        ]
+      },
+      "CustomPropertySourceUpdate": {
+        "type": "object",
+        "description": "Writable fields for updating a source. ``definition`` and ``saved_query`` are create-only, so\nthey are intentionally absent — only these reach the facade's update.",
+        "properties": {
+          "source_column": {
+            "type": "string",
+            "description": "Column in the view whose value is written to the property.",
+            "maxLength": 400
+          },
+          "key_column": {
+            "type": "string",
+            "description": "Column in the view whose value matches an account's external_id.",
+            "maxLength": 400
+          },
+          "is_enabled": {
+            "type": "boolean",
+            "description": "Whether the source syncs; re-enabling it resets the failure count."
+          }
+        }
       },
       "CustomPropertyValue": {
         "type": "object",
@@ -152522,6 +153858,7 @@
       },
       "EarlyAccessFeature": {
         "type": "object",
+        "description": "Mixin for serializers to add user access control fields",
         "properties": {
           "id": {
             "type": "string",
@@ -152569,6 +153906,14 @@
             "type": "string",
             "format": "date-time",
             "readOnly": true
+          },
+          "user_access_level": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "readOnly": true,
+            "description": "The effective access level the user has for this object"
           }
         },
         "required": [
@@ -152577,11 +153922,13 @@
           "id",
           "name",
           "payload",
-          "stage"
+          "stage",
+          "user_access_level"
         ]
       },
       "EarlyAccessFeatureSerializerCreateOnly": {
         "type": "object",
+        "description": "Mixin for serializers to add user access control fields",
         "properties": {
           "id": {
             "type": "string",
@@ -152636,6 +153983,14 @@
             "type": "string",
             "writeOnly": true,
             "title": " create in folder"
+          },
+          "user_access_level": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "readOnly": true,
+            "description": "The effective access level the user has for this object"
           }
         },
         "required": [
@@ -152643,7 +153998,8 @@
           "feature_flag",
           "id",
           "name",
-          "stage"
+          "stage",
+          "user_access_level"
         ]
       },
       "EditReportRequest": {
@@ -155942,6 +157298,76 @@
         ],
         "title": "ErrorTrackingBreakdownsQueryResponse",
         "type": "object"
+      },
+      "ErrorTrackingBypassRule": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "readOnly": true,
+            "description": "Unique identifier of the bypass rule."
+          },
+          "filters": {
+            "description": "Property-group filters that define which incoming error events bypass rate limiting."
+          },
+          "order_key": {
+            "type": "integer",
+            "description": "Position of the rule in the team's ordered list. Rules are evaluated greedily in ascending order."
+          },
+          "disabled_data": {
+            "description": "Populated when the rule has been automatically disabled (for example, after its filters failed to evaluate during ingestion). Null while the rule is active."
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true,
+            "description": "When the rule was created."
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true,
+            "description": "When the rule was last updated."
+          }
+        },
+        "required": [
+          "created_at",
+          "disabled_data",
+          "filters",
+          "id",
+          "order_key",
+          "updated_at"
+        ]
+      },
+      "ErrorTrackingBypassRuleCreateRequest": {
+        "type": "object",
+        "properties": {
+          "filters": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/PropertyGroupFilterValue"
+              }
+            ],
+            "description": "Property-group filters that define which incoming error events bypass rate limiting. Must contain at least one filter — empty rules are rejected. To stop rate limiting entirely, adjust the rate limit settings instead of creating a match-all bypass rule."
+          }
+        },
+        "required": [
+          "filters"
+        ]
+      },
+      "ErrorTrackingBypassRuleUpdateRequest": {
+        "type": "object",
+        "properties": {
+          "filters": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/PropertyGroupFilterValue"
+              }
+            ],
+            "description": "Property-group filters that define which incoming error events bypass rate limiting. Must contain at least one filter. Omit to preserve the existing filters."
+          }
+        }
       },
       "ErrorTrackingCorrelatedIssue": {
         "additionalProperties": false,
@@ -173160,6 +174586,19 @@
       "FunnelsAlertConfig": {
         "additionalProperties": false,
         "properties": {
+          "check_ongoing_interval": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "When true, evaluate the current (still in-progress) period; by default only completed periods are used.",
+            "title": "Check Ongoing Interval"
+          },
           "funnel_step": {
             "anyOf": [
               {
@@ -195497,10 +196936,11 @@
           "posthog_ai",
           "signal_report",
           "signals_scout",
-          "support_reply"
+          "support_reply",
+          "hogdesk"
         ],
         "type": "string",
-        "description": "* `onboarding` - Onboarding\n* `error_tracking` - Error Tracking\n* `eval_clusters` - Eval Clusters\n* `user_created` - User Created\n* `automation` - Automation\n* `slack` - Slack\n* `support_queue` - Support Queue\n* `session_summaries` - Session Summaries\n* `posthog_ai` - PostHog AI\n* `signal_report` - Signal Report\n* `signals_scout` - Signals Scout\n* `support_reply` - Support Reply"
+        "description": "* `onboarding` - Onboarding\n* `error_tracking` - Error Tracking\n* `eval_clusters` - Eval Clusters\n* `user_created` - User Created\n* `automation` - Automation\n* `slack` - Slack\n* `support_queue` - Support Queue\n* `session_summaries` - Session Summaries\n* `posthog_ai` - PostHog AI\n* `signal_report` - Signal Report\n* `signals_scout` - Signals Scout\n* `support_reply` - Support Reply\n* `hogdesk` - HogDesk"
       },
       "Outcome": {
         "type": "object",
@@ -196466,6 +197906,41 @@
           }
         }
       },
+      "PaginatedCustomPropertySourceList": {
+        "type": "object",
+        "required": [
+          "count",
+          "results"
+        ],
+        "properties": {
+          "count": {
+            "type": "integer",
+            "example": 123
+          },
+          "next": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uri",
+            "example": "http://api.example.org/accounts/?offset=400&limit=100"
+          },
+          "previous": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uri",
+            "example": "http://api.example.org/accounts/?offset=200&limit=100"
+          },
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CustomPropertySource"
+            }
+          }
+        }
+      },
       "PaginatedCustomerJourneyList": {
         "type": "object",
         "required": [
@@ -197057,6 +198532,41 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/ErrorTrackingAssignmentRule"
+            }
+          }
+        }
+      },
+      "PaginatedErrorTrackingBypassRuleList": {
+        "type": "object",
+        "required": [
+          "count",
+          "results"
+        ],
+        "properties": {
+          "count": {
+            "type": "integer",
+            "example": 123
+          },
+          "next": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uri",
+            "example": "http://api.example.org/accounts/?offset=400&limit=100"
+          },
+          "previous": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uri",
+            "example": "http://api.example.org/accounts/?offset=200&limit=100"
+          },
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ErrorTrackingBypassRule"
             }
           }
         }
@@ -201189,7 +202699,7 @@
           }
         }
       },
-      "PaginatedVisionActionRunList": {
+      "PaginatedVisionActionRunListList": {
         "type": "object",
         "required": [
           "count",
@@ -201219,7 +202729,7 @@
           "results": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/VisionActionRun"
+              "$ref": "#/components/schemas/VisionActionRunList"
             }
           }
         }
@@ -202048,7 +203558,7 @@
                 "type": "null"
               }
             ],
-            "description": "Per-insight-kind alert configuration, discriminated by `type`. TrendsAlertConfig: series_index (which series to monitor) and check_ongoing_interval (whether to check the current incomplete interval). HogQLAlertConfig (SQL insights): column (which result column to evaluate, defaults to the single numeric column), evaluation ('last_row' checks the latest value of an oldest->newest query, 'first_row' checks the first value of a newest->oldest query, 'any_row' fires if any row breaches), and label_column (names the evaluated row(s) in breach messages, in every evaluation mode). FunnelsAlertConfig (funnel insights): funnel_step (the step to monitor, null for the overall last step) and metric ('conversion_from_start' or 'conversion_from_previous'); funnel alerts only support absolute_value conditions."
+            "description": "Per-insight-kind alert configuration, discriminated by `type`. TrendsAlertConfig: series_index (which series to monitor) and check_ongoing_interval (whether to check the current incomplete interval). HogQLAlertConfig (SQL insights): column (which result column to evaluate, defaults to the single numeric column), evaluation ('last_row' checks the latest value of an oldest->newest query, 'first_row' checks the first value of a newest->oldest query, 'any_row' fires if any row breaches), and label_column (names the evaluated row(s) in breach messages, in every evaluation mode). FunnelsAlertConfig (funnel insights): funnel_step (the step to monitor, null for the overall last step), metric ('conversion_from_start' or 'conversion_from_previous'), and check_ongoing_interval (historical-trend funnels: also evaluate the current in-progress period). Steps funnels support only absolute_value conditions; historical-trend funnels also support relative_increase/relative_decrease (compared against the prior period)."
           },
           "detector_config": {
             "oneOf": [
@@ -202819,7 +204329,7 @@
       },
       "PatchedCustomPropertyDefinition": {
         "type": "object",
-        "description": "A team-scoped definition of a custom account property — the attribute side of the model.\n\nHolds only the property's shape (name, display type, big-number flag). Per-account values are\nstored separately, so this serializer never reads or writes account values. The numeric-only\nbig-number rule and the unique-name conflict are enforced behind the facade.",
+        "description": "A team-scoped definition of a custom account property — the attribute side of the model.\n\nHolds only the property's shape (name, display type, big-number flag). Per-account values are\nstored separately, so this serializer never reads or writes account values.",
         "properties": {
           "id": {
             "type": "string",
@@ -202851,6 +204361,18 @@
             "default": false,
             "description": "Abbreviate large numbers (e.g. 10,000 → 10K). Only applies to numeric properties."
           },
+          "source": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/CustomPropertySource"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "readOnly": true,
+            "description": "The data-warehouse view-sync binding feeding this property, or null when values are set manually."
+          },
           "created_at": {
             "type": "string",
             "format": "date-time",
@@ -202878,6 +204400,26 @@
             },
             "readOnly": true,
             "description": "Workflows that use this property, resolved by definition id."
+          }
+        }
+      },
+      "PatchedCustomPropertySourceUpdate": {
+        "type": "object",
+        "description": "Writable fields for updating a source. ``definition`` and ``saved_query`` are create-only, so\nthey are intentionally absent — only these reach the facade's update.",
+        "properties": {
+          "source_column": {
+            "type": "string",
+            "description": "Column in the view whose value is written to the property.",
+            "maxLength": 400
+          },
+          "key_column": {
+            "type": "string",
+            "description": "Column in the view whose value matches an account's external_id.",
+            "maxLength": 400
+          },
+          "is_enabled": {
+            "type": "boolean",
+            "description": "Whether the source syncs; re-enabling it resets the failure count."
           }
         }
       },
@@ -203466,6 +205008,7 @@
       },
       "PatchedEarlyAccessFeature": {
         "type": "object",
+        "description": "Mixin for serializers to add user access control fields",
         "properties": {
           "id": {
             "type": "string",
@@ -203513,6 +205056,14 @@
             "type": "string",
             "format": "date-time",
             "readOnly": true
+          },
+          "user_access_level": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "readOnly": true,
+            "description": "The effective access level the user has for this object"
           }
         }
       },
@@ -203973,6 +205524,52 @@
               }
             ],
             "description": "User or role to assign matching issues to."
+          }
+        }
+      },
+      "PatchedErrorTrackingBypassRule": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "readOnly": true,
+            "description": "Unique identifier of the bypass rule."
+          },
+          "filters": {
+            "description": "Property-group filters that define which incoming error events bypass rate limiting."
+          },
+          "order_key": {
+            "type": "integer",
+            "description": "Position of the rule in the team's ordered list. Rules are evaluated greedily in ascending order."
+          },
+          "disabled_data": {
+            "description": "Populated when the rule has been automatically disabled (for example, after its filters failed to evaluate during ingestion). Null while the rule is active."
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true,
+            "description": "When the rule was created."
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true,
+            "description": "When the rule was last updated."
+          }
+        }
+      },
+      "PatchedErrorTrackingBypassRuleUpdateRequest": {
+        "type": "object",
+        "properties": {
+          "filters": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/PropertyGroupFilterValue"
+              }
+            ],
+            "description": "Property-group filters that define which incoming error events bypass rate limiting. Must contain at least one filter. Omit to preserve the existing filters."
           }
         }
       },
@@ -210699,7 +212296,7 @@
                 "$ref": "#/components/schemas/OriginProductEnum"
               }
             ],
-            "description": "PostHog product or surface that created this task (e.g. error_tracking, slack, user_created).\n\n* `onboarding` - Onboarding\n* `error_tracking` - Error Tracking\n* `eval_clusters` - Eval Clusters\n* `user_created` - User Created\n* `automation` - Automation\n* `slack` - Slack\n* `support_queue` - Support Queue\n* `session_summaries` - Session Summaries\n* `posthog_ai` - PostHog AI\n* `signal_report` - Signal Report\n* `signals_scout` - Signals Scout\n* `support_reply` - Support Reply"
+            "description": "PostHog product or surface that created this task (e.g. error_tracking, slack, user_created).\n\n* `onboarding` - Onboarding\n* `error_tracking` - Error Tracking\n* `eval_clusters` - Eval Clusters\n* `user_created` - User Created\n* `automation` - Automation\n* `slack` - Slack\n* `support_queue` - Support Queue\n* `session_summaries` - Session Summaries\n* `posthog_ai` - PostHog AI\n* `signal_report` - Signal Report\n* `signals_scout` - Signals Scout\n* `support_reply` - Support Reply\n* `hogdesk` - HogDesk"
           },
           "repository": {
             "type": [
@@ -214621,6 +216218,37 @@
           "primary_properties"
         ]
       },
+      "ProductEnablement": {
+        "type": "object",
+        "properties": {
+          "products": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProductsEnum"
+            },
+            "description": "Products to turn on for this project, each enabled with server-owned conservative defaults.",
+            "minItems": 1
+          }
+        },
+        "required": [
+          "products"
+        ]
+      },
+      "ProductEnablementResult": {
+        "type": "object",
+        "properties": {
+          "results": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "description": "Per requested product: \"enabled\" (just turned on) or \"already_enabled\"."
+          }
+        },
+        "required": [
+          "results"
+        ]
+      },
       "ProductIntentEntry": {
         "type": "object",
         "description": "One row in `inventory.product_intents`.",
@@ -214873,6 +216501,15 @@
         ],
         "type": "string",
         "description": "* `app` - app\n* `toolbar` - toolbar"
+      },
+      "ProductsEnum": {
+        "enum": [
+          "conversations",
+          "error_tracking",
+          "session_replay"
+        ],
+        "type": "string",
+        "description": "* `conversations` - conversations\n* `error_tracking` - error_tracking\n* `session_replay` - session_replay"
       },
       "ProjectBackwardCompat": {
         "type": "object",
@@ -243935,6 +245572,52 @@
           "results"
         ]
       },
+      "RunObservation": {
+        "type": "object",
+        "description": "One recording an action run included in its summary — the 'recordings included' list on the run detail view.",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "readOnly": true,
+            "description": "Observation id; links to the observation detail view."
+          },
+          "session_id": {
+            "type": "string",
+            "readOnly": true,
+            "description": "Session recording id this observation was made on."
+          },
+          "recording_subject_email": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "readOnly": true,
+            "description": "Email of the person in the recorded session, captured at scan time; null if unidentified."
+          },
+          "title": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "readOnly": true,
+            "description": "Short title from the observation's summary; null if the observation had none."
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true,
+            "description": "When the observation was produced."
+          }
+        },
+        "required": [
+          "created_at",
+          "id",
+          "recording_subject_email",
+          "session_id",
+          "title"
+        ]
+      },
       "RunPhaseEnum": {
         "enum": [
           "idle",
@@ -249204,6 +250887,14 @@
             "readOnly": true,
             "description": "Distinct source products contributing signals to this report (from ClickHouse)."
           },
+          "scout_name": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "readOnly": true,
+            "description": "skill_name slug of the scout that authored this report, when scout-authored (from ClickHouse); null otherwise."
+          },
           "implementation_pr_url": {
             "type": [
               "string",
@@ -249224,6 +250915,7 @@
           "implementation_pr_url",
           "is_suggested_reviewer",
           "priority",
+          "scout_name",
           "signal_count",
           "signals_at_run",
           "source_products",
@@ -249750,6 +251442,29 @@
           "source_id",
           "tags",
           "weight"
+        ]
+      },
+      "SignalScoutManualRun": {
+        "type": "object",
+        "description": "Response for an on-demand (`run now`) scout dispatch.\n\nThe run executes asynchronously on the Temporal worker, so there is no `SignalScoutRun`\nrow yet at response time — the bridge row is created once the run's first turn starts.\nPoll the scout's runs (`signals-scout-runs-list`) to see the resulting run and its findings.",
+        "properties": {
+          "skill_name": {
+            "type": "string",
+            "description": "The `signals-scout-*` skill that was dispatched."
+          },
+          "workflow_id": {
+            "type": "string",
+            "description": "Temporal workflow id for the dispatched run. The run executes asynchronously; poll the scout's runs to see the resulting run row, its status, and any emitted findings."
+          },
+          "started": {
+            "type": "boolean",
+            "description": "True when a new run was dispatched. The endpoint returns 409 instead when a run for this scout is already in progress."
+          }
+        },
+        "required": [
+          "skill_name",
+          "started",
+          "workflow_id"
         ]
       },
       "SignalScoutRunDetail": {
@@ -256753,7 +258468,16 @@
         "properties": {
           "text": {
             "type": "string",
+            "description": "Joined message body. Used when text_parts is absent.",
             "maxLength": 10000
+          },
+          "text_parts": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 10000
+            },
+            "description": "Ordered assistant text blocks. When present, the last non-empty entry is posted instead of text."
           }
         },
         "required": [
@@ -257272,7 +258996,7 @@
                 "$ref": "#/components/schemas/OriginProductEnum"
               }
             ],
-            "description": "PostHog product or surface that created this task (e.g. error_tracking, slack, user_created).\n\n* `onboarding` - Onboarding\n* `error_tracking` - Error Tracking\n* `eval_clusters` - Eval Clusters\n* `user_created` - User Created\n* `automation` - Automation\n* `slack` - Slack\n* `support_queue` - Support Queue\n* `session_summaries` - Session Summaries\n* `posthog_ai` - PostHog AI\n* `signal_report` - Signal Report\n* `signals_scout` - Signals Scout\n* `support_reply` - Support Reply"
+            "description": "PostHog product or surface that created this task (e.g. error_tracking, slack, user_created).\n\n* `onboarding` - Onboarding\n* `error_tracking` - Error Tracking\n* `eval_clusters` - Eval Clusters\n* `user_created` - User Created\n* `automation` - Automation\n* `slack` - Slack\n* `support_queue` - Support Queue\n* `session_summaries` - Session Summaries\n* `posthog_ai` - PostHog AI\n* `signal_report` - Signal Report\n* `signals_scout` - Signals Scout\n* `support_reply` - Support Reply\n* `hogdesk` - HogDesk"
           },
           "repository": {
             "type": [
@@ -266528,7 +268252,7 @@
       },
       "VisionActionRun": {
         "type": "object",
-        "description": "Read-only history of one VisionAction execution, backing the per-action run list + summary view.",
+        "description": "Full run detail: the list fields plus the synthesized report and the recordings it summarized.",
         "properties": {
           "id": {
             "type": "string",
@@ -266558,10 +268282,81 @@
             "readOnly": true,
             "description": "Number of observations that fed this run's summary."
           },
+          "error_reason": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "readOnly": true,
+            "description": "Short human-readable reason a run skipped or failed; null on success."
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          },
           "synthesized_markdown": {
             "type": "string",
             "readOnly": true,
             "description": "The synthesized group-summary report in Markdown. Empty until a run completes successfully."
+          },
+          "observations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RunObservation"
+            },
+            "readOnly": true,
+            "description": "Recordings this run included in its summary, in summary order. Empty for runs recorded before this was tracked, and for skipped/failed runs."
+          }
+        },
+        "required": [
+          "created_at",
+          "error_reason",
+          "id",
+          "observation_count",
+          "observations",
+          "scheduled_at",
+          "status",
+          "synthesized_markdown",
+          "updated_at"
+        ]
+      },
+      "VisionActionRunList": {
+        "type": "object",
+        "description": "Lightweight run row for the per-action run list (no report body — that's fetched on retrieve).",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "readOnly": true
+          },
+          "status": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/VisionActionRunStatusEnum"
+              }
+            ],
+            "readOnly": true,
+            "description": "Run outcome: running, completed, failed, or skipped.\n\n* `running` - Running\n* `completed` - Completed\n* `failed` - Failed\n* `skipped` - Skipped"
+          },
+          "scheduled_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time",
+            "readOnly": true,
+            "description": "The scheduled fire time this run was claimed for."
+          },
+          "observation_count": {
+            "type": "integer",
+            "readOnly": true,
+            "description": "Number of observations that fed this run's summary."
           },
           "error_reason": {
             "type": [
@@ -266589,7 +268384,6 @@
           "observation_count",
           "scheduled_at",
           "status",
-          "synthesized_markdown",
           "updated_at"
         ]
       },
@@ -271740,6 +273534,75 @@
           "status"
         ]
       },
+      "WorkflowRunActivity": {
+        "type": "object",
+        "properties": {
+          "points": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WorkflowRunActivityPoint"
+            },
+            "description": "Per-run chart points, newest first, capped at `limit`."
+          },
+          "truncated": {
+            "type": "boolean",
+            "description": "True when more runs matched than the cap; `points` is the newest `limit` runs, so the chart covers only the most recent activity, not the full window."
+          },
+          "limit": {
+            "type": "integer",
+            "description": "Maximum number of run points returned in `points`."
+          }
+        },
+        "required": [
+          "limit",
+          "points",
+          "truncated"
+        ]
+      },
+      "WorkflowRunActivityPoint": {
+        "type": "object",
+        "properties": {
+          "run_id": {
+            "type": "integer",
+            "description": "GitHub Actions run id."
+          },
+          "conclusion": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Run conclusion ('success', 'failure', 'timed_out', 'cancelled', 'skipped', ...), or null while still in progress."
+          },
+          "run_started_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When the run started. Never null on this endpoint: runs without a parseable start timestamp are excluded from the window (they can't be plotted on the chart's time axis)."
+          },
+          "duration_seconds": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "description": "Wall-clock duration in seconds; null until the run completes."
+          },
+          "head_branch": {
+            "type": "string",
+            "description": "Git branch the run was triggered on, or '' when unknown."
+          },
+          "pr_number": {
+            "type": "integer",
+            "description": "Attributed pull request number, or 0 when unattributed."
+          }
+        },
+        "required": [
+          "conclusion",
+          "duration_seconds",
+          "head_branch",
+          "pr_number",
+          "run_id",
+          "run_started_at"
+        ]
+      },
       "WorkflowRunDetail": {
         "type": "object",
         "properties": {
@@ -276053,6 +277916,9 @@
       "name": "custom_property_definitions"
     },
     {
+      "name": "custom_property_sources"
+    },
+    {
       "name": "customer_analytics"
     },
     {
@@ -276284,6 +278150,9 @@
       "name": "plugin_configs"
     },
     {
+      "name": "product_enablement"
+    },
+    {
       "name": "product_tours"
     },
     {
@@ -276485,6 +278354,7 @@
         "comments",
         "conversations",
         "custom_property_definitions",
+        "custom_property_sources",
         "customer_analytics",
         "customer_journeys",
         "customer_profile_configs",
@@ -276562,6 +278432,7 @@
         "persons",
         "platform_features",
         "plugin_configs",
+        "product_enablement",
         "product_tours",
         "project_secret_api_keys",
         "projects",
