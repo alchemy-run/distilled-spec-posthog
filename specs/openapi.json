@@ -8799,7 +8799,7 @@
     "/api/environments/{environment_id}/elements/stats/": {
       "get": {
         "operationId": "environments_elements_stats_retrieve",
-        "description": "The original version of this API always and only returned $autocapture elements\nIf no include query parameter is sent this remains true.\nNow, you can pass a combination of include query parameters to get different types of elements\nCurrently only $autocapture and $rageclick and $dead_click are supported",
+        "description": "Counts of $autocapture, $rageclick, and $dead_click events grouped by the element chain\nthey occurred on, ordered by count. Defaults to all three event types; narrow with the\ninclude parameter.",
         "parameters": [
           {
             "in": "query",
@@ -8830,6 +8830,14 @@
           },
           {
             "in": "query",
+            "name": "filter_test_accounts",
+            "schema": {
+              "type": "boolean"
+            },
+            "description": "When true, applies the project's internal-and-test-account filters to the underlying events. Pass the lowercase string true; other truthy spellings are ignored."
+          },
+          {
+            "in": "query",
             "name": "include",
             "schema": {
               "type": "array",
@@ -8837,7 +8845,7 @@
                 "type": "string"
               }
             },
-            "description": "Event types to include: $autocapture, $rageclick, $dead_click. Defaults to all three."
+            "description": "Event types to include: $autocapture, $rageclick, $dead_click. Defaults to all three. Accepts repeated parameters, a JSON array, or a comma-separated list."
           },
           {
             "in": "query",
@@ -8854,6 +8862,14 @@
               "type": "integer"
             },
             "description": "Pagination offset"
+          },
+          {
+            "in": "query",
+            "name": "properties",
+            "schema": {
+              "type": "string"
+            },
+            "description": "JSON-encoded list of property filters to apply to the underlying events, e.g. [{\"key\": \"$current_url\", \"value\": \"https://example.com/page\"}] or [{\"key\": \"email\", \"value\": \"@posthog.com\", \"operator\": \"icontains\", \"type\": \"person\"}]. Supports event, person, cohort, element, and HogQL property filter types."
           },
           {
             "in": "query",
@@ -8895,10 +8911,27 @@
     },
     "/api/environments/{environment_id}/elements/values/": {
       "get": {
-        "operationId": "environments_elements_values_retrieve",
+        "operationId": "environments_elements_values_list",
         "parameters": [
           {
             "$ref": "#/components/parameters/EnvironmentIdPath"
+          },
+          {
+            "in": "query",
+            "name": "key",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Element property to list values for: tag_name, text, href, or attr_id.",
+            "required": true
+          },
+          {
+            "in": "query",
+            "name": "value",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Optional substring to filter values by (case-sensitive contains match)."
           }
         ],
         "tags": [
@@ -8913,7 +8946,17 @@
         ],
         "responses": {
           "200": {
-            "description": "No response body"
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ElementValue"
+                  }
+                }
+              }
+            },
+            "description": ""
           }
         },
         "deprecated": true,
@@ -71985,7 +72028,7 @@
     "/api/projects/{project_id}/elements/stats/": {
       "get": {
         "operationId": "elements_stats_retrieve",
-        "description": "The original version of this API always and only returned $autocapture elements\nIf no include query parameter is sent this remains true.\nNow, you can pass a combination of include query parameters to get different types of elements\nCurrently only $autocapture and $rageclick and $dead_click are supported",
+        "description": "Counts of $autocapture, $rageclick, and $dead_click events grouped by the element chain\nthey occurred on, ordered by count. Defaults to all three event types; narrow with the\ninclude parameter.",
         "parameters": [
           {
             "in": "query",
@@ -72013,6 +72056,14 @@
           },
           {
             "in": "query",
+            "name": "filter_test_accounts",
+            "schema": {
+              "type": "boolean"
+            },
+            "description": "When true, applies the project's internal-and-test-account filters to the underlying events. Pass the lowercase string true; other truthy spellings are ignored."
+          },
+          {
+            "in": "query",
             "name": "include",
             "schema": {
               "type": "array",
@@ -72020,7 +72071,7 @@
                 "type": "string"
               }
             },
-            "description": "Event types to include: $autocapture, $rageclick, $dead_click. Defaults to all three."
+            "description": "Event types to include: $autocapture, $rageclick, $dead_click. Defaults to all three. Accepts repeated parameters, a JSON array, or a comma-separated list."
           },
           {
             "in": "query",
@@ -72040,6 +72091,14 @@
           },
           {
             "$ref": "#/components/parameters/ProjectIdPath"
+          },
+          {
+            "in": "query",
+            "name": "properties",
+            "schema": {
+              "type": "string"
+            },
+            "description": "JSON-encoded list of property filters to apply to the underlying events, e.g. [{\"key\": \"$current_url\", \"value\": \"https://example.com/page\"}] or [{\"key\": \"email\", \"value\": \"@posthog.com\", \"operator\": \"icontains\", \"type\": \"person\"}]. Supports event, person, cohort, element, and HogQL property filter types."
           },
           {
             "in": "query",
@@ -72080,10 +72139,27 @@
     },
     "/api/projects/{project_id}/elements/values/": {
       "get": {
-        "operationId": "elements_values_retrieve",
+        "operationId": "elements_values_list",
         "parameters": [
           {
+            "in": "query",
+            "name": "key",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Element property to list values for: tag_name, text, href, or attr_id.",
+            "required": true
+          },
+          {
             "$ref": "#/components/parameters/ProjectIdPath"
+          },
+          {
+            "in": "query",
+            "name": "value",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Optional substring to filter values by (case-sensitive contains match)."
           }
         ],
         "tags": [
@@ -72098,7 +72174,17 @@
         ],
         "responses": {
           "200": {
-            "description": "No response body"
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ElementValue"
+                  }
+                }
+              }
+            },
+            "description": ""
           }
         },
         "x-product": [
@@ -120670,6 +120756,236 @@
         ]
       }
     },
+    "/api/projects/{project_id}/task_channels/": {
+      "get": {
+        "operationId": "task_channels_list",
+        "description": "All live public channels plus the requester's personal #me channel (created on first list).",
+        "summary": "List channels",
+        "parameters": [
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Number of results to return per page.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "offset",
+            "required": false,
+            "in": "query",
+            "description": "The initial index from which to return the results.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "task_channels"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "task:read"
+            ]
+          },
+          {
+            "PersonalAPIKeyAuth": [
+              "task:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedChannelDTOList"
+                }
+              }
+            },
+            "description": "List of channels"
+          }
+        },
+        "x-product": [
+          "tasks"
+        ]
+      },
+      "post": {
+        "operationId": "task_channels_create",
+        "description": "Returns the existing public channel with the (normalized) name, creating it if needed.",
+        "summary": "Resolve or create a public channel",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "task_channels"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChannelWrite"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/ChannelWrite"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/ChannelWrite"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "task:write"
+            ]
+          },
+          {
+            "PersonalAPIKeyAuth": [
+              "task:write"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChannelDTO"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "tasks"
+        ]
+      }
+    },
+    "/api/projects/{project_id}/task_channels/{id}/": {
+      "patch": {
+        "operationId": "task_channels_partial_update",
+        "description": "API for task channels — the shared feeds tasks are kicked off in. Listing lazily\nprovisions the requester's personal \"#me\" channel; creation is resolve-or-create\nby normalized name so clients can map channel-like surfaces onto backend channels.",
+        "summary": "Rename a public channel",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "task_channels"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchedChannelWrite"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchedChannelWrite"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchedChannelWrite"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "task:write"
+            ]
+          },
+          {
+            "PersonalAPIKeyAuth": [
+              "task:write"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChannelDTO"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "tasks"
+        ]
+      },
+      "delete": {
+        "operationId": "task_channels_destroy",
+        "description": "API for task channels — the shared feeds tasks are kicked off in. Listing lazily\nprovisions the requester's personal \"#me\" channel; creation is resolve-or-create\nby normalized name so clients can map channel-like surfaces onto backend channels.",
+        "summary": "Delete a public channel",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "task_channels"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "task:write"
+            ]
+          },
+          {
+            "PersonalAPIKeyAuth": [
+              "task:write"
+            ]
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No response body"
+          }
+        },
+        "x-product": [
+          "tasks"
+        ]
+      }
+    },
     "/api/projects/{project_id}/tasks/": {
       "get": {
         "operationId": "tasks_list",
@@ -120689,6 +121005,15 @@
               "minLength": 1
             },
             "description": "Filter by archived state. Defaults to excluding archived tasks. Use 'true' to list only archived tasks, 'false' for the default, or 'all' to include both.\n\n* `true` - true\n* `false` - false\n* `all` - all"
+          },
+          {
+            "in": "query",
+            "name": "channel",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "Filter tasks to a channel's feed."
           },
           {
             "in": "query",
@@ -123185,6 +123510,274 @@
         },
         "x-product": [
           "task-runs",
+          "tasks"
+        ]
+      }
+    },
+    "/api/projects/{project_id}/tasks/{task_id}/thread_messages/": {
+      "get": {
+        "operationId": "tasks_thread_messages_list",
+        "description": "The task's thread in chronological order.",
+        "summary": "List thread messages",
+        "parameters": [
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Number of results to return per page.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "offset",
+            "required": false,
+            "in": "query",
+            "description": "The initial index from which to return the results.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          },
+          {
+            "in": "path",
+            "name": "task_id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "tags": [
+          "tasks"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "task:read"
+            ]
+          },
+          {
+            "PersonalAPIKeyAuth": [
+              "task:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedTaskThreadMessageDTOList"
+                }
+              }
+            },
+            "description": "Thread messages"
+          }
+        },
+        "x-product": [
+          "tasks"
+        ]
+      },
+      "post": {
+        "operationId": "tasks_thread_messages_create",
+        "description": "API for a task's thread — the human-only side conversation around a task. Messages\nreach the agent only via the explicit send_to_agent action, gated to the task author.",
+        "summary": "Post a thread message",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          },
+          {
+            "in": "path",
+            "name": "task_id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "tags": [
+          "tasks"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TaskThreadMessageWrite"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/TaskThreadMessageWrite"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/TaskThreadMessageWrite"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "task:write"
+            ]
+          },
+          {
+            "PersonalAPIKeyAuth": [
+              "task:write"
+            ]
+          }
+        ],
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskThreadMessageDTO"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "tasks"
+        ]
+      }
+    },
+    "/api/projects/{project_id}/tasks/{task_id}/thread_messages/{id}/": {
+      "delete": {
+        "operationId": "tasks_thread_messages_destroy",
+        "description": "API for a task's thread — the human-only side conversation around a task. Messages\nreach the agent only via the explicit send_to_agent action, gated to the task author.",
+        "summary": "Delete own thread message",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          },
+          {
+            "in": "path",
+            "name": "task_id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "tags": [
+          "tasks"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "task:write"
+            ]
+          },
+          {
+            "PersonalAPIKeyAuth": [
+              "task:write"
+            ]
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No response body"
+          }
+        },
+        "x-product": [
+          "tasks"
+        ]
+      }
+    },
+    "/api/projects/{project_id}/tasks/{task_id}/thread_messages/{id}/send_to_agent/": {
+      "post": {
+        "operationId": "tasks_thread_messages_send_to_agent_create",
+        "description": "Task author only: forwards the message into the task's latest live run.",
+        "summary": "Send a thread message to the agent",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          },
+          {
+            "in": "path",
+            "name": "task_id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "tags": [
+          "tasks"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TaskThreadMessageDTO"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/TaskThreadMessageDTO"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/TaskThreadMessageDTO"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "task:write"
+            ]
+          },
+          {
+            "PersonalAPIKeyAuth": [
+              "task:write"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskThreadMessageDTO"
+                }
+              }
+            },
+            "description": ""
+          },
+          "400": {
+            "description": "No signalable run, or message already forwarded"
+          }
+        },
+        "x-product": [
           "tasks"
         ]
       }
@@ -145062,6 +145655,42 @@
         "type": "string",
         "description": "* `pending` - Pending\n* `approved` - Approved (awaiting application)\n* `applied` - Applied\n* `rejected` - Rejected\n* `expired` - Expired\n* `failed` - Failed to apply"
       },
+      "ChannelDTO": {
+        "type": "object",
+        "description": "Response shape for a task channel, read from a frozen ``ChannelDTO``.",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "channel_type": {
+            "type": "string"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "created_by": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/TaskUserBasicInfo"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "channel_type",
+          "created_at",
+          "id",
+          "name"
+        ]
+      },
       "ChannelDetailEnum": {
         "enum": [
           "slack_channel_message",
@@ -145086,6 +145715,20 @@
         ],
         "type": "string",
         "description": "* `widget` - Widget\n* `email` - Email\n* `slack` - Slack\n* `teams` - Microsoft Teams\n* `github` - GitHub"
+      },
+      "ChannelWrite": {
+        "type": "object",
+        "description": "Request body for creating (resolve-or-create) or renaming a public channel.",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Channel name, rendered as #<name>. Normalized to lowercase-dashed.",
+            "maxLength": 128
+          }
+        },
+        "required": [
+          "name"
+        ]
       },
       "ChartAxis": {
         "additionalProperties": false,
@@ -156006,6 +156649,18 @@
         ],
         "title": "ElementType",
         "type": "object"
+      },
+      "ElementValue": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "A distinct value of the requested element property"
+          }
+        },
+        "required": [
+          "name"
+        ]
       },
       "EmailTemplate": {
         "type": "object",
@@ -199676,6 +200331,41 @@
           }
         }
       },
+      "PaginatedChannelDTOList": {
+        "type": "object",
+        "required": [
+          "count",
+          "results"
+        ],
+        "properties": {
+          "count": {
+            "type": "integer",
+            "example": 123
+          },
+          "next": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uri",
+            "example": "http://api.example.org/accounts/?offset=400&limit=100"
+          },
+          "previous": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uri",
+            "example": "http://api.example.org/accounts/?offset=200&limit=100"
+          },
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ChannelDTO"
+            }
+          }
+        }
+      },
       "PaginatedClickhouseEventList": {
         "type": "object",
         "properties": {
@@ -204168,6 +204858,41 @@
           }
         }
       },
+      "PaginatedTaskThreadMessageDTOList": {
+        "type": "object",
+        "required": [
+          "count",
+          "results"
+        ],
+        "properties": {
+          "count": {
+            "type": "integer",
+            "example": 123
+          },
+          "next": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uri",
+            "example": "http://api.example.org/accounts/?offset=400&limit=100"
+          },
+          "previous": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uri",
+            "example": "http://api.example.org/accounts/?offset=200&limit=100"
+          },
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TaskThreadMessageDTO"
+            }
+          }
+        }
+      },
       "PaginatedTeamBasicList": {
         "type": "object",
         "required": [
@@ -205894,6 +206619,17 @@
           },
           "name": {
             "type": "string"
+          }
+        }
+      },
+      "PatchedChannelWrite": {
+        "type": "object",
+        "description": "Request body for creating (resolve-or-create) or renaming a public channel.",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Channel name, rendered as #<name>. Normalized to lowercase-dashed.",
+            "maxLength": 128
           }
         }
       },
@@ -214455,6 +215191,14 @@
                 "$ref": "#/components/schemas/NullEnum"
               }
             ]
+          },
+          "channel": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uuid",
+            "description": "Channel this task is owned by (the channel it was kicked off in)."
           }
         }
       },
@@ -261350,6 +262094,73 @@
           "updated_at"
         ]
       },
+      "TaskThreadMessageDTO": {
+        "type": "object",
+        "description": "Response shape for one message in a task's thread.",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "task": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "content": {
+            "type": "string"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "author": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/TaskUserBasicInfo"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "forwarded_to_agent_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "forwarded_by": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/TaskUserBasicInfo"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "content",
+          "created_at",
+          "id",
+          "task"
+        ]
+      },
+      "TaskThreadMessageWrite": {
+        "type": "object",
+        "description": "Request body for posting a thread message.",
+        "properties": {
+          "content": {
+            "type": "string",
+            "description": "Message text."
+          }
+        },
+        "required": [
+          "content"
+        ]
+      },
       "TaskUserBasicInfo": {
         "type": "object",
         "description": "Response shape for a task creator, mirroring core ``UserBasicSerializer`` output.",
@@ -261524,6 +262335,14 @@
                 "$ref": "#/components/schemas/NullEnum"
               }
             ]
+          },
+          "channel": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uuid",
+            "description": "Channel this task is owned by (the channel it was kicked off in)."
           }
         }
       },
@@ -280919,6 +281738,9 @@
       "name": "task_automations"
     },
     {
+      "name": "task_channels"
+    },
+    {
       "name": "tasks"
     },
     {
@@ -281133,6 +281955,7 @@
         "task-automations",
         "task-runs",
         "task_automations",
+        "task_channels",
         "tasks",
         "tracing",
         "uploaded_media",
