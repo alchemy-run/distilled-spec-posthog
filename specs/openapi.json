@@ -36062,6 +36062,114 @@
         ]
       }
     },
+    "/api/environments/{environment_id}/persons/{id}/emails/": {
+      "get": {
+        "operationId": "environments_persons_emails_list",
+        "description": "This endpoint is meant for reading and deleting persons. To create or update persons, we recommend using the [capture API](https://posthog.com/docs/api/capture), the `$set` and `$unset` [properties](https://posthog.com/docs/product-analytics/user-properties), or one of our SDKs.",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "after",
+            "schema": {
+              "type": "string",
+              "default": "-30d",
+              "minLength": 1
+            },
+            "description": "Start of the time range, matched on sent time. Relative ('-30d', '-24h') or ISO 8601. Defaults to -30d (the retention window) — bounds the ClickHouse partition scan."
+          },
+          {
+            "in": "query",
+            "name": "before",
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "End of the time range, matched on sent time. Same format as 'after'. Defaults to now."
+          },
+          {
+            "$ref": "#/components/parameters/EnvironmentIdPath"
+          },
+          {
+            "in": "query",
+            "name": "format",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "csv",
+                "json"
+              ]
+            }
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "A unique integer value identifying this person.",
+            "required": true
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer",
+              "maximum": 500,
+              "minimum": 1,
+              "default": 50
+            },
+            "description": "Maximum number of emails to return (1-500, default 50)."
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            },
+            "description": "Number of emails to skip, for pagination."
+          }
+        ],
+        "tags": [
+          "persons"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "person:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MessageAsset"
+                  }
+                }
+              },
+              "text/csv": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MessageAsset"
+                  }
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "deprecated": true,
+        "x-product": [
+          "persons"
+        ]
+      }
+    },
     "/api/environments/{environment_id}/persons/{id}/properties_timeline/": {
       "get": {
         "operationId": "environments_persons_properties_timeline_retrieve",
@@ -39181,6 +39289,57 @@
         ]
       }
     },
+    "/api/environments/{environment_id}/session_recordings/bulk_delete/": {
+      "post": {
+        "operationId": "environments_session_recordings_bulk_delete_create",
+        "description": "Delete a batch of session recordings by session ID. Deletion is permanent and cannot be undone. IDs that don't match an existing recording are skipped and counted in `total_requested` but not `deleted_count`.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/EnvironmentIdPath"
+          }
+        ],
+        "tags": [
+          "replay",
+          "session_recordings"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SessionRecordingBulkDeleteRequest"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/SessionRecordingBulkDeleteRequest"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/SessionRecordingBulkDeleteRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionRecordingBulkDeleteResponse"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "deprecated": true,
+        "x-product": [
+          "replay"
+        ]
+      }
+    },
     "/api/environments/{environment_id}/session_summaries/config/": {
       "get": {
         "operationId": "environments_retrieve_session_summaries_config",
@@ -40713,17 +40872,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/_TracingTimeseriesRequest"
+                "$ref": "#/components/schemas/_TracingDurationHistogramRequest"
               }
             },
             "application/x-www-form-urlencoded": {
               "schema": {
-                "$ref": "#/components/schemas/_TracingTimeseriesRequest"
+                "$ref": "#/components/schemas/_TracingDurationHistogramRequest"
               }
             },
             "multipart/form-data": {
               "schema": {
-                "$ref": "#/components/schemas/_TracingTimeseriesRequest"
+                "$ref": "#/components/schemas/_TracingDurationHistogramRequest"
               }
             }
           },
@@ -46711,7 +46870,7 @@
     "/api/llm_analytics/@me/spend/": {
       "get": {
         "operationId": "llm_analytics_personal_spend_list",
-        "description": "Return a structured personal LLM spend analysis for the requesting user. Pass `date_from` / `date_to` (absolute like `2026-04-23` or relative like `-7d`) to bound the window — defaults to the last 30 days, max 90 days. The `product=<ai_product>` query param is required and scopes the tool / model / trace breakdowns to a single product; supported values: posthog_code. `by_product` is always returned for cross-product visibility. Use `refresh=true` to bypass the 5-minute response cache.",
+        "description": "Return a structured personal LLM spend analysis for the requesting user. Pass `date_from` / `date_to` (absolute like `2026-04-23` or relative like `-7d`) to bound the window — defaults to the last 30 days, max 90 days. The `product=<ai_product>` query param is required and scopes the tool / model / day / trace breakdowns to a single product; supported values: posthog_code. `by_product` is always returned for cross-product visibility. `by_day` returns a day-ascending spend series for the scoped product. Use `refresh=true` to bypass the 5-minute response cache.",
         "parameters": [
           {
             "in": "query",
@@ -72999,6 +73158,83 @@
         ]
       }
     },
+    "/api/projects/{project_id}/engineering_analytics/author_workflow_costs/": {
+      "get": {
+        "operationId": "engineering_analytics_author_workflow_costs",
+        "description": "One author's estimated CI cost split by workflow over a window (date_from default -30d), highest spend first. Runs are attributed to the author through their pull requests (attribution is by PR number). Returns an empty list when the job-level source isn't synced.",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "author",
+            "schema": {
+              "type": "string"
+            },
+            "description": "GitHub handle whose CI spend to break down.",
+            "required": true
+          },
+          {
+            "in": "query",
+            "name": "date_from",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Window start: relative ('-30d', '-8w') or ISO8601. Defaults to -30d."
+          },
+          {
+            "in": "query",
+            "name": "date_to",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Window end: relative or ISO8601. Defaults to now."
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          },
+          {
+            "in": "query",
+            "name": "source_id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "Connected GitHub data warehouse source to read from. Defaults to the oldest connected GitHub source when the team has more than one."
+          }
+        ],
+        "tags": [
+          "engineering_analytics",
+          "engineering_analytics"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "engineering_analytics:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/WorkflowCost"
+                  }
+                }
+              }
+            },
+            "description": ""
+          },
+          "400": {
+            "description": "Missing author, or invalid date or source_id."
+          }
+        },
+        "x-product": [
+          "engineering_analytics"
+        ]
+      }
+    },
     "/api/projects/{project_id}/engineering_analytics/ci_cards/": {
       "get": {
         "operationId": "engineering_analytics_ci_cards",
@@ -73718,6 +73954,79 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/RepoOverview"
+                }
+              }
+            },
+            "description": ""
+          },
+          "400": {
+            "description": "Invalid date_from, date_to, or source_id, or a window over 366 days."
+          }
+        },
+        "x-product": [
+          "engineering_analytics"
+        ]
+      }
+    },
+    "/api/projects/{project_id}/engineering_analytics/repo_run_activity/": {
+      "get": {
+        "operationId": "engineering_analytics_repo_run_activity",
+        "description": "Default-branch health as compact chart points over a window (default -30d), newest first, for the repo-hub run-activity chart. All of a commit's workflow runs are collapsed into ONE point per commit (head SHA): its earliest workflow start, wall-clock duration until the last workflow settled (null while any is still running), and an overall conclusion that is 'failure' if any workflow decisively failed, else 'success' when at least one passed, else 'neutral'. `branch` overrides the detected default branch. `truncated` is true when more commits matched than the cap, so the chart covers only the most recent commits.",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "branch",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Optional exact git branch (head_branch) to chart, e.g. 'main'. Omit or leave blank to use the repo's detected default branch."
+          },
+          {
+            "in": "query",
+            "name": "date_from",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Window start: relative ('-30d', '-8w') or ISO8601. Defaults to -30d."
+          },
+          {
+            "in": "query",
+            "name": "date_to",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Window end: relative or ISO8601. Defaults to now."
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          },
+          {
+            "in": "query",
+            "name": "source_id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "Connected GitHub data warehouse source to read from. Defaults to the oldest connected GitHub source when the team has more than one."
+          }
+        ],
+        "tags": [
+          "engineering_analytics",
+          "engineering_analytics"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "engineering_analytics:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkflowRunActivity"
                 }
               }
             },
@@ -109111,6 +109420,113 @@
         ]
       }
     },
+    "/api/projects/{project_id}/persons/{id}/emails/": {
+      "get": {
+        "operationId": "persons_emails_list",
+        "description": "This endpoint is meant for reading and deleting persons. To create or update persons, we recommend using the [capture API](https://posthog.com/docs/api/capture), the `$set` and `$unset` [properties](https://posthog.com/docs/product-analytics/user-properties), or one of our SDKs.",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "after",
+            "schema": {
+              "type": "string",
+              "default": "-30d",
+              "minLength": 1
+            },
+            "description": "Start of the time range, matched on sent time. Relative ('-30d', '-24h') or ISO 8601. Defaults to -30d (the retention window) — bounds the ClickHouse partition scan."
+          },
+          {
+            "in": "query",
+            "name": "before",
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "End of the time range, matched on sent time. Same format as 'after'. Defaults to now."
+          },
+          {
+            "in": "query",
+            "name": "format",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "csv",
+                "json"
+              ]
+            }
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "A unique integer value identifying this person.",
+            "required": true
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer",
+              "maximum": 500,
+              "minimum": 1,
+              "default": 50
+            },
+            "description": "Maximum number of emails to return (1-500, default 50)."
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0
+            },
+            "description": "Number of emails to skip, for pagination."
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "persons"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "person:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MessageAsset"
+                  }
+                }
+              },
+              "text/csv": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MessageAsset"
+                  }
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "persons"
+        ]
+      }
+    },
     "/api/projects/{project_id}/persons/{id}/properties_timeline/": {
       "get": {
         "operationId": "persons_properties_timeline_retrieve",
@@ -114931,6 +115347,56 @@
         ]
       }
     },
+    "/api/projects/{project_id}/session_recordings/bulk_delete/": {
+      "post": {
+        "operationId": "session_recordings_bulk_delete_create",
+        "description": "Delete a batch of session recordings by session ID. Deletion is permanent and cannot be undone. IDs that don't match an existing recording are skipped and counted in `total_requested` but not `deleted_count`.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "replay",
+          "session_recordings"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SessionRecordingBulkDeleteRequest"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/SessionRecordingBulkDeleteRequest"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/SessionRecordingBulkDeleteRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionRecordingBulkDeleteResponse"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "replay"
+        ]
+      }
+    },
     "/api/projects/{project_id}/session_summaries/config/": {
       "get": {
         "operationId": "retrieve_session_summaries_config",
@@ -115550,6 +116016,58 @@
           },
           "404": {
             "description": "Report not found for this project."
+          }
+        },
+        "x-product": [
+          "signals"
+        ]
+      }
+    },
+    "/api/projects/{project_id}/signals/reports/{id}/signals/": {
+      "get": {
+        "operationId": "signals_reports_signals_retrieve",
+        "description": "Fetch all signals for a report from ClickHouse, including full metadata.",
+        "summary": "List a report's signals",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "A UUID string identifying this signal report.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "signals"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "task:read"
+            ]
+          },
+          {
+            "PersonalAPIKeyAuth": [
+              "task:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReportSignalsResponse"
+                }
+              }
+            },
+            "description": ""
           }
         },
         "x-product": [
@@ -124352,17 +124870,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/_TracingTimeseriesRequest"
+                "$ref": "#/components/schemas/_TracingDurationHistogramRequest"
               }
             },
             "application/x-www-form-urlencoded": {
               "schema": {
-                "$ref": "#/components/schemas/_TracingTimeseriesRequest"
+                "$ref": "#/components/schemas/_TracingDurationHistogramRequest"
               }
             },
             "multipart/form-data": {
               "schema": {
-                "$ref": "#/components/schemas/_TracingTimeseriesRequest"
+                "$ref": "#/components/schemas/_TracingDurationHistogramRequest"
               }
             }
           },
@@ -136973,15 +137491,6 @@
         "title": "ActionConversionGoal",
         "type": "object"
       },
-      "ActionEnum": {
-        "enum": [
-          "add",
-          "remove",
-          "set"
-        ],
-        "type": "string",
-        "description": "* `add` - add\n* `remove` - remove\n* `set` - set"
-      },
       "ActionReference": {
         "type": "object",
         "properties": {
@@ -144202,7 +144711,7 @@
           "action": {
             "allOf": [
               {
-                "$ref": "#/components/schemas/ActionEnum"
+                "$ref": "#/components/schemas/BulkUpdateTagsRequestActionEnum"
               }
             ],
             "description": "'add' merges with existing tags, 'remove' deletes specific tags, 'set' replaces all tags.\n\n* `add` - add\n* `remove` - remove\n* `set` - set"
@@ -144220,6 +144729,15 @@
           "ids",
           "tags"
         ]
+      },
+      "BulkUpdateTagsRequestActionEnum": {
+        "enum": [
+          "add",
+          "remove",
+          "set"
+        ],
+        "type": "string",
+        "description": "* `add` - add\n* `remove` - remove\n* `set` - set"
       },
       "BulkUpdateTagsResponse": {
         "type": "object",
@@ -147994,6 +148512,71 @@
         "type": "string",
         "description": "* `assistant` - Assistant\n* `tool_call` - Tool call\n* `deep_research` - Deep research\n* `slack` - Slack"
       },
+      "ConversationsTicketSignalExtra": {
+        "additionalProperties": false,
+        "properties": {
+          "ticket_number": {
+            "title": "Ticket Number",
+            "type": "integer"
+          },
+          "channel_source": {
+            "title": "Channel Source",
+            "type": "string"
+          },
+          "channel_detail": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Channel Detail"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "priority": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Priority"
+          },
+          "created_at": {
+            "title": "Created At",
+            "type": "string"
+          },
+          "email_subject": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Email Subject"
+          }
+        },
+        "required": [
+          "ticket_number",
+          "channel_source",
+          "channel_detail",
+          "status",
+          "priority",
+          "created_at",
+          "email_subject"
+        ],
+        "title": "ConversationsTicketSignalExtra",
+        "type": "object"
+      },
       "ConversionGoalFilter1": {
         "additionalProperties": false,
         "properties": {
@@ -149376,6 +149959,42 @@
         "title": "CorrelationType",
         "type": "string"
       },
+      "CostPerMergeBucket": {
+        "type": "object",
+        "properties": {
+          "bucket_start": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Bucket start, aligned to cost_series_granularity (top of hour, midnight, or Monday)."
+          },
+          "estimated_cost_usd": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "format": "double",
+            "description": "Estimated Depot CI cost (USD) of all runs started in this bucket. Null when nothing was costable (no billable self-hosted Linux jobs) or the job source isn't synced."
+          },
+          "merges": {
+            "type": "integer",
+            "description": "PRs merged in this bucket (all authors, bots included)."
+          },
+          "cost_per_merge_usd": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "format": "double",
+            "description": "Rolling ratio: trailing-window CI cost divided by trailing-window merges (24 h / 7 d / 4 w to match the granularity). Null when the trailing window had no merges or no costable cost."
+          }
+        },
+        "required": [
+          "bucket_start",
+          "cost_per_merge_usd",
+          "estimated_cost_usd",
+          "merges"
+        ]
+      },
       "CountPerActorMathType": {
         "enum": [
           "avg_count_per_actor",
@@ -150105,12 +150724,22 @@
                 "$ref": "#/components/schemas/CustomPropertyDisplayTypeEnum"
               }
             ],
-            "description": "How the property is interpreted and rendered: 'text', 'number', 'currency', 'percent', 'date', 'datetime', or 'boolean'.\n\n* `text` - text\n* `number` - number\n* `currency` - currency\n* `percent` - percent\n* `date` - date\n* `datetime` - datetime\n* `boolean` - boolean"
+            "description": "How the property is interpreted and rendered: 'text', 'number', 'currency', 'percent', 'date', 'datetime', 'boolean', or 'select'.\n\n* `text` - text\n* `number` - number\n* `currency` - currency\n* `percent` - percent\n* `date` - date\n* `datetime` - datetime\n* `boolean` - boolean\n* `select` - select"
           },
           "is_big_number": {
             "type": "boolean",
             "default": false,
             "description": "Abbreviate large numbers (e.g. 10,000 → 10K). Only applies to numeric properties."
+          },
+          "options": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/CustomPropertyOption"
+            },
+            "description": "For select properties: the allowed options. Required (non-empty) when display_type is 'select'; cleared server-side for other types."
           },
           "source": {
             "oneOf": [
@@ -150172,10 +150801,57 @@
           "percent",
           "date",
           "datetime",
-          "boolean"
+          "boolean",
+          "select"
         ],
         "type": "string",
-        "description": "* `text` - text\n* `number` - number\n* `currency` - currency\n* `percent` - percent\n* `date` - date\n* `datetime` - datetime\n* `boolean` - boolean"
+        "description": "* `text` - text\n* `number` - number\n* `currency` - currency\n* `percent` - percent\n* `date` - date\n* `datetime` - datetime\n* `boolean` - boolean\n* `select` - select"
+      },
+      "CustomPropertyOption": {
+        "type": "object",
+        "description": "An allowed value of a select custom property.",
+        "properties": {
+          "id": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Server-assigned stable id of the option. Omit for new options; send it back unchanged when editing so renames and removals can be told apart."
+          },
+          "label": {
+            "type": "string",
+            "description": "Display label of the option. Stored as the account's value when picked.",
+            "maxLength": 400
+          },
+          "color": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CustomPropertyOptionColorEnum"
+              }
+            ],
+            "description": "Preset color token used to render the option ('preset-1' through 'preset-10').\n\n* `preset-1` - preset-1\n* `preset-2` - preset-2\n* `preset-3` - preset-3\n* `preset-4` - preset-4\n* `preset-5` - preset-5\n* `preset-6` - preset-6\n* `preset-7` - preset-7\n* `preset-8` - preset-8\n* `preset-9` - preset-9\n* `preset-10` - preset-10"
+          }
+        },
+        "required": [
+          "color",
+          "label"
+        ]
+      },
+      "CustomPropertyOptionColorEnum": {
+        "enum": [
+          "preset-1",
+          "preset-2",
+          "preset-3",
+          "preset-4",
+          "preset-5",
+          "preset-6",
+          "preset-7",
+          "preset-8",
+          "preset-9",
+          "preset-10"
+        ],
+        "type": "string",
+        "description": "* `preset-1` - preset-1\n* `preset-2` - preset-2\n* `preset-3` - preset-3\n* `preset-4` - preset-4\n* `preset-5` - preset-5\n* `preset-6` - preset-6\n* `preset-7` - preset-7\n* `preset-8` - preset-8\n* `preset-9` - preset-9\n* `preset-10` - preset-10"
       },
       "CustomPropertyReference": {
         "type": "object",
@@ -157214,6 +157890,25 @@
           }
         }
       },
+      "EndpointBreakdownLimitExceededSignalExtra": {
+        "additionalProperties": false,
+        "properties": {
+          "endpoint_name": {
+            "title": "Endpoint Name",
+            "type": "string"
+          },
+          "breakdown_limit": {
+            "title": "Breakdown Limit",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "endpoint_name",
+          "breakdown_limit"
+        ],
+        "title": "EndpointBreakdownLimitExceededSignalExtra",
+        "type": "object"
+      },
       "EndpointColumn": {
         "type": "object",
         "description": "A column in the endpoint's query result.",
@@ -157231,6 +157926,59 @@
           "name",
           "type"
         ]
+      },
+      "EndpointExecutionFailedSignalExtra": {
+        "additionalProperties": false,
+        "properties": {
+          "endpoint_name": {
+            "title": "Endpoint Name",
+            "type": "string"
+          },
+          "endpoint_version": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Endpoint Version"
+          },
+          "materialized": {
+            "title": "Materialized",
+            "type": "boolean"
+          },
+          "saved_query_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Saved Query Id"
+          },
+          "error_class": {
+            "title": "Error Class",
+            "type": "string"
+          },
+          "error_message": {
+            "title": "Error Message",
+            "type": "string"
+          }
+        },
+        "required": [
+          "endpoint_name",
+          "endpoint_version",
+          "materialized",
+          "saved_query_id",
+          "error_class",
+          "error_message"
+        ],
+        "title": "EndpointExecutionFailedSignalExtra",
+        "type": "object"
       },
       "EndpointLastExecutionTimesRequest": {
         "additionalProperties": false,
@@ -162547,6 +163295,20 @@
             "description": "Bucket window over which the per-issue rate limit applies, in minutes."
           }
         }
+      },
+      "ErrorTrackingSignalExtra": {
+        "additionalProperties": false,
+        "properties": {
+          "fingerprint": {
+            "title": "Fingerprint",
+            "type": "string"
+          }
+        },
+        "required": [
+          "fingerprint"
+        ],
+        "title": "ErrorTrackingSignalExtra",
+        "type": "object"
       },
       "ErrorTrackingSimilarIssuesQuery": {
         "additionalProperties": false,
@@ -172036,6 +172798,9 @@
               "supports_column_selection": {
                 "type": "boolean"
               },
+              "supports_row_filters": {
+                "type": "boolean"
+              },
               "user_access_level": {
                 "type": [
                   "string",
@@ -178693,6 +179458,53 @@
           "found"
         ]
       },
+      "GithubIssueSignalExtra": {
+        "additionalProperties": false,
+        "properties": {
+          "html_url": {
+            "title": "Html Url",
+            "type": "string"
+          },
+          "number": {
+            "title": "Number",
+            "type": "integer"
+          },
+          "labels": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Labels",
+            "type": "array"
+          },
+          "created_at": {
+            "title": "Created At",
+            "type": "string"
+          },
+          "updated_at": {
+            "title": "Updated At",
+            "type": "string"
+          },
+          "locked": {
+            "title": "Locked",
+            "type": "boolean"
+          },
+          "state": {
+            "title": "State",
+            "type": "string"
+          }
+        },
+        "required": [
+          "html_url",
+          "number",
+          "labels",
+          "created_at",
+          "updated_at",
+          "locked",
+          "state"
+        ],
+        "title": "GithubIssueSignalExtra",
+        "type": "object"
+      },
       "Goal": {
         "type": "object",
         "properties": {
@@ -180070,6 +180882,68 @@
         },
         "title": "HBOSDetectorConfig",
         "type": "object"
+      },
+      "HealthCheckSignalExtra": {
+        "additionalProperties": false,
+        "properties": {
+          "kind": {
+            "title": "Kind",
+            "type": "string"
+          },
+          "severity": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/HealthCheckSignalExtraSeverityEnum"
+              }
+            ],
+            "title": "Severity"
+          },
+          "issue_id": {
+            "title": "Issue Id",
+            "type": "string"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "summary": {
+            "title": "Summary",
+            "type": "string"
+          },
+          "link": {
+            "title": "Link",
+            "type": "string"
+          },
+          "url": {
+            "title": "Url",
+            "type": "string"
+          },
+          "payload": {
+            "additionalProperties": true,
+            "title": "Payload",
+            "type": "object"
+          }
+        },
+        "required": [
+          "kind",
+          "severity",
+          "issue_id",
+          "title",
+          "summary",
+          "link",
+          "url",
+          "payload"
+        ],
+        "title": "HealthCheckSignalExtra",
+        "type": "object"
+      },
+      "HealthCheckSignalExtraSeverityEnum": {
+        "enum": [
+          "critical",
+          "warning",
+          "info"
+        ],
+        "type": "string"
       },
       "HealthEnum": {
         "enum": [
@@ -189947,6 +190821,94 @@
         "type": "string",
         "description": "* `burst` - burst\n* `sustained` - sustained"
       },
+      "LinearIssueSignalExtra": {
+        "additionalProperties": false,
+        "properties": {
+          "url": {
+            "title": "Url",
+            "type": "string"
+          },
+          "identifier": {
+            "title": "Identifier",
+            "type": "string"
+          },
+          "number": {
+            "title": "Number",
+            "type": "integer"
+          },
+          "priority": {
+            "title": "Priority",
+            "type": "integer"
+          },
+          "priority_label": {
+            "title": "Priority Label",
+            "type": "string"
+          },
+          "labels": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Labels",
+            "type": "array"
+          },
+          "state_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "State Name"
+          },
+          "state_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "State Type"
+          },
+          "team_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Team Name"
+          },
+          "created_at": {
+            "title": "Created At",
+            "type": "string"
+          },
+          "updated_at": {
+            "title": "Updated At",
+            "type": "string"
+          }
+        },
+        "required": [
+          "url",
+          "identifier",
+          "number",
+          "priority",
+          "priority_label",
+          "labels",
+          "state_name",
+          "state_type",
+          "team_name",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "LinearIssueSignalExtra",
+        "type": "object"
+      },
       "LinearTeam": {
         "type": "object",
         "properties": {
@@ -190078,6 +191040,117 @@
           "line_number",
           "updated_at"
         ]
+      },
+      "LlmEvalReportSignalExtra": {
+        "additionalProperties": false,
+        "properties": {
+          "evaluation_id": {
+            "title": "Evaluation Id",
+            "type": "string"
+          },
+          "evaluation_name": {
+            "title": "Evaluation Name",
+            "type": "string"
+          },
+          "evaluation_description": {
+            "title": "Evaluation Description",
+            "type": "string"
+          },
+          "report_id": {
+            "title": "Report Id",
+            "type": "string"
+          },
+          "report_run_id": {
+            "title": "Report Run Id",
+            "type": "string"
+          },
+          "period_start": {
+            "title": "Period Start",
+            "type": "string"
+          },
+          "period_end": {
+            "title": "Period End",
+            "type": "string"
+          }
+        },
+        "required": [
+          "evaluation_id",
+          "evaluation_name",
+          "evaluation_description",
+          "report_id",
+          "report_run_id",
+          "period_start",
+          "period_end"
+        ],
+        "title": "LlmEvalReportSignalExtra",
+        "type": "object"
+      },
+      "LlmEvalSignalExtra": {
+        "additionalProperties": false,
+        "properties": {
+          "evaluation_id": {
+            "title": "Evaluation Id",
+            "type": "string"
+          },
+          "target_event_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Target Event Id"
+          },
+          "target_event_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Target Event Type"
+          },
+          "trace_id": {
+            "title": "Trace Id",
+            "type": "string"
+          },
+          "model": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Model"
+          },
+          "provider": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Provider"
+          }
+        },
+        "required": [
+          "evaluation_id",
+          "trace_id"
+        ],
+        "title": "LlmEvalSignalExtra",
+        "type": "object"
       },
       "LogAttributeResult": {
         "additionalProperties": false,
@@ -190951,7 +192024,7 @@
           "threshold_operator": {
             "allOf": [
               {
-                "$ref": "#/components/schemas/ThresholdOperatorEnum"
+                "$ref": "#/components/schemas/LogsAlertThresholdOperatorEnum"
               }
             ],
             "default": "above",
@@ -191373,7 +192446,7 @@
           "threshold_operator": {
             "allOf": [
               {
-                "$ref": "#/components/schemas/ThresholdOperatorEnum"
+                "$ref": "#/components/schemas/LogsAlertThresholdOperatorEnum"
               }
             ],
             "description": "Whether the alert fires when the count is above or below the threshold.\n\n* `above` - Above\n* `below` - Below"
@@ -191462,6 +192535,95 @@
           "total_buckets"
         ]
       },
+      "LogsAlertStateChangeSignalExtra": {
+        "additionalProperties": false,
+        "properties": {
+          "alert_id": {
+            "title": "Alert Id",
+            "type": "string"
+          },
+          "alert_name": {
+            "title": "Alert Name",
+            "type": "string"
+          },
+          "action": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/LogsAlertStateChangeSignalExtraActionEnum"
+              }
+            ],
+            "title": "Action"
+          },
+          "threshold_count": {
+            "title": "Threshold Count",
+            "type": "integer"
+          },
+          "threshold_operator": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/LogsAlertStateChangeSignalExtraThresholdOperatorEnum"
+              }
+            ],
+            "title": "Threshold Operator"
+          },
+          "window_minutes": {
+            "title": "Window Minutes",
+            "type": "integer"
+          },
+          "result_count": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Result Count"
+          },
+          "consecutive_failures": {
+            "title": "Consecutive Failures",
+            "type": "integer"
+          },
+          "filters": {
+            "additionalProperties": true,
+            "title": "Filters",
+            "type": "object"
+          },
+          "url": {
+            "title": "Url",
+            "type": "string"
+          }
+        },
+        "required": [
+          "alert_id",
+          "alert_name",
+          "action",
+          "threshold_count",
+          "threshold_operator",
+          "window_minutes",
+          "result_count",
+          "consecutive_failures",
+          "filters",
+          "url"
+        ],
+        "title": "LogsAlertStateChangeSignalExtra",
+        "type": "object"
+      },
+      "LogsAlertStateChangeSignalExtraActionEnum": {
+        "enum": [
+          "firing",
+          "broken"
+        ],
+        "type": "string"
+      },
+      "LogsAlertStateChangeSignalExtraThresholdOperatorEnum": {
+        "enum": [
+          "above",
+          "below"
+        ],
+        "type": "string"
+      },
       "LogsAlertStateInterval": {
         "type": "object",
         "properties": {
@@ -191494,6 +192656,14 @@
           "start",
           "state"
         ]
+      },
+      "LogsAlertThresholdOperatorEnum": {
+        "enum": [
+          "above",
+          "below"
+        ],
+        "type": "string",
+        "description": "* `above` - Above\n* `below` - Below"
       },
       "LogsListWidgetAddRequestOpenApi": {
         "type": "object",
@@ -196403,6 +197573,39 @@
           "workflow_name"
         ]
       },
+      "MatchedMetadata": {
+        "type": "object",
+        "properties": {
+          "parent_signal_id": {
+            "type": "string",
+            "description": "Signal already in the report that this one matched."
+          },
+          "match_query": {
+            "type": "string",
+            "description": "Query used to find the parent signal."
+          },
+          "reason": {
+            "type": "string",
+            "description": "Why the signals were judged to describe the same issue."
+          },
+          "specificity": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/SpecificityMetadata"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "PR-specificity gate result, when the gate ran."
+          }
+        },
+        "required": [
+          "match_query",
+          "parent_signal_id",
+          "reason"
+        ]
+      },
       "MatchedOn": {
         "enum": [
           "key",
@@ -196613,6 +197816,14 @@
             "type": "string",
             "description": "The email step (action node) within the workflow that sent this email."
           },
+          "function_id": {
+            "type": "string",
+            "description": "The workflow id that sent this email — used to navigate from a person's Emails tab back into the originating workflow."
+          },
+          "function_name": {
+            "type": "string",
+            "description": "Human-readable workflow name for display. Empty when the workflow has been deleted; clients should fall back to function_id in that case."
+          },
           "parent_run_id": {
             "type": "string",
             "description": "The batch run this email belongs to, for batch-triggered workflows. Empty for event-triggered runs."
@@ -196650,6 +197861,8 @@
         "required": [
           "action_id",
           "distinct_id",
+          "function_id",
+          "function_name",
           "invocation_id",
           "kind",
           "parent_run_id",
@@ -197294,6 +198507,37 @@
         "required": [
           "application_id",
           "source_revision_id"
+        ]
+      },
+      "NoMatchMetadata": {
+        "type": "object",
+        "properties": {
+          "reason": {
+            "type": "string",
+            "description": "Why no existing report matched."
+          },
+          "rejected_signal_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Candidate signals that were considered and rejected."
+          },
+          "specificity_rejection": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/SpecificityMetadata"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "PR-specificity gate result that caused a rejection, when present."
+          }
+        },
+        "required": [
+          "reason",
+          "rejected_signal_ids"
         ]
       },
       "NonIntegratedConversionsTableQuery": {
@@ -207086,12 +208330,22 @@
                 "$ref": "#/components/schemas/CustomPropertyDisplayTypeEnum"
               }
             ],
-            "description": "How the property is interpreted and rendered: 'text', 'number', 'currency', 'percent', 'date', 'datetime', or 'boolean'.\n\n* `text` - text\n* `number` - number\n* `currency` - currency\n* `percent` - percent\n* `date` - date\n* `datetime` - datetime\n* `boolean` - boolean"
+            "description": "How the property is interpreted and rendered: 'text', 'number', 'currency', 'percent', 'date', 'datetime', 'boolean', or 'select'.\n\n* `text` - text\n* `number` - number\n* `currency` - currency\n* `percent` - percent\n* `date` - date\n* `datetime` - datetime\n* `boolean` - boolean\n* `select` - select"
           },
           "is_big_number": {
             "type": "boolean",
             "default": false,
             "description": "Abbreviate large numbers (e.g. 10,000 → 10K). Only applies to numeric properties."
+          },
+          "options": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/CustomPropertyOption"
+            },
+            "description": "For select properties: the allowed options. Required (non-empty) when display_type is 'select'; cleared server-side for other types."
           },
           "source": {
             "oneOf": [
@@ -209601,6 +210855,9 @@
               "supports_column_selection": {
                 "type": "boolean"
               },
+              "supports_row_filters": {
+                "type": "boolean"
+              },
               "user_access_level": {
                 "type": [
                   "string",
@@ -211399,7 +212656,7 @@
           "threshold_operator": {
             "allOf": [
               {
-                "$ref": "#/components/schemas/ThresholdOperatorEnum"
+                "$ref": "#/components/schemas/LogsAlertThresholdOperatorEnum"
               }
             ],
             "default": "above",
@@ -214310,7 +215567,7 @@
             "readOnly": true
           },
           "source_product": {
-            "$ref": "#/components/schemas/SourceProductEnum"
+            "$ref": "#/components/schemas/SignalSourceConfigSourceProductEnum"
           },
           "source_type": {
             "$ref": "#/components/schemas/SignalSourceConfigSourceTypeEnum"
@@ -215191,6 +216448,23 @@
                 "$ref": "#/components/schemas/NullEnum"
               }
             ]
+          },
+          "pending_user_message": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "writeOnly": true,
+            "description": "First user message to forward when creation reuses a pre-warmed Run. Write-only and not persisted on the task: lets clients deliver a message that differs from `description` (e.g. a resolved skill invocation with channel context folded in). Ignored when no warm Run is reused — cold creation takes the first message via the run start endpoint instead."
+          },
+          "pending_user_artifact_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 128
+            },
+            "writeOnly": true,
+            "description": "Run artifact ids (already uploaded to the pre-warmed Run) to attach to the forwarded first message when creation reuses that warm Run, e.g. skill bundles or file attachments. If any id is missing from the warm Run's manifest, warm reuse is skipped and the task is created cold. Ignored when no warm Run is matched."
           },
           "channel": {
             "type": [
@@ -218251,6 +219525,14 @@
             ],
             "description": "Spend grouped by `$ai_model`. Scoped to `product` when set."
           },
+          "by_day": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/_DayBreakdown"
+              }
+            ],
+            "description": "Spend grouped by UTC day, ordered ascending. Scoped to `product`. Not subject to `limit`."
+          },
           "top_traces": {
             "allOf": [
               {
@@ -218261,6 +219543,7 @@
           }
         },
         "required": [
+          "by_day",
           "by_model",
           "by_product",
           "by_tool",
@@ -218576,6 +219859,131 @@
         ],
         "title": "PersonsOnEventsMode",
         "type": "string"
+      },
+      "PgAnalyzeIssueReference": {
+        "additionalProperties": false,
+        "properties": {
+          "kind": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Kind"
+          },
+          "name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Name"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "queryText": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Querytext"
+          }
+        },
+        "title": "PgAnalyzeIssueReference",
+        "type": "object"
+      },
+      "PgAnalyzeIssueSignalExtra": {
+        "additionalProperties": false,
+        "properties": {
+          "severity": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Severity"
+          },
+          "references": {
+            "items": {
+              "$ref": "#/components/schemas/PgAnalyzeIssueReference"
+            },
+            "title": "References",
+            "type": "array"
+          },
+          "database_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Database Id"
+          },
+          "server_human_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Server Human Id"
+          },
+          "server_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Server Name"
+          },
+          "synced_at": {
+            "title": "Synced At",
+            "type": "string"
+          }
+        },
+        "required": [
+          "severity",
+          "references",
+          "database_id",
+          "server_human_id",
+          "server_name",
+          "synced_at"
+        ],
+        "title": "PgAnalyzeIssueSignalExtra",
+        "type": "object"
       },
       "PieChartSettings": {
         "additionalProperties": false,
@@ -219030,6 +220438,16 @@
         "required": [
           "primary_properties"
         ]
+      },
+      "ProblemTypeEnum": {
+        "enum": [
+          "confusion",
+          "abandonment",
+          "blocking_exception",
+          "non_blocking_exception",
+          "failure"
+        ],
+        "type": "string"
       },
       "ProductEnablement": {
         "type": "object",
@@ -240111,6 +241529,130 @@
           "updated_at"
         ]
       },
+      "ReplayVisionScannerFindingSignalExtra": {
+        "additionalProperties": false,
+        "properties": {
+          "scanner_id": {
+            "title": "Scanner Id",
+            "type": "string"
+          },
+          "scanner_name": {
+            "title": "Scanner Name",
+            "type": "string"
+          },
+          "scanner_type": {
+            "title": "Scanner Type",
+            "type": "string"
+          },
+          "observation_id": {
+            "title": "Observation Id",
+            "type": "string"
+          },
+          "session_id": {
+            "title": "Session Id",
+            "type": "string"
+          },
+          "confidence": {
+            "title": "Confidence",
+            "type": "number"
+          },
+          "problem_type": {
+            "title": "Problem Type",
+            "type": "string"
+          },
+          "start_time": {
+            "title": "Start Time",
+            "type": "number"
+          },
+          "end_time": {
+            "title": "End Time",
+            "type": "number"
+          },
+          "url": {
+            "title": "Url",
+            "type": "string"
+          },
+          "exported_asset_id": {
+            "title": "Exported Asset Id",
+            "type": "integer"
+          },
+          "distinct_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Distinct Id"
+          },
+          "recording_start_time": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Recording Start Time"
+          },
+          "recording_end_time": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Recording End Time"
+          },
+          "recording_duration": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Recording Duration"
+          },
+          "recording_active_seconds": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Recording Active Seconds"
+          }
+        },
+        "required": [
+          "scanner_id",
+          "scanner_name",
+          "scanner_type",
+          "observation_id",
+          "session_id",
+          "confidence",
+          "problem_type",
+          "start_time",
+          "end_time",
+          "url",
+          "exported_asset_id"
+        ],
+        "title": "ReplayVisionScannerFindingSignalExtra",
+        "type": "object"
+      },
       "Repo": {
         "type": "object",
         "properties": {
@@ -240154,6 +241696,13 @@
       "RepoOverview": {
         "type": "object",
         "properties": {
+          "cost_series": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CostPerMergeBucket"
+            },
+            "description": "CI cost per merged PR across the window, oldest first, zero-filled, bucketed by cost_series_granularity. Empty when the job-level source isn't synced."
+          },
           "run_count": {
             "type": "integer",
             "description": "Workflow runs started in the window, all branches and workflows."
@@ -240241,11 +241790,17 @@
           "default_branch": {
             "type": "string",
             "description": "'master' or 'main', picked by observed run volume in the window."
+          },
+          "cost_series_granularity": {
+            "type": "string",
+            "description": "Bucket width of the cost_series trend, chosen to fit the window: 'hour', 'day', or 'week'."
           }
         },
         "required": [
           "billable_minutes",
           "billable_minutes_prev",
+          "cost_series",
+          "cost_series_granularity",
           "default_branch",
           "estimated_cost_usd",
           "estimated_cost_usd_prev",
@@ -240304,6 +241859,42 @@
         "required": [
           "description",
           "source_id"
+        ]
+      },
+      "ReportPriority": {
+        "enum": [
+          "P0",
+          "P1",
+          "P2",
+          "P3",
+          "P4"
+        ],
+        "title": "ReportPriority",
+        "type": "string"
+      },
+      "ReportSignalsResponse": {
+        "type": "object",
+        "description": "Response body for GET /api/projects/:id/signals/reports/:id/signals/.",
+        "properties": {
+          "report": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/SignalReport"
+              }
+            ],
+            "description": "The report these signals were clustered into."
+          },
+          "signals": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SignalNode"
+            },
+            "description": "All signals contributing to the report."
+          }
+        },
+        "required": [
+          "report",
+          "signals"
         ]
       },
       "RepositoryReadinessResponse": {
@@ -251751,6 +253342,179 @@
           "title"
         ]
       },
+      "SessionProblemEventEntry": {
+        "additionalProperties": false,
+        "properties": {
+          "event": {
+            "title": "Event",
+            "type": "string"
+          },
+          "timestamp": {
+            "title": "Timestamp",
+            "type": "string"
+          },
+          "current_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Current Url"
+          },
+          "event_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Event Type"
+          },
+          "interaction_text": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Interaction Text"
+          }
+        },
+        "required": [
+          "event",
+          "timestamp"
+        ],
+        "title": "SessionProblemEventEntry",
+        "type": "object"
+      },
+      "SessionProblemSignalExtra": {
+        "additionalProperties": false,
+        "properties": {
+          "session_id": {
+            "title": "Session Id",
+            "type": "string"
+          },
+          "segment_title": {
+            "title": "Segment Title",
+            "type": "string"
+          },
+          "start_time": {
+            "title": "Start Time",
+            "type": "string"
+          },
+          "end_time": {
+            "title": "End Time",
+            "type": "string"
+          },
+          "problem_type": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ProblemTypeEnum"
+              }
+            ],
+            "title": "Problem Type"
+          },
+          "distinct_id": {
+            "title": "Distinct Id",
+            "type": "string"
+          },
+          "session_start_time": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Session Start Time"
+          },
+          "session_end_time": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Session End Time"
+          },
+          "session_duration": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Session Duration"
+          },
+          "session_active_seconds": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Session Active Seconds"
+          },
+          "exported_asset_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Exported Asset Id"
+          },
+          "event_history": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/SessionProblemEventEntry"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Event History"
+          }
+        },
+        "required": [
+          "session_id",
+          "segment_title",
+          "start_time",
+          "end_time",
+          "problem_type",
+          "distinct_id"
+        ],
+        "title": "SessionProblemSignalExtra",
+        "type": "object"
+      },
       "SessionPropertyFilter": {
         "additionalProperties": false,
         "properties": {
@@ -252038,6 +253802,60 @@
           "summary_outcome",
           "viewed",
           "viewers"
+        ]
+      },
+      "SessionRecordingBulkDeleteRequest": {
+        "type": "object",
+        "properties": {
+          "session_recording_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Session IDs of the recordings to delete (max 100 per call).",
+            "maxItems": 100,
+            "minItems": 1
+          },
+          "date_from": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Earliest start time of the recordings, as an ISO date or a relative offset like '-30d'. Providing this narrows the lookup and speeds up the request; defaults to the project's recording retention period."
+          }
+        },
+        "required": [
+          "session_recording_ids"
+        ]
+      },
+      "SessionRecordingBulkDeleteResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "True when no deletion attempt failed. IDs that were not found, or that the caller lacks edit access to, are skipped rather than failed — compare deleted_count to total_requested to detect skips."
+          },
+          "deleted_count": {
+            "type": "integer",
+            "description": "Number of recordings that were deleted."
+          },
+          "total_requested": {
+            "type": "integer",
+            "description": "Number of session recording IDs in the request."
+          },
+          "failed_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Session IDs that were found but could not be deleted. These can be retried."
+          }
+        },
+        "required": [
+          "deleted_count",
+          "failed_ids",
+          "success",
+          "total_requested"
         ]
       },
       "SessionRecordingExternalReference": {
@@ -253819,6 +255637,137 @@
         "type": "string",
         "description": "* `above` - Above\n* `below` - Below\n* `hidden` - Hidden"
       },
+      "SignalExtra": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/SessionProblemSignalExtra"
+          },
+          {
+            "$ref": "#/components/schemas/LlmEvalSignalExtra"
+          },
+          {
+            "$ref": "#/components/schemas/LlmEvalReportSignalExtra"
+          },
+          {
+            "$ref": "#/components/schemas/ZendeskTicketSignalExtra"
+          },
+          {
+            "$ref": "#/components/schemas/GithubIssueSignalExtra"
+          },
+          {
+            "$ref": "#/components/schemas/LinearIssueSignalExtra"
+          },
+          {
+            "$ref": "#/components/schemas/ConversationsTicketSignalExtra"
+          },
+          {
+            "$ref": "#/components/schemas/ErrorTrackingSignalExtra"
+          },
+          {
+            "$ref": "#/components/schemas/PgAnalyzeIssueSignalExtra"
+          },
+          {
+            "$ref": "#/components/schemas/EndpointExecutionFailedSignalExtra"
+          },
+          {
+            "$ref": "#/components/schemas/EndpointBreakdownLimitExceededSignalExtra"
+          },
+          {
+            "$ref": "#/components/schemas/SignalsScoutSignalExtra"
+          },
+          {
+            "$ref": "#/components/schemas/LogsAlertStateChangeSignalExtra"
+          },
+          {
+            "$ref": "#/components/schemas/ReplayVisionScannerFindingSignalExtra"
+          },
+          {
+            "$ref": "#/components/schemas/HealthCheckSignalExtra"
+          }
+        ]
+      },
+      "SignalMatchMetadata": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/MatchedMetadata"
+          },
+          {
+            "$ref": "#/components/schemas/NoMatchMetadata"
+          }
+        ]
+      },
+      "SignalNode": {
+        "type": "object",
+        "properties": {
+          "signal_id": {
+            "type": "string",
+            "description": "ClickHouse document id of the signal."
+          },
+          "content": {
+            "type": "string",
+            "description": "The signal's human-readable description."
+          },
+          "source_product": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/SignalSourceProduct"
+              }
+            ],
+            "description": "Product that emitted the signal.\n\n* `session_replay` - session_replay\n* `llm_analytics` - llm_analytics\n* `github` - github\n* `linear` - linear\n* `zendesk` - zendesk\n* `conversations` - conversations\n* `error_tracking` - error_tracking\n* `endpoints` - endpoints\n* `pganalyze` - pganalyze\n* `signals_scout` - signals_scout\n* `logs` - logs\n* `health_checks` - health_checks\n* `replay_vision` - replay_vision"
+          },
+          "source_type": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/SignalSourceType"
+              }
+            ],
+            "description": "Signal type within the source product.\n\n* `session_analysis_cluster` - session_analysis_cluster\n* `session_problem` - session_problem\n* `evaluation` - evaluation\n* `evaluation_report` - evaluation_report\n* `issue` - issue\n* `ticket` - ticket\n* `issue_created` - issue_created\n* `issue_reopened` - issue_reopened\n* `issue_spiking` - issue_spiking\n* `endpoint_execution_failed` - endpoint_execution_failed\n* `endpoint_breakdown_limit_exceeded` - endpoint_breakdown_limit_exceeded\n* `cross_source_issue` - cross_source_issue\n* `alert_state_change` - alert_state_change\n* `health_issue` - health_issue\n* `scanner_finding` - scanner_finding"
+          },
+          "source_id": {
+            "type": "string",
+            "description": "Emitter-scoped id of the underlying object (issue, ticket, ...)."
+          },
+          "weight": {
+            "type": "number",
+            "format": "double",
+            "description": "Signal weight in [0, 1]; drives report ranking."
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Emission timestamp."
+          },
+          "extra": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/SignalExtra"
+              }
+            ],
+            "description": "Product-specific payload; shape depends on (source_product, source_type)."
+          },
+          "match_metadata": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/SignalMatchMetadata"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Clustering match/no-match metadata, when present."
+          }
+        },
+        "required": [
+          "content",
+          "extra",
+          "signal_id",
+          "source_id",
+          "source_product",
+          "source_type",
+          "timestamp",
+          "weight"
+        ]
+      },
       "SignalReport": {
         "type": "object",
         "properties": {
@@ -254748,7 +256697,7 @@
             "readOnly": true
           },
           "source_product": {
-            "$ref": "#/components/schemas/SourceProductEnum"
+            "$ref": "#/components/schemas/SignalSourceConfigSourceProductEnum"
           },
           "source_type": {
             "$ref": "#/components/schemas/SignalSourceConfigSourceTypeEnum"
@@ -254802,6 +256751,25 @@
           "source_type"
         ]
       },
+      "SignalSourceConfigSourceProductEnum": {
+        "enum": [
+          "session_replay",
+          "llm_analytics",
+          "github",
+          "linear",
+          "zendesk",
+          "conversations",
+          "error_tracking",
+          "pganalyze",
+          "signals_scout",
+          "logs",
+          "health_checks",
+          "endpoints",
+          "replay_vision"
+        ],
+        "type": "string",
+        "description": "* `session_replay` - Session replay\n* `llm_analytics` - LLM analytics\n* `github` - GitHub\n* `linear` - Linear\n* `zendesk` - Zendesk\n* `conversations` - Conversations\n* `error_tracking` - Error tracking\n* `pganalyze` - pganalyze\n* `signals_scout` - Signals scout\n* `logs` - Logs\n* `health_checks` - Health checks\n* `endpoints` - Endpoints\n* `replay_vision` - Replay Vision"
+      },
       "SignalSourceConfigSourceTypeEnum": {
         "enum": [
           "session_analysis_cluster",
@@ -254845,6 +256813,46 @@
           "disabled",
           "enabled"
         ]
+      },
+      "SignalSourceProduct": {
+        "enum": [
+          "session_replay",
+          "llm_analytics",
+          "github",
+          "linear",
+          "zendesk",
+          "conversations",
+          "error_tracking",
+          "endpoints",
+          "pganalyze",
+          "signals_scout",
+          "logs",
+          "health_checks",
+          "replay_vision"
+        ],
+        "type": "string",
+        "description": "* `session_replay` - session_replay\n* `llm_analytics` - llm_analytics\n* `github` - github\n* `linear` - linear\n* `zendesk` - zendesk\n* `conversations` - conversations\n* `error_tracking` - error_tracking\n* `endpoints` - endpoints\n* `pganalyze` - pganalyze\n* `signals_scout` - signals_scout\n* `logs` - logs\n* `health_checks` - health_checks\n* `replay_vision` - replay_vision"
+      },
+      "SignalSourceType": {
+        "enum": [
+          "session_analysis_cluster",
+          "session_problem",
+          "evaluation",
+          "evaluation_report",
+          "issue",
+          "ticket",
+          "issue_created",
+          "issue_reopened",
+          "issue_spiking",
+          "endpoint_execution_failed",
+          "endpoint_breakdown_limit_exceeded",
+          "cross_source_issue",
+          "alert_state_change",
+          "health_issue",
+          "scanner_finding"
+        ],
+        "type": "string",
+        "description": "* `session_analysis_cluster` - session_analysis_cluster\n* `session_problem` - session_problem\n* `evaluation` - evaluation\n* `evaluation_report` - evaluation_report\n* `issue` - issue\n* `ticket` - ticket\n* `issue_created` - issue_created\n* `issue_reopened` - issue_reopened\n* `issue_spiking` - issue_spiking\n* `endpoint_execution_failed` - endpoint_execution_failed\n* `endpoint_breakdown_limit_exceeded` - endpoint_breakdown_limit_exceeded\n* `cross_source_issue` - cross_source_issue\n* `alert_state_change` - alert_state_change\n* `health_issue` - health_issue\n* `scanner_finding` - scanner_finding"
       },
       "SignalUserAutonomyConfig": {
         "type": "object",
@@ -254923,6 +256931,191 @@
           "updated_at",
           "user"
         ]
+      },
+      "SignalsScoutEvidenceEntry": {
+        "additionalProperties": false,
+        "properties": {
+          "source_product": {
+            "title": "Source Product",
+            "type": "string"
+          },
+          "entity_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Entity Id"
+          },
+          "summary": {
+            "title": "Summary",
+            "type": "string"
+          }
+        },
+        "required": [
+          "source_product",
+          "summary"
+        ],
+        "title": "SignalsScoutEvidenceEntry",
+        "type": "object"
+      },
+      "SignalsScoutSignalExtra": {
+        "additionalProperties": false,
+        "properties": {
+          "scout_run_id": {
+            "title": "Scout Run Id",
+            "type": "string"
+          },
+          "task_run_id": {
+            "title": "Task Run Id",
+            "type": "string"
+          },
+          "task_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Task Id"
+          },
+          "finding_id": {
+            "title": "Finding Id",
+            "type": "string"
+          },
+          "skill_name": {
+            "title": "Skill Name",
+            "type": "string"
+          },
+          "skill_version": {
+            "title": "Skill Version",
+            "type": "integer"
+          },
+          "confidence": {
+            "title": "Confidence",
+            "type": "number"
+          },
+          "severity": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ReportPriority"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "hypothesis": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Hypothesis"
+          },
+          "evidence": {
+            "items": {
+              "$ref": "#/components/schemas/SignalsScoutEvidenceEntry"
+            },
+            "title": "Evidence",
+            "type": "array"
+          },
+          "dedupe_keys": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Dedupe Keys"
+          },
+          "tags": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Tags"
+          },
+          "time_range": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/SignalsScoutTimeRange"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null
+          },
+          "mcp_trace_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Mcp Trace Id"
+          }
+        },
+        "required": [
+          "scout_run_id",
+          "task_run_id",
+          "finding_id",
+          "skill_name",
+          "skill_version",
+          "confidence",
+          "evidence"
+        ],
+        "title": "SignalsScoutSignalExtra",
+        "type": "object"
+      },
+      "SignalsScoutTimeRange": {
+        "additionalProperties": false,
+        "properties": {
+          "date_from": {
+            "title": "Date From",
+            "type": "string"
+          },
+          "date_to": {
+            "title": "Date To",
+            "type": "string"
+          }
+        },
+        "required": [
+          "date_from",
+          "date_to"
+        ],
+        "title": "SignalsScoutTimeRange",
+        "type": "object"
       },
       "SimilarIssue": {
         "additionalProperties": false,
@@ -256111,25 +258304,6 @@
           "rows"
         ]
       },
-      "SourceProductEnum": {
-        "enum": [
-          "session_replay",
-          "llm_analytics",
-          "github",
-          "linear",
-          "zendesk",
-          "conversations",
-          "error_tracking",
-          "pganalyze",
-          "signals_scout",
-          "logs",
-          "health_checks",
-          "endpoints",
-          "replay_vision"
-        ],
-        "type": "string",
-        "description": "* `session_replay` - Session replay\n* `llm_analytics` - LLM analytics\n* `github` - GitHub\n* `linear` - Linear\n* `zendesk` - Zendesk\n* `conversations` - Conversations\n* `error_tracking` - Error tracking\n* `pganalyze` - pganalyze\n* `signals_scout` - Signals scout\n* `logs` - Logs\n* `health_checks` - Health checks\n* `endpoints` - Endpoints\n* `replay_vision` - Replay Vision"
-      },
       "SourceSetup": {
         "type": "object",
         "properties": {
@@ -256401,6 +258575,28 @@
         ],
         "type": "string",
         "description": "* `severity` - severity\n* `service` - service"
+      },
+      "SpecificityMetadata": {
+        "type": "object",
+        "properties": {
+          "pr_title": {
+            "type": "string",
+            "description": "Title of the PR the specificity gate evaluated."
+          },
+          "specific_enough": {
+            "type": "boolean",
+            "description": "Whether the report passed the PR-specificity gate."
+          },
+          "reason": {
+            "type": "string",
+            "description": "The gate's reasoning."
+          }
+        },
+        "required": [
+          "pr_title",
+          "reason",
+          "specific_enough"
+        ]
       },
       "StageEnum": {
         "enum": [
@@ -262336,6 +264532,23 @@
               }
             ]
           },
+          "pending_user_message": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "writeOnly": true,
+            "description": "First user message to forward when creation reuses a pre-warmed Run. Write-only and not persisted on the task: lets clients deliver a message that differs from `description` (e.g. a resolved skill invocation with channel context folded in). Ignored when no warm Run is reused — cold creation takes the first message via the run start endpoint instead."
+          },
+          "pending_user_artifact_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 128
+            },
+            "writeOnly": true,
+            "description": "Run artifact ids (already uploaded to the pre-warmed Run) to attach to the forwarded first message when creation reuses that warm Run, e.g. skill bundles or file attachments. If any id is missing from the warm Run's manifest, warm reuse is skipped and the task is created cold. Ignored when no warm Run is matched."
+          },
           "channel": {
             "type": [
               "string",
@@ -263835,14 +266048,6 @@
         },
         "title": "ThresholdDetectorConfig",
         "type": "object"
-      },
-      "ThresholdOperatorEnum": {
-        "enum": [
-          "above",
-          "below"
-        ],
-        "type": "string",
-        "description": "* `above` - Above\n* `below` - Below"
       },
       "ThresholdWithAlert": {
         "type": "object",
@@ -277393,6 +279598,62 @@
         "title": "ZScoreDetectorConfig",
         "type": "object"
       },
+      "ZendeskTicketSignalExtra": {
+        "additionalProperties": false,
+        "properties": {
+          "url": {
+            "title": "Url",
+            "type": "string"
+          },
+          "type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Type"
+          },
+          "tags": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Tags",
+            "type": "array"
+          },
+          "created_at": {
+            "title": "Created At",
+            "type": "string"
+          },
+          "priority": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Priority"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "url",
+          "type",
+          "tags",
+          "created_at",
+          "priority",
+          "status"
+        ],
+        "title": "ZendeskTicketSignalExtra",
+        "type": "object"
+      },
       "_CompareFilter": {
         "type": "object",
         "properties": {
@@ -277428,6 +279689,50 @@
             "description": "End of the date range. Same format as date_from. Omit or null for \"now\"."
           }
         }
+      },
+      "_DayBreakdown": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/_DayBreakdownRow"
+            },
+            "description": "One row per UTC day that has events, ordered by day ascending. Days with no events are omitted — zero-fill client-side when rendering a continuous series."
+          },
+          "truncated": {
+            "type": "boolean",
+            "description": "Effectively always false: `by_day` ignores `limit` because truncating a time series by cost would be meaningless, and the 90-day window cap already bounds the series length."
+          }
+        },
+        "required": [
+          "items",
+          "truncated"
+        ]
+      },
+      "_DayBreakdownRow": {
+        "type": "object",
+        "properties": {
+          "day": {
+            "type": "string",
+            "format": "date",
+            "description": "UTC calendar day the events fall on (`toDate(timestamp)`)."
+          },
+          "event_count": {
+            "type": "integer",
+            "description": "Number of $ai_generation + $ai_embedding events on this day for the scoped product."
+          },
+          "cost_usd": {
+            "type": "number",
+            "format": "double",
+            "description": "Total cost in USD on this day for the scoped product."
+          }
+        },
+        "required": [
+          "cost_usd",
+          "day",
+          "event_count"
+        ]
       },
       "_ErrorResponse": {
         "type": "object",
@@ -277689,6 +279994,13 @@
               "type": "integer"
             },
             "description": "Estimated occurrences per time bucket, aligned index-for-index with the response's `sparkline_buckets`. Extrapolated from the sample like `estimated_count`, so it shows the volume shape over the window, not exact per-bucket tallies."
+          },
+          "severity_counts": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "description": "Sampled occurrences keyed by lowercased severity (\"trace\" through \"fatal\"). Raw sample counts, not extrapolated — severity dominance is a proportion, so scaling would not change it."
           }
         },
         "required": [
@@ -277701,6 +280013,7 @@
           "last_seen",
           "pattern",
           "services",
+          "severity_counts",
           "sparkline",
           "volume_share_pct"
         ]
@@ -280179,6 +282492,62 @@
           }
         }
       },
+      "_TracingDurationHistogramQueryBody": {
+        "type": "object",
+        "properties": {
+          "dateRange": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/_TracingDateRange"
+              }
+            ],
+            "description": "Date range for the query. Defaults to last hour."
+          },
+          "serviceNames": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Filter by service names."
+          },
+          "statusCodes": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            },
+            "description": "Filter by OTel span status codes (0 Unset, 1 OK, 2 Error) — not HTTP status codes. Use [2] to select error spans."
+          },
+          "filterGroup": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/_SpanPropertyFilter"
+            },
+            "default": [],
+            "description": "Property filters for the query."
+          },
+          "rootSpans": {
+            "type": "boolean",
+            "default": true,
+            "description": "When true (default), bucket root-span durations only — a distribution of traces. When false, bucket every matching span — used with a span name filter for operation-scoped distributions."
+          }
+        }
+      },
+      "_TracingDurationHistogramRequest": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/_TracingDurationHistogramQueryBody"
+              }
+            ],
+            "description": "The duration-histogram query to execute."
+          }
+        },
+        "required": [
+          "query"
+        ]
+      },
       "_TracingQueryBody": {
         "type": "object",
         "properties": {
@@ -280341,57 +282710,6 @@
               }
             ],
             "description": "The sparkline query to execute."
-          }
-        },
-        "required": [
-          "query"
-        ]
-      },
-      "_TracingTimeseriesQueryBody": {
-        "type": "object",
-        "properties": {
-          "dateRange": {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/_TracingDateRange"
-              }
-            ],
-            "description": "Date range for the query. Defaults to last hour."
-          },
-          "serviceNames": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "description": "Filter by service names."
-          },
-          "statusCodes": {
-            "type": "array",
-            "items": {
-              "type": "integer"
-            },
-            "description": "Filter by OTel span status codes (0 Unset, 1 OK, 2 Error) — not HTTP status codes. Use [2] to select error spans."
-          },
-          "filterGroup": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/_SpanPropertyFilter"
-            },
-            "default": [],
-            "description": "Property filters for the query."
-          }
-        }
-      },
-      "_TracingTimeseriesRequest": {
-        "type": "object",
-        "properties": {
-          "query": {
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/_TracingTimeseriesQueryBody"
-              }
-            ],
-            "description": "The sparkline / duration-histogram query to execute."
           }
         },
         "required": [
