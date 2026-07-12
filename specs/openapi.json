@@ -45623,6 +45623,82 @@
         ]
       }
     },
+    "/api/environments/{environment_id}/vision/scanners/{scanner_id}/prompt_suggestions/{id}/evaluate/": {
+      "post": {
+        "operationId": "environments_vision_scanners_prompt_suggestions_evaluate_create",
+        "description": "Test this suggestion before applying it: re-run the scanner with the suggested prompt against already-rated sessions in the background and compare each fresh output with the stored one. Results land on the suggestion's `evaluation` field. Poll `current` while status is running. `session_limit` controls how many rated sessions are re-run (thumbs-down prioritized, up to `evaluation_session_cap`). Each successful re-run charges credits like a normal observation of the same model. The request is refused with 402 when the planned credits exceed what is left of the monthly limit. Only monitor and classifier scanners are supported. Requires session recording edit access.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/EnvironmentIdPath"
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "A UUID string identifying this replay scanner prompt suggestion.",
+            "required": true
+          },
+          {
+            "in": "path",
+            "name": "scanner_id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "required": true
+          }
+        ],
+        "tags": [
+          "vision"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EvaluatePromptSuggestionRequest"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/EvaluatePromptSuggestionRequest"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/EvaluatePromptSuggestionRequest"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "replay_scanner:write",
+              "session_recording:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReplayScannerPromptSuggestion"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "deprecated": true,
+        "x-product": [
+          "replay_vision"
+        ]
+      }
+    },
     "/api/environments/{environment_id}/vision/scanners/{scanner_id}/prompt_suggestions/current/": {
       "get": {
         "operationId": "environments_vision_scanners_prompt_suggestions_current_retrieve",
@@ -134032,6 +134108,81 @@
         ]
       }
     },
+    "/api/projects/{project_id}/vision/scanners/{scanner_id}/prompt_suggestions/{id}/evaluate/": {
+      "post": {
+        "operationId": "vision_scanners_prompt_suggestions_evaluate_create",
+        "description": "Test this suggestion before applying it: re-run the scanner with the suggested prompt against already-rated sessions in the background and compare each fresh output with the stored one. Results land on the suggestion's `evaluation` field. Poll `current` while status is running. `session_limit` controls how many rated sessions are re-run (thumbs-down prioritized, up to `evaluation_session_cap`). Each successful re-run charges credits like a normal observation of the same model. The request is refused with 402 when the planned credits exceed what is left of the monthly limit. Only monitor and classifier scanners are supported. Requires session recording edit access.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "A UUID string identifying this replay scanner prompt suggestion.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          },
+          {
+            "in": "path",
+            "name": "scanner_id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "required": true
+          }
+        ],
+        "tags": [
+          "vision"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EvaluatePromptSuggestionRequest"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/EvaluatePromptSuggestionRequest"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/EvaluatePromptSuggestionRequest"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "replay_scanner:write",
+              "session_recording:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReplayScannerPromptSuggestion"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "replay_vision"
+        ]
+      }
+    },
     "/api/projects/{project_id}/vision/scanners/{scanner_id}/prompt_suggestions/current/": {
       "get": {
         "operationId": "vision_scanners_prompt_suggestions_current_retrieve",
@@ -156940,9 +157091,14 @@
           "rated_count": {
             "type": "integer",
             "description": "Number of rated (thumbs up or down) succeeded observations available to generate from."
+          },
+          "evaluation_session_cap": {
+            "type": "integer",
+            "description": "Maximum rated sessions one suggestion test re-runs. Each successful re-run charges credits like a normal observation of the same model."
           }
         },
         "required": [
+          "evaluation_session_cap",
           "rated_count",
           "stale",
           "suggestion"
@@ -170853,6 +171009,18 @@
           "window_days"
         ]
       },
+      "EvaluatePromptSuggestionRequest": {
+        "type": "object",
+        "properties": {
+          "session_limit": {
+            "type": "integer",
+            "maximum": 100,
+            "minimum": 1,
+            "default": 10,
+            "description": "How many rated sessions to re-run, thumbs-down prioritized. Each successful re-run charges credits like a normal observation of the same model. Defaults to 10. The maximum is `evaluation_session_cap`."
+          }
+        }
+      },
       "Evaluation": {
         "type": "object",
         "properties": {
@@ -182801,6 +182969,82 @@
         ],
         "title": "FeaturePropertyFilter",
         "type": "object"
+      },
+      "FeedbackTheme": {
+        "type": "object",
+        "properties": {
+          "theme": {
+            "type": "string",
+            "description": "Short failure mode in sentence case, for example \"Review page mistaken for confirmation\"."
+          },
+          "count": {
+            "type": "integer",
+            "description": "How many feedback comments describe this failure mode."
+          },
+          "examples": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Up to two short representative quotes from the feedback comments."
+          },
+          "sessions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FeedbackThemeSession"
+            },
+            "description": "The rated sessions whose feedback comments back this theme. Empty for summaries generated before session tracking."
+          }
+        },
+        "required": [
+          "count",
+          "examples",
+          "sessions",
+          "theme"
+        ]
+      },
+      "FeedbackThemeSession": {
+        "type": "object",
+        "properties": {
+          "observation_id": {
+            "type": "string",
+            "description": "Observation whose feedback comment backs this theme."
+          },
+          "session_id": {
+            "type": "string",
+            "description": "Session recording the feedback comment was about."
+          }
+        },
+        "required": [
+          "observation_id",
+          "session_id"
+        ]
+      },
+      "FeedbackThemes": {
+        "type": "object",
+        "properties": {
+          "themes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FeedbackTheme"
+            },
+            "description": "Recurring failure modes, most frequent first."
+          },
+          "feedback_count": {
+            "type": "integer",
+            "description": "Number of thumbs-down feedback comments the summary was generated from."
+          },
+          "generated_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When the summary was generated."
+          }
+        },
+        "required": [
+          "feedback_count",
+          "generated_at",
+          "themes"
+        ]
       },
       "FieldNote": {
         "type": "object",
@@ -224077,6 +224321,18 @@
             "type": "string",
             "format": "date-time",
             "readOnly": true
+          },
+          "feedback_themes": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/FeedbackThemes"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "readOnly": true,
+            "description": "AI summary of the team's written thumbs-down feedback into recurring failure modes. Refreshed with prompt recommendations; null until enough feedback accumulates."
           }
         }
       },
@@ -231115,6 +231371,146 @@
           "mask_value",
           "scopes",
           "value"
+        ]
+      },
+      "PromptEvaluationResult": {
+        "type": "object",
+        "properties": {
+          "session_id": {
+            "type": "string",
+            "description": "The rated session that was re-run with the suggested prompt."
+          },
+          "observation_id": {
+            "type": "string",
+            "description": "The original rated observation the comparison is against."
+          },
+          "rated_correct": {
+            "type": "boolean",
+            "description": "The team's rating of the original output (thumbs up = true)."
+          },
+          "before": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The original output's primary outcome."
+          },
+          "after": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The suggested prompt's outcome for the same session. Null when the run errored or returned no discrete outcome (e.g. a classifier with no tags)."
+          },
+          "outcome": {
+            "type": "string",
+            "description": "kept (up, unchanged), regressed (up, changed), fixed (down, changed), still_wrong (down, unchanged), or error."
+          },
+          "error": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Why this session's re-run failed, when it did."
+          }
+        },
+        "required": [
+          "after",
+          "before",
+          "error",
+          "observation_id",
+          "outcome",
+          "rated_correct",
+          "session_id"
+        ]
+      },
+      "PromptEvaluationSummary": {
+        "type": "object",
+        "properties": {
+          "kept": {
+            "type": "integer",
+            "description": "Thumbs-up sessions whose output is unchanged."
+          },
+          "regressed": {
+            "type": "integer",
+            "description": "Thumbs-up sessions whose output changed."
+          },
+          "fixed": {
+            "type": "integer",
+            "description": "Thumbs-down sessions whose output changed."
+          },
+          "still_wrong": {
+            "type": "integer",
+            "description": "Thumbs-down sessions whose output is unchanged."
+          },
+          "errors": {
+            "type": "integer",
+            "description": "Sessions whose re-run failed."
+          }
+        },
+        "required": [
+          "errors",
+          "fixed",
+          "kept",
+          "regressed",
+          "still_wrong"
+        ]
+      },
+      "PromptSuggestionEvaluation": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "description": "running, succeeded, or failed."
+          },
+          "started_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When the evaluation started."
+          },
+          "finished_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time",
+            "description": "When the evaluation finished, if it has."
+          },
+          "total": {
+            "type": "integer",
+            "description": "How many rated sessions are being re-run."
+          },
+          "labels_fingerprint": {
+            "type": "string",
+            "description": "The rated set the evaluation ran against."
+          },
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PromptEvaluationResult"
+            },
+            "description": "Per-session outcomes, in completion order."
+          },
+          "summary": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/PromptEvaluationSummary"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Outcome counts. Null while the evaluation is running."
+          }
+        },
+        "required": [
+          "finished_at",
+          "labels_fingerprint",
+          "results",
+          "started_at",
+          "status",
+          "summary",
+          "total"
         ]
       },
       "Property": {
@@ -251830,6 +252226,18 @@
             "type": "string",
             "format": "date-time",
             "readOnly": true
+          },
+          "feedback_themes": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/FeedbackThemes"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "readOnly": true,
+            "description": "AI summary of the team's written thumbs-down feedback into recurring failure modes. Refreshed with prompt recommendations; null until enough feedback accumulates."
           }
         },
         "required": [
@@ -251838,6 +252246,7 @@
           "credits_per_observation",
           "estimated_monthly_credits",
           "estimated_monthly_observations",
+          "feedback_themes",
           "id",
           "last_swept_at",
           "model",
@@ -251931,6 +252340,18 @@
             ],
             "readOnly": true,
             "description": "User who applied this suggestion to the scanner; null unless applied."
+          },
+          "evaluation": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/PromptSuggestionEvaluation"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "readOnly": true,
+            "description": "Test-before-apply results: the suggested prompt re-run against rated sessions."
           }
         },
         "required": [
@@ -251941,6 +252362,7 @@
           "based_on_up",
           "created_at",
           "created_by",
+          "evaluation",
           "id",
           "rationale",
           "scanner_version",
