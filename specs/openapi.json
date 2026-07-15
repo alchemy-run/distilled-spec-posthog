@@ -7674,6 +7674,44 @@
         ]
       }
     },
+    "/api/environments/{environment_id}/data_warehouse/managed-warehouse-data-status/": {
+      "get": {
+        "operationId": "environments_data_warehouse_managed_warehouse_data_status_retrieve",
+        "description": "Get events, persons, and imported source readiness for the managed warehouse.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/EnvironmentIdPath"
+          }
+        ],
+        "tags": [
+          "data_warehouse"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "warehouse_view:read",
+              "external_data_source:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ManagedWarehouseDataStatusResponse"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "deprecated": true,
+        "x-product": [
+          "data_warehouse"
+        ]
+      }
+    },
     "/api/environments/{environment_id}/data_warehouse/property_values/": {
       "get": {
         "operationId": "environments_data_warehouse_property_values_retrieve",
@@ -17186,7 +17224,7 @@
     "/api/environments/{environment_id}/external_data_sources/oauth_accounts/": {
       "get": {
         "operationId": "environments_external_data_sources_oauth_accounts_retrieve",
-        "description": "List the accounts/properties a connected OAuth integration exposes, in the shared\nIntegrationAccount shape. The logic lives in each source (via OAuthMixin.get_oauth_accounts);\nthis endpoint just routes by source type and serializes the result.",
+        "description": "List the accounts/properties a connected OAuth integration exposes, in the shared\nIntegrationAccount shape. The logic lives in each source (via OAuthMixin.get_oauth_accounts);\nthis endpoint just routes by source type, applies the optional search filter, and serializes.",
         "parameters": [
           {
             "$ref": "#/components/parameters/EnvironmentIdPath"
@@ -17199,6 +17237,14 @@
             },
             "description": "The OAuth integration id whose accounts should be listed.",
             "required": true
+          },
+          {
+            "in": "query",
+            "name": "search",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Optional case-insensitive filter over account name/value, for sources whose resource list is large (e.g. GitHub repositories)."
           },
           {
             "in": "query",
@@ -53212,7 +53258,7 @@
     "/api/organizations/{organization_id}/projects/{id}/logs_config/": {
       "get": {
         "operationId": "organizations_projects_logs_config_retrieve",
-        "description": "Manage logs product configuration for this project's canonical environment.\nMirrors the env-router action so /api/projects/:id/logs_config/ resolves\nalongside the legacy /api/environments/:id/logs_config/ alias.",
+        "description": "Manage logs product configuration for this project's canonical environment.\nMembers can read; writing requires project admin, matching the admin-only\nsettings UI. Mirrors the env-router action so /api/projects/:id/logs_config/\nresolves alongside the legacy /api/environments/:id/logs_config/ alias.",
         "parameters": [
           {
             "in": "path",
@@ -53252,7 +53298,7 @@
       },
       "patch": {
         "operationId": "organizations_projects_logs_config_partial_update",
-        "description": "Manage logs product configuration for this project's canonical environment.\nMirrors the env-router action so /api/projects/:id/logs_config/ resolves\nalongside the legacy /api/environments/:id/logs_config/ alias.",
+        "description": "Manage logs product configuration for this project's canonical environment.\nMembers can read; writing requires project admin, matching the admin-only\nsettings UI. Mirrors the env-router action so /api/projects/:id/logs_config/\nresolves alongside the legacy /api/environments/:id/logs_config/ alias.",
         "parameters": [
           {
             "in": "path",
@@ -56492,12 +56538,14 @@
                 "SignalReport",
                 "SignalScoutConfig",
                 "StreamlitApp",
-                "Metric"
+                "Metric",
+                "TableCertification",
+                "Billing"
               ],
               "type": "string",
               "minLength": 1
             },
-            "description": "Filter by a single activity scope, e.g. \"FeatureFlag\", \"Insight\", \"Dashboard\", \"Experiment\".\n\n* `Cohort` - Cohort\n* `FeatureFlag` - FeatureFlag\n* `Person` - Person\n* `Group` - Group\n* `Insight` - Insight\n* `Plugin` - Plugin\n* `PluginConfig` - PluginConfig\n* `HogFunction` - HogFunction\n* `HogFlow` - HogFlow\n* `DataManagement` - DataManagement\n* `EventDefinition` - EventDefinition\n* `PropertyDefinition` - PropertyDefinition\n* `Notebook` - Notebook\n* `Endpoint` - Endpoint\n* `EndpointVersion` - EndpointVersion\n* `Dashboard` - Dashboard\n* `Replay` - Replay\n* `Experiment` - Experiment\n* `ExperimentHoldout` - ExperimentHoldout\n* `ExperimentSavedMetric` - ExperimentSavedMetric\n* `Survey` - Survey\n* `EarlyAccessFeature` - EarlyAccessFeature\n* `SessionRecordingPlaylist` - SessionRecordingPlaylist\n* `Comment` - Comment\n* `Team` - Team\n* `Project` - Project\n* `ErrorTrackingIssue` - ErrorTrackingIssue\n* `DataWarehouseSavedQuery` - DataWarehouseSavedQuery\n* `LegalDocument` - LegalDocument\n* `Organization` - Organization\n* `OrganizationDomain` - OrganizationDomain\n* `IdentityProviderConfig` - IdentityProviderConfig\n* `OrganizationMembership` - OrganizationMembership\n* `Role` - Role\n* `UserGroup` - UserGroup\n* `BatchExport` - BatchExport\n* `BatchImport` - BatchImport\n* `ExportedAsset` - ExportedAsset\n* `Integration` - Integration\n* `Annotation` - Annotation\n* `Tag` - Tag\n* `TaggedItem` - TaggedItem\n* `Subscription` - Subscription\n* `PersonalAPIKey` - PersonalAPIKey\n* `ProjectSecretAPIKey` - ProjectSecretAPIKey\n* `OAuthApplication` - OAuthApplication\n* `User` - User\n* `Action` - Action\n* `AlertConfiguration` - AlertConfiguration\n* `Threshold` - Threshold\n* `AlertSubscription` - AlertSubscription\n* `ExternalDataSource` - ExternalDataSource\n* `ExternalDataSchema` - ExternalDataSchema\n* `Evaluation` - Evaluation\n* `LLMTrace` - LLMTrace\n* `AIGatewayCredit` - AIGatewayCredit\n* `WebAnalyticsFilterPreset` - WebAnalyticsFilterPreset\n* `CustomerProfileConfig` - CustomerProfileConfig\n* `Log` - Log\n* `LogsAlertConfiguration` - LogsAlertConfiguration\n* `LogsExclusionRule` - LogsExclusionRule\n* `DashboardWidget` - DashboardWidget\n* `ProductTour` - ProductTour\n* `Ticket` - Ticket\n* `InstanceSetting` - InstanceSetting\n* `SignalReport` - SignalReport\n* `SignalScoutConfig` - SignalScoutConfig\n* `StreamlitApp` - StreamlitApp\n* `Metric` - Metric"
+            "description": "Filter by a single activity scope, e.g. \"FeatureFlag\", \"Insight\", \"Dashboard\", \"Experiment\".\n\n* `Cohort` - Cohort\n* `FeatureFlag` - FeatureFlag\n* `Person` - Person\n* `Group` - Group\n* `Insight` - Insight\n* `Plugin` - Plugin\n* `PluginConfig` - PluginConfig\n* `HogFunction` - HogFunction\n* `HogFlow` - HogFlow\n* `DataManagement` - DataManagement\n* `EventDefinition` - EventDefinition\n* `PropertyDefinition` - PropertyDefinition\n* `Notebook` - Notebook\n* `Endpoint` - Endpoint\n* `EndpointVersion` - EndpointVersion\n* `Dashboard` - Dashboard\n* `Replay` - Replay\n* `Experiment` - Experiment\n* `ExperimentHoldout` - ExperimentHoldout\n* `ExperimentSavedMetric` - ExperimentSavedMetric\n* `Survey` - Survey\n* `EarlyAccessFeature` - EarlyAccessFeature\n* `SessionRecordingPlaylist` - SessionRecordingPlaylist\n* `Comment` - Comment\n* `Team` - Team\n* `Project` - Project\n* `ErrorTrackingIssue` - ErrorTrackingIssue\n* `DataWarehouseSavedQuery` - DataWarehouseSavedQuery\n* `LegalDocument` - LegalDocument\n* `Organization` - Organization\n* `OrganizationDomain` - OrganizationDomain\n* `IdentityProviderConfig` - IdentityProviderConfig\n* `OrganizationMembership` - OrganizationMembership\n* `Role` - Role\n* `UserGroup` - UserGroup\n* `BatchExport` - BatchExport\n* `BatchImport` - BatchImport\n* `ExportedAsset` - ExportedAsset\n* `Integration` - Integration\n* `Annotation` - Annotation\n* `Tag` - Tag\n* `TaggedItem` - TaggedItem\n* `Subscription` - Subscription\n* `PersonalAPIKey` - PersonalAPIKey\n* `ProjectSecretAPIKey` - ProjectSecretAPIKey\n* `OAuthApplication` - OAuthApplication\n* `User` - User\n* `Action` - Action\n* `AlertConfiguration` - AlertConfiguration\n* `Threshold` - Threshold\n* `AlertSubscription` - AlertSubscription\n* `ExternalDataSource` - ExternalDataSource\n* `ExternalDataSchema` - ExternalDataSchema\n* `Evaluation` - Evaluation\n* `LLMTrace` - LLMTrace\n* `AIGatewayCredit` - AIGatewayCredit\n* `WebAnalyticsFilterPreset` - WebAnalyticsFilterPreset\n* `CustomerProfileConfig` - CustomerProfileConfig\n* `Log` - Log\n* `LogsAlertConfiguration` - LogsAlertConfiguration\n* `LogsExclusionRule` - LogsExclusionRule\n* `DashboardWidget` - DashboardWidget\n* `ProductTour` - ProductTour\n* `Ticket` - Ticket\n* `InstanceSetting` - InstanceSetting\n* `SignalReport` - SignalReport\n* `SignalScoutConfig` - SignalScoutConfig\n* `StreamlitApp` - StreamlitApp\n* `Metric` - Metric\n* `TableCertification` - TableCertification\n* `Billing` - Billing"
           },
           {
             "in": "query",
@@ -56574,10 +56622,12 @@
                   "SignalReport",
                   "SignalScoutConfig",
                   "StreamlitApp",
-                  "Metric"
+                  "Metric",
+                  "TableCertification",
+                  "Billing"
                 ],
                 "type": "string",
-                "description": "* `Cohort` - Cohort\n* `FeatureFlag` - FeatureFlag\n* `Person` - Person\n* `Group` - Group\n* `Insight` - Insight\n* `Plugin` - Plugin\n* `PluginConfig` - PluginConfig\n* `HogFunction` - HogFunction\n* `HogFlow` - HogFlow\n* `DataManagement` - DataManagement\n* `EventDefinition` - EventDefinition\n* `PropertyDefinition` - PropertyDefinition\n* `Notebook` - Notebook\n* `Endpoint` - Endpoint\n* `EndpointVersion` - EndpointVersion\n* `Dashboard` - Dashboard\n* `Replay` - Replay\n* `Experiment` - Experiment\n* `ExperimentHoldout` - ExperimentHoldout\n* `ExperimentSavedMetric` - ExperimentSavedMetric\n* `Survey` - Survey\n* `EarlyAccessFeature` - EarlyAccessFeature\n* `SessionRecordingPlaylist` - SessionRecordingPlaylist\n* `Comment` - Comment\n* `Team` - Team\n* `Project` - Project\n* `ErrorTrackingIssue` - ErrorTrackingIssue\n* `DataWarehouseSavedQuery` - DataWarehouseSavedQuery\n* `LegalDocument` - LegalDocument\n* `Organization` - Organization\n* `OrganizationDomain` - OrganizationDomain\n* `IdentityProviderConfig` - IdentityProviderConfig\n* `OrganizationMembership` - OrganizationMembership\n* `Role` - Role\n* `UserGroup` - UserGroup\n* `BatchExport` - BatchExport\n* `BatchImport` - BatchImport\n* `ExportedAsset` - ExportedAsset\n* `Integration` - Integration\n* `Annotation` - Annotation\n* `Tag` - Tag\n* `TaggedItem` - TaggedItem\n* `Subscription` - Subscription\n* `PersonalAPIKey` - PersonalAPIKey\n* `ProjectSecretAPIKey` - ProjectSecretAPIKey\n* `OAuthApplication` - OAuthApplication\n* `User` - User\n* `Action` - Action\n* `AlertConfiguration` - AlertConfiguration\n* `Threshold` - Threshold\n* `AlertSubscription` - AlertSubscription\n* `ExternalDataSource` - ExternalDataSource\n* `ExternalDataSchema` - ExternalDataSchema\n* `Evaluation` - Evaluation\n* `LLMTrace` - LLMTrace\n* `AIGatewayCredit` - AIGatewayCredit\n* `WebAnalyticsFilterPreset` - WebAnalyticsFilterPreset\n* `CustomerProfileConfig` - CustomerProfileConfig\n* `Log` - Log\n* `LogsAlertConfiguration` - LogsAlertConfiguration\n* `LogsExclusionRule` - LogsExclusionRule\n* `DashboardWidget` - DashboardWidget\n* `ProductTour` - ProductTour\n* `Ticket` - Ticket\n* `InstanceSetting` - InstanceSetting\n* `SignalReport` - SignalReport\n* `SignalScoutConfig` - SignalScoutConfig\n* `StreamlitApp` - StreamlitApp\n* `Metric` - Metric"
+                "description": "* `Cohort` - Cohort\n* `FeatureFlag` - FeatureFlag\n* `Person` - Person\n* `Group` - Group\n* `Insight` - Insight\n* `Plugin` - Plugin\n* `PluginConfig` - PluginConfig\n* `HogFunction` - HogFunction\n* `HogFlow` - HogFlow\n* `DataManagement` - DataManagement\n* `EventDefinition` - EventDefinition\n* `PropertyDefinition` - PropertyDefinition\n* `Notebook` - Notebook\n* `Endpoint` - Endpoint\n* `EndpointVersion` - EndpointVersion\n* `Dashboard` - Dashboard\n* `Replay` - Replay\n* `Experiment` - Experiment\n* `ExperimentHoldout` - ExperimentHoldout\n* `ExperimentSavedMetric` - ExperimentSavedMetric\n* `Survey` - Survey\n* `EarlyAccessFeature` - EarlyAccessFeature\n* `SessionRecordingPlaylist` - SessionRecordingPlaylist\n* `Comment` - Comment\n* `Team` - Team\n* `Project` - Project\n* `ErrorTrackingIssue` - ErrorTrackingIssue\n* `DataWarehouseSavedQuery` - DataWarehouseSavedQuery\n* `LegalDocument` - LegalDocument\n* `Organization` - Organization\n* `OrganizationDomain` - OrganizationDomain\n* `IdentityProviderConfig` - IdentityProviderConfig\n* `OrganizationMembership` - OrganizationMembership\n* `Role` - Role\n* `UserGroup` - UserGroup\n* `BatchExport` - BatchExport\n* `BatchImport` - BatchImport\n* `ExportedAsset` - ExportedAsset\n* `Integration` - Integration\n* `Annotation` - Annotation\n* `Tag` - Tag\n* `TaggedItem` - TaggedItem\n* `Subscription` - Subscription\n* `PersonalAPIKey` - PersonalAPIKey\n* `ProjectSecretAPIKey` - ProjectSecretAPIKey\n* `OAuthApplication` - OAuthApplication\n* `User` - User\n* `Action` - Action\n* `AlertConfiguration` - AlertConfiguration\n* `Threshold` - Threshold\n* `AlertSubscription` - AlertSubscription\n* `ExternalDataSource` - ExternalDataSource\n* `ExternalDataSchema` - ExternalDataSchema\n* `Evaluation` - Evaluation\n* `LLMTrace` - LLMTrace\n* `AIGatewayCredit` - AIGatewayCredit\n* `WebAnalyticsFilterPreset` - WebAnalyticsFilterPreset\n* `CustomerProfileConfig` - CustomerProfileConfig\n* `Log` - Log\n* `LogsAlertConfiguration` - LogsAlertConfiguration\n* `LogsExclusionRule` - LogsExclusionRule\n* `DashboardWidget` - DashboardWidget\n* `ProductTour` - ProductTour\n* `Ticket` - Ticket\n* `InstanceSetting` - InstanceSetting\n* `SignalReport` - SignalReport\n* `SignalScoutConfig` - SignalScoutConfig\n* `StreamlitApp` - StreamlitApp\n* `Metric` - Metric\n* `TableCertification` - TableCertification\n* `Billing` - Billing"
               }
             },
             "description": "Filter by multiple activity scopes, comma-separated. Values must be valid ActivityScope enum values. E.g. \"FeatureFlag,Insight\"."
@@ -70910,6 +70960,291 @@
         ]
       }
     },
+    "/api/projects/{project_id}/data_catalog/certifications/": {
+      "get": {
+        "operationId": "data_catalog_certifications_list",
+        "description": "Trust marks on warehouse tables and views. Reads exclude soft-deleted targets.",
+        "parameters": [
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Number of results to return per page.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "offset",
+            "required": false,
+            "in": "query",
+            "description": "The initial index from which to return the results.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "data_catalog"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "data_catalog:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedDataCatalogCertificationList"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "data_catalog"
+        ]
+      },
+      "post": {
+        "operationId": "data_catalog_certifications_create",
+        "description": "Trust marks on warehouse tables and views. Reads exclude soft-deleted targets.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "data_catalog"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CertificationCreate"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/CertificationCreate"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/CertificationCreate"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "data_catalog:write"
+            ]
+          }
+        ],
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DataCatalogCertification"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "data_catalog"
+        ]
+      }
+    },
+    "/api/projects/{project_id}/data_catalog/certifications/{id}/": {
+      "get": {
+        "operationId": "data_catalog_certifications_retrieve",
+        "description": "Trust marks on warehouse tables and views. Reads exclude soft-deleted targets.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "A UUID string identifying this table certification.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "data_catalog"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "data_catalog:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DataCatalogCertification"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "data_catalog"
+        ]
+      },
+      "delete": {
+        "operationId": "data_catalog_certifications_destroy",
+        "description": "Trust marks on warehouse tables and views. Reads exclude soft-deleted targets.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "A UUID string identifying this table certification.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "data_catalog"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "data_catalog_approval:write",
+              "data_catalog:read"
+            ]
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No response body"
+          }
+        },
+        "x-product": [
+          "data_catalog"
+        ]
+      }
+    },
+    "/api/projects/{project_id}/data_catalog/certifications/{id}/certify/": {
+      "post": {
+        "operationId": "data_catalog_certifications_certify_create",
+        "description": "Mark the target as certified (prefer this source).",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "A UUID string identifying this table certification.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "data_catalog"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "data_catalog_approval:write",
+              "data_catalog:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DataCatalogCertification"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "data_catalog"
+        ]
+      }
+    },
+    "/api/projects/{project_id}/data_catalog/certifications/{id}/deprecate/": {
+      "post": {
+        "operationId": "data_catalog_certifications_deprecate_create",
+        "description": "Mark the target as deprecated (avoid this source).",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "A UUID string identifying this table certification.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "data_catalog"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "data_catalog_approval:write",
+              "data_catalog:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DataCatalogCertification"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "data_catalog"
+        ]
+      }
+    },
     "/api/projects/{project_id}/data_catalog/metrics/": {
       "get": {
         "operationId": "data_catalog_metrics_list",
@@ -72144,6 +72479,43 @@
         "responses": {
           "200": {
             "description": "No response body"
+          }
+        },
+        "x-product": [
+          "data_warehouse"
+        ]
+      }
+    },
+    "/api/projects/{project_id}/data_warehouse/managed-warehouse-data-status/": {
+      "get": {
+        "operationId": "data_warehouse_managed_warehouse_data_status_retrieve",
+        "description": "Get events, persons, and imported source readiness for the managed warehouse.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "data_warehouse"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "warehouse_view:read",
+              "external_data_source:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ManagedWarehouseDataStatusResponse"
+                }
+              }
+            },
+            "description": ""
           }
         },
         "x-product": [
@@ -77136,7 +77508,7 @@
     "/api/projects/{project_id}/engineering_analytics/repo_overview/": {
       "get": {
         "operationId": "engineering_analytics_repo_overview",
-        "description": "Repo-level headline aggregates over a window (default -30d): run count, success rate, re-run cycles, median PR open-to-merge (bots and drafts excluded; coarse — draft and ready time fused), and billable minutes + estimated cost — each with its equal-length previous-window twin so a caller can render honest deltas. Also carries the detected default branch and its completed-run history series. Cost figures are null until the job-level source is synced.",
+        "description": "Repo-level headline aggregates over a window (default -30d): run count, success rate, re-run cycles, merged-PR count (bots included), median PR open-to-merge (bots and drafts excluded; coarse — draft and ready time fused), and billable minutes + estimated cost — each with its equal-length previous-window twin so a caller can render honest deltas. Also carries the detected default branch and its completed-run history series (skippable via include_series=false). Cost figures are null until the job-level source is synced.",
         "parameters": [
           {
             "in": "query",
@@ -77153,6 +77525,14 @@
               "type": "string"
             },
             "description": "Window end: relative or ISO8601. Defaults to now."
+          },
+          {
+            "in": "query",
+            "name": "include_series",
+            "schema": {
+              "type": "boolean"
+            },
+            "description": "Set false to skip the chart series (cost_series, time_to_green_series, success_rate_series, open_to_merge_series return empty) and their query cost — for headline-only consumers like the weekly digest. Defaults to true."
           },
           {
             "$ref": "#/components/parameters/ProjectIdPath"
@@ -78830,7 +79210,7 @@
     "/api/projects/{project_id}/environments/{id}/logs_config/": {
       "get": {
         "operationId": "environments_logs_config_retrieve",
-        "description": "Manage logs product configuration for this environment.",
+        "description": "Manage logs product configuration for this environment. Members can read;\nwriting requires project admin, matching the admin-only settings UI.",
         "parameters": [
           {
             "in": "path",
@@ -78857,7 +79237,7 @@
       },
       "patch": {
         "operationId": "environments_logs_config_partial_update",
-        "description": "Manage logs product configuration for this environment.",
+        "description": "Manage logs product configuration for this environment. Members can read;\nwriting requires project admin, matching the admin-only settings UI.",
         "parameters": [
           {
             "in": "path",
@@ -89201,7 +89581,7 @@
     "/api/projects/{project_id}/external_data_sources/oauth_accounts/": {
       "get": {
         "operationId": "external_data_sources_oauth_accounts_retrieve",
-        "description": "List the accounts/properties a connected OAuth integration exposes, in the shared\nIntegrationAccount shape. The logic lives in each source (via OAuthMixin.get_oauth_accounts);\nthis endpoint just routes by source type and serializes the result.",
+        "description": "List the accounts/properties a connected OAuth integration exposes, in the shared\nIntegrationAccount shape. The logic lives in each source (via OAuthMixin.get_oauth_accounts);\nthis endpoint just routes by source type, applies the optional search filter, and serializes.",
         "parameters": [
           {
             "in": "query",
@@ -89214,6 +89594,14 @@
           },
           {
             "$ref": "#/components/parameters/ProjectIdPath"
+          },
+          {
+            "in": "query",
+            "name": "search",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Optional case-insensitive filter over account name/value, for sources whose resource list is large (e.g. GitHub repositories)."
           },
           {
             "in": "query",
@@ -90426,6 +90814,16 @@
               }
             },
             "description": "Flag evaluation service error"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Person lookup service unavailable"
           }
         },
         "x-product": [
@@ -116611,6 +117009,336 @@
         ]
       }
     },
+    "/api/projects/{project_id}/review_hog/blind_spots/": {
+      "get": {
+        "operationId": "review_hog_blind_spots_list",
+        "description": "List every `review-hog-blind-spots-*` skill on this project, flagging the one active for the requesting user. The canonical skill is auto-seeded active on the first read; a custom skill the user has not selected shows as inactive.",
+        "summary": "List blind-spots skills and which one is active",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "review_hog"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "llm_skill:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ReviewBlindSpotsConfig"
+                  }
+                }
+              }
+            },
+            "description": "Every blind-spots skill on this project, flagging the one active for the user."
+          }
+        },
+        "x-product": [
+          "review_hog"
+        ]
+      }
+    },
+    "/api/projects/{project_id}/review_hog/blind_spots/{skill_name}/": {
+      "patch": {
+        "operationId": "review_hog_blind_spots_partial_update",
+        "description": "Make a `review-hog-blind-spots-*` skill the single sweep that runs on the requesting user's PR reviews, switching the user's other blind-spots skills off in the same call. Upserts the per-user config row, so selecting a freshly authored custom skill works in one call.",
+        "summary": "Select the active blind-spots skill",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          },
+          {
+            "in": "path",
+            "name": "skill_name",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "tags": [
+          "review_hog"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchedReviewBlindSpotsConfigSelect"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchedReviewBlindSpotsConfigSelect"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchedReviewBlindSpotsConfigSelect"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "llm_skill:write"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReviewBlindSpotsConfig"
+                }
+              }
+            },
+            "description": "The blind-spots skill now active for the user."
+          },
+          "400": {
+            "description": "Not a blind-spots skill, or `active` was not true."
+          },
+          "404": {
+            "description": "No such blind-spots skill on this project."
+          }
+        },
+        "x-product": [
+          "review_hog"
+        ]
+      }
+    },
+    "/api/projects/{project_id}/review_hog/perspectives/": {
+      "get": {
+        "operationId": "review_hog_perspectives_list",
+        "description": "List every `review-hog-perspective-*` skill on this project joined with the requesting user's enable state. The 3 canonical perspectives are auto-seeded enabled on the first read; a custom perspective the user has not switched on shows as disabled.",
+        "summary": "List review perspectives and their enablement",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "review_hog"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "llm_skill:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ReviewPerspectiveConfig"
+                  }
+                }
+              }
+            },
+            "description": "Every review perspective on this project with the user's enable state, by skill name."
+          }
+        },
+        "x-product": [
+          "review_hog"
+        ]
+      }
+    },
+    "/api/projects/{project_id}/review_hog/perspectives/{skill_name}/": {
+      "patch": {
+        "operationId": "review_hog_perspectives_partial_update",
+        "description": "Toggle whether a `review-hog-perspective-*` skill runs on the requesting user's PR reviews. Upserts the per-user config row, so enabling a freshly authored custom perspective works in one call. Rejected if it would leave the user with no enabled perspective.",
+        "summary": "Enable or disable a review perspective",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          },
+          {
+            "in": "path",
+            "name": "skill_name",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "tags": [
+          "review_hog"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchedReviewPerspectiveConfigUpdate"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchedReviewPerspectiveConfigUpdate"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchedReviewPerspectiveConfigUpdate"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "llm_skill:write"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReviewPerspectiveConfig"
+                }
+              }
+            },
+            "description": "The perspective's updated enable state."
+          },
+          "400": {
+            "description": "Not a perspective skill, or disabling the user's last enabled one."
+          },
+          "404": {
+            "description": "No such perspective skill on this project."
+          }
+        },
+        "x-product": [
+          "review_hog"
+        ]
+      }
+    },
+    "/api/projects/{project_id}/review_hog/validators/": {
+      "get": {
+        "operationId": "review_hog_validators_list",
+        "description": "List every `review-hog-validation-*` skill on this project, flagging the one active for the requesting user. The canonical validator is auto-seeded active on the first read; a custom validator the user has not selected shows as inactive.",
+        "summary": "List review validators and which one is active",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "review_hog"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "llm_skill:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ReviewValidatorConfig"
+                  }
+                }
+              }
+            },
+            "description": "Every review validator on this project, flagging the one active for the user."
+          }
+        },
+        "x-product": [
+          "review_hog"
+        ]
+      }
+    },
+    "/api/projects/{project_id}/review_hog/validators/{skill_name}/": {
+      "patch": {
+        "operationId": "review_hog_validators_partial_update",
+        "description": "Make a `review-hog-validation-*` skill the single validator that runs on the requesting user's PR reviews, switching the user's other validators off in the same call. Upserts the per-user config row, so selecting a freshly authored custom validator works in one call.",
+        "summary": "Select the active review validator",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          },
+          {
+            "in": "path",
+            "name": "skill_name",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "tags": [
+          "review_hog"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchedReviewValidatorConfigSelect"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchedReviewValidatorConfigSelect"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchedReviewValidatorConfigSelect"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "llm_skill:write"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReviewValidatorConfig"
+                }
+              }
+            },
+            "description": "The validator now active for the user."
+          },
+          "400": {
+            "description": "Not a validator skill, or `active` was not true."
+          },
+          "404": {
+            "description": "No such validator skill on this project."
+          }
+        },
+        "x-product": [
+          "review_hog"
+        ]
+      }
+    },
     "/api/projects/{project_id}/sandbox_custom_images/": {
       "get": {
         "operationId": "sandbox_custom_images_list",
@@ -120488,6 +121216,84 @@
         ]
       }
     },
+    "/api/projects/{project_id}/signals/reports/{id}/refund/": {
+      "post": {
+        "operationId": "signals_reports_refund_create",
+        "description": "Refund the flat charge for this report's implementation PR and archive the report. Refunds auto-approve: the charge is either excluded from usage before it is ever reported to billing (refund on the same UTC day as the PR run) or returned as a Stripe customer-balance credit on the next invoice. A refunded PR does not count toward the free monthly PR allowance. One refund per report, ever — repeat calls return the existing refund with already_refunded=true. The report is archived as part of the refund (a resolved report stays resolved) and can't be restored afterwards.",
+        "summary": "Refund a report's implementation PR",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "A UUID string identifying this signal report.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "signals"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SignalReportRefundRequest"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/SignalReportRefundRequest"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/SignalReportRefundRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "task:write"
+            ]
+          },
+          {
+            "PersonalAPIKeyAuth": [
+              "task:write"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SignalReportRefundResponse"
+                }
+              }
+            },
+            "description": "The refund (created, or the existing one with already_refunded=true when the report was refunded before)."
+          },
+          "400": {
+            "description": "Report is not refundable: no billable implementation PR, the PR run is outside the current billing period, or the report is system-marked never-billable."
+          },
+          "404": {
+            "description": "Report not found, or refunds are not enabled for this organization."
+          }
+        },
+        "x-product": [
+          "signals"
+        ]
+      }
+    },
     "/api/projects/{project_id}/signals/reports/{id}/signals/": {
       "get": {
         "operationId": "signals_reports_signals_retrieve",
@@ -121094,6 +121900,51 @@
               }
             },
             "description": ""
+          }
+        },
+        "x-product": [
+          "signals"
+        ]
+      }
+    },
+    "/api/projects/{project_id}/signals/reports/refund-summary/": {
+      "get": {
+        "operationId": "signals_reports_refund_summary_retrieve",
+        "description": "Aggregate credited-path refunds across the whole organization for the current billing period — counts only, no per-team detail. The billing usage widget needs this because billing usage is org-wide while reports (and their refunds) are team-scoped: subtract the refunded credits from billing usage to show the net PR count. Excluded-path refunds never reach billing usage, so no adjustment is needed for them. Also carries the org's live billable credits for the period (billing's recorded usage lags by up to a day), so the widget can count just-created PRs and react to same-day refunds.",
+        "summary": "Summarize credited PR refunds for the billing period",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "signals"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "task:read"
+            ]
+          },
+          {
+            "PersonalAPIKeyAuth": [
+              "task:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SignalReportRefundSummaryResponse"
+                }
+              }
+            },
+            "description": "Org-wide credited-refund totals for the current billing period."
+          },
+          "404": {
+            "description": "Refunds are not enabled for this organization."
           }
         },
         "x-product": [
@@ -126536,6 +127387,142 @@
         ]
       }
     },
+    "/api/projects/{project_id}/task_channels/{channel_id}/feed/": {
+      "get": {
+        "operationId": "task_channels_feed_list",
+        "description": "A channel's system announcements in chronological order.",
+        "summary": "List channel feed messages",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "channel_id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Number of results to return per page.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "offset",
+            "required": false,
+            "in": "query",
+            "description": "The initial index from which to return the results.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "task_channels"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "task:read"
+            ]
+          },
+          {
+            "PersonalAPIKeyAuth": [
+              "task:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedChannelFeedMessageDTOList"
+                }
+              }
+            },
+            "description": "Feed messages, chronological"
+          }
+        },
+        "x-product": [
+          "tasks"
+        ]
+      },
+      "post": {
+        "operationId": "task_channels_feed_create",
+        "description": "API for a channel's system-announcement feed — durable \"PostHog agent\" rows\n(context created, CONTEXT.md being built) rendered alongside the channel's task\ncards. Read by any team member for a public channel; personal channels are owner-only.",
+        "summary": "Post a channel feed message",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "channel_id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "task_channels"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChannelFeedMessageWrite"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/ChannelFeedMessageWrite"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/ChannelFeedMessageWrite"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "task:write"
+            ]
+          },
+          {
+            "PersonalAPIKeyAuth": [
+              "task:write"
+            ]
+          }
+        ],
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChannelFeedMessageDTO"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "tasks"
+        ]
+      }
+    },
     "/api/projects/{project_id}/task_channels/{id}/": {
       "patch": {
         "operationId": "task_channels_partial_update",
@@ -126723,6 +127710,15 @@
         "description": "Get a list of tasks for the current project, with optional filtering by origin product, stage, organization, repository, and created_by.",
         "summary": "List tasks",
         "parameters": [
+          {
+            "in": "query",
+            "name": "all_team_tasks",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            },
+            "description": "Staff-only. When true, list every task on the team regardless of creator or channel, bypassing the per-user visibility filter. Ignored for non-staff users."
+          },
           {
             "in": "query",
             "name": "archived",
@@ -128417,6 +129413,119 @@
           },
           "404": {
             "description": "Artifact not found"
+          }
+        },
+        "x-product": [
+          "task-runs",
+          "tasks"
+        ]
+      }
+    },
+    "/api/projects/{project_id}/tasks/{task_id}/runs/{id}/cancel/": {
+      "post": {
+        "operationId": "tasks_runs_cancel_create",
+        "description": "Stop an active cloud run. Interrupts the agent, snapshots interactive sessions for later resume, tears down the sandbox, and marks the run cancelled. Idempotent: cancelling a finished run returns it unchanged.",
+        "summary": "Cancel task run",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          },
+          {
+            "in": "path",
+            "name": "task_id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "tags": [
+          "task-runs",
+          "tasks",
+          "tasks"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TaskRunCancelRequest"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/TaskRunCancelRequest"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/TaskRunCancelRequest"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "task:write"
+            ]
+          },
+          {
+            "PersonalAPIKeyAuth": [
+              "task:write"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskRunDetailDTO"
+                }
+              }
+            },
+            "description": "Run already finished; returned unchanged"
+          },
+          "202": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskRunDetailDTO"
+                }
+              }
+            },
+            "description": "Cancellation accepted"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskRunErrorResponse"
+                }
+              }
+            },
+            "description": "Run is not a cloud run"
+          },
+          "404": {
+            "description": "Task run not found"
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskRunErrorResponse"
+                }
+              }
+            },
+            "description": "Cancellation could not be delivered; safe to retry"
           }
         },
         "x-product": [
@@ -147986,12 +149095,58 @@
         "title": "AlertConditionType",
         "type": "string"
       },
+      "AlertConfig": {
+        "type": "object",
+        "description": "The alert condition for mode='alert', applied after `selection` targeting. 'every_match'\nnotifies about each new match since the previous check; 'on_breach' compares a metric to a\nthreshold over a rolling window and notifies on the transition into breach.",
+        "properties": {
+          "frequency": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/AlertConfigFrequencyEnum"
+              }
+            ],
+            "default": "on_breach",
+            "description": "'every_match' notifies about every new matching observation (batched per check); 'on_breach' notifies once when the threshold condition starts holding. Defaults to 'on_breach'.\n\n* `every_match` - Every new match\n* `on_breach` - When a threshold is crossed"
+          },
+          "metric": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/VisionAlertMetricEnum"
+              }
+            ],
+            "default": "count",
+            "description": "What to measure over the window: 'count' of targeted observations, or 'avg_score' (the mean scorer score; scorer scanners only). every_match supports 'count' only.\n\n* `count` - Count of matching observations\n* `avg_score` - Average score"
+          },
+          "threshold": {
+            "type": "number",
+            "format": "double",
+            "description": "The alert fires when the metric is at or above this value. Required for on_breach; ignored for every_match."
+          },
+          "window_days": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/WindowDaysEnum"
+              }
+            ],
+            "description": "Rolling lookback window for on_breach conditions, ending at each check. Defaults to 1 day. every_match ignores it (each check covers what's new since the previous one).\n\n* `1` - 1 day\n* `3` - 3 days\n* `7` - 7 days\n* `14` - 14 days\n* `30` - 30 days"
+          }
+        }
+      },
+      "AlertConfigFrequencyEnum": {
+        "enum": [
+          "every_match",
+          "on_breach"
+        ],
+        "type": "string",
+        "description": "* `every_match` - Every new match\n* `on_breach` - When a threshold is crossed"
+      },
       "AlertConfigUnion": {
         "description": "Per-insight-kind alert config, discriminated by ``type`` — keeps the OpenAPI (and the\ngenerated frontend types and MCP tool schemas) in sync with every kind alerts support.",
         "discriminator": {
           "mapping": {
             "FunnelsAlertConfig": "#/components/schemas/FunnelsAlertConfig",
             "HogQLAlertConfig": "#/components/schemas/HogQLAlertConfig",
+            "MetricsAlertConfig": "#/components/schemas/MetricsAlertConfig",
             "TrendsAlertConfig": "#/components/schemas/TrendsAlertConfig"
           },
           "propertyName": "type"
@@ -148005,6 +149160,9 @@
           },
           {
             "$ref": "#/components/schemas/FunnelsAlertConfig"
+          },
+          {
+            "$ref": "#/components/schemas/MetricsAlertConfig"
           }
         ],
         "title": "AlertConfigUnion"
@@ -149908,7 +151066,7 @@
       },
       "BatchExportDestination": {
         "type": "object",
-        "description": "Serializer for an BatchExportDestination model.\n\nThe `config` field is polymorphic and typed only for destinations that keep\ncredentials in the linked Integration (currently Databricks, AzureBlob, BigQuery, Postgres,\nAwsS3, S3Compatible). Other destination types accept the same JSON shape but without a typed\nOpenAPI schema. Secret fields are stripped from `config` on read.",
+        "description": "Serializer for an BatchExportDestination model.\n\nThe `config` field is polymorphic and typed only for destinations that keep\ncredentials in the linked Integration (currently Databricks, AzureBlob, BigQuery, Postgres,\nAwsS3, S3Compatible, Snowflake). Other destination types accept the same JSON shape but without a\ntyped OpenAPI schema. Secret fields are stripped from `config` on read.",
         "properties": {
           "type": {
             "allOf": [
@@ -149924,7 +151082,7 @@
                 "$ref": "#/components/schemas/BatchExportDestinationConfig"
               }
             ],
-            "description": "Destination-specific configuration. Fields depend on `type`. Credentials for integration-backed destinations (Databricks, AzureBlob, BigQuery, Postgres, AwsS3, S3Compatible) are NOT stored here — they live in the linked Integration. Secret fields are stripped from responses."
+            "description": "Destination-specific configuration. Fields depend on `type`. Credentials for integration-backed destinations (Databricks, AzureBlob, BigQuery, Postgres, AwsS3, S3Compatible, Snowflake) are NOT stored here — they live in the linked Integration. Secret fields are stripped from responses."
           },
           "integration": {
             "type": [
@@ -149939,7 +151097,7 @@
               "null"
             ],
             "writeOnly": true,
-            "description": "ID of a team-scoped Integration providing credentials. Required when creating Databricks, AzureBlob, and BigQuery destinations; optional for AwsS3 and S3Compatible (inline credentials remain supported); unused for other types."
+            "description": "ID of a team-scoped Integration providing credentials. Required when creating Databricks, AzureBlob, and BigQuery destinations; optional for AwsS3, S3Compatible and Snowflake (inline credentials remain supported); unused for other types."
           }
         },
         "required": [
@@ -149966,6 +151124,9 @@
           },
           {
             "$ref": "#/components/schemas/S3CompatibleDestinationConfig"
+          },
+          {
+            "$ref": "#/components/schemas/SnowflakeDestinationConfig"
           }
         ],
         "discriminator": {
@@ -149976,7 +151137,8 @@
             "BigQuery": "#/components/schemas/BigQueryDestinationConfig",
             "Postgres": "#/components/schemas/PostgresDestinationConfig",
             "AwsS3": "#/components/schemas/AwsS3DestinationConfig",
-            "S3Compatible": "#/components/schemas/S3CompatibleDestinationConfig"
+            "S3Compatible": "#/components/schemas/S3CompatibleDestinationConfig",
+            "Snowflake": "#/components/schemas/SnowflakeDestinationConfig"
           }
         }
       },
@@ -149999,6 +151161,9 @@
           },
           {
             "$ref": "#/components/schemas/S3CompatibleDestinationRequest"
+          },
+          {
+            "$ref": "#/components/schemas/SnowflakeDestinationRequest"
           }
         ],
         "discriminator": {
@@ -150009,7 +151174,8 @@
             "BigQuery": "#/components/schemas/BigQueryDestinationRequest",
             "Postgres": "#/components/schemas/PostgresDestinationRequest",
             "AwsS3": "#/components/schemas/AwsS3DestinationRequest",
-            "S3Compatible": "#/components/schemas/S3CompatibleDestinationRequest"
+            "S3Compatible": "#/components/schemas/S3CompatibleDestinationRequest",
+            "Snowflake": "#/components/schemas/SnowflakeDestinationRequest"
           }
         }
       },
@@ -150583,6 +151749,23 @@
         ],
         "type": "string",
         "description": "* `BigQuery` - BigQuery"
+      },
+      "BillingExemptReasonEnum": {
+        "enum": [
+          "posthog_health_check",
+          "posthog_onboarding",
+          "posthog_system"
+        ],
+        "type": "string",
+        "description": "* `posthog_health_check` - PostHog health check\n* `posthog_onboarding` - PostHog onboarding\n* `posthog_system` - PostHog system"
+      },
+      "BillingPathEnum": {
+        "enum": [
+          "excluded",
+          "credited"
+        ],
+        "type": "string",
+        "description": "* `excluded` - Excluded\n* `credited` - Credited"
       },
       "BlankEnum": {
         "enum": [
@@ -152388,7 +153571,15 @@
           "series": {
             "description": "Events and actions to include",
             "items": {
-              "anyOf": [
+              "discriminator": {
+                "mapping": {
+                  "ActionsNode": "#/components/schemas/ActionsNode",
+                  "DataWarehouseNode": "#/components/schemas/DataWarehouseNode",
+                  "EventsNode": "#/components/schemas/EventsNode"
+                },
+                "propertyName": "kind"
+              },
+              "oneOf": [
                 {
                   "$ref": "#/components/schemas/EventsNode"
                 },
@@ -152895,6 +154086,34 @@
         "type": "string",
         "description": "* `consolidated` - consolidated\n* `cdc_only` - cdc_only\n* `both` - both"
       },
+      "CertificationCreate": {
+        "type": "object",
+        "description": "Input for proposing a certification: address the target by id or (convenience) by name.",
+        "properties": {
+          "table_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Warehouse table id to certify (XOR the other targets)."
+          },
+          "saved_query_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Warehouse view (saved query) id to certify."
+          },
+          "table_name": {
+            "type": "string",
+            "description": "Table name; 409 with candidates if ambiguous."
+          },
+          "view_name": {
+            "type": "string",
+            "description": "View name; 409 with candidates if ambiguous."
+          },
+          "notes": {
+            "type": "string",
+            "description": "Why this mark exists."
+          }
+        }
+      },
       "Change": {
         "type": "object",
         "properties": {
@@ -153157,6 +154376,81 @@
         ],
         "type": "string",
         "description": "* `slack_channel_message` - Channel message\n* `slack_bot_mention` - Bot mention\n* `slack_emoji_reaction` - Emoji reaction\n* `teams_channel_message` - Teams channel message\n* `teams_bot_mention` - Teams bot mention\n* `widget_embedded` - Widget\n* `widget_api` - API\n* `github_issue` - GitHub issue"
+      },
+      "ChannelFeedMessageDTO": {
+        "type": "object",
+        "description": "Response shape for one system announcement in a channel's feed.",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "channel": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "author": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/TaskUserBasicInfo"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "author_kind": {
+            "type": "string"
+          },
+          "event": {
+            "type": "string"
+          },
+          "payload": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "content": {
+            "type": "string"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "author_kind",
+          "channel",
+          "content",
+          "created_at",
+          "event",
+          "id",
+          "payload"
+        ]
+      },
+      "ChannelFeedMessageWrite": {
+        "type": "object",
+        "description": "Request body for posting a system announcement into a channel's feed.",
+        "properties": {
+          "event": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/EventEnum"
+              }
+            ],
+            "description": "Lifecycle event key.\n\n* `context_created` - context_created\n* `context_md_building` - context_md_building"
+          },
+          "payload": {
+            "description": "Structured event data, e.g. {\"context_name\": \"mobile\"}. At most 8 KB of JSON."
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Optional explicit timestamp (within 10 minutes of now), so a client can order a burst of announcements."
+          }
+        },
+        "required": [
+          "event"
+        ]
       },
       "ChannelSourceEnum": {
         "enum": [
@@ -157844,6 +159138,15 @@
             ],
             "description": "How the property is interpreted and rendered: 'text', 'number', 'currency', 'percent', 'date', 'datetime', 'boolean', or 'select'.\n\n* `text` - text\n* `number` - number\n* `currency` - currency\n* `percent` - percent\n* `date` - date\n* `datetime` - datetime\n* `boolean` - boolean\n* `select` - select"
           },
+          "target_type": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CustomPropertyDefinitionTargetType"
+              }
+            ],
+            "default": "account",
+            "description": "What entity this property is attached to: 'account' (default) or 'person'. Person properties are populated from a warehouse schema and become usable like any other person property (feature flags, cohorts, insights).\n\n* `account` - account\n* `person` - person"
+          },
           "is_big_number": {
             "type": "boolean",
             "default": false,
@@ -157910,6 +159213,14 @@
           "source",
           "updated_at"
         ]
+      },
+      "CustomPropertyDefinitionTargetType": {
+        "enum": [
+          "account",
+          "person"
+        ],
+        "type": "string",
+        "description": "* `account` - account\n* `person` - person"
       },
       "CustomPropertyDisplayTypeEnum": {
         "enum": [
@@ -158018,18 +159329,35 @@
             "description": "UUID of the custom property definition this source feeds. One source per definition."
           },
           "saved_query": {
-            "type": "string",
+            "type": [
+              "string",
+              "null"
+            ],
             "format": "uuid",
-            "description": "UUID of the data-warehouse saved query (materialized view) to read values from."
+            "description": "Account sources only: UUID of the data-warehouse saved query (materialized view) to read values from. Mutually exclusive with external_data_schema."
+          },
+          "external_data_schema": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uuid",
+            "description": "Person sources only: UUID of the warehouse schema (raw incremental table) to read from. Mutually exclusive with saved_query."
           },
           "source_column": {
-            "type": "string",
-            "description": "Column in the view whose value is written to the property.",
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Account sources only: column in the view whose value is written to the property.",
             "maxLength": 400
+          },
+          "column_property_map": {
+            "description": "Person sources only: {warehouse_column: person_property_name} mapping the columns this source writes onto the person."
           },
           "key_column": {
             "type": "string",
-            "description": "Column in the view whose value matches an account's external_id.",
+            "description": "Column whose value identifies the target: an account's external_id for account sources, or the person's distinct_id for person sources.",
             "maxLength": 400
           },
           "is_enabled": {
@@ -158089,8 +159417,6 @@
           "key_column",
           "last_sync_error",
           "last_synced_at",
-          "saved_query",
-          "source_column",
           "updated_at"
         ]
       },
@@ -159378,6 +160704,97 @@
           "widget_type"
         ]
       },
+      "DataCatalogCertification": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "readOnly": true
+          },
+          "table": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uuid",
+            "readOnly": true,
+            "description": "The warehouse table this mark applies to (XOR saved_query)."
+          },
+          "saved_query": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uuid",
+            "readOnly": true,
+            "description": "The warehouse view this mark applies to (XOR table)."
+          },
+          "target_type": {
+            "type": "string",
+            "readOnly": true,
+            "description": "Whether the marked target is a 'table' or a 'view'."
+          },
+          "target_name": {
+            "type": "string",
+            "readOnly": true,
+            "description": "Name of the marked table or view."
+          },
+          "status": {
+            "type": "string",
+            "readOnly": true,
+            "description": "proposed, certified (prefer this source), or deprecated (avoid this source)."
+          },
+          "notes": {
+            "type": "string",
+            "description": "Why this mark exists, e.g. 'canonical MRR source'."
+          },
+          "certified_by": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/UserBasic"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "readOnly": true,
+            "description": "User who last set certified/deprecated, or null."
+          },
+          "certified_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time",
+            "readOnly": true
+          },
+          "created_by": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "readOnly": true
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          }
+        },
+        "required": [
+          "certified_at",
+          "certified_by",
+          "created_at",
+          "created_by",
+          "id",
+          "saved_query",
+          "status",
+          "table",
+          "target_name",
+          "target_type"
+        ]
+      },
       "DataCatalogMetric": {
         "type": "object",
         "properties": {
@@ -160515,7 +161932,46 @@
             "title": "Showtimings"
           },
           "source": {
-            "anyOf": [
+            "description": "Source of the events",
+            "discriminator": {
+              "mapping": {
+                "AccountsQuery": "#/components/schemas/AccountsQuery",
+                "ActorsQuery": "#/components/schemas/ActorsQuery",
+                "EndpointsUsageTableQuery": "#/components/schemas/EndpointsUsageTableQuery",
+                "ErrorTrackingIssueCorrelationQuery": "#/components/schemas/ErrorTrackingIssueCorrelationQuery",
+                "ErrorTrackingQuery": "#/components/schemas/ErrorTrackingQuery",
+                "EventsNode": "#/components/schemas/EventsNode",
+                "EventsQuery": "#/components/schemas/EventsQuery",
+                "ExperimentFunnelsQuery": "#/components/schemas/ExperimentFunnelsQuery",
+                "ExperimentTrendsQuery": "#/components/schemas/ExperimentTrendsQuery",
+                "GroupsQuery": "#/components/schemas/GroupsQuery",
+                "HogQLQuery": "#/components/schemas/HogQLQuery",
+                "MarketingAnalyticsAggregatedQuery": "#/components/schemas/MarketingAnalyticsAggregatedQuery",
+                "MarketingAnalyticsTableQuery": "#/components/schemas/MarketingAnalyticsTableQuery",
+                "NonIntegratedConversionsTableQuery": "#/components/schemas/NonIntegratedConversionsTableQuery",
+                "PersonsNode": "#/components/schemas/PersonsNode",
+                "RevenueAnalyticsGrossRevenueQuery": "#/components/schemas/RevenueAnalyticsGrossRevenueQuery",
+                "RevenueAnalyticsMRRQuery": "#/components/schemas/RevenueAnalyticsMRRQuery",
+                "RevenueAnalyticsMetricsQuery": "#/components/schemas/RevenueAnalyticsMetricsQuery",
+                "RevenueAnalyticsOverviewQuery": "#/components/schemas/RevenueAnalyticsOverviewQuery",
+                "RevenueAnalyticsTopCustomersQuery": "#/components/schemas/RevenueAnalyticsTopCustomersQuery",
+                "RevenueExampleDataWarehouseTablesQuery": "#/components/schemas/RevenueExampleDataWarehouseTablesQuery",
+                "RevenueExampleEventsQuery": "#/components/schemas/RevenueExampleEventsQuery",
+                "SessionAttributionExplorerQuery": "#/components/schemas/SessionAttributionExplorerQuery",
+                "SessionQuery": "#/components/schemas/SessionQuery",
+                "SessionsQuery": "#/components/schemas/SessionsQuery",
+                "TraceQuery": "#/components/schemas/TraceQuery",
+                "TracesQuery": "#/components/schemas/TracesQuery",
+                "WebExternalClicksTableQuery": "#/components/schemas/WebExternalClicksTableQuery",
+                "WebGoalsQuery": "#/components/schemas/WebGoalsQuery",
+                "WebOverviewQuery": "#/components/schemas/WebOverviewQuery",
+                "WebStatsTableQuery": "#/components/schemas/WebStatsTableQuery",
+                "WebVitalsPathBreakdownQuery": "#/components/schemas/WebVitalsPathBreakdownQuery",
+                "WebVitalsQuery": "#/components/schemas/WebVitalsQuery"
+              },
+              "propertyName": "kind"
+            },
+            "oneOf": [
               {
                 "$ref": "#/components/schemas/EventsNode"
               },
@@ -160616,7 +162072,6 @@
                 "$ref": "#/components/schemas/AccountsQuery"
               }
             ],
-            "description": "Source of the events",
             "title": "Source"
           },
           "tags": {
@@ -163009,6 +164464,14 @@
           "updated_at"
         ]
       },
+      "DatasetEnum": {
+        "enum": [
+          "events",
+          "persons"
+        ],
+        "type": "string",
+        "description": "* `events` - events\n* `persons` - persons"
+      },
       "DatasetItem": {
         "type": "object",
         "properties": {
@@ -163517,7 +164980,26 @@
         "type": "string"
       },
       "DetectorConfig": {
-        "anyOf": [
+        "description": "Detector configuration types",
+        "discriminator": {
+          "mapping": {
+            "copod": "#/components/schemas/COPODDetectorConfig",
+            "ecod": "#/components/schemas/ECODDetectorConfig",
+            "ensemble": "#/components/schemas/EnsembleDetectorConfig",
+            "hbos": "#/components/schemas/HBOSDetectorConfig",
+            "iqr": "#/components/schemas/IQRDetectorConfig",
+            "isolation_forest": "#/components/schemas/IsolationForestDetectorConfig",
+            "knn": "#/components/schemas/KNNDetectorConfig",
+            "lof": "#/components/schemas/LOFDetectorConfig",
+            "mad": "#/components/schemas/MADDetectorConfig",
+            "ocsvm": "#/components/schemas/OCSVMDetectorConfig",
+            "pca": "#/components/schemas/PCADetectorConfig",
+            "threshold": "#/components/schemas/ThresholdDetectorConfig",
+            "zscore": "#/components/schemas/ZScoreDetectorConfig"
+          },
+          "propertyName": "type"
+        },
+        "oneOf": [
           {
             "$ref": "#/components/schemas/EnsembleDetectorConfig"
           },
@@ -163558,7 +165040,6 @@
             "$ref": "#/components/schemas/PCADetectorConfig"
           }
         ],
-        "description": "Detector configuration types",
         "title": "DetectorConfig"
       },
       "DeviceTypesEnum": {
@@ -167312,7 +168793,24 @@
           "detectors": {
             "description": "Sub-detector configurations (minimum 2)",
             "items": {
-              "anyOf": [
+              "discriminator": {
+                "mapping": {
+                  "copod": "#/components/schemas/COPODDetectorConfig",
+                  "ecod": "#/components/schemas/ECODDetectorConfig",
+                  "hbos": "#/components/schemas/HBOSDetectorConfig",
+                  "iqr": "#/components/schemas/IQRDetectorConfig",
+                  "isolation_forest": "#/components/schemas/IsolationForestDetectorConfig",
+                  "knn": "#/components/schemas/KNNDetectorConfig",
+                  "lof": "#/components/schemas/LOFDetectorConfig",
+                  "mad": "#/components/schemas/MADDetectorConfig",
+                  "ocsvm": "#/components/schemas/OCSVMDetectorConfig",
+                  "pca": "#/components/schemas/PCADetectorConfig",
+                  "threshold": "#/components/schemas/ThresholdDetectorConfig",
+                  "zscore": "#/components/schemas/ZScoreDetectorConfig"
+                },
+                "propertyName": "type"
+              },
+              "oneOf": [
                 {
                   "$ref": "#/components/schemas/ZScoreDetectorConfig"
                 },
@@ -167624,6 +169122,10 @@
               "boolean",
               "null"
             ]
+          },
+          "warehouse_origin": {
+            "readOnly": true,
+            "description": "Provenance for a person property populated from a data warehouse source (source/table/column/last synced), or null. Read-only."
           }
         },
         "required": [
@@ -167634,7 +169136,8 @@
           "updated_at",
           "updated_by",
           "verified_at",
-          "verified_by"
+          "verified_by",
+          "warehouse_origin"
         ]
       },
       "EntityType": {
@@ -167708,15 +169211,6 @@
               },
               {
                 "type": "null"
-              },
-              {
-                "type": "null"
-              },
-              {
-                "type": "null"
-              },
-              {
-                "type": "null"
               }
             ],
             "description": "User ID or role UUID to filter by."
@@ -167745,15 +169239,6 @@
               },
               {
                 "type": "integer"
-              },
-              {
-                "type": "null"
-              },
-              {
-                "type": "null"
-              },
-              {
-                "type": "null"
               },
               {
                 "type": "null"
@@ -168971,15 +170456,6 @@
               },
               {
                 "type": "string"
-              },
-              {
-                "type": "null"
-              },
-              {
-                "type": "null"
-              },
-              {
-                "type": "null"
               },
               {
                 "type": "null"
@@ -173000,6 +174476,14 @@
         "required": [
           "event"
         ]
+      },
+      "EventEnum": {
+        "enum": [
+          "context_created",
+          "context_md_building"
+        ],
+        "type": "string",
+        "description": "* `context_created` - context_created\n* `context_md_building` - context_md_building"
       },
       "EventFilterConfig": {
         "type": "object",
@@ -181444,7 +182928,7 @@
               }
             ],
             "default": "api",
-            "description": "Where the request came from: `web` for the in-app UI, `api` for direct API callers, `mcp` for agent/MCP tool calls. `wizard` cannot be set directly — it is derived server-side for wizard-driven MCP calls. Defaults to `api`.\n\n* `web` - web\n* `api` - api\n* `mcp` - mcp"
+            "description": "Where the request came from: `web` for the in-app UI, `api` for direct API callers, `mcp` for agent/MCP tool calls. `wizard` and `self_driving` cannot be set directly — they are derived server-side for wizard- and PostHog Code-driven MCP calls. Defaults to `api`.\n\n* `web` - web\n* `api` - api\n* `mcp` - mcp"
           },
           "direct_query_enabled": {
             "type": "boolean",
@@ -181546,7 +183030,7 @@
             "readOnly": true
           },
           "created_via": {
-            "description": "How this source was created. Defaults to `api` on create when omitted. `web` for the in-app UI, `api` for direct API callers, `mcp` for agent/MCP tool calls, `wizard` for the setup wizard (derived server-side from the wizard's user agent). Ignored on update.\n\n* `web` - web\n* `api` - api\n* `mcp` - mcp\n* `wizard` - wizard",
+            "description": "How this source was created. Defaults to `api` on create when omitted. `web` for the in-app UI, `api` for direct API callers, `mcp` for agent/MCP tool calls, `wizard` for the setup wizard and `self_driving` for the PostHog Code app (both derived server-side from the caller's user agent). Ignored on update.\n\n* `web` - web\n* `api` - api\n* `mcp` - mcp\n* `wizard` - wizard\n* `self_driving` - self_driving",
             "oneOf": [
               {
                 "$ref": "#/components/schemas/ExternalDataSourceSerializersCreatedViaEnum"
@@ -181687,10 +183171,11 @@
           "web",
           "api",
           "mcp",
-          "wizard"
+          "wizard",
+          "self_driving"
         ],
         "type": "string",
-        "description": "* `web` - web\n* `api` - api\n* `mcp` - mcp\n* `wizard` - wizard"
+        "description": "* `web` - web\n* `api` - api\n* `mcp` - mcp\n* `wizard` - wizard\n* `self_driving` - self_driving"
       },
       "ExternalDataSourceTypeEnum": {
         "enum": [
@@ -187090,7 +188575,14 @@
             "anyOf": [
               {
                 "items": {
-                  "anyOf": [
+                  "discriminator": {
+                    "mapping": {
+                      "ActionsNode": "#/components/schemas/FunnelExclusionActionsNode",
+                      "EventsNode": "#/components/schemas/FunnelExclusionEventsNode"
+                    },
+                    "propertyName": "kind"
+                  },
+                  "oneOf": [
                     {
                       "$ref": "#/components/schemas/FunnelExclusionEventsNode"
                     },
@@ -187584,10 +189076,16 @@
           "series": {
             "description": "Events and actions to include",
             "items": {
-              "anyOf": [
-                {
-                  "$ref": "#/components/schemas/GroupNode"
+              "discriminator": {
+                "mapping": {
+                  "ActionsNode": "#/components/schemas/ActionsNode",
+                  "EventsNode": "#/components/schemas/EventsNode",
+                  "FunnelsDataWarehouseNode": "#/components/schemas/FunnelsDataWarehouseNode",
+                  "GroupNode": "#/components/schemas/GroupNode"
                 },
+                "propertyName": "kind"
+              },
+              "oneOf": [
                 {
                   "$ref": "#/components/schemas/EventsNode"
                 },
@@ -187596,6 +189094,9 @@
                 },
                 {
                   "$ref": "#/components/schemas/FunnelsDataWarehouseNode"
+                },
+                {
+                  "$ref": "#/components/schemas/GroupNode"
                 }
               ]
             },
@@ -192302,208 +193803,285 @@
           "sourceQuery": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/EventsNode"
-              },
-              {
-                "$ref": "#/components/schemas/ActionsNode"
-              },
-              {
-                "$ref": "#/components/schemas/PersonsNode"
-              },
-              {
-                "$ref": "#/components/schemas/EventsQuery"
-              },
-              {
-                "$ref": "#/components/schemas/SessionsQuery"
-              },
-              {
-                "$ref": "#/components/schemas/ActorsQuery"
-              },
-              {
-                "$ref": "#/components/schemas/GroupsQuery"
-              },
-              {
-                "$ref": "#/components/schemas/InsightActorsQuery"
-              },
-              {
-                "$ref": "#/components/schemas/InsightActorsQueryOptions"
-              },
-              {
-                "$ref": "#/components/schemas/SessionsTimelineQuery"
-              },
-              {
-                "$ref": "#/components/schemas/HogQuery"
-              },
-              {
-                "$ref": "#/components/schemas/HogQLQuery"
-              },
-              {
-                "$ref": "#/components/schemas/HogQLMetadata"
-              },
-              {
-                "$ref": "#/components/schemas/HogQLAutocomplete"
-              },
-              {
-                "$ref": "#/components/schemas/RevenueAnalyticsGrossRevenueQuery"
-              },
-              {
-                "$ref": "#/components/schemas/RevenueAnalyticsMetricsQuery"
-              },
-              {
-                "$ref": "#/components/schemas/RevenueAnalyticsMRRQuery"
-              },
-              {
-                "$ref": "#/components/schemas/RevenueAnalyticsOverviewQuery"
-              },
-              {
-                "$ref": "#/components/schemas/RevenueAnalyticsTopCustomersQuery"
-              },
-              {
-                "$ref": "#/components/schemas/MarketingAnalyticsTableQuery"
-              },
-              {
-                "$ref": "#/components/schemas/MarketingAnalyticsAggregatedQuery"
-              },
-              {
-                "$ref": "#/components/schemas/NonIntegratedConversionsTableQuery"
-              },
-              {
-                "$ref": "#/components/schemas/WebOverviewQuery"
-              },
-              {
-                "$ref": "#/components/schemas/WebStatsTableQuery"
-              },
-              {
-                "$ref": "#/components/schemas/WebExternalClicksTableQuery"
-              },
-              {
-                "$ref": "#/components/schemas/WebGoalsQuery"
-              },
-              {
-                "$ref": "#/components/schemas/WebVitalsQuery"
-              },
-              {
-                "$ref": "#/components/schemas/WebVitalsPathBreakdownQuery"
-              },
-              {
-                "$ref": "#/components/schemas/WebPageURLSearchQuery"
-              },
-              {
-                "$ref": "#/components/schemas/WebAnalyticsExternalSummaryQuery"
-              },
-              {
-                "$ref": "#/components/schemas/WebNotableChangesQuery"
-              },
-              {
-                "$ref": "#/components/schemas/SessionAttributionExplorerQuery"
-              },
-              {
-                "$ref": "#/components/schemas/RevenueExampleEventsQuery"
-              },
-              {
-                "$ref": "#/components/schemas/RevenueExampleDataWarehouseTablesQuery"
-              },
-              {
-                "$ref": "#/components/schemas/ErrorTrackingQuery"
-              },
-              {
-                "$ref": "#/components/schemas/ErrorTrackingSimilarIssuesQuery"
-              },
-              {
-                "$ref": "#/components/schemas/ErrorTrackingBreakdownsQuery"
-              },
-              {
-                "$ref": "#/components/schemas/ErrorTrackingIssueCorrelationQuery"
-              },
-              {
-                "$ref": "#/components/schemas/LogsQuery"
-              },
-              {
-                "$ref": "#/components/schemas/LogAttributesQuery"
-              },
-              {
-                "$ref": "#/components/schemas/LogValuesQuery"
-              },
-              {
-                "$ref": "#/components/schemas/MetricsQuery"
-              },
-              {
-                "$ref": "#/components/schemas/TraceSpansQuery"
-              },
-              {
-                "$ref": "#/components/schemas/TraceSpansAggregationQuery"
-              },
-              {
-                "$ref": "#/components/schemas/TraceSpansTreeQuery"
-              },
-              {
-                "$ref": "#/components/schemas/TraceSpansAttributeBreakdownQuery"
-              },
-              {
-                "$ref": "#/components/schemas/ExperimentFunnelsQuery"
-              },
-              {
-                "$ref": "#/components/schemas/ExperimentTrendsQuery"
-              },
-              {
-                "$ref": "#/components/schemas/CalendarHeatmapQuery"
-              },
-              {
-                "$ref": "#/components/schemas/RecordingsQuery"
-              },
-              {
-                "$ref": "#/components/schemas/TracesQuery"
-              },
-              {
-                "$ref": "#/components/schemas/TraceQuery"
-              },
-              {
-                "$ref": "#/components/schemas/SessionQuery"
-              },
-              {
-                "$ref": "#/components/schemas/TraceNeighborsQuery"
-              },
-              {
-                "$ref": "#/components/schemas/VectorSearchQuery"
-              },
-              {
-                "$ref": "#/components/schemas/UsageMetricsQuery"
-              },
-              {
-                "$ref": "#/components/schemas/AccountsQuery"
-              },
-              {
-                "$ref": "#/components/schemas/EndpointsUsageOverviewQuery"
-              },
-              {
-                "$ref": "#/components/schemas/EndpointsUsageTableQuery"
-              },
-              {
-                "$ref": "#/components/schemas/EndpointsUsageTrendsQuery"
-              },
-              {
-                "$ref": "#/components/schemas/MCPHarnessBreakdownQuery"
-              },
-              {
-                "$ref": "#/components/schemas/MCPToolTopUsersQuery"
-              },
-              {
-                "$ref": "#/components/schemas/MCPToolFailuresQuery"
-              },
-              {
-                "$ref": "#/components/schemas/MCPToolStatsQuery"
-              },
-              {
-                "$ref": "#/components/schemas/MCPToolDailyStatsQuery"
-              },
-              {
-                "$ref": "#/components/schemas/MCPToolDescriptionsQuery"
-              },
-              {
-                "$ref": "#/components/schemas/MCPToolSampleIntentsQuery"
-              },
-              {
-                "$ref": "#/components/schemas/MCPToolNeighborsQuery"
+                "discriminator": {
+                  "mapping": {
+                    "AccountsQuery": "#/components/schemas/AccountsQuery",
+                    "ActionsNode": "#/components/schemas/ActionsNode",
+                    "ActorsQuery": "#/components/schemas/ActorsQuery",
+                    "CalendarHeatmapQuery": "#/components/schemas/CalendarHeatmapQuery",
+                    "EndpointsUsageOverviewQuery": "#/components/schemas/EndpointsUsageOverviewQuery",
+                    "EndpointsUsageTableQuery": "#/components/schemas/EndpointsUsageTableQuery",
+                    "EndpointsUsageTrendsQuery": "#/components/schemas/EndpointsUsageTrendsQuery",
+                    "ErrorTrackingBreakdownsQuery": "#/components/schemas/ErrorTrackingBreakdownsQuery",
+                    "ErrorTrackingIssueCorrelationQuery": "#/components/schemas/ErrorTrackingIssueCorrelationQuery",
+                    "ErrorTrackingQuery": "#/components/schemas/ErrorTrackingQuery",
+                    "ErrorTrackingSimilarIssuesQuery": "#/components/schemas/ErrorTrackingSimilarIssuesQuery",
+                    "EventsNode": "#/components/schemas/EventsNode",
+                    "EventsQuery": "#/components/schemas/EventsQuery",
+                    "ExperimentFunnelsQuery": "#/components/schemas/ExperimentFunnelsQuery",
+                    "ExperimentTrendsQuery": "#/components/schemas/ExperimentTrendsQuery",
+                    "GroupsQuery": "#/components/schemas/GroupsQuery",
+                    "HogQLAutocomplete": "#/components/schemas/HogQLAutocomplete",
+                    "HogQLMetadata": "#/components/schemas/HogQLMetadata",
+                    "HogQLQuery": "#/components/schemas/HogQLQuery",
+                    "HogQuery": "#/components/schemas/HogQuery",
+                    "InsightActorsQuery": "#/components/schemas/InsightActorsQuery",
+                    "InsightActorsQueryOptions": "#/components/schemas/InsightActorsQueryOptions",
+                    "LogAttributesQuery": "#/components/schemas/LogAttributesQuery",
+                    "LogValuesQuery": "#/components/schemas/LogValuesQuery",
+                    "LogsQuery": "#/components/schemas/LogsQuery",
+                    "MCPHarnessBreakdownQuery": "#/components/schemas/MCPHarnessBreakdownQuery",
+                    "MCPToolDailyStatsQuery": "#/components/schemas/MCPToolDailyStatsQuery",
+                    "MCPToolDescriptionsQuery": "#/components/schemas/MCPToolDescriptionsQuery",
+                    "MCPToolFailuresQuery": "#/components/schemas/MCPToolFailuresQuery",
+                    "MCPToolNeighborsQuery": "#/components/schemas/MCPToolNeighborsQuery",
+                    "MCPToolSampleIntentsQuery": "#/components/schemas/MCPToolSampleIntentsQuery",
+                    "MCPToolStatsQuery": "#/components/schemas/MCPToolStatsQuery",
+                    "MCPToolTopUsersQuery": "#/components/schemas/MCPToolTopUsersQuery",
+                    "MarketingAnalyticsAggregatedQuery": "#/components/schemas/MarketingAnalyticsAggregatedQuery",
+                    "MarketingAnalyticsTableQuery": "#/components/schemas/MarketingAnalyticsTableQuery",
+                    "MetricsQuery": "#/components/schemas/MetricsQuery",
+                    "NonIntegratedConversionsTableQuery": "#/components/schemas/NonIntegratedConversionsTableQuery",
+                    "PersonsNode": "#/components/schemas/PersonsNode",
+                    "RecordingsQuery": "#/components/schemas/RecordingsQuery",
+                    "RevenueAnalyticsGrossRevenueQuery": "#/components/schemas/RevenueAnalyticsGrossRevenueQuery",
+                    "RevenueAnalyticsMRRQuery": "#/components/schemas/RevenueAnalyticsMRRQuery",
+                    "RevenueAnalyticsMetricsQuery": "#/components/schemas/RevenueAnalyticsMetricsQuery",
+                    "RevenueAnalyticsOverviewQuery": "#/components/schemas/RevenueAnalyticsOverviewQuery",
+                    "RevenueAnalyticsTopCustomersQuery": "#/components/schemas/RevenueAnalyticsTopCustomersQuery",
+                    "RevenueExampleDataWarehouseTablesQuery": "#/components/schemas/RevenueExampleDataWarehouseTablesQuery",
+                    "RevenueExampleEventsQuery": "#/components/schemas/RevenueExampleEventsQuery",
+                    "SessionAttributionExplorerQuery": "#/components/schemas/SessionAttributionExplorerQuery",
+                    "SessionQuery": "#/components/schemas/SessionQuery",
+                    "SessionsQuery": "#/components/schemas/SessionsQuery",
+                    "SessionsTimelineQuery": "#/components/schemas/SessionsTimelineQuery",
+                    "TraceNeighborsQuery": "#/components/schemas/TraceNeighborsQuery",
+                    "TraceQuery": "#/components/schemas/TraceQuery",
+                    "TraceSpansAggregationQuery": "#/components/schemas/TraceSpansAggregationQuery",
+                    "TraceSpansAttributeBreakdownQuery": "#/components/schemas/TraceSpansAttributeBreakdownQuery",
+                    "TraceSpansQuery": "#/components/schemas/TraceSpansQuery",
+                    "TraceSpansTreeQuery": "#/components/schemas/TraceSpansTreeQuery",
+                    "TracesQuery": "#/components/schemas/TracesQuery",
+                    "UsageMetricsQuery": "#/components/schemas/UsageMetricsQuery",
+                    "VectorSearchQuery": "#/components/schemas/VectorSearchQuery",
+                    "WebAnalyticsExternalSummaryQuery": "#/components/schemas/WebAnalyticsExternalSummaryQuery",
+                    "WebExternalClicksTableQuery": "#/components/schemas/WebExternalClicksTableQuery",
+                    "WebGoalsQuery": "#/components/schemas/WebGoalsQuery",
+                    "WebNotableChangesQuery": "#/components/schemas/WebNotableChangesQuery",
+                    "WebOverviewQuery": "#/components/schemas/WebOverviewQuery",
+                    "WebPageURLSearchQuery": "#/components/schemas/WebPageURLSearchQuery",
+                    "WebStatsTableQuery": "#/components/schemas/WebStatsTableQuery",
+                    "WebVitalsPathBreakdownQuery": "#/components/schemas/WebVitalsPathBreakdownQuery",
+                    "WebVitalsQuery": "#/components/schemas/WebVitalsQuery"
+                  },
+                  "propertyName": "kind"
+                },
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/EventsNode"
+                  },
+                  {
+                    "$ref": "#/components/schemas/ActionsNode"
+                  },
+                  {
+                    "$ref": "#/components/schemas/PersonsNode"
+                  },
+                  {
+                    "$ref": "#/components/schemas/EventsQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/SessionsQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/ActorsQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/GroupsQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/InsightActorsQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/InsightActorsQueryOptions"
+                  },
+                  {
+                    "$ref": "#/components/schemas/SessionsTimelineQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/HogQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/HogQLQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/HogQLMetadata"
+                  },
+                  {
+                    "$ref": "#/components/schemas/HogQLAutocomplete"
+                  },
+                  {
+                    "$ref": "#/components/schemas/RevenueAnalyticsGrossRevenueQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/RevenueAnalyticsMetricsQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/RevenueAnalyticsMRRQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/RevenueAnalyticsOverviewQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/RevenueAnalyticsTopCustomersQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/MarketingAnalyticsTableQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/MarketingAnalyticsAggregatedQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/NonIntegratedConversionsTableQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/WebOverviewQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/WebStatsTableQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/WebExternalClicksTableQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/WebGoalsQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/WebVitalsQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/WebVitalsPathBreakdownQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/WebPageURLSearchQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/WebAnalyticsExternalSummaryQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/WebNotableChangesQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/SessionAttributionExplorerQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/RevenueExampleEventsQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/RevenueExampleDataWarehouseTablesQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/ErrorTrackingQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/ErrorTrackingSimilarIssuesQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/ErrorTrackingBreakdownsQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/ErrorTrackingIssueCorrelationQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/LogsQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/LogAttributesQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/LogValuesQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/MetricsQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/TraceSpansQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/TraceSpansAggregationQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/TraceSpansTreeQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/TraceSpansAttributeBreakdownQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/ExperimentFunnelsQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/ExperimentTrendsQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/CalendarHeatmapQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/RecordingsQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/TracesQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/TraceQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/SessionQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/TraceNeighborsQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/VectorSearchQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/UsageMetricsQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/AccountsQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/EndpointsUsageOverviewQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/EndpointsUsageTableQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/EndpointsUsageTrendsQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/MCPHarnessBreakdownQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/MCPToolTopUsersQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/MCPToolFailuresQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/MCPToolStatsQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/MCPToolDailyStatsQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/MCPToolDescriptionsQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/MCPToolSampleIntentsQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/MCPToolNeighborsQuery"
+                  }
+                ]
               },
               {
                 "type": "null"
@@ -192823,208 +194401,285 @@
           "sourceQuery": {
             "anyOf": [
               {
-                "$ref": "#/components/schemas/EventsNode"
-              },
-              {
-                "$ref": "#/components/schemas/ActionsNode"
-              },
-              {
-                "$ref": "#/components/schemas/PersonsNode"
-              },
-              {
-                "$ref": "#/components/schemas/EventsQuery"
-              },
-              {
-                "$ref": "#/components/schemas/SessionsQuery"
-              },
-              {
-                "$ref": "#/components/schemas/ActorsQuery"
-              },
-              {
-                "$ref": "#/components/schemas/GroupsQuery"
-              },
-              {
-                "$ref": "#/components/schemas/InsightActorsQuery"
-              },
-              {
-                "$ref": "#/components/schemas/InsightActorsQueryOptions"
-              },
-              {
-                "$ref": "#/components/schemas/SessionsTimelineQuery"
-              },
-              {
-                "$ref": "#/components/schemas/HogQuery"
-              },
-              {
-                "$ref": "#/components/schemas/HogQLQuery"
-              },
-              {
-                "$ref": "#/components/schemas/HogQLMetadata"
-              },
-              {
-                "$ref": "#/components/schemas/HogQLAutocomplete"
-              },
-              {
-                "$ref": "#/components/schemas/RevenueAnalyticsGrossRevenueQuery"
-              },
-              {
-                "$ref": "#/components/schemas/RevenueAnalyticsMetricsQuery"
-              },
-              {
-                "$ref": "#/components/schemas/RevenueAnalyticsMRRQuery"
-              },
-              {
-                "$ref": "#/components/schemas/RevenueAnalyticsOverviewQuery"
-              },
-              {
-                "$ref": "#/components/schemas/RevenueAnalyticsTopCustomersQuery"
-              },
-              {
-                "$ref": "#/components/schemas/MarketingAnalyticsTableQuery"
-              },
-              {
-                "$ref": "#/components/schemas/MarketingAnalyticsAggregatedQuery"
-              },
-              {
-                "$ref": "#/components/schemas/NonIntegratedConversionsTableQuery"
-              },
-              {
-                "$ref": "#/components/schemas/WebOverviewQuery"
-              },
-              {
-                "$ref": "#/components/schemas/WebStatsTableQuery"
-              },
-              {
-                "$ref": "#/components/schemas/WebExternalClicksTableQuery"
-              },
-              {
-                "$ref": "#/components/schemas/WebGoalsQuery"
-              },
-              {
-                "$ref": "#/components/schemas/WebVitalsQuery"
-              },
-              {
-                "$ref": "#/components/schemas/WebVitalsPathBreakdownQuery"
-              },
-              {
-                "$ref": "#/components/schemas/WebPageURLSearchQuery"
-              },
-              {
-                "$ref": "#/components/schemas/WebAnalyticsExternalSummaryQuery"
-              },
-              {
-                "$ref": "#/components/schemas/WebNotableChangesQuery"
-              },
-              {
-                "$ref": "#/components/schemas/SessionAttributionExplorerQuery"
-              },
-              {
-                "$ref": "#/components/schemas/RevenueExampleEventsQuery"
-              },
-              {
-                "$ref": "#/components/schemas/RevenueExampleDataWarehouseTablesQuery"
-              },
-              {
-                "$ref": "#/components/schemas/ErrorTrackingQuery"
-              },
-              {
-                "$ref": "#/components/schemas/ErrorTrackingSimilarIssuesQuery"
-              },
-              {
-                "$ref": "#/components/schemas/ErrorTrackingBreakdownsQuery"
-              },
-              {
-                "$ref": "#/components/schemas/ErrorTrackingIssueCorrelationQuery"
-              },
-              {
-                "$ref": "#/components/schemas/LogsQuery"
-              },
-              {
-                "$ref": "#/components/schemas/LogAttributesQuery"
-              },
-              {
-                "$ref": "#/components/schemas/LogValuesQuery"
-              },
-              {
-                "$ref": "#/components/schemas/MetricsQuery"
-              },
-              {
-                "$ref": "#/components/schemas/TraceSpansQuery"
-              },
-              {
-                "$ref": "#/components/schemas/TraceSpansAggregationQuery"
-              },
-              {
-                "$ref": "#/components/schemas/TraceSpansTreeQuery"
-              },
-              {
-                "$ref": "#/components/schemas/TraceSpansAttributeBreakdownQuery"
-              },
-              {
-                "$ref": "#/components/schemas/ExperimentFunnelsQuery"
-              },
-              {
-                "$ref": "#/components/schemas/ExperimentTrendsQuery"
-              },
-              {
-                "$ref": "#/components/schemas/CalendarHeatmapQuery"
-              },
-              {
-                "$ref": "#/components/schemas/RecordingsQuery"
-              },
-              {
-                "$ref": "#/components/schemas/TracesQuery"
-              },
-              {
-                "$ref": "#/components/schemas/TraceQuery"
-              },
-              {
-                "$ref": "#/components/schemas/SessionQuery"
-              },
-              {
-                "$ref": "#/components/schemas/TraceNeighborsQuery"
-              },
-              {
-                "$ref": "#/components/schemas/VectorSearchQuery"
-              },
-              {
-                "$ref": "#/components/schemas/UsageMetricsQuery"
-              },
-              {
-                "$ref": "#/components/schemas/AccountsQuery"
-              },
-              {
-                "$ref": "#/components/schemas/EndpointsUsageOverviewQuery"
-              },
-              {
-                "$ref": "#/components/schemas/EndpointsUsageTableQuery"
-              },
-              {
-                "$ref": "#/components/schemas/EndpointsUsageTrendsQuery"
-              },
-              {
-                "$ref": "#/components/schemas/MCPHarnessBreakdownQuery"
-              },
-              {
-                "$ref": "#/components/schemas/MCPToolTopUsersQuery"
-              },
-              {
-                "$ref": "#/components/schemas/MCPToolFailuresQuery"
-              },
-              {
-                "$ref": "#/components/schemas/MCPToolStatsQuery"
-              },
-              {
-                "$ref": "#/components/schemas/MCPToolDailyStatsQuery"
-              },
-              {
-                "$ref": "#/components/schemas/MCPToolDescriptionsQuery"
-              },
-              {
-                "$ref": "#/components/schemas/MCPToolSampleIntentsQuery"
-              },
-              {
-                "$ref": "#/components/schemas/MCPToolNeighborsQuery"
+                "discriminator": {
+                  "mapping": {
+                    "AccountsQuery": "#/components/schemas/AccountsQuery",
+                    "ActionsNode": "#/components/schemas/ActionsNode",
+                    "ActorsQuery": "#/components/schemas/ActorsQuery",
+                    "CalendarHeatmapQuery": "#/components/schemas/CalendarHeatmapQuery",
+                    "EndpointsUsageOverviewQuery": "#/components/schemas/EndpointsUsageOverviewQuery",
+                    "EndpointsUsageTableQuery": "#/components/schemas/EndpointsUsageTableQuery",
+                    "EndpointsUsageTrendsQuery": "#/components/schemas/EndpointsUsageTrendsQuery",
+                    "ErrorTrackingBreakdownsQuery": "#/components/schemas/ErrorTrackingBreakdownsQuery",
+                    "ErrorTrackingIssueCorrelationQuery": "#/components/schemas/ErrorTrackingIssueCorrelationQuery",
+                    "ErrorTrackingQuery": "#/components/schemas/ErrorTrackingQuery",
+                    "ErrorTrackingSimilarIssuesQuery": "#/components/schemas/ErrorTrackingSimilarIssuesQuery",
+                    "EventsNode": "#/components/schemas/EventsNode",
+                    "EventsQuery": "#/components/schemas/EventsQuery",
+                    "ExperimentFunnelsQuery": "#/components/schemas/ExperimentFunnelsQuery",
+                    "ExperimentTrendsQuery": "#/components/schemas/ExperimentTrendsQuery",
+                    "GroupsQuery": "#/components/schemas/GroupsQuery",
+                    "HogQLAutocomplete": "#/components/schemas/HogQLAutocomplete",
+                    "HogQLMetadata": "#/components/schemas/HogQLMetadata",
+                    "HogQLQuery": "#/components/schemas/HogQLQuery",
+                    "HogQuery": "#/components/schemas/HogQuery",
+                    "InsightActorsQuery": "#/components/schemas/InsightActorsQuery",
+                    "InsightActorsQueryOptions": "#/components/schemas/InsightActorsQueryOptions",
+                    "LogAttributesQuery": "#/components/schemas/LogAttributesQuery",
+                    "LogValuesQuery": "#/components/schemas/LogValuesQuery",
+                    "LogsQuery": "#/components/schemas/LogsQuery",
+                    "MCPHarnessBreakdownQuery": "#/components/schemas/MCPHarnessBreakdownQuery",
+                    "MCPToolDailyStatsQuery": "#/components/schemas/MCPToolDailyStatsQuery",
+                    "MCPToolDescriptionsQuery": "#/components/schemas/MCPToolDescriptionsQuery",
+                    "MCPToolFailuresQuery": "#/components/schemas/MCPToolFailuresQuery",
+                    "MCPToolNeighborsQuery": "#/components/schemas/MCPToolNeighborsQuery",
+                    "MCPToolSampleIntentsQuery": "#/components/schemas/MCPToolSampleIntentsQuery",
+                    "MCPToolStatsQuery": "#/components/schemas/MCPToolStatsQuery",
+                    "MCPToolTopUsersQuery": "#/components/schemas/MCPToolTopUsersQuery",
+                    "MarketingAnalyticsAggregatedQuery": "#/components/schemas/MarketingAnalyticsAggregatedQuery",
+                    "MarketingAnalyticsTableQuery": "#/components/schemas/MarketingAnalyticsTableQuery",
+                    "MetricsQuery": "#/components/schemas/MetricsQuery",
+                    "NonIntegratedConversionsTableQuery": "#/components/schemas/NonIntegratedConversionsTableQuery",
+                    "PersonsNode": "#/components/schemas/PersonsNode",
+                    "RecordingsQuery": "#/components/schemas/RecordingsQuery",
+                    "RevenueAnalyticsGrossRevenueQuery": "#/components/schemas/RevenueAnalyticsGrossRevenueQuery",
+                    "RevenueAnalyticsMRRQuery": "#/components/schemas/RevenueAnalyticsMRRQuery",
+                    "RevenueAnalyticsMetricsQuery": "#/components/schemas/RevenueAnalyticsMetricsQuery",
+                    "RevenueAnalyticsOverviewQuery": "#/components/schemas/RevenueAnalyticsOverviewQuery",
+                    "RevenueAnalyticsTopCustomersQuery": "#/components/schemas/RevenueAnalyticsTopCustomersQuery",
+                    "RevenueExampleDataWarehouseTablesQuery": "#/components/schemas/RevenueExampleDataWarehouseTablesQuery",
+                    "RevenueExampleEventsQuery": "#/components/schemas/RevenueExampleEventsQuery",
+                    "SessionAttributionExplorerQuery": "#/components/schemas/SessionAttributionExplorerQuery",
+                    "SessionQuery": "#/components/schemas/SessionQuery",
+                    "SessionsQuery": "#/components/schemas/SessionsQuery",
+                    "SessionsTimelineQuery": "#/components/schemas/SessionsTimelineQuery",
+                    "TraceNeighborsQuery": "#/components/schemas/TraceNeighborsQuery",
+                    "TraceQuery": "#/components/schemas/TraceQuery",
+                    "TraceSpansAggregationQuery": "#/components/schemas/TraceSpansAggregationQuery",
+                    "TraceSpansAttributeBreakdownQuery": "#/components/schemas/TraceSpansAttributeBreakdownQuery",
+                    "TraceSpansQuery": "#/components/schemas/TraceSpansQuery",
+                    "TraceSpansTreeQuery": "#/components/schemas/TraceSpansTreeQuery",
+                    "TracesQuery": "#/components/schemas/TracesQuery",
+                    "UsageMetricsQuery": "#/components/schemas/UsageMetricsQuery",
+                    "VectorSearchQuery": "#/components/schemas/VectorSearchQuery",
+                    "WebAnalyticsExternalSummaryQuery": "#/components/schemas/WebAnalyticsExternalSummaryQuery",
+                    "WebExternalClicksTableQuery": "#/components/schemas/WebExternalClicksTableQuery",
+                    "WebGoalsQuery": "#/components/schemas/WebGoalsQuery",
+                    "WebNotableChangesQuery": "#/components/schemas/WebNotableChangesQuery",
+                    "WebOverviewQuery": "#/components/schemas/WebOverviewQuery",
+                    "WebPageURLSearchQuery": "#/components/schemas/WebPageURLSearchQuery",
+                    "WebStatsTableQuery": "#/components/schemas/WebStatsTableQuery",
+                    "WebVitalsPathBreakdownQuery": "#/components/schemas/WebVitalsPathBreakdownQuery",
+                    "WebVitalsQuery": "#/components/schemas/WebVitalsQuery"
+                  },
+                  "propertyName": "kind"
+                },
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/EventsNode"
+                  },
+                  {
+                    "$ref": "#/components/schemas/ActionsNode"
+                  },
+                  {
+                    "$ref": "#/components/schemas/PersonsNode"
+                  },
+                  {
+                    "$ref": "#/components/schemas/EventsQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/SessionsQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/ActorsQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/GroupsQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/InsightActorsQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/InsightActorsQueryOptions"
+                  },
+                  {
+                    "$ref": "#/components/schemas/SessionsTimelineQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/HogQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/HogQLQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/HogQLMetadata"
+                  },
+                  {
+                    "$ref": "#/components/schemas/HogQLAutocomplete"
+                  },
+                  {
+                    "$ref": "#/components/schemas/RevenueAnalyticsGrossRevenueQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/RevenueAnalyticsMetricsQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/RevenueAnalyticsMRRQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/RevenueAnalyticsOverviewQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/RevenueAnalyticsTopCustomersQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/MarketingAnalyticsTableQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/MarketingAnalyticsAggregatedQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/NonIntegratedConversionsTableQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/WebOverviewQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/WebStatsTableQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/WebExternalClicksTableQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/WebGoalsQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/WebVitalsQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/WebVitalsPathBreakdownQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/WebPageURLSearchQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/WebAnalyticsExternalSummaryQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/WebNotableChangesQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/SessionAttributionExplorerQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/RevenueExampleEventsQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/RevenueExampleDataWarehouseTablesQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/ErrorTrackingQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/ErrorTrackingSimilarIssuesQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/ErrorTrackingBreakdownsQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/ErrorTrackingIssueCorrelationQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/LogsQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/LogAttributesQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/LogValuesQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/MetricsQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/TraceSpansQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/TraceSpansAggregationQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/TraceSpansTreeQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/TraceSpansAttributeBreakdownQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/ExperimentFunnelsQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/ExperimentTrendsQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/CalendarHeatmapQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/RecordingsQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/TracesQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/TraceQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/SessionQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/TraceNeighborsQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/VectorSearchQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/UsageMetricsQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/AccountsQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/EndpointsUsageOverviewQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/EndpointsUsageTableQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/EndpointsUsageTrendsQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/MCPHarnessBreakdownQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/MCPToolTopUsersQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/MCPToolFailuresQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/MCPToolStatsQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/MCPToolDailyStatsQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/MCPToolDescriptionsQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/MCPToolSampleIntentsQuery"
+                  },
+                  {
+                    "$ref": "#/components/schemas/MCPToolNeighborsQuery"
+                  }
+                ]
               },
               {
                 "type": "null"
@@ -194754,6 +196409,7 @@
           "choice",
           "json",
           "integration",
+          "integration_multi",
           "integration_field",
           "email",
           "native_email",
@@ -194765,7 +196421,7 @@
           "customer_analytics_account_relationships"
         ],
         "type": "string",
-        "description": "* `string` - string\n* `number` - number\n* `boolean` - boolean\n* `dictionary` - dictionary\n* `choice` - choice\n* `json` - json\n* `integration` - integration\n* `integration_field` - integration_field\n* `email` - email\n* `native_email` - native_email\n* `posthog_assignee` - posthog_assignee\n* `posthog_ticket_tags` - posthog_ticket_tags\n* `posthog_business_hours` - posthog_business_hours\n* `non_failure_status_codes` - non_failure_status_codes\n* `customer_analytics_account_properties` - customer_analytics_account_properties\n* `customer_analytics_account_relationships` - customer_analytics_account_relationships"
+        "description": "* `string` - string\n* `number` - number\n* `boolean` - boolean\n* `dictionary` - dictionary\n* `choice` - choice\n* `json` - json\n* `integration` - integration\n* `integration_multi` - integration_multi\n* `integration_field` - integration_field\n* `email` - email\n* `native_email` - native_email\n* `posthog_assignee` - posthog_assignee\n* `posthog_ticket_tags` - posthog_ticket_tags\n* `posthog_business_hours` - posthog_business_hours\n* `non_failure_status_codes` - non_failure_status_codes\n* `customer_analytics_account_properties` - customer_analytics_account_properties\n* `customer_analytics_account_relationships` - customer_analytics_account_relationships"
       },
       "Insight": {
         "type": "object",
@@ -196409,6 +198065,7 @@
           "customerio-app",
           "customerio-webhook",
           "customerio-track",
+          "apns",
           "postgresql",
           "aws-s3",
           "s3-compatible"
@@ -199954,7 +201611,15 @@
           "series": {
             "description": "Events and actions to include",
             "items": {
-              "anyOf": [
+              "discriminator": {
+                "mapping": {
+                  "ActionsNode": "#/components/schemas/ActionsNode",
+                  "EventsNode": "#/components/schemas/EventsNode",
+                  "LifecycleDataWarehouseNode": "#/components/schemas/LifecycleDataWarehouseNode"
+                },
+                "propertyName": "kind"
+              },
+              "oneOf": [
                 {
                   "$ref": "#/components/schemas/EventsNode"
                 },
@@ -204812,7 +206477,7 @@
         "additionalProperties": false,
         "properties": {
           "harnesses": {
-            "description": "Resolved harness labels seen for this exception, deduped and sorted.",
+            "description": "Resolved harness labels seen for this failure, deduped and sorted.",
             "items": {
               "type": "string"
             },
@@ -204824,6 +206489,7 @@
             "type": "string"
           },
           "message": {
+            "description": "Failure label composed from $mcp_error_type and, when present, $mcp_error_status (e.g. \"api_5xx (HTTP 500)\").",
             "title": "Message",
             "type": "string"
           },
@@ -204896,7 +206562,7 @@
             "default": null
           },
           "toolName": {
-            "description": "The raw $mcp_tool_name to scope $exception events to.",
+            "description": "The effective tool name to scope to (matched against the single-exec-resolved tool name).",
             "title": "Toolname",
             "type": "string"
           },
@@ -206049,6 +207715,253 @@
         ],
         "title": "MCPToolTopUsersQueryResponse",
         "type": "object"
+      },
+      "ManagedWarehouseDataStatusResponse": {
+        "type": "object",
+        "properties": {
+          "overall_readiness_state": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ManagedWarehouseReadinessStateEnum"
+              }
+            ],
+            "description": "Highest-priority readiness state across all warehouse datasets.\n\n* `not_configured` - not_configured\n* `waiting` - waiting\n* `backfilling` - backfilling\n* `catching_up` - catching_up\n* `up_to_date` - up_to_date\n* `needs_attention` - needs_attention\n* `unknown` - unknown"
+          },
+          "events": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ManagedWarehouseDatasetStatus"
+              }
+            ],
+            "description": "Events backfill readiness."
+          },
+          "persons": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ManagedWarehouseDatasetStatus"
+              }
+            ],
+            "description": "Persons backfill readiness."
+          },
+          "sources": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ManagedWarehouseSourcesStatus"
+              }
+            ],
+            "description": "Imported source table readiness."
+          },
+          "generated_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When this status snapshot was generated."
+          }
+        },
+        "required": [
+          "events",
+          "generated_at",
+          "overall_readiness_state",
+          "persons",
+          "sources"
+        ]
+      },
+      "ManagedWarehouseDatasetStatus": {
+        "type": "object",
+        "properties": {
+          "dataset": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/DatasetEnum"
+              }
+            ],
+            "description": "Warehouse dataset represented by this status.\n\n* `events` - events\n* `persons` - persons"
+          },
+          "readiness_state": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ManagedWarehouseReadinessStateEnum"
+              }
+            ],
+            "description": "User-facing readiness state for this dataset.\n\n* `not_configured` - not_configured\n* `waiting` - waiting\n* `backfilling` - backfilling\n* `catching_up` - catching_up\n* `up_to_date` - up_to_date\n* `needs_attention` - needs_attention\n* `unknown` - unknown"
+          },
+          "detail": {
+            "type": "string",
+            "description": "Human-readable explanation of the current readiness state."
+          },
+          "completed_partitions": {
+            "type": "integer",
+            "description": "Number of historical backfill partitions completed successfully."
+          },
+          "total_partitions": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "description": "Expected historical partitions, or null while the range is being calculated."
+          },
+          "current_partition": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Partition currently running or requiring attention, when applicable."
+          },
+          "last_updated_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time",
+            "description": "When the durable backfill status last changed."
+          }
+        },
+        "required": [
+          "completed_partitions",
+          "current_partition",
+          "dataset",
+          "detail",
+          "last_updated_at",
+          "readiness_state",
+          "total_partitions"
+        ]
+      },
+      "ManagedWarehouseReadinessStateEnum": {
+        "enum": [
+          "not_configured",
+          "waiting",
+          "backfilling",
+          "catching_up",
+          "up_to_date",
+          "needs_attention",
+          "unknown"
+        ],
+        "type": "string",
+        "description": "* `not_configured` - not_configured\n* `waiting` - waiting\n* `backfilling` - backfilling\n* `catching_up` - catching_up\n* `up_to_date` - up_to_date\n* `needs_attention` - needs_attention\n* `unknown` - unknown"
+      },
+      "ManagedWarehouseSourceTableStatus": {
+        "type": "object",
+        "properties": {
+          "schema_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Imported source schema identifier."
+          },
+          "source_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Imported source connection identifier."
+          },
+          "source_name": {
+            "type": "string",
+            "description": "Display name for the imported source connection."
+          },
+          "source_type": {
+            "type": "string",
+            "description": "Type of the imported source connection."
+          },
+          "table_name": {
+            "type": "string",
+            "description": "Imported table name."
+          },
+          "readiness_state": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ManagedWarehouseReadinessStateEnum"
+              }
+            ],
+            "description": "User-facing warehouse readiness state for this table.\n\n* `not_configured` - not_configured\n* `waiting` - waiting\n* `backfilling` - backfilling\n* `catching_up` - catching_up\n* `up_to_date` - up_to_date\n* `needs_attention` - needs_attention\n* `unknown` - unknown"
+          },
+          "detail": {
+            "type": "string",
+            "description": "Human-readable explanation of the table's readiness state."
+          },
+          "completed_chunks": {
+            "type": "integer",
+            "description": "Backfill chunks already copied into the warehouse."
+          },
+          "total_chunks": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "description": "Total backfill chunks, or null before the copy plan is ready."
+          },
+          "pending_batches": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "description": "Imported batches waiting to be applied, or null when queue status is unavailable."
+          },
+          "oldest_pending_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time",
+            "description": "Creation time of the oldest unapplied imported batch."
+          },
+          "last_applied_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time",
+            "description": "When an imported batch was most recently applied to the warehouse."
+          },
+          "last_synced_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time",
+            "description": "When PostHog most recently completed the upstream source import."
+          }
+        },
+        "required": [
+          "completed_chunks",
+          "detail",
+          "last_applied_at",
+          "last_synced_at",
+          "oldest_pending_at",
+          "pending_batches",
+          "readiness_state",
+          "schema_id",
+          "source_id",
+          "source_name",
+          "source_type",
+          "table_name",
+          "total_chunks"
+        ]
+      },
+      "ManagedWarehouseSourcesStatus": {
+        "type": "object",
+        "properties": {
+          "readiness_state": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ManagedWarehouseReadinessStateEnum"
+              }
+            ],
+            "description": "Rolled-up readiness state for imported source tables.\n\n* `not_configured` - not_configured\n* `waiting` - waiting\n* `backfilling` - backfilling\n* `catching_up` - catching_up\n* `up_to_date` - up_to_date\n* `needs_attention` - needs_attention\n* `unknown` - unknown"
+          },
+          "detail": {
+            "type": "string",
+            "description": "Human-readable explanation of imported source readiness."
+          },
+          "tables": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ManagedWarehouseSourceTableStatus"
+            },
+            "description": "Per-table source backfill and live import application statuses."
+          }
+        },
+        "required": [
+          "detail",
+          "readiness_state",
+          "tables"
+        ]
       },
       "ManualMetricType": {
         "enum": [
@@ -207909,6 +209822,32 @@
         ],
         "title": "MetricsAggregation",
         "type": "string"
+      },
+      "MetricsAlertConfig": {
+        "additionalProperties": false,
+        "properties": {
+          "check_ongoing_interval": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "When true, anchor on the trailing (possibly still accumulating) bucket instead of the last complete one.",
+            "title": "Check Ongoing Interval"
+          },
+          "type": {
+            "const": "MetricsAlertConfig",
+            "default": "MetricsAlertConfig",
+            "title": "Type",
+            "type": "string"
+          }
+        },
+        "title": "MetricsAlertConfig",
+        "type": "object"
       },
       "MetricsAttributeScope": {
         "enum": [
@@ -210282,7 +212221,7 @@
           "reason": {
             "allOf": [
               {
-                "$ref": "#/components/schemas/ReasonEnum"
+                "$ref": "#/components/schemas/OnboardingSkipRequestReasonEnum"
               }
             ],
             "description": "Why the user is leaving onboarding. 'later' keeps them able to return; 'other' is a catch-all. 'delegated' is rejected here — use the delegate endpoint so the delegation invite is created atomically.\n\n* `later` - Later\n* `other` - Other"
@@ -210297,14 +212236,23 @@
           "reason"
         ]
       },
-      "OnboardingSkippedReasonEnum": {
+      "OnboardingSkipRequestReasonEnum": {
         "enum": [
-          "delegated",
           "later",
           "other"
         ],
         "type": "string",
-        "description": "* `delegated` - Delegated to teammate\n* `later` - Skipped for later\n* `other` - Other"
+        "description": "* `later` - Later\n* `other` - Other"
+      },
+      "OnboardingSkippedReasonEnum": {
+        "enum": [
+          "delegated",
+          "later",
+          "other",
+          "provisioned"
+        ],
+        "type": "string",
+        "description": "* `delegated` - Delegated to teammate\n* `later` - Skipped for later\n* `other` - Other\n* `provisioned` - Account provisioned by a partner"
       },
       "OpEnum": {
         "enum": [
@@ -211114,10 +213062,11 @@
           "signals_scout",
           "support_reply",
           "hogdesk",
+          "review_hog",
           "image_builder"
         ],
         "type": "string",
-        "description": "* `onboarding` - Onboarding\n* `error_tracking` - Error Tracking\n* `eval_clusters` - Eval Clusters\n* `user_created` - User Created\n* `automation` - Automation\n* `slack` - Slack\n* `support_queue` - Support Queue\n* `session_summaries` - Session Summaries\n* `posthog_ai` - PostHog AI\n* `experiments` - Experiments\n* `signal_report` - Signal Report\n* `signals_scout` - Signals Scout\n* `support_reply` - Support Reply\n* `hogdesk` - HogDesk\n* `image_builder` - Image Builder"
+        "description": "* `onboarding` - Onboarding\n* `error_tracking` - Error Tracking\n* `eval_clusters` - Eval Clusters\n* `user_created` - User Created\n* `automation` - Automation\n* `slack` - Slack\n* `support_queue` - Support Queue\n* `session_summaries` - Session Summaries\n* `posthog_ai` - PostHog AI\n* `experiments` - Experiments\n* `signal_report` - Signal Report\n* `signals_scout` - Signals Scout\n* `support_reply` - Support Reply\n* `hogdesk` - HogDesk\n* `review_hog` - ReviewHog\n* `image_builder` - Image Builder"
       },
       "OtelMetricTypeEnum": {
         "enum": [
@@ -212045,6 +213994,41 @@
           }
         }
       },
+      "PaginatedChannelFeedMessageDTOList": {
+        "type": "object",
+        "required": [
+          "count",
+          "results"
+        ],
+        "properties": {
+          "count": {
+            "type": "integer",
+            "example": 123
+          },
+          "next": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uri",
+            "example": "http://api.example.org/accounts/?offset=400&limit=100"
+          },
+          "previous": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uri",
+            "example": "http://api.example.org/accounts/?offset=200&limit=100"
+          },
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ChannelFeedMessageDTO"
+            }
+          }
+        }
+      },
       "PaginatedClickhouseEventList": {
         "type": "object",
         "properties": {
@@ -212405,6 +214389,41 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/DashboardTemplate"
+            }
+          }
+        }
+      },
+      "PaginatedDataCatalogCertificationList": {
+        "type": "object",
+        "required": [
+          "count",
+          "results"
+        ],
+        "properties": {
+          "count": {
+            "type": "integer",
+            "example": 123
+          },
+          "next": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uri",
+            "example": "http://api.example.org/accounts/?offset=400&limit=100"
+          },
+          "previous": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uri",
+            "example": "http://api.example.org/accounts/?offset=200&limit=100"
+          },
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DataCatalogCertification"
             }
           }
         }
@@ -218959,6 +220978,15 @@
             ],
             "description": "How the property is interpreted and rendered: 'text', 'number', 'currency', 'percent', 'date', 'datetime', 'boolean', or 'select'.\n\n* `text` - text\n* `number` - number\n* `currency` - currency\n* `percent` - percent\n* `date` - date\n* `datetime` - datetime\n* `boolean` - boolean\n* `select` - select"
           },
+          "target_type": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CustomPropertyDefinitionTargetType"
+              }
+            ],
+            "default": "account",
+            "description": "What entity this property is attached to: 'account' (default) or 'person'. Person properties are populated from a warehouse schema and become usable like any other person property (feature flags, cohorts, insights).\n\n* `account` - account\n* `person` - person"
+          },
           "is_big_number": {
             "type": "boolean",
             "default": false,
@@ -220283,6 +222311,10 @@
               "boolean",
               "null"
             ]
+          },
+          "warehouse_origin": {
+            "readOnly": true,
+            "description": "Provenance for a person property populated from a data warehouse source (source/table/column/last synced), or null. Read-only."
           }
         }
       },
@@ -221697,7 +223729,7 @@
             "readOnly": true
           },
           "created_via": {
-            "description": "How this source was created. Defaults to `api` on create when omitted. `web` for the in-app UI, `api` for direct API callers, `mcp` for agent/MCP tool calls, `wizard` for the setup wizard (derived server-side from the wizard's user agent). Ignored on update.\n\n* `web` - web\n* `api` - api\n* `mcp` - mcp\n* `wizard` - wizard",
+            "description": "How this source was created. Defaults to `api` on create when omitted. `web` for the in-app UI, `api` for direct API callers, `mcp` for agent/MCP tool calls, `wizard` for the setup wizard and `self_driving` for the PostHog Code app (both derived server-side from the caller's user agent). Ignored on update.\n\n* `web` - web\n* `api` - api\n* `mcp` - mcp\n* `wizard` - wizard\n* `self_driving` - self_driving",
             "oneOf": [
               {
                 "$ref": "#/components/schemas/ExternalDataSourceSerializersCreatedViaEnum"
@@ -225553,6 +227585,24 @@
           }
         }
       },
+      "PatchedReviewBlindSpotsConfigSelect": {
+        "type": "object",
+        "properties": {
+          "active": {
+            "type": "boolean",
+            "description": "Set true to make this the single blind-spots skill that runs on the user's PR reviews. Only true is accepted — the blind-spot check is single-active, so you switch by selecting a different skill, not by deactivating the current one."
+          }
+        }
+      },
+      "PatchedReviewPerspectiveConfigUpdate": {
+        "type": "object",
+        "properties": {
+          "enabled": {
+            "type": "boolean",
+            "description": "Set true to run this perspective on the user's PR reviews, false to stop running it."
+          }
+        }
+      },
       "PatchedReviewQueueItemUpdate": {
         "type": "object",
         "properties": {
@@ -225570,6 +227620,15 @@
             "type": "string",
             "description": "Human-readable queue name.",
             "maxLength": 255
+          }
+        }
+      },
+      "PatchedReviewValidatorConfigSelect": {
+        "type": "object",
+        "properties": {
+          "active": {
+            "type": "boolean",
+            "description": "Set true to make this the single validator that runs on the user's PR reviews. Only true is accepted — validators are single-active, so you switch by selecting a different one, not by deactivating the current one."
           }
         }
       },
@@ -227168,7 +229227,7 @@
                 "$ref": "#/components/schemas/OriginProductEnum"
               }
             ],
-            "description": "PostHog product or surface that created this task (e.g. error_tracking, slack, user_created).\n\n* `onboarding` - Onboarding\n* `error_tracking` - Error Tracking\n* `eval_clusters` - Eval Clusters\n* `user_created` - User Created\n* `automation` - Automation\n* `slack` - Slack\n* `support_queue` - Support Queue\n* `session_summaries` - Session Summaries\n* `posthog_ai` - PostHog AI\n* `experiments` - Experiments\n* `signal_report` - Signal Report\n* `signals_scout` - Signals Scout\n* `support_reply` - Support Reply\n* `hogdesk` - HogDesk\n* `image_builder` - Image Builder"
+            "description": "PostHog product or surface that created this task (e.g. error_tracking, slack, user_created).\n\n* `onboarding` - Onboarding\n* `error_tracking` - Error Tracking\n* `eval_clusters` - Eval Clusters\n* `user_created` - User Created\n* `automation` - Automation\n* `slack` - Slack\n* `support_queue` - Support Queue\n* `session_summaries` - Session Summaries\n* `posthog_ai` - PostHog AI\n* `experiments` - Experiments\n* `signal_report` - Signal Report\n* `signals_scout` - Signals Scout\n* `support_reply` - Support Reply\n* `hogdesk` - HogDesk\n* `review_hog` - ReviewHog\n* `image_builder` - Image Builder"
           },
           "repository": {
             "type": [
@@ -228295,6 +230354,14 @@
             ],
             "readOnly": true
           },
+          "is_impersonated_reason": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "readOnly": true,
+            "description": "The reason the operator gave when the current impersonation session started (or was last up/downgraded). Null when not impersonating."
+          },
           "sensitive_session_expires_at": {
             "type": [
               "string",
@@ -228707,7 +230774,7 @@
                 "$ref": "#/components/schemas/VisionActionModeEnum"
               }
             ],
-            "description": "What the action produces. MVP supports 'group_summary' only.\n\n* `group_summary` - Group summary\n* `per_observation` - Per observation"
+            "description": "What the action produces. MVP supports 'group_summary' only.\n\n* `group_summary` - Group summary\n* `alert` - Alert\n* `per_observation` - Per observation"
           },
           "trigger_config": {
             "allOf": [
@@ -228732,6 +230799,14 @@
               }
             ],
             "description": "Synthesis options for the group summary, e.g. {prompt_guide}."
+          },
+          "alert_config": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/AlertConfig"
+              }
+            ],
+            "description": "Alert condition; required when mode is 'alert', ignored otherwise."
           },
           "delivery_config": {
             "type": "array",
@@ -251338,14 +253413,6 @@
           "suggested_integration"
         ]
       },
-      "ReasonEnum": {
-        "enum": [
-          "later",
-          "other"
-        ],
-        "type": "string",
-        "description": "* `later` - Later\n* `other` - Other"
-      },
       "ReasoningEffortEnum": {
         "enum": [
           "low",
@@ -252924,6 +254991,15 @@
         "title": "RefreshType",
         "type": "string"
       },
+      "RefundIneligibilityReasonEnum": {
+        "enum": [
+          "already_refunded",
+          "billing_exempt",
+          "no_billable_pr",
+          "out_of_period"
+        ],
+        "type": "string"
+      },
       "RememberRequest": {
         "type": "object",
         "description": "Request body for `remember`.",
@@ -253770,28 +255846,28 @@
             "items": {
               "$ref": "#/components/schemas/CostPerMergeBucket"
             },
-            "description": "CI cost per merged PR across the window, oldest first, zero-filled, bucketed by cost_series_granularity. Empty when the job-level source isn't synced."
+            "description": "CI cost per merged PR across the window, oldest first, zero-filled, bucketed by cost_series_granularity. Empty when the job-level source isn't synced or include_series=false."
           },
           "time_to_green_series": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/TimeToGreenBucket"
             },
-            "description": "Median time-to-green (p50 successful PR-attributed CI run duration) per bucket across the window, oldest first, bucketed by time_to_green_series_granularity. Empty buckets carry null."
+            "description": "Median time-to-green (p50 successful PR-attributed CI run duration) per bucket across the window, oldest first, bucketed by time_to_green_series_granularity. Empty buckets carry null; the whole series is empty when include_series=false."
           },
           "success_rate_series": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/PassRateBucket"
             },
-            "description": "CI pass rate (completed runs that succeeded, all branches) per bucket across the window, oldest first, bucketed by success_rate_series_granularity. Empty buckets carry null."
+            "description": "CI pass rate (completed runs that succeeded, all branches) per bucket across the window, oldest first, bucketed by success_rate_series_granularity. Empty buckets carry null; the whole series is empty when include_series=false."
           },
           "open_to_merge_series": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/OpenToMergeBucket"
             },
-            "description": "Median time-to-merge (p50 open_to_merge_seconds, bots/drafts excluded) per bucket across the window, oldest first, bucketed by open_to_merge_series_granularity. Empty buckets carry null."
+            "description": "Median time-to-merge (p50 open_to_merge_seconds, bots/drafts excluded) per bucket across the window, oldest first, bucketed by open_to_merge_series_granularity. Empty buckets carry null; the whole series is empty when include_series=false."
           },
           "run_count": {
             "type": "integer",
@@ -253824,6 +255900,14 @@
           "rerun_cycles_prev": {
             "type": "integer",
             "description": "Re-run cycles over the previous window."
+          },
+          "merged_pr_count": {
+            "type": "integer",
+            "description": "PRs merged in the window, all authors and bots included — the merge population that triggered the CI spend, so it divides cleanly into billable_minutes and estimated_cost_usd."
+          },
+          "merged_pr_count_prev": {
+            "type": "integer",
+            "description": "Merged-PR count over the previous window."
           },
           "median_open_to_merge_seconds": {
             "type": [
@@ -253909,6 +255993,8 @@
           "jobs_available",
           "median_open_to_merge_seconds",
           "median_open_to_merge_seconds_prev",
+          "merged_pr_count",
+          "merged_pr_count_prev",
           "open_to_merge_series",
           "open_to_merge_series_granularity",
           "rerun_cycles",
@@ -261944,6 +264030,60 @@
         "title": "RevenueExampleEventsQueryResponse",
         "type": "object"
       },
+      "ReviewBlindSpotsConfig": {
+        "type": "object",
+        "properties": {
+          "skill_name": {
+            "type": "string",
+            "description": "Name of the `review-hog-blind-spots-*` skill this row represents (the sweep's identity)."
+          },
+          "active": {
+            "type": "boolean",
+            "description": "Whether this blind-spots skill runs the sweep on the requesting user's PR reviews on this project."
+          },
+          "description": {
+            "type": "string",
+            "description": "The blind-spots skill's description, for display in the config UI."
+          },
+          "body": {
+            "type": "string",
+            "description": "The blind-spots skill's SKILL.md body, for the read-only skill viewer."
+          }
+        },
+        "required": [
+          "active",
+          "body",
+          "description",
+          "skill_name"
+        ]
+      },
+      "ReviewPerspectiveConfig": {
+        "type": "object",
+        "properties": {
+          "skill_name": {
+            "type": "string",
+            "description": "Name of the `review-hog-perspective-*` skill this row toggles (the perspective's identity)."
+          },
+          "enabled": {
+            "type": "boolean",
+            "description": "Whether this perspective runs on the acting user's PR reviews on this project."
+          },
+          "description": {
+            "type": "string",
+            "description": "The perspective skill's description, for display in the config UI."
+          },
+          "body": {
+            "type": "string",
+            "description": "The perspective skill's SKILL.md body, for the read-only skill viewer."
+          }
+        },
+        "required": [
+          "body",
+          "description",
+          "enabled",
+          "skill_name"
+        ]
+      },
       "ReviewQueue": {
         "type": "object",
         "properties": {
@@ -262114,6 +264254,33 @@
           "needs_review",
           "processing",
           "stale"
+        ]
+      },
+      "ReviewValidatorConfig": {
+        "type": "object",
+        "properties": {
+          "skill_name": {
+            "type": "string",
+            "description": "Name of the `review-hog-validation-*` skill this row represents (the validator's identity)."
+          },
+          "active": {
+            "type": "boolean",
+            "description": "Whether this validator is the one that validates the requesting user's PR reviews on this project."
+          },
+          "description": {
+            "type": "string",
+            "description": "The validator skill's description, for display in the config UI."
+          },
+          "body": {
+            "type": "string",
+            "description": "The validator skill's SKILL.md body, for the read-only skill viewer."
+          }
+        },
+        "required": [
+          "active",
+          "body",
+          "description",
+          "skill_name"
         ]
       },
       "ReviewerCorrectionEntry": {
@@ -268791,12 +270958,49 @@
             ],
             "readOnly": true,
             "description": "PR URL from the latest implementation task run, if available."
+          },
+          "refund": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/SignalReportRefund"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "readOnly": true,
+            "description": "The report's PR refund, when one exists. One refund per report, ever."
+          },
+          "refund_ineligibility_reason": {
+            "description": "Why refunding this report's PR would be rejected right now, or null when a refund would be accepted (see the field's schema for the reason values).",
+            "readOnly": true,
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/RefundIneligibilityReasonEnum"
+              },
+              {
+                "$ref": "#/components/schemas/NullEnum"
+              }
+            ]
+          },
+          "billing_exempt_reason": {
+            "readOnly": true,
+            "description": "Non-null when this report is system-marked never-billable (PostHog-system origin, e.g. a health-check scout finding) — its implementation PRs are free and cannot be refunded because nothing was charged.\n\n* `posthog_health_check` - PostHog health check\n* `posthog_onboarding` - PostHog onboarding\n* `posthog_system` - PostHog system",
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/BillingExemptReasonEnum"
+              },
+              {
+                "$ref": "#/components/schemas/NullEnum"
+              }
+            ]
           }
         },
         "required": [
           "actionability",
           "already_addressed",
           "artefact_count",
+          "billing_exempt_reason",
           "created_at",
           "dismissal_note",
           "dismissal_reason",
@@ -268804,6 +271008,8 @@
           "implementation_pr_url",
           "is_suggested_reviewer",
           "priority",
+          "refund",
+          "refund_ineligibility_reason",
           "scout_name",
           "signal_count",
           "signals_at_run",
@@ -268921,10 +271127,11 @@
           "task_run",
           "note",
           "title_change",
-          "summary_change"
+          "summary_change",
+          "code_review"
         ],
         "type": "string",
-        "description": "* `video_segment` - Video Segment\n* `safety_judgment` - Safety Judgment\n* `actionability_judgment` - Actionability Judgment\n* `priority_judgment` - Priority Judgment\n* `signal_finding` - Signal Finding\n* `repo_selection` - Repo Selection\n* `suggested_reviewers` - Suggested Reviewers\n* `dismissal` - Dismissal\n* `code_reference` - Code Reference\n* `commit` - Commit\n* `task_run` - Task Run\n* `note` - Note\n* `title_change` - Title Change\n* `summary_change` - Summary Change"
+        "description": "* `video_segment` - Video Segment\n* `safety_judgment` - Safety Judgment\n* `actionability_judgment` - Actionability Judgment\n* `priority_judgment` - Priority Judgment\n* `signal_finding` - Signal Finding\n* `repo_selection` - Repo Selection\n* `suggested_reviewers` - Suggested Reviewers\n* `dismissal` - Dismissal\n* `code_reference` - Code Reference\n* `commit` - Commit\n* `task_run` - Task Run\n* `note` - Note\n* `title_change` - Title Change\n* `summary_change` - Summary Change\n* `code_review` - Code Review"
       },
       "SignalReportArtefactWriteResponse": {
         "type": "object",
@@ -269096,6 +271303,230 @@
         "required": [
           "id",
           "outcome"
+        ]
+      },
+      "SignalReportRefund": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "readOnly": true
+          },
+          "reason": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/SignalReportRefundReasonEnum"
+              }
+            ],
+            "readOnly": true,
+            "description": "Why the user refunded this PR (feeds the refund review).\n\n* `pr_incorrect` - PR incorrect\n* `pr_not_useful` - PR not useful\n* `duplicate` - Duplicate\n* `other` - Other"
+          },
+          "note": {
+            "type": "string",
+            "readOnly": true,
+            "description": "Optional free-form note captured with the refund."
+          },
+          "billing_path": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/BillingPathEnum"
+              }
+            ],
+            "readOnly": true,
+            "description": "How the refund was executed, frozen at refund time: 'excluded' (same UTC day as the billable PR run — the report never reaches billing) or 'credited' (billing issues a Stripe customer-balance credit).\n\n* `excluded` - Excluded\n* `credited` - Credited"
+          },
+          "credits": {
+            "type": "integer",
+            "readOnly": true,
+            "description": "Signals credits refunded (flat per-PR charge snapshot; 1 credit = $0.01)."
+          },
+          "pr_url": {
+            "type": "string",
+            "readOnly": true,
+            "description": "The refunded implementation PR's GitHub URL, snapshotted at refund time."
+          },
+          "pr_run_created_at": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true,
+            "description": "When the first billable PR run was created — the charge this reverses."
+          },
+          "credit_amount_usd": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "decimal",
+            "pattern": "^-?\\d{0,8}(?:\\.\\d{0,2})?$",
+            "readOnly": true,
+            "description": "USD amount the billing service credited (credited path only). Null until the sync completes; '0.00' is a legitimate outcome (e.g. the PR was inside the free tier)."
+          },
+          "billing_synced": {
+            "type": "boolean",
+            "readOnly": true,
+            "description": "Whether the billing service has acknowledged this refund. Always relevant for the credited path (the Stripe credit is issued asynchronously); excluded-path refunds need no billing sync and report false."
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true,
+            "description": "When the refund was created."
+          }
+        },
+        "required": [
+          "billing_path",
+          "billing_synced",
+          "created_at",
+          "credit_amount_usd",
+          "credits",
+          "id",
+          "note",
+          "pr_run_created_at",
+          "pr_url",
+          "reason"
+        ]
+      },
+      "SignalReportRefundReasonEnum": {
+        "enum": [
+          "pr_incorrect",
+          "pr_not_useful",
+          "duplicate",
+          "other"
+        ],
+        "type": "string",
+        "description": "* `pr_incorrect` - PR incorrect\n* `pr_not_useful` - PR not useful\n* `duplicate` - Duplicate\n* `other` - Other"
+      },
+      "SignalReportRefundRequest": {
+        "type": "object",
+        "properties": {
+          "reason": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/SignalReportRefundReasonEnum"
+              }
+            ],
+            "description": "Why this PR is being refunded. One of: pr_incorrect (the PR doesn't address what the report promised), pr_not_useful (technically fine but not worth paying for), duplicate (covers work already charged elsewhere), other. Required — refund reviews key on it.\n\n* `pr_incorrect` - PR incorrect\n* `pr_not_useful` - PR not useful\n* `duplicate` - Duplicate\n* `other` - Other"
+          },
+          "note": {
+            "type": "string",
+            "description": "Optional free-form context for the refund; stored on the refund and echoed in the report's dismissal artefact. Capped at 4000 characters.",
+            "maxLength": 4000
+          }
+        },
+        "required": [
+          "reason"
+        ]
+      },
+      "SignalReportRefundResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "readOnly": true
+          },
+          "reason": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/SignalReportRefundReasonEnum"
+              }
+            ],
+            "readOnly": true,
+            "description": "Why the user refunded this PR (feeds the refund review).\n\n* `pr_incorrect` - PR incorrect\n* `pr_not_useful` - PR not useful\n* `duplicate` - Duplicate\n* `other` - Other"
+          },
+          "note": {
+            "type": "string",
+            "readOnly": true,
+            "description": "Optional free-form note captured with the refund."
+          },
+          "billing_path": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/BillingPathEnum"
+              }
+            ],
+            "readOnly": true,
+            "description": "How the refund was executed, frozen at refund time: 'excluded' (same UTC day as the billable PR run — the report never reaches billing) or 'credited' (billing issues a Stripe customer-balance credit).\n\n* `excluded` - Excluded\n* `credited` - Credited"
+          },
+          "credits": {
+            "type": "integer",
+            "readOnly": true,
+            "description": "Signals credits refunded (flat per-PR charge snapshot; 1 credit = $0.01)."
+          },
+          "pr_url": {
+            "type": "string",
+            "readOnly": true,
+            "description": "The refunded implementation PR's GitHub URL, snapshotted at refund time."
+          },
+          "pr_run_created_at": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true,
+            "description": "When the first billable PR run was created — the charge this reverses."
+          },
+          "credit_amount_usd": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "decimal",
+            "pattern": "^-?\\d{0,8}(?:\\.\\d{0,2})?$",
+            "readOnly": true,
+            "description": "USD amount the billing service credited (credited path only). Null until the sync completes; '0.00' is a legitimate outcome (e.g. the PR was inside the free tier)."
+          },
+          "billing_synced": {
+            "type": "boolean",
+            "readOnly": true,
+            "description": "Whether the billing service has acknowledged this refund. Always relevant for the credited path (the Stripe credit is issued asynchronously); excluded-path refunds need no billing sync and report false."
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true,
+            "description": "When the refund was created."
+          },
+          "already_refunded": {
+            "type": "boolean",
+            "readOnly": true,
+            "default": false,
+            "description": "True when the report already had a refund and that existing refund is returned unchanged — refunds are one-per-report and repeat calls are idempotent."
+          }
+        },
+        "required": [
+          "already_refunded",
+          "billing_path",
+          "billing_synced",
+          "created_at",
+          "credit_amount_usd",
+          "credits",
+          "id",
+          "note",
+          "pr_run_created_at",
+          "pr_url",
+          "reason"
+        ]
+      },
+      "SignalReportRefundSummaryResponse": {
+        "type": "object",
+        "properties": {
+          "credited_refund_count": {
+            "type": "integer",
+            "description": "Number of credited-path refunds across the whole organization whose refunded PR run falls in the current billing period. Excluded-path refunds never reach billing usage, so they are deliberately absent."
+          },
+          "credited_credits": {
+            "type": "integer",
+            "description": "Total signals credits those refunds returned (1 credit = $0.01). Divide by the flat per-PR charge to get the number of PRs to subtract from billing usage."
+          },
+          "period_billable_credits": {
+            "type": "integer",
+            "description": "The organization's live billable signals credits for the current billing period, computed by the same rules as the nightly usage report — including PRs created today that billing hasn't recorded yet, and already excluding refund-excluded and billing-exempt reports. Take the max of this and billing's recorded usage for a live PR count that reacts to new PRs and same-day refunds immediately."
+          }
+        },
+        "required": [
+          "credited_credits",
+          "credited_refund_count",
+          "period_billable_credits"
         ]
       },
       "SignalReportStateEnum": {
@@ -270466,7 +272897,7 @@
           },
           "task_processing_workflow_id": {
             "type": "string",
-            "description": "Temporal workflow id for the research sandbox run (`task-processing-<task_id>-<run_id>`)."
+            "description": "Temporal workflow id for the research sandbox run (`task-processing-<task_id>-<run_id>`, or a caller-prefixed variant)."
           },
           "task_processing_workflow_url": {
             "type": [
@@ -270590,7 +273021,7 @@
           },
           "task_processing_workflow_id": {
             "type": "string",
-            "description": "Temporal workflow id for the sandbox/agent run (`task-processing-<task_id>-<run_id>`)."
+            "description": "Temporal workflow id for the sandbox/agent run (`task-processing-<task_id>-<run_id>`, or a caller-prefixed variant)."
           },
           "task_processing_workflow_url": {
             "type": [
@@ -270997,6 +273428,68 @@
         ],
         "title": "SnapshotSource",
         "type": "string"
+      },
+      "SnowflakeDestinationConfig": {
+        "type": "object",
+        "description": "Typed configuration for a Snowflake batch-export destination.\n\nAccount, user, authentication type and credentials may live in a linked Integration (when one is\nprovided) or inline in this config (legacy). Mirrors the non-credential fields of\n`SnowflakeBatchExportInputs` in `products/batch_exports/backend/service.py`.",
+        "properties": {
+          "database": {
+            "type": "string",
+            "description": "Snowflake database to write to."
+          },
+          "warehouse": {
+            "type": "string",
+            "description": "Snowflake compute warehouse to use."
+          },
+          "schema": {
+            "type": "string",
+            "description": "Schema inside the database containing the destination table."
+          },
+          "table_name": {
+            "type": "string",
+            "default": "events",
+            "description": "Destination table name."
+          },
+          "role": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Optional Snowflake role to assume for the session."
+          }
+        },
+        "required": [
+          "database",
+          "schema",
+          "warehouse"
+        ]
+      },
+      "SnowflakeDestinationRequest": {
+        "type": "object",
+        "description": "Request shape for creating or updating a Snowflake batch-export destination.",
+        "properties": {
+          "type": {
+            "$ref": "#/components/schemas/SnowflakeDestinationRequestTypeEnum"
+          },
+          "integration_id": {
+            "type": "integer",
+            "description": "ID of a snowflake-kind Integration providing the account, user and credentials. Preferred over inline credentials. Use the integrations-list MCP tool to find one."
+          },
+          "config": {
+            "$ref": "#/components/schemas/SnowflakeDestinationConfig"
+          }
+        },
+        "required": [
+          "config",
+          "type"
+        ]
+      },
+      "SnowflakeDestinationRequestTypeEnum": {
+        "enum": [
+          "Snowflake"
+        ],
+        "type": "string",
+        "description": "* `Snowflake` - Snowflake"
       },
       "SourceConnectLink": {
         "type": "object",
@@ -272137,7 +274630,15 @@
           "series": {
             "description": "Events and actions to include",
             "items": {
-              "anyOf": [
+              "discriminator": {
+                "mapping": {
+                  "ActionsNode": "#/components/schemas/ActionsNode",
+                  "DataWarehouseNode": "#/components/schemas/DataWarehouseNode",
+                  "EventsNode": "#/components/schemas/EventsNode"
+                },
+                "propertyName": "kind"
+              },
+              "oneOf": [
                 {
                   "$ref": "#/components/schemas/EventsNode"
                 },
@@ -276766,6 +279267,19 @@
         "type": "string",
         "description": "* `default` - default\n* `acceptEdits` - acceptEdits\n* `plan` - plan\n* `bypassPermissions` - bypassPermissions\n* `auto` - auto\n* `read-only` - read-only\n* `full-access` - full-access"
       },
+      "TaskRunCancelRequest": {
+        "type": "object",
+        "properties": {
+          "reason": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Optional reason for the cancellation, recorded on the run and shown to run watchers.",
+            "maxLength": 500
+          }
+        }
+      },
       "TaskRunCommandRequest": {
         "type": "object",
         "description": "JSON-RPC request to send a command to the agent server in the sandbox.",
@@ -277825,6 +280339,16 @@
             "type": "string",
             "format": "uuid"
           },
+          "author_kind": {
+            "type": "string"
+          },
+          "event": {
+            "type": "string"
+          },
+          "payload": {
+            "type": "object",
+            "additionalProperties": true
+          },
           "content": {
             "type": "string"
           },
@@ -277861,9 +280385,12 @@
           }
         },
         "required": [
+          "author_kind",
           "content",
           "created_at",
+          "event",
           "id",
+          "payload",
           "task"
         ]
       },
@@ -277955,7 +280482,7 @@
                 "$ref": "#/components/schemas/OriginProductEnum"
               }
             ],
-            "description": "PostHog product or surface that created this task (e.g. error_tracking, slack, user_created).\n\n* `onboarding` - Onboarding\n* `error_tracking` - Error Tracking\n* `eval_clusters` - Eval Clusters\n* `user_created` - User Created\n* `automation` - Automation\n* `slack` - Slack\n* `support_queue` - Support Queue\n* `session_summaries` - Session Summaries\n* `posthog_ai` - PostHog AI\n* `experiments` - Experiments\n* `signal_report` - Signal Report\n* `signals_scout` - Signals Scout\n* `support_reply` - Support Reply\n* `hogdesk` - HogDesk\n* `image_builder` - Image Builder"
+            "description": "PostHog product or surface that created this task (e.g. error_tracking, slack, user_created).\n\n* `onboarding` - Onboarding\n* `error_tracking` - Error Tracking\n* `eval_clusters` - Eval Clusters\n* `user_created` - User Created\n* `automation` - Automation\n* `slack` - Slack\n* `support_queue` - Support Queue\n* `session_summaries` - Session Summaries\n* `posthog_ai` - PostHog AI\n* `experiments` - Experiments\n* `signal_report` - Signal Report\n* `signals_scout` - Signals Scout\n* `support_reply` - Support Reply\n* `hogdesk` - HogDesk\n* `review_hog` - ReviewHog\n* `image_builder` - Image Builder"
           },
           "repository": {
             "type": [
@@ -284788,10 +287315,16 @@
           "series": {
             "description": "Events and actions to include",
             "items": {
-              "anyOf": [
-                {
-                  "$ref": "#/components/schemas/GroupNode"
+              "discriminator": {
+                "mapping": {
+                  "ActionsNode": "#/components/schemas/ActionsNode",
+                  "DataWarehouseNode": "#/components/schemas/DataWarehouseNode",
+                  "EventsNode": "#/components/schemas/EventsNode",
+                  "GroupNode": "#/components/schemas/GroupNode"
                 },
+                "propertyName": "kind"
+              },
+              "oneOf": [
                 {
                   "$ref": "#/components/schemas/EventsNode"
                 },
@@ -284800,6 +287333,9 @@
                 },
                 {
                   "$ref": "#/components/schemas/DataWarehouseNode"
+                },
+                {
+                  "$ref": "#/components/schemas/GroupNode"
                 }
               ]
             },
@@ -285773,6 +288309,14 @@
             ],
             "readOnly": true
           },
+          "is_impersonated_reason": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "readOnly": true,
+            "description": "The reason the operator gave when the current impersonation session started (or was last up/downgraded). Null when not impersonating."
+          },
           "sensitive_session_expires_at": {
             "type": [
               "string",
@@ -285982,6 +288526,7 @@
           "is_email_verified",
           "is_impersonated",
           "is_impersonated_read_only",
+          "is_impersonated_reason",
           "is_impersonated_until",
           "is_organization_first_user",
           "onboarding_delegated_to_invite",
@@ -287369,7 +289914,7 @@
                 "$ref": "#/components/schemas/VisionActionModeEnum"
               }
             ],
-            "description": "What the action produces. MVP supports 'group_summary' only.\n\n* `group_summary` - Group summary\n* `per_observation` - Per observation"
+            "description": "What the action produces. MVP supports 'group_summary' only.\n\n* `group_summary` - Group summary\n* `alert` - Alert\n* `per_observation` - Per observation"
           },
           "trigger_config": {
             "allOf": [
@@ -287394,6 +289939,14 @@
               }
             ],
             "description": "Synthesis options for the group summary, e.g. {prompt_guide}."
+          },
+          "alert_config": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/AlertConfig"
+              }
+            ],
+            "description": "Alert condition; required when mode is 'alert', ignored otherwise."
           },
           "delivery_config": {
             "type": "array",
@@ -287467,10 +290020,11 @@
       "VisionActionModeEnum": {
         "enum": [
           "group_summary",
+          "alert",
           "per_observation"
         ],
         "type": "string",
-        "description": "* `group_summary` - Group summary\n* `per_observation` - Per observation"
+        "description": "* `group_summary` - Group summary\n* `alert` - Alert\n* `per_observation` - Per observation"
       },
       "VisionActionRun": {
         "type": "object",
@@ -287618,6 +290172,14 @@
         ],
         "type": "string",
         "description": "* `running` - Running\n* `completed` - Completed\n* `failed` - Failed\n* `skipped` - Skipped"
+      },
+      "VisionAlertMetricEnum": {
+        "enum": [
+          "count",
+          "avg_score"
+        ],
+        "type": "string",
+        "description": "* `count` - Count of matching observations\n* `avg_score` - Average score"
       },
       "VisionQuota": {
         "type": "object",
@@ -292422,6 +294984,17 @@
         ],
         "type": "string",
         "description": "* `button` - button\n* `tab` - tab\n* `selector` - selector"
+      },
+      "WindowDaysEnum": {
+        "enum": [
+          1,
+          3,
+          7,
+          14,
+          30
+        ],
+        "type": "integer",
+        "description": "* `1` - 1 day\n* `3` - 3 days\n* `7` - 7 days\n* `14` - 14 days\n* `30` - 30 days"
       },
       "WizardSessionDTO": {
         "type": "object",
@@ -298338,6 +300911,9 @@
       "name": "reverse_proxy"
     },
     {
+      "name": "review_hog"
+    },
+    {
       "name": "role_external_references"
     },
     {
@@ -298613,6 +301189,7 @@
         "replay",
         "request_ai_access",
         "reverse_proxy",
+        "review_hog",
         "role_external_references",
         "roles",
         "sandbox-custom-images",
