@@ -110210,6 +110210,322 @@
         ]
       }
     },
+    "/api/projects/{project_id}/logs/metric_rules/": {
+      "get": {
+        "operationId": "logs_metric_rules_list",
+        "parameters": [
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Number of results to return per page.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "offset",
+            "required": false,
+            "in": "query",
+            "description": "The initial index from which to return the results.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "logs"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "logs:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedLogsMetricRuleList"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "logs"
+        ]
+      },
+      "post": {
+        "operationId": "logs_metric_rules_create",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "logs"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LogsMetricRule"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/LogsMetricRule"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/LogsMetricRule"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "logs:write",
+              "metrics:write"
+            ]
+          }
+        ],
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LogsMetricRule"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "logs"
+        ]
+      }
+    },
+    "/api/projects/{project_id}/logs/metric_rules/{id}/": {
+      "get": {
+        "operationId": "logs_metric_rules_retrieve",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "A UUID string identifying this logs metric rule.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "logs"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "logs:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LogsMetricRule"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "logs"
+        ]
+      },
+      "put": {
+        "operationId": "logs_metric_rules_update",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "A UUID string identifying this logs metric rule.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "logs"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LogsMetricRule"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/LogsMetricRule"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/LogsMetricRule"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "logs:write",
+              "metrics:write"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LogsMetricRule"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "logs"
+        ]
+      },
+      "patch": {
+        "operationId": "logs_metric_rules_partial_update",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "A UUID string identifying this logs metric rule.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "logs"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchedLogsMetricRule"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchedLogsMetricRule"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchedLogsMetricRule"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "logs:write",
+              "metrics:write"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LogsMetricRule"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "logs"
+        ]
+      },
+      "delete": {
+        "operationId": "logs_metric_rules_destroy",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "A UUID string identifying this logs metric rule.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "logs"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "logs:write",
+              "metrics:write"
+            ]
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No response body"
+          }
+        },
+        "x-product": [
+          "logs"
+        ]
+      }
+    },
     "/api/projects/{project_id}/logs/patterns/": {
       "post": {
         "operationId": "logs_patterns_create",
@@ -174561,6 +174877,12 @@
               },
               {
                 "type": "null"
+              },
+              {
+                "type": "null"
+              },
+              {
+                "type": "null"
               }
             ],
             "description": "User ID or role UUID to filter by."
@@ -174589,6 +174911,12 @@
               },
               {
                 "type": "integer"
+              },
+              {
+                "type": "null"
+              },
+              {
+                "type": "null"
               },
               {
                 "type": "null"
@@ -175810,6 +176138,12 @@
               },
               {
                 "type": "string"
+              },
+              {
+                "type": "null"
+              },
+              {
+                "type": "null"
               },
               {
                 "type": "null"
@@ -209992,6 +210326,82 @@
           "widget_type"
         ]
       },
+      "LogsMetricRule": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "readOnly": true,
+            "description": "Unique identifier for this metric rule."
+          },
+          "name": {
+            "type": "string",
+            "description": "User-visible label for this rule.",
+            "maxLength": 255
+          },
+          "metric_name": {
+            "type": "string",
+            "description": "Name of the generated metric as it appears in the Metrics product. Must start with a letter and contain only letters, digits, dots, underscores, and dashes. Unique per project and immutable after creation — create a new rule to emit under a different name.",
+            "maxLength": 200
+          },
+          "enabled": {
+            "type": "boolean",
+            "default": false,
+            "description": "When true, ingestion evaluates this rule against every log record. At most 10 rules can be enabled per project."
+          },
+          "filter_group": {
+            "description": "PropertyGroupFilter JSON (AND/OR tree of property predicates) selecting which log records feed the metric, e.g. `{\"type\":\"AND\",\"values\":[{\"type\":\"AND\",\"values\":[{\"key\":\"service.name\",\"operator\":\"exact\",\"value\":\"api\",\"type\":\"log_attribute\"}]}]}`. Null matches every ingested log record. Every group must contain at least one filter — empty groups never match."
+          },
+          "value_attribute": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Log attribute key holding a numeric value to aggregate into a distribution (count + sum), e.g. `attributes.duration_ms` or `resource_attributes.batch.size`. Omit to count matching log records instead. Immutable after creation — it determines the emitted metric type.",
+            "maxLength": 512
+          },
+          "group_by": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 512
+            },
+            "description": "Up to 5 dimension keys; each distinct value combination becomes its own metric series. Allowed: service_name, severity_text, event_name, or map keys prefixed with `attributes.` / `resource_attributes.`. Avoid high-cardinality keys (user IDs, request IDs) — excess series are dropped at ingestion."
+          },
+          "version": {
+            "type": "integer",
+            "readOnly": true,
+            "description": "Incremented on each update for worker cache coherency."
+          },
+          "created_by": {
+            "type": "integer",
+            "readOnly": true
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          },
+          "updated_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time",
+            "readOnly": true
+          }
+        },
+        "required": [
+          "created_at",
+          "created_by",
+          "id",
+          "metric_name",
+          "name",
+          "updated_at",
+          "version"
+        ]
+      },
       "LogsOrderBy": {
         "enum": [
           "latest",
@@ -223097,6 +223507,41 @@
           }
         }
       },
+      "PaginatedLogsMetricRuleList": {
+        "type": "object",
+        "required": [
+          "count",
+          "results"
+        ],
+        "properties": {
+          "count": {
+            "type": "integer",
+            "example": 123
+          },
+          "next": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uri",
+            "example": "http://api.example.org/accounts/?offset=400&limit=100"
+          },
+          "previous": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uri",
+            "example": "http://api.example.org/accounts/?offset=200&limit=100"
+          },
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LogsMetricRule"
+            }
+          }
+        }
+      },
       "PaginatedLogsSamplingRuleList": {
         "type": "object",
         "required": [
@@ -232508,6 +232953,73 @@
             "format": "date-time",
             "readOnly": true,
             "description": "When the alert was last modified."
+          }
+        }
+      },
+      "PatchedLogsMetricRule": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "readOnly": true,
+            "description": "Unique identifier for this metric rule."
+          },
+          "name": {
+            "type": "string",
+            "description": "User-visible label for this rule.",
+            "maxLength": 255
+          },
+          "metric_name": {
+            "type": "string",
+            "description": "Name of the generated metric as it appears in the Metrics product. Must start with a letter and contain only letters, digits, dots, underscores, and dashes. Unique per project and immutable after creation — create a new rule to emit under a different name.",
+            "maxLength": 200
+          },
+          "enabled": {
+            "type": "boolean",
+            "default": false,
+            "description": "When true, ingestion evaluates this rule against every log record. At most 10 rules can be enabled per project."
+          },
+          "filter_group": {
+            "description": "PropertyGroupFilter JSON (AND/OR tree of property predicates) selecting which log records feed the metric, e.g. `{\"type\":\"AND\",\"values\":[{\"type\":\"AND\",\"values\":[{\"key\":\"service.name\",\"operator\":\"exact\",\"value\":\"api\",\"type\":\"log_attribute\"}]}]}`. Null matches every ingested log record. Every group must contain at least one filter — empty groups never match."
+          },
+          "value_attribute": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Log attribute key holding a numeric value to aggregate into a distribution (count + sum), e.g. `attributes.duration_ms` or `resource_attributes.batch.size`. Omit to count matching log records instead. Immutable after creation — it determines the emitted metric type.",
+            "maxLength": 512
+          },
+          "group_by": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 512
+            },
+            "description": "Up to 5 dimension keys; each distinct value combination becomes its own metric series. Allowed: service_name, severity_text, event_name, or map keys prefixed with `attributes.` / `resource_attributes.`. Avoid high-cardinality keys (user IDs, request IDs) — excess series are dropped at ingestion."
+          },
+          "version": {
+            "type": "integer",
+            "readOnly": true,
+            "description": "Incremented on each update for worker cache coherency."
+          },
+          "created_by": {
+            "type": "integer",
+            "readOnly": true
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          },
+          "updated_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time",
+            "readOnly": true
           }
         }
       },
@@ -283450,6 +283962,14 @@
             "type": "string",
             "format": "uuid",
             "description": "PostHog user UUID (e.g. from `scout-members-list`, or an entity's `created_by`). Resolved server-side to the member's linked GitHub login — use this when you know the PostHog user but not their GitHub handle. Must be a concrete UUID; the `@me` alias is not valid here."
+          },
+          "reason": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "One sentence of evidence for WHY this person: what ties them to the affected surface (e.g. 'authored 4 of the last 10 commits touching products/tracing/mcp/', 'human correction routed the prior tracing report to them'). Persisted on the report so the routing is auditable — always set it when you can name the evidence; 'precedent' alone is weak, prefer code-derived ownership.",
+            "maxLength": 500
           }
         }
       },
