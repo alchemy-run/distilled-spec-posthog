@@ -69674,6 +69674,14 @@
               ]
             },
             "description": "Optional. `global`: official templates only. `team`: this project's saved templates only (`scope=team` rows for the current project). `organization`: templates shared across all projects in this organization. `feature_flag`: feature-flag dashboard templates only. Omit for official, organization, and this project's templates (default dashboard template picker behavior)."
+          },
+          {
+            "in": "query",
+            "name": "search",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Optional. Full-text search across template name, tags, and description, ranked by relevance. Use it to find templates for a topic (e.g. `retention`, `revenue`, `product analytics`)."
           }
         ],
         "tags": [
@@ -153328,6 +153336,7 @@
           "numeric",
           "duration",
           "duration_ms",
+          "duration_ns",
           "percentage",
           "percentage_scaled",
           "currency",
@@ -174877,12 +174886,6 @@
               },
               {
                 "type": "null"
-              },
-              {
-                "type": "null"
-              },
-              {
-                "type": "null"
               }
             ],
             "description": "User ID or role UUID to filter by."
@@ -174911,12 +174914,6 @@
               },
               {
                 "type": "integer"
-              },
-              {
-                "type": "null"
-              },
-              {
-                "type": "null"
               },
               {
                 "type": "null"
@@ -176138,12 +176135,6 @@
               },
               {
                 "type": "string"
-              },
-              {
-                "type": "null"
-              },
-              {
-                "type": "null"
               },
               {
                 "type": "null"
