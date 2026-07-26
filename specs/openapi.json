@@ -77166,6 +77166,128 @@
         ]
       }
     },
+    "/api/projects/{project_id}/signals/reports/{id}/pr_checks/": {
+      "get": {
+        "operationId": "signals_report_pr_checks",
+        "description": "Fetch the CI status (GitHub Actions check runs and legacy commit statuses) of the pull request the report's implementation task opened, via the team's GitHub integration.",
+        "summary": "Fetch CI checks for a report's implementation PR",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "A UUID string identifying this signal report.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "signals"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "task:read"
+            ]
+          },
+          {
+            "PersonalAPIKeyAuth": [
+              "task:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PullRequestChecksResponse"
+                }
+              }
+            },
+            "description": "The CI checks on the report's implementation pull request."
+          },
+          "404": {
+            "description": "Report has no implementation PR, or no GitHub integration can access it."
+          },
+          "502": {
+            "description": "GitHub could not return the checks."
+          },
+          "503": {
+            "description": "The GitHub egress budget is temporarily unavailable."
+          }
+        },
+        "x-product": [
+          "signals"
+        ]
+      }
+    },
+    "/api/projects/{project_id}/signals/reports/{id}/pr_comments/": {
+      "get": {
+        "operationId": "signals_report_pr_comments",
+        "description": "Fetch the pull request's conversation comments and inline review comments, merged chronologically, via the team's GitHub integration.",
+        "summary": "Fetch comments for a report's implementation PR",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "A UUID string identifying this signal report.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "signals"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "task:read"
+            ]
+          },
+          {
+            "PersonalAPIKeyAuth": [
+              "task:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PullRequestCommentsResponse"
+                }
+              }
+            },
+            "description": "Conversation and review comments on the report's implementation pull request."
+          },
+          "404": {
+            "description": "Report has no implementation PR, or no GitHub integration can access it."
+          },
+          "502": {
+            "description": "GitHub could not return the comments."
+          },
+          "503": {
+            "description": "The GitHub egress budget is temporarily unavailable."
+          }
+        },
+        "x-product": [
+          "signals"
+        ]
+      }
+    },
     "/api/projects/{project_id}/signals/reports/{id}/refund/": {
       "post": {
         "operationId": "signals_reports_refund_create",
@@ -116255,6 +116377,14 @@
           "version"
         ]
       },
+      "CommentTypeEnum": {
+        "enum": [
+          "conversation",
+          "review"
+        ],
+        "type": "string",
+        "description": "* `conversation` - conversation\n* `review` - review"
+      },
       "CommitDiffResponse": {
         "type": "object",
         "description": "Response for the `commit` artefact diff endpoint — the commit's branch rendered against the\nrepository default branch.",
@@ -116973,6 +117103,25 @@
         "type": "string",
         "description": "* `assistant` - Assistant\n* `tool_call` - Tool call\n* `deep_research` - Deep research\n* `slack` - Slack"
       },
+      "ConversationsTicketImage": {
+        "additionalProperties": false,
+        "properties": {
+          "url": {
+            "title": "Url",
+            "type": "string"
+          },
+          "author": {
+            "title": "Author",
+            "type": "string"
+          }
+        },
+        "required": [
+          "url",
+          "author"
+        ],
+        "title": "ConversationsTicketImage",
+        "type": "object"
+      },
       "ConversationsTicketSignalExtra": {
         "additionalProperties": false,
         "properties": {
@@ -117024,6 +117173,21 @@
               }
             ],
             "title": "Email Subject"
+          },
+          "images": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/ConversationsTicketImage"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Images"
           }
         },
         "required": [
@@ -203205,6 +203369,14 @@
             ],
             "description": "Whether scout findings can actually reach the inbox for this team — the org-level AI data-processing consent gate and the `signals_scout` source toggle, plus a one-line remediation pointer. Read at cold start to quick-close before doing throwaway work."
           },
+          "scout_fleet": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ScoutFleet"
+              }
+            ],
+            "description": "The other scouts configured on this project, split into enabled / disabled, each with its cadence, dry-run posture, last run, and last emit. Read it to see who else is watching this project before investigating a surface a sibling already covers."
+          },
           "existing_inbox_reports": {
             "allOf": [
               {
@@ -203339,6 +203511,7 @@
           "recent_notebooks",
           "recent_reviewer_corrections",
           "recent_surveys",
+          "scout_fleet",
           "signal_source_configs",
           "top_events"
         ]
@@ -204569,6 +204742,212 @@
           "repo",
           "state",
           "title"
+        ]
+      },
+      "PullRequestCheck": {
+        "type": "object",
+        "description": "One CI check on a pull request's head commit — a GitHub Actions check run or a legacy commit\nstatus, normalized to a common shape.",
+        "properties": {
+          "name": {
+            "type": "string",
+            "readOnly": true,
+            "description": "Check run name or status context."
+          },
+          "status": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "readOnly": true,
+            "description": "Lifecycle state: 'queued', 'in_progress', or 'completed'."
+          },
+          "conclusion": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "readOnly": true,
+            "description": "Outcome once completed: 'success', 'failure', 'neutral', 'cancelled', 'skipped', 'timed_out', or 'action_required'. Null while still running."
+          },
+          "url": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "readOnly": true,
+            "description": "Link to the check run / status detail on GitHub."
+          }
+        },
+        "required": [
+          "conclusion",
+          "name",
+          "status",
+          "url"
+        ]
+      },
+      "PullRequestChecksResponse": {
+        "type": "object",
+        "description": "Response for the PR checks endpoint — the CI status of a report's implementation PR.",
+        "properties": {
+          "checks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PullRequestCheck"
+            },
+            "readOnly": true
+          }
+        },
+        "required": [
+          "checks"
+        ]
+      },
+      "PullRequestComment": {
+        "type": "object",
+        "description": "One comment on a pull request — a conversation comment or an inline review comment.",
+        "properties": {
+          "id": {
+            "type": "string",
+            "readOnly": true,
+            "description": "GitHub comment id."
+          },
+          "author": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "readOnly": true,
+            "description": "Comment author's GitHub login."
+          },
+          "author_avatar_url": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "readOnly": true,
+            "description": "Author's GitHub avatar URL."
+          },
+          "body": {
+            "type": "string",
+            "readOnly": true,
+            "description": "Comment body (GitHub-flavored markdown)."
+          },
+          "created_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "readOnly": true,
+            "description": "ISO 8601 creation timestamp."
+          },
+          "url": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "readOnly": true,
+            "description": "Link to the comment on GitHub."
+          },
+          "comment_type": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CommentTypeEnum"
+              }
+            ],
+            "readOnly": true,
+            "description": "'conversation' for a PR discussion comment, 'review' for an inline code-review comment.\n\n* `conversation` - conversation\n* `review` - review"
+          },
+          "path": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "readOnly": true,
+            "description": "File path the review comment is anchored to (review comments only)."
+          },
+          "line": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "readOnly": true,
+            "description": "Line in the diff the review comment is anchored to — the end line for multi-line comments (review comments only; null when the comment is outdated relative to the PR head)."
+          },
+          "start_line": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "readOnly": true,
+            "description": "First line of a multi-line review comment's range (review comments only)."
+          },
+          "side": {
+            "readOnly": true,
+            "description": "Diff side the review comment is anchored to: 'LEFT' = deletions, 'RIGHT' = additions (review comments only).\n\n* `LEFT` - LEFT\n* `RIGHT` - RIGHT",
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/SideEnum"
+              },
+              {
+                "$ref": "#/components/schemas/NullEnum"
+              }
+            ]
+          },
+          "diff_hunk": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "readOnly": true,
+            "description": "Diff hunk excerpt the review comment applies to (review comments only)."
+          },
+          "in_reply_to_id": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "readOnly": true,
+            "description": "Id of the thread root comment this one replies to; null for thread roots and conversation comments."
+          },
+          "commit_id": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "readOnly": true,
+            "description": "SHA of the commit the review comment was made against (review comments only)."
+          }
+        },
+        "required": [
+          "author",
+          "author_avatar_url",
+          "body",
+          "comment_type",
+          "commit_id",
+          "created_at",
+          "diff_hunk",
+          "id",
+          "in_reply_to_id",
+          "line",
+          "path",
+          "side",
+          "start_line",
+          "url"
+        ]
+      },
+      "PullRequestCommentsResponse": {
+        "type": "object",
+        "description": "Response for the PR comments endpoint — conversation and review comments merged chronologically.",
+        "properties": {
+          "comments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PullRequestComment"
+            },
+            "readOnly": true
+          }
+        },
+        "required": [
+          "comments"
         ]
       },
       "PullRequestList": {
@@ -234482,6 +234861,90 @@
           "source_id"
         ]
       },
+      "ScoutFleet": {
+        "type": "object",
+        "description": "`inventory.scout_fleet` — the other scouts running on this project, split by enablement.",
+        "properties": {
+          "enabled": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ScoutFleetEntry"
+            },
+            "description": "Scouts that actually run on this team: enabled, with a live skill the coordinator dispatches."
+          },
+          "disabled": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ScoutFleetEntry"
+            },
+            "description": "Scouts that do not run, each carrying a `not_running_reason` — turned off, or left on with a skill that can't dispatch. Different from a surface no scout ever covered."
+          },
+          "emitted_lookback_days": {
+            "type": "integer",
+            "description": "The window `last_emitted_at` was resolved over, so a null reads as 'quiet', not 'never'."
+          }
+        },
+        "required": [
+          "disabled",
+          "emitted_lookback_days",
+          "enabled"
+        ]
+      },
+      "ScoutFleetEntry": {
+        "type": "object",
+        "description": "One scout in either bucket of `inventory.scout_fleet`.",
+        "properties": {
+          "skill_name": {
+            "type": "string",
+            "description": "The `signals-scout-*` skill this config schedules."
+          },
+          "run_interval_minutes": {
+            "type": "integer",
+            "description": "Minutes between runs when no cron schedule is set (default 1440, every 24 hours)."
+          },
+          "run_cron_schedule": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Optional cron expression, evaluated in the project timezone. Takes precedence over the interval."
+          },
+          "emit": {
+            "type": "boolean",
+            "description": "Whether this scout's findings actually reach the inbox. False means dry-run: it runs and logs but emits nothing, so its silence says nothing about the surface it watches."
+          },
+          "last_run_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "ISO-8601 timestamp the coordinator last dispatched this scout, or null if it has never run."
+          },
+          "last_emitted_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "ISO-8601 timestamp this scout last produced output on either channel (a finding, or an authored/edited report), within `emitted_lookback_days`. Null means quiet for at least that window, not never."
+          },
+          "not_running_reason": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Why this scout is in the `disabled` bucket: `turned_off` (an operator set it off) or `skill_unavailable` (left on, but its skill was deleted, superseded, or withheld, so it never dispatches). Null for scouts that actually run."
+          }
+        },
+        "required": [
+          "emit",
+          "last_emitted_at",
+          "last_run_at",
+          "not_running_reason",
+          "run_cron_schedule",
+          "run_interval_minutes",
+          "skill_name"
+        ]
+      },
       "ScoutLimits": {
         "type": "object",
         "description": "A team's enforced scout run caps and current usage.\n\nThese are the values the coordinator actually applies at dispatch (resolved per-team override →\nfleet-wide default → code constant), so the UI can show the real throttle rather than what a\nuser thinks they configured.",
@@ -238401,6 +238864,14 @@
         ],
         "title": "ShortcutStorySignalExtra",
         "type": "object"
+      },
+      "SideEnum": {
+        "enum": [
+          "LEFT",
+          "RIGHT"
+        ],
+        "type": "string",
+        "description": "* `LEFT` - LEFT\n* `RIGHT` - RIGHT"
       },
       "SignalExtra": {
         "oneOf": [
