@@ -235082,6 +235082,10 @@
               "null"
             ],
             "description": "Display name of the user who left the note, or null when unavailable."
+          },
+          "origin": {
+            "type": "string",
+            "description": "Where the note came from: `human` for one left directly through this API, or `report_dismissal` for one forwarded from the note someone typed when they dismissed, snoozed, or restored one or more inbox reports. A `report_dismissal` note is one reviewer's verdict on the reports its content names, so weigh it as evidence about those reports rather than as fleet-level steering."
           }
         },
         "required": [
@@ -235090,6 +235094,7 @@
           "created_by_name",
           "expires_at",
           "id",
+          "origin",
           "skill_name"
         ]
       },
@@ -263540,6 +263545,14 @@
           "InitialUTMTerm",
           "InitialUTMContent",
           "InitialUTMSourceMediumCampaign",
+          "FirstPageviewChannelType",
+          "FirstPageviewReferringDomain",
+          "FirstPageviewUTMSource",
+          "FirstPageviewUTMCampaign",
+          "FirstPageviewUTMMedium",
+          "FirstPageviewUTMTerm",
+          "FirstPageviewUTMContent",
+          "FirstPageviewUTMSourceMediumCampaign",
           "Browser",
           "OS",
           "Viewport",
