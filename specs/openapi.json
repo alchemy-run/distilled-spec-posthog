@@ -7509,6 +7509,109 @@
         ]
       }
     },
+    "/api/projects/{project_id}/accounts/{id}/summaries/": {
+      "get": {
+        "operationId": "accounts_summaries_list",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "description": "A UUID string identifying this account.",
+            "required": true
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Number of results to return per page.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "offset",
+            "required": false,
+            "in": "query",
+            "description": "The initial index from which to return the results.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "accounts"
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedAccountChannelSummaryList"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "customer_analytics"
+        ]
+      }
+    },
+    "/api/projects/{project_id}/accounts/{id}/support_tickets/": {
+      "get": {
+        "operationId": "accounts_support_tickets_list",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "description": "A UUID string identifying this account.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "accounts"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "account:read",
+              "ticket:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SupportTicket"
+                  }
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "customer_analytics"
+        ]
+      }
+    },
     "/api/projects/{project_id}/actions/": {
       "get": {
         "operationId": "actions_list",
@@ -8966,6 +9069,52 @@
         "responses": {
           "204": {
             "description": "No response body"
+          }
+        },
+        "x-product": [
+          "alerts"
+        ]
+      }
+    },
+    "/api/projects/{project_id}/alerts/{id}/test-delivery/": {
+      "post": {
+        "operationId": "alerts_test_delivery_create",
+        "description": "Send a synthetic test notification to subscribed users and every active destination on this alert.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "A UUID string identifying this alert configuration.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "alerts"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "alert:write"
+            ]
+          }
+        ],
+        "responses": {
+          "202": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AlertTestDeliveryResponse"
+                }
+              }
+            },
+            "description": ""
           }
         },
         "x-product": [
@@ -14627,7 +14776,7 @@
     "/api/projects/{project_id}/conversations/tickets/bulk_update_status/": {
       "post": {
         "operationId": "conversations_tickets_bulk_update_status_create",
-        "description": "Update the status of multiple tickets in a single request.\n\nOnly tickets belonging to the current team are affected; other-team UUIDs\nare silently ignored.  Tickets already in the requested status are skipped.",
+        "description": "Update the status of multiple tickets in a single request.\n\nOnly tickets belonging to the current team are affected; other-team UUIDs\nare silently ignored. Tickets the caller lacks editor-level access to (denied\nor view-only via object-level access control) are silently skipped too, the\nsame way single-ticket updates enforce object-level access via get_object().\nTickets already in the requested status are skipped.",
         "parameters": [
           {
             "$ref": "#/components/parameters/ProjectIdPath"
@@ -14791,7 +14940,7 @@
     "/api/projects/{project_id}/conversations/tickets/unread_count/": {
       "get": {
         "operationId": "conversations_tickets_unread_count_retrieve",
-        "description": "Get total unread ticket count for the team.\n\nReturns the sum of unread_team_count for all non-resolved tickets.\nCached in Redis for 30 seconds, invalidated on changes.",
+        "description": "Get total unread ticket count for the team.\n\nReturns the sum of unread_team_count for all non-resolved tickets visible to the\ncaller. The team-wide Redis cache (30s TTL, invalidated on changes) is only used for\ncallers without object-level ticket restrictions, since it holds one unscoped total\nper team - serving it to a restricted member would leak counts for tickets they can't\nsee.",
         "parameters": [
           {
             "$ref": "#/components/parameters/ProjectIdPath"
@@ -32600,6 +32749,17 @@
             }
           },
           {
+            "in": "query",
+            "name": "names",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "description": "Return exact matches for these event names. Pass names as repeated or comma-separated values."
+          },
+          {
             "name": "offset",
             "required": false,
             "in": "query",
@@ -32634,7 +32794,9 @@
             "description": ""
           }
         },
-        "x-product": []
+        "x-product": [
+          "event_definitions"
+        ]
       },
       "post": {
         "operationId": "event_definitions_create",
@@ -36536,6 +36698,63 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ExperimentSessionContextResponse"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "experiments"
+        ]
+      }
+    },
+    "/api/projects/{project_id}/experiments/session_contexts/": {
+      "post": {
+        "operationId": "experiments_session_contexts_create",
+        "description": "Resolve experiment context for a batch of session recordings.\n\nBatch variant of `session_context`, used to prefetch the replay player's experiments\nbox for a whole recordings list in one request. POST because the id list doesn't fit a\nquery string; the endpoint only reads. Already-computed sessions are served from (and\ncold ones written to) the same short-lived per-viewer cache the single-session endpoint\nuses, so opening any prefetched recording renders its context instantly. Sessions whose\nrecording metadata doesn't exist yet are omitted from the response, as are recordings\nthe caller can't access and sessions beyond the batch's recording-day budget (each\ndistinct recording day costs its own set of ClickHouse scans, so only the most recent\ndays are computed per request).",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "experiments"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ExperimentSessionContextsRequest"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/ExperimentSessionContextsRequest"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/ExperimentSessionContextsRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "experiment:read",
+              "session_recording:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExperimentSessionContextsResponse"
                 }
               }
             },
@@ -46098,6 +46317,42 @@
         ]
       }
     },
+    "/api/projects/{project_id}/hog_flows/email_sending_suspension/": {
+      "get": {
+        "operationId": "hog_flows_email_sending_suspension_retrieve",
+        "description": "Cheap read for the scene-wide suspension banner: single-row `TeamWorkflowsConfig` lookup\nwith no reputation computation. Every project member sees this — a suspension stops\neveryone's email, so hiding it would leave silent send failures unexplained.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "hog_flows"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "hog_flow:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmailSendingSuspensionStatus"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "workflows"
+        ]
+      }
+    },
     "/api/projects/{project_id}/hog_flows/metrics/global/": {
       "get": {
         "operationId": "hog_flows_metrics_global_retrieve",
@@ -49532,6 +49787,7 @@
                 "linear",
                 "linkedin-ads",
                 "meta-ads",
+                "pardot",
                 "pinterest-ads",
                 "postgresql",
                 "reddit-ads",
@@ -49548,7 +49804,7 @@
                 "vercel"
               ]
             },
-            "description": "* `anthropic` - Anthropic\n* `apns` - Apple Push\n* `aws-s3` - Aws S3\n* `azure-blob` - Azure Blob\n* `bing-ads` - Bing Ads\n* `clickup` - Clickup\n* `customerio-app` - Customerio App\n* `customerio-track` - Customerio Track\n* `customerio-webhook` - Customerio Webhook\n* `databricks` - Databricks\n* `email` - Email\n* `firebase` - Firebase\n* `github` - Github\n* `gitlab` - Gitlab\n* `google-ads` - Google Ads\n* `google-analytics` - Google Analytics\n* `google-cloud-service-account` - Google Cloud Service Account\n* `google-cloud-storage` - Google Cloud Storage\n* `google-pubsub` - Google Pubsub\n* `google-search-console` - Google Search Console\n* `google-sheets` - Google Sheets\n* `hubspot` - Hubspot\n* `intercom` - Intercom\n* `jira` - Jira\n* `linear` - Linear\n* `linkedin-ads` - Linkedin Ads\n* `meta-ads` - Meta Ads\n* `pinterest-ads` - Pinterest Ads\n* `postgresql` - Postgresql\n* `reddit-ads` - Reddit Ads\n* `resend` - Resend\n* `s3-compatible` - S3 Compatible\n* `salesforce` - Salesforce\n* `slack` - Slack\n* `slack-posthog-code` - Slack Posthog Code\n* `snapchat` - Snapchat\n* `snowflake` - Snowflake\n* `stripe` - Stripe\n* `tiktok-ads` - Tiktok Ads\n* `twilio` - Twilio\n* `vercel` - Vercel"
+            "description": "* `anthropic` - Anthropic\n* `apns` - Apple Push\n* `aws-s3` - Aws S3\n* `azure-blob` - Azure Blob\n* `bing-ads` - Bing Ads\n* `clickup` - Clickup\n* `customerio-app` - Customerio App\n* `customerio-track` - Customerio Track\n* `customerio-webhook` - Customerio Webhook\n* `databricks` - Databricks\n* `email` - Email\n* `firebase` - Firebase\n* `github` - Github\n* `gitlab` - Gitlab\n* `google-ads` - Google Ads\n* `google-analytics` - Google Analytics\n* `google-cloud-service-account` - Google Cloud Service Account\n* `google-cloud-storage` - Google Cloud Storage\n* `google-pubsub` - Google Pubsub\n* `google-search-console` - Google Search Console\n* `google-sheets` - Google Sheets\n* `hubspot` - Hubspot\n* `intercom` - Intercom\n* `jira` - Jira\n* `linear` - Linear\n* `linkedin-ads` - Linkedin Ads\n* `meta-ads` - Meta Ads\n* `pardot` - Pardot\n* `pinterest-ads` - Pinterest Ads\n* `postgresql` - Postgresql\n* `reddit-ads` - Reddit Ads\n* `resend` - Resend\n* `s3-compatible` - S3 Compatible\n* `salesforce` - Salesforce\n* `slack` - Slack\n* `slack-posthog-code` - Slack Posthog Code\n* `snapchat` - Snapchat\n* `snowflake` - Snowflake\n* `stripe` - Stripe\n* `tiktok-ads` - Tiktok Ads\n* `twilio` - Twilio\n* `vercel` - Vercel"
           },
           {
             "name": "limit",
@@ -52609,6 +52865,16 @@
             },
             "description": ""
           },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EvaluationSummaryThrottleResponse"
+                }
+              }
+            },
+            "description": ""
+          },
           "500": {
             "content": {
               "application/json": {
@@ -55195,7 +55461,7 @@
               "default": "full",
               "minLength": 1
             },
-            "description": "Controls how much prompt content is included in the response. 'full' includes the full prompt, 'preview' includes a short prompt_preview, and 'none' omits prompt content entirely. The outline field is always included.\n\n* `full` - full\n* `preview` - preview\n* `none` - none"
+            "description": "Controls how much prompt content is included in the response. 'full' includes the full prompt, 'preview' includes a short prompt_preview, and 'none' omits prompt content entirely. The config field is only included with 'full'. The outline field is always included.\n\n* `full` - full\n* `preview` - preview\n* `none` - none"
           },
           {
             "in": "query",
@@ -55360,7 +55626,7 @@
               "default": "full",
               "minLength": 1
             },
-            "description": "Controls how much prompt content is included in the response. 'full' includes the full prompt, 'preview' includes a short prompt_preview, and 'none' omits prompt content entirely. The outline field is always included.\n\n* `full` - full\n* `preview` - preview\n* `none` - none"
+            "description": "Controls how much prompt content is included in the response. 'full' includes the full prompt, 'preview' includes a short prompt_preview, and 'none' omits prompt content entirely. The config field is only included with 'full'. The outline field is always included.\n\n* `full` - full\n* `preview` - preview\n* `none` - none"
           },
           {
             "in": "query",
@@ -64216,7 +64482,7 @@
     "/api/projects/{project_id}/notebooks/{short_id}/kernel/config/": {
       "post": {
         "operationId": "notebooks_kernel_config_create",
-        "description": "The API for interacting with Notebooks. This feature is in early access and the API can have breaking changes without announcement.",
+        "description": "Set the notebook's kernel compute configuration. Applies at sandbox provision time: a currently running kernel keeps its resources until restarted.",
         "parameters": [
           {
             "$ref": "#/components/parameters/ProjectIdPath"
@@ -64237,24 +64503,38 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/Notebook"
+                "$ref": "#/components/schemas/NotebookKernelConfig"
               }
             },
             "application/x-www-form-urlencoded": {
               "schema": {
-                "$ref": "#/components/schemas/Notebook"
+                "$ref": "#/components/schemas/NotebookKernelConfig"
               }
             },
             "multipart/form-data": {
               "schema": {
-                "$ref": "#/components/schemas/Notebook"
+                "$ref": "#/components/schemas/NotebookKernelConfig"
               }
             }
           }
         },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "notebook:write"
+            ]
+          }
+        ],
         "responses": {
           "200": {
-            "description": "No response body"
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotebookKernelConfigResponse"
+                }
+              }
+            },
+            "description": ""
           }
         },
         "x-product": [
@@ -64491,7 +64771,7 @@
     "/api/projects/{project_id}/notebooks/{short_id}/kernel/status/": {
       "get": {
         "operationId": "notebooks_kernel_status_retrieve",
-        "description": "The API for interacting with Notebooks. This feature is in early access and the API can have breaking changes without announcement.",
+        "description": "Live-checked kernel runtime state for this notebook, its compute configuration, and the catalog of dataframes/tables a cell can currently reference (with column schemas).",
         "parameters": [
           {
             "$ref": "#/components/parameters/ProjectIdPath"
@@ -64508,9 +64788,23 @@
         "tags": [
           "notebooks"
         ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "notebook:read"
+            ]
+          }
+        ],
         "responses": {
           "200": {
-            "description": "No response body"
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotebookKernelStatusResponse"
+                }
+              }
+            },
+            "description": ""
           }
         },
         "x-product": [
@@ -64560,6 +64854,235 @@
         "responses": {
           "200": {
             "description": "No response body"
+          }
+        },
+        "x-product": [
+          "notebooks"
+        ]
+      }
+    },
+    "/api/projects/{project_id}/notebooks/{short_id}/sql_v2/run/": {
+      "post": {
+        "operationId": "notebooks_sql_v2_run_create",
+        "description": "Dispatch an asynchronous run of a notebook SQL or Python cell. Returns a run_id immediately; poll the run result endpoint until the status is terminal. Flag-gated (revamped-py-notebooks).",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          },
+          {
+            "in": "path",
+            "name": "short_id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "tags": [
+          "notebooks"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NotebookSQLV2RunRequest"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/NotebookSQLV2RunRequest"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/NotebookSQLV2RunRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "notebook:write",
+              "query:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotebookSQLV2RunResponse"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "notebooks"
+        ]
+      }
+    },
+    "/api/projects/{project_id}/notebooks/{short_id}/sql_v2/runs/{run_id}/": {
+      "get": {
+        "operationId": "notebooks_sql_v2_runs_retrieve",
+        "description": "Read a run's durable state: its status, and — once done or interrupted — the result envelope (columns, first rows, stdout/stderr, media, error). Poll until terminal. Flag-gated (revamped-py-notebooks).",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          },
+          {
+            "in": "path",
+            "name": "run_id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "ID of the run, as returned by the run dispatch endpoint.",
+            "required": true
+          },
+          {
+            "in": "path",
+            "name": "short_id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "tags": [
+          "notebooks"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "notebook:read",
+              "query:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotebookSQLV2RunStatusResponse"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "notebooks"
+        ]
+      }
+    },
+    "/api/projects/{project_id}/notebooks/{short_id}/sql_v2/runs/{run_id}/interrupt/": {
+      "post": {
+        "operationId": "notebooks_sql_v2_runs_interrupt_create",
+        "description": "Stop a running cell. Idempotent: interrupting an already-finished run returns its outcome unchanged. Flag-gated (revamped-py-notebooks).",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          },
+          {
+            "in": "path",
+            "name": "run_id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "ID of the run, as returned by the run dispatch endpoint.",
+            "required": true
+          },
+          {
+            "in": "path",
+            "name": "short_id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "tags": [
+          "notebooks"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "notebook:write"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotebookSQLV2InterruptResponse"
+                }
+              }
+            },
+            "description": ""
+          },
+          "202": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotebookSQLV2InterruptResponse"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "notebooks"
+        ]
+      }
+    },
+    "/api/projects/{project_id}/notebooks/{short_id}/sql_v2/state/": {
+      "get": {
+        "operationId": "notebooks_sql_v2_state_retrieve",
+        "description": "The full notebook view for agents: title, document source (markdown, or raw content for legacy rich-text notebooks), every cell with its dependency edges and derived run status (including staleness), and the kernel's runtime state and compute config. Flag-gated (revamped-py-notebooks).",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          },
+          {
+            "in": "path",
+            "name": "short_id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "tags": [
+          "notebooks"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "notebook:read",
+              "query:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotebookSQLV2StateResponse"
+                }
+              }
+            },
+            "description": ""
           }
         },
         "x-product": [
@@ -82290,6 +82813,16 @@
             },
             "description": "Invalid task run payload"
           },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskRunErrorResponse"
+                }
+              }
+            },
+            "description": "Pi cloud runtime is disabled"
+          },
           "404": {
             "description": "Task not found"
           },
@@ -82625,6 +83158,16 @@
               }
             },
             "description": "Invalid task run payload"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskRunErrorResponse"
+                }
+              }
+            },
+            "description": "Pi cloud runtime is disabled"
           },
           "429": {
             "content": {
@@ -83471,7 +84014,7 @@
     "/api/projects/{project_id}/tasks/{task_id}/runs/{id}/command/": {
       "post": {
         "operationId": "tasks_runs_command_create",
-        "description": "Queue user_message JSON-RPC commands through the task workflow and forward sandbox control commands to the agent server. Supports user_message, cancel, close, permission_response, set_config_option, and mcp_response commands.",
+        "description": "Queue user_message JSON-RPC commands through the task workflow and forward sandbox control commands to the agent server. Supports user_message, cancel, close, permission_response, set_config_option, mcp_response, native Pi RPC commands, and Pi queue operations.",
         "summary": "Send command to task run",
         "parameters": [
           {
@@ -83840,6 +84383,16 @@
             },
             "description": "Run already active or workflow failed"
           },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskRunErrorResponse"
+                }
+              }
+            },
+            "description": "Pi cloud runtime is disabled"
+          },
           "429": {
             "content": {
               "application/json": {
@@ -84128,6 +84681,16 @@
             },
             "description": "Invalid start payload"
           },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskRunErrorResponse"
+                }
+              }
+            },
+            "description": "Pi cloud runtime is disabled"
+          },
           "404": {
             "description": "Task run not found"
           },
@@ -84280,6 +84843,187 @@
           },
           "404": {
             "description": "Task run not found"
+          }
+        },
+        "x-product": [
+          "task-runs",
+          "tasks"
+        ]
+      }
+    },
+    "/api/projects/{project_id}/tasks/{task_id}/runs/{id}/task_session/": {
+      "get": {
+        "operationId": "tasks_runs_task_session_retrieve",
+        "description": "API for managing task runs. Each run represents an execution of a task.",
+        "summary": "Get active task session storage access",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          },
+          {
+            "in": "path",
+            "name": "task_id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "tags": [
+          "task-runs",
+          "tasks",
+          "tasks"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "task:read"
+            ]
+          },
+          {
+            "PersonalAPIKeyAuth": [
+              "task:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskSessionResponse"
+                }
+              }
+            },
+            "description": ""
+          },
+          "404": {
+            "description": "Task session not found"
+          }
+        },
+        "x-product": [
+          "task-runs",
+          "tasks"
+        ]
+      }
+    },
+    "/api/projects/{project_id}/tasks/{task_id}/runs/{id}/task_session_sync/": {
+      "post": {
+        "operationId": "tasks_runs_task_session_sync_create",
+        "description": "API for managing task runs. Each run represents an execution of a task.",
+        "summary": "Replace the active native task session",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "If-Match",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Expected current content SHA-256 digest, or none for an empty session",
+            "required": true
+          },
+          {
+            "in": "header",
+            "name": "X-Sandbox-ID",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Active sandbox identifier",
+            "required": true
+          },
+          {
+            "in": "header",
+            "name": "X-Task-Run-Token",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Sandbox-scoped task run token",
+            "required": true
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          },
+          {
+            "in": "path",
+            "name": "task_id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "tags": [
+          "task-runs",
+          "tasks",
+          "tasks"
+        ],
+        "requestBody": {
+          "content": {
+            "application/octet-stream": {
+              "schema": {
+                "type": "string",
+                "format": "binary"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "task:write"
+            ]
+          },
+          {
+            "PersonalAPIKeyAuth": [
+              "task:write"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskSessionSyncResponse"
+                }
+              }
+            },
+            "description": ""
+          },
+          "400": {
+            "description": "Missing required header"
+          },
+          "403": {
+            "description": "Invalid task run token"
+          },
+          "404": {
+            "description": "Task session not found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskRunErrorResponse"
+                }
+              }
+            },
+            "description": ""
           }
         },
         "x-product": [
@@ -96101,6 +96845,9 @@
               }
             },
             "description": ""
+          },
+          "403": {
+            "description": "The session belongs to a different user."
           }
         },
         "x-product": [
@@ -98950,6 +99697,17 @@
             "readOnly": true,
             "description": "Short IDs of the internal notebooks linked to this account, used to persist investigations, call notes, and other free-form context. Empty list if no notebooks have been created for the account."
           },
+          "slack_summary_cadence": {
+            "description": "How often to generate an AI summary of the account's bound Slack channel (daily, weekly, or monthly). Null means summaries are off.\n\n* `daily` - daily\n* `weekly` - weekly\n* `monthly` - monthly",
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/SlackSummaryCadenceEnum"
+              },
+              {
+                "$ref": "#/components/schemas/NullEnum"
+              }
+            ]
+          },
           "created_at": {
             "type": "string",
             "format": "date-time",
@@ -98999,6 +99757,70 @@
         "required": [
           "email",
           "id"
+        ]
+      },
+      "AccountChannelSummary": {
+        "type": "object",
+        "description": "An AI summary of one closed period of the account's bound Slack channel (read-only).",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "readOnly": true,
+            "description": "UUID of the summary."
+          },
+          "slack_channel_id": {
+            "type": "string",
+            "readOnly": true,
+            "description": "Slack channel the summary covered — kept even if the account is later rebound."
+          },
+          "cadence": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/SlackSummaryCadenceEnum"
+              }
+            ],
+            "readOnly": true,
+            "description": "Cadence the summarized period belongs to (daily, weekly, or monthly).\n\n* `daily` - daily\n* `weekly` - weekly\n* `monthly` - monthly"
+          },
+          "period_start": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true,
+            "description": "Start of the summarized period (inclusive)."
+          },
+          "period_end": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true,
+            "description": "End of the summarized period (exclusive)."
+          },
+          "content": {
+            "type": "string",
+            "readOnly": true,
+            "description": "Markdown summary citing the original Slack messages with permalinks."
+          },
+          "message_count": {
+            "type": "integer",
+            "readOnly": true,
+            "description": "Number of channel messages the summary covered."
+          },
+          "generated_at": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true,
+            "description": "When the summary was generated."
+          }
+        },
+        "required": [
+          "cadence",
+          "content",
+          "generated_at",
+          "id",
+          "message_count",
+          "period_end",
+          "period_start",
+          "slack_channel_id"
         ]
       },
       "AccountCustomPropertyFilter": {
@@ -102794,6 +103616,31 @@
           "total_points",
           "triggered_dates",
           "triggered_indices"
+        ]
+      },
+      "AlertTestDeliveryResponse": {
+        "type": "object",
+        "properties": {
+          "destination_count": {
+            "type": "integer",
+            "description": "Number of active destinations queued for test delivery."
+          },
+          "email_recipient_count": {
+            "type": "integer",
+            "description": "Number of subscribed users sent a test email."
+          },
+          "failed_delivery_channels": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FailedDeliveryChannelsEnum"
+            },
+            "description": "Configured delivery channels that failed to schedule or send."
+          }
+        },
+        "required": [
+          "destination_count",
+          "email_recipient_count",
+          "failed_delivery_channels"
         ]
       },
       "AnalysisLevelEnum": {
@@ -109331,6 +110178,18 @@
       "ChartSettings": {
         "additionalProperties": false,
         "properties": {
+          "chartStyle": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ChartStyle"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Chart rendering style overrides (line shape). Only applies to line and area charts."
+          },
           "goalLines": {
             "anyOf": [
               {
@@ -119190,6 +120049,18 @@
       "DatabaseSchemaBatchExportTable": {
         "additionalProperties": false,
         "properties": {
+          "certification": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/DatabaseSchemaTableCertification"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Present only when the table or view carries a settled data catalog certification."
+          },
           "fields": {
             "additionalProperties": {
               "$ref": "#/components/schemas/DatabaseSchemaField"
@@ -119235,6 +120106,18 @@
       "DatabaseSchemaDataWarehouseTable": {
         "additionalProperties": false,
         "properties": {
+          "certification": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/DatabaseSchemaTableCertification"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Present only when the table or view carries a settled data catalog certification."
+          },
           "fields": {
             "additionalProperties": {
               "$ref": "#/components/schemas/DatabaseSchemaField"
@@ -119344,6 +120227,18 @@
       "DatabaseSchemaEndpointTable": {
         "additionalProperties": false,
         "properties": {
+          "certification": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/DatabaseSchemaTableCertification"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Present only when the table or view carries a settled data catalog certification."
+          },
           "fields": {
             "additionalProperties": {
               "$ref": "#/components/schemas/DatabaseSchemaField"
@@ -119494,6 +120389,18 @@
       "DatabaseSchemaManagedViewTable": {
         "additionalProperties": false,
         "properties": {
+          "certification": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/DatabaseSchemaTableCertification"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Present only when the table or view carries a settled data catalog certification."
+          },
           "fields": {
             "additionalProperties": {
               "$ref": "#/components/schemas/DatabaseSchemaField"
@@ -119571,6 +120478,18 @@
       "DatabaseSchemaMaterializedViewTable": {
         "additionalProperties": false,
         "properties": {
+          "certification": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/DatabaseSchemaTableCertification"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Present only when the table or view carries a settled data catalog certification."
+          },
           "fields": {
             "additionalProperties": {
               "$ref": "#/components/schemas/DatabaseSchemaField"
@@ -119644,6 +120563,18 @@
       "DatabaseSchemaPostHogTable": {
         "additionalProperties": false,
         "properties": {
+          "certification": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/DatabaseSchemaTableCertification"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Present only when the table or view carries a settled data catalog certification."
+          },
           "fields": {
             "additionalProperties": {
               "$ref": "#/components/schemas/DatabaseSchemaField"
@@ -119935,6 +120866,18 @@
       "DatabaseSchemaSystemTable": {
         "additionalProperties": false,
         "properties": {
+          "certification": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/DatabaseSchemaTableCertification"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Present only when the table or view carries a settled data catalog certification."
+          },
           "fields": {
             "additionalProperties": {
               "$ref": "#/components/schemas/DatabaseSchemaField"
@@ -119977,9 +120920,79 @@
         "title": "DatabaseSchemaSystemTable",
         "type": "object"
       },
+      "DatabaseSchemaTableCertification": {
+        "additionalProperties": false,
+        "properties": {
+          "certified_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Certified At"
+          },
+          "certified_by": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Certified By"
+          },
+          "notes": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Notes"
+          },
+          "status": {
+            "$ref": "#/components/schemas/DatabaseSchemaTableCertificationStatus",
+            "description": "Settled data catalog trust mark: 'certified' (prefer this source) or 'deprecated' (avoid it)."
+          }
+        },
+        "required": [
+          "status"
+        ],
+        "title": "DatabaseSchemaTableCertification",
+        "type": "object"
+      },
+      "DatabaseSchemaTableCertificationStatus": {
+        "enum": [
+          "certified",
+          "deprecated"
+        ],
+        "title": "DatabaseSchemaTableCertificationStatus",
+        "type": "string"
+      },
       "DatabaseSchemaViewTable": {
         "additionalProperties": false,
         "properties": {
+          "certification": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/DatabaseSchemaTableCertification"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Present only when the table or view carries a settled data catalog certification."
+          },
           "fields": {
             "additionalProperties": {
               "$ref": "#/components/schemas/DatabaseSchemaField"
@@ -122025,11 +123038,14 @@
             "maxItems": 10
           },
           "charts": {
-            "type": "array",
+            "type": [
+              "array",
+              "null"
+            ],
             "items": {
               "$ref": "#/components/schemas/ReportChart"
             },
-            "description": "The full set of charts the report should show. Replaces the report's charts rather than adding to them, the way `summary` replaces the summary — so send every chart you want kept. Omit the field to leave the report's existing charts untouched.",
+            "description": "The full set of charts the report should show. Replaces the report's charts rather than adding to them, the way `summary` replaces the summary — so send every chart you want kept. Omit the field (or send null) to leave the report's existing charts untouched, and send an empty list to take them all down.",
             "maxItems": 20
           }
         },
@@ -122060,8 +123076,11 @@
             "description": "Whether the report's suggested reviewers were replaced."
           },
           "charts_set": {
-            "type": "integer",
-            "description": "How many charts the report now shows, or 0 if charts were untouched."
+            "type": [
+              "integer",
+              "null"
+            ],
+            "description": "How many charts the report now shows, or null if the edit left its charts as they were (the field omitted, or a re-send of what was already stored). 0 means the edit took the report's charts down."
           }
         },
         "required": [
@@ -122481,6 +123500,36 @@
         ],
         "type": "string",
         "description": "* `insufficient_data` - Insufficient Data\n* `healthy` - Healthy\n* `warning` - Warning\n* `critical` - Critical"
+      },
+      "EmailSendingSuspensionStatus": {
+        "type": "object",
+        "description": "Cheap suspension-only read for the persistent scene-wide banner — no reputation computation.",
+        "properties": {
+          "email_sending_suspended": {
+            "type": "boolean",
+            "readOnly": true,
+            "description": "True while workflow email sending is suspended for this project to protect deliverability."
+          },
+          "email_sending_suspended_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time",
+            "readOnly": true,
+            "description": "When email sending was suspended; null while sending is enabled."
+          },
+          "email_sending_suspension_reason": {
+            "type": "string",
+            "readOnly": true,
+            "description": "Staff-authored reason shown to customers alongside the suspension notice; empty when not suspended."
+          }
+        },
+        "required": [
+          "email_sending_suspended",
+          "email_sending_suspended_at",
+          "email_sending_suspension_reason"
+        ]
       },
       "EmailTemplate": {
         "type": "object",
@@ -125505,9 +126554,6 @@
               },
               {
                 "type": "null"
-              },
-              {
-                "type": "null"
               }
             ],
             "description": "User ID or role UUID to filter by."
@@ -125536,9 +126582,6 @@
               },
               {
                 "type": "integer"
-              },
-              {
-                "type": "null"
               },
               {
                 "type": "null"
@@ -126776,9 +127819,6 @@
               },
               {
                 "type": "string"
-              },
-              {
-                "type": "null"
               },
               {
                 "type": "null"
@@ -130821,6 +131861,36 @@
           "na_count",
           "pass_count",
           "total_analyzed"
+        ]
+      },
+      "EvaluationSummaryThrottleResponse": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "Error category"
+          },
+          "code": {
+            "type": "string",
+            "description": "Machine-readable error code"
+          },
+          "detail": {
+            "type": "string",
+            "description": "Why the request was throttled"
+          },
+          "attr": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Related request field, when applicable"
+          }
+        },
+        "required": [
+          "attr",
+          "code",
+          "detail",
+          "type"
         ]
       },
       "EvaluationTargetEnum": {
@@ -137879,6 +138949,41 @@
           "session_id"
         ]
       },
+      "ExperimentSessionContextsRequest": {
+        "type": "object",
+        "description": "Request body for the batch session-context endpoint.",
+        "properties": {
+          "session_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "description": "ID of one session recording."
+            },
+            "description": "IDs of the session recordings to resolve experiment context for, at most 20 per request. Duplicates are ignored.",
+            "maxItems": 20,
+            "minItems": 1
+          }
+        },
+        "required": [
+          "session_ids"
+        ]
+      },
+      "ExperimentSessionContextsResponse": {
+        "type": "object",
+        "description": "Experiment/variant context for a batch of session recordings.",
+        "properties": {
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ExperimentSessionContextResponse"
+            },
+            "description": "Per-session experiment context, in the order the session IDs were requested. Sessions whose recording metadata doesn't exist yet (still ingesting, or unknown to this project) are omitted, as are recordings you don't have access to and sessions beyond the batch's recording-day budget (only the most recent days are computed). Fetch omitted sessions individually via the single-session endpoint."
+          }
+        },
+        "required": [
+          "results"
+        ]
+      },
       "ExperimentSessionMetricHit": {
         "type": "object",
         "description": "One experiment metric with at least one matching event in a session recording.",
@@ -141641,6 +142746,23 @@
         "title": "ExternalQueryStatus",
         "type": "string"
       },
+      "FacetCount": {
+        "type": "object",
+        "properties": {
+          "term": {
+            "type": "string",
+            "description": "The facet value as emitted by the summarizer (lowercased)."
+          },
+          "count": {
+            "type": "integer",
+            "description": "Number of succeeded observations that emitted this value."
+          }
+        },
+        "required": [
+          "count",
+          "term"
+        ]
+      },
       "FacetFieldEnum": {
         "enum": [
           "severity_text",
@@ -141648,6 +142770,14 @@
         ],
         "type": "string",
         "description": "* `severity_text` - severity_text\n* `service_name` - service_name"
+      },
+      "FailedDeliveryChannelsEnum": {
+        "enum": [
+          "email",
+          "destination"
+        ],
+        "type": "string",
+        "description": "* `email` - email\n* `destination` - destination"
       },
       "FeatureFlag": {
         "type": "object",
@@ -156679,7 +157809,7 @@
                 "$ref": "#/components/schemas/IntegrationKindEnum"
               }
             ],
-            "description": "The kind of integration the member is requesting be connected (e.g. 'slack', 'github').\n\n* `anthropic` - Anthropic\n* `apns` - Apple Push\n* `aws-s3` - Aws S3\n* `azure-blob` - Azure Blob\n* `bing-ads` - Bing Ads\n* `clickup` - Clickup\n* `customerio-app` - Customerio App\n* `customerio-track` - Customerio Track\n* `customerio-webhook` - Customerio Webhook\n* `databricks` - Databricks\n* `email` - Email\n* `firebase` - Firebase\n* `github` - Github\n* `gitlab` - Gitlab\n* `google-ads` - Google Ads\n* `google-analytics` - Google Analytics\n* `google-cloud-service-account` - Google Cloud Service Account\n* `google-cloud-storage` - Google Cloud Storage\n* `google-pubsub` - Google Pubsub\n* `google-search-console` - Google Search Console\n* `google-sheets` - Google Sheets\n* `hubspot` - Hubspot\n* `intercom` - Intercom\n* `jira` - Jira\n* `linear` - Linear\n* `linkedin-ads` - Linkedin Ads\n* `meta-ads` - Meta Ads\n* `pinterest-ads` - Pinterest Ads\n* `postgresql` - Postgresql\n* `reddit-ads` - Reddit Ads\n* `resend` - Resend\n* `s3-compatible` - S3 Compatible\n* `salesforce` - Salesforce\n* `slack` - Slack\n* `slack-posthog-code` - Slack Posthog Code\n* `snapchat` - Snapchat\n* `snowflake` - Snowflake\n* `stripe` - Stripe\n* `tiktok-ads` - Tiktok Ads\n* `twilio` - Twilio\n* `vercel` - Vercel"
+            "description": "The kind of integration the member is requesting be connected (e.g. 'slack', 'github').\n\n* `anthropic` - Anthropic\n* `apns` - Apple Push\n* `aws-s3` - Aws S3\n* `azure-blob` - Azure Blob\n* `bing-ads` - Bing Ads\n* `clickup` - Clickup\n* `customerio-app` - Customerio App\n* `customerio-track` - Customerio Track\n* `customerio-webhook` - Customerio Webhook\n* `databricks` - Databricks\n* `email` - Email\n* `firebase` - Firebase\n* `github` - Github\n* `gitlab` - Gitlab\n* `google-ads` - Google Ads\n* `google-analytics` - Google Analytics\n* `google-cloud-service-account` - Google Cloud Service Account\n* `google-cloud-storage` - Google Cloud Storage\n* `google-pubsub` - Google Pubsub\n* `google-search-console` - Google Search Console\n* `google-sheets` - Google Sheets\n* `hubspot` - Hubspot\n* `intercom` - Intercom\n* `jira` - Jira\n* `linear` - Linear\n* `linkedin-ads` - Linkedin Ads\n* `meta-ads` - Meta Ads\n* `pardot` - Pardot\n* `pinterest-ads` - Pinterest Ads\n* `postgresql` - Postgresql\n* `reddit-ads` - Reddit Ads\n* `resend` - Resend\n* `s3-compatible` - S3 Compatible\n* `salesforce` - Salesforce\n* `slack` - Slack\n* `slack-posthog-code` - Slack Posthog Code\n* `snapchat` - Snapchat\n* `snowflake` - Snowflake\n* `stripe` - Stripe\n* `tiktok-ads` - Tiktok Ads\n* `twilio` - Twilio\n* `vercel` - Vercel"
           },
           "reason": {
             "type": "string",
@@ -156947,6 +158077,7 @@
           "firebase",
           "jira",
           "pinterest-ads",
+          "pardot",
           "customerio-app",
           "customerio-webhook",
           "customerio-track",
@@ -156988,6 +158119,7 @@
           "linear",
           "linkedin-ads",
           "meta-ads",
+          "pardot",
           "pinterest-ads",
           "postgresql",
           "reddit-ads",
@@ -157004,7 +158136,7 @@
           "vercel"
         ],
         "type": "string",
-        "description": "* `anthropic` - Anthropic\n* `apns` - Apple Push\n* `aws-s3` - Aws S3\n* `azure-blob` - Azure Blob\n* `bing-ads` - Bing Ads\n* `clickup` - Clickup\n* `customerio-app` - Customerio App\n* `customerio-track` - Customerio Track\n* `customerio-webhook` - Customerio Webhook\n* `databricks` - Databricks\n* `email` - Email\n* `firebase` - Firebase\n* `github` - Github\n* `gitlab` - Gitlab\n* `google-ads` - Google Ads\n* `google-analytics` - Google Analytics\n* `google-cloud-service-account` - Google Cloud Service Account\n* `google-cloud-storage` - Google Cloud Storage\n* `google-pubsub` - Google Pubsub\n* `google-search-console` - Google Search Console\n* `google-sheets` - Google Sheets\n* `hubspot` - Hubspot\n* `intercom` - Intercom\n* `jira` - Jira\n* `linear` - Linear\n* `linkedin-ads` - Linkedin Ads\n* `meta-ads` - Meta Ads\n* `pinterest-ads` - Pinterest Ads\n* `postgresql` - Postgresql\n* `reddit-ads` - Reddit Ads\n* `resend` - Resend\n* `s3-compatible` - S3 Compatible\n* `salesforce` - Salesforce\n* `slack` - Slack\n* `slack-posthog-code` - Slack Posthog Code\n* `snapchat` - Snapchat\n* `snowflake` - Snowflake\n* `stripe` - Stripe\n* `tiktok-ads` - Tiktok Ads\n* `twilio` - Twilio\n* `vercel` - Vercel"
+        "description": "* `anthropic` - Anthropic\n* `apns` - Apple Push\n* `aws-s3` - Aws S3\n* `azure-blob` - Azure Blob\n* `bing-ads` - Bing Ads\n* `clickup` - Clickup\n* `customerio-app` - Customerio App\n* `customerio-track` - Customerio Track\n* `customerio-webhook` - Customerio Webhook\n* `databricks` - Databricks\n* `email` - Email\n* `firebase` - Firebase\n* `github` - Github\n* `gitlab` - Gitlab\n* `google-ads` - Google Ads\n* `google-analytics` - Google Analytics\n* `google-cloud-service-account` - Google Cloud Service Account\n* `google-cloud-storage` - Google Cloud Storage\n* `google-pubsub` - Google Pubsub\n* `google-search-console` - Google Search Console\n* `google-sheets` - Google Sheets\n* `hubspot` - Hubspot\n* `intercom` - Intercom\n* `jira` - Jira\n* `linear` - Linear\n* `linkedin-ads` - Linkedin Ads\n* `meta-ads` - Meta Ads\n* `pardot` - Pardot\n* `pinterest-ads` - Pinterest Ads\n* `postgresql` - Postgresql\n* `reddit-ads` - Reddit Ads\n* `resend` - Resend\n* `s3-compatible` - S3 Compatible\n* `salesforce` - Salesforce\n* `slack` - Slack\n* `slack-posthog-code` - Slack Posthog Code\n* `snapchat` - Snapchat\n* `snowflake` - Snowflake\n* `stripe` - Stripe\n* `tiktok-ads` - Tiktok Ads\n* `twilio` - Twilio\n* `vercel` - Vercel"
       },
       "InteractionKindEnum": {
         "enum": [
@@ -158091,6 +159223,13 @@
           "prompt": {
             "description": "Prompt payload as JSON or string data."
           },
+          "config": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "description": "Optional JSON object with model parameters or any agent configuration (e.g. model, temperature, tools). Versioned with the prompt and returned as-is when fetching it. Don't store secrets here: config is returned to anyone who can read the prompt."
+          },
           "version": {
             "type": "integer",
             "readOnly": true
@@ -158295,6 +159434,13 @@
             "readOnly": true,
             "description": "Prompt payload as JSON or string data."
           },
+          "config": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "description": "Optional JSON object with model parameters or any agent configuration (e.g. model, temperature, tools). Versioned with the prompt and returned as-is when fetching it. Don't store secrets here: config is returned to anyone who can read the prompt."
+          },
           "version": {
             "type": "integer",
             "readOnly": true
@@ -158434,6 +159580,13 @@
           },
           "prompt": {
             "description": "Full prompt content. Omitted when 'content=preview' or 'content=none'."
+          },
+          "config": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "description": "JSON object with model parameters or any agent configuration stored with this version, or null when the version has none. Omitted when 'content=preview' or 'content=none'."
           },
           "prompt_preview": {
             "type": "string",
@@ -171868,10 +173021,13 @@
           "close",
           "permission_response",
           "set_config_option",
-          "mcp_response"
+          "mcp_response",
+          "pi/rpc",
+          "queue_get",
+          "queue_clear"
         ],
         "type": "string",
-        "description": "* `user_message` - user_message\n* `cancel` - cancel\n* `close` - close\n* `permission_response` - permission_response\n* `set_config_option` - set_config_option\n* `mcp_response` - mcp_response"
+        "description": "* `user_message` - user_message\n* `cancel` - cancel\n* `close` - close\n* `permission_response` - permission_response\n* `set_config_option` - set_config_option\n* `mcp_response` - mcp_response\n* `pi/rpc` - pi/rpc\n* `queue_get` - queue_get\n* `queue_clear` - queue_clear"
       },
       "Metric": {
         "enum": [
@@ -173686,6 +174842,113 @@
           "user_access_level"
         ]
       },
+      "NotebookCellLastRun": {
+        "type": "object",
+        "properties": {
+          "run_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Identifier of the cell's most recent run."
+          },
+          "status": {
+            "type": "string",
+            "description": "The run's own state: 'running', 'done', 'failed', or 'interrupted'."
+          },
+          "finished_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When the run last changed state."
+          },
+          "row_count": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "description": "Rows in the result, when the run produced one."
+          },
+          "columns": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "description": "Result column names."
+          },
+          "error": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Error message when the run failed."
+          }
+        },
+        "required": [
+          "finished_at",
+          "run_id",
+          "status"
+        ]
+      },
+      "NotebookCellState": {
+        "type": "object",
+        "properties": {
+          "node_id": {
+            "type": "string",
+            "description": "Durable cell identity, used by the cell run and edit endpoints."
+          },
+          "cell_type": {
+            "type": "string",
+            "description": "Cell kind: 'sql', 'python', or 'saved_insight' (embedded insight, never runs)."
+          },
+          "dataframe_name": {
+            "type": "string",
+            "description": "Name other cells reference this cell's result by; blank means display-only."
+          },
+          "code": {
+            "type": "string",
+            "description": "The cell's source, truncated with a marker past 8KB."
+          },
+          "status": {
+            "type": "string",
+            "description": "Derived cell state: 'never_run', 'running', 'done', 'failed', 'interrupted', or 'stale' — stale means re-running now would execute different code than the last completed run (the cell or an upstream dependency changed)."
+          },
+          "depends_on": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "node_ids of cells whose dataframes this cell's code references."
+          },
+          "dependents": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "node_ids of cells that reference this cell's dataframe."
+          },
+          "last_run": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/NotebookCellLastRun"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Summary of the most recent run; null when never run."
+          }
+        },
+        "required": [
+          "cell_type",
+          "code",
+          "dataframe_name",
+          "dependents",
+          "depends_on",
+          "node_id",
+          "status"
+        ]
+      },
       "NotebookCollabCursor": {
         "type": "object",
         "properties": {
@@ -173780,6 +175043,193 @@
           "content",
           "steps",
           "version"
+        ]
+      },
+      "NotebookKernelConfig": {
+        "type": "object",
+        "properties": {
+          "cpu_cores": {
+            "type": "number",
+            "format": "double",
+            "description": "CPU cores for the notebook's sandbox kernel; must be a supported option."
+          },
+          "memory_gb": {
+            "type": "number",
+            "format": "double",
+            "description": "Memory in GB for the notebook's sandbox kernel; must be a supported option."
+          },
+          "idle_timeout_seconds": {
+            "type": "integer",
+            "description": "Seconds of inactivity before the sandbox kernel shuts down."
+          }
+        }
+      },
+      "NotebookKernelConfigResponse": {
+        "type": "object",
+        "properties": {
+          "cpu_cores": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "format": "double",
+            "description": "Configured CPU cores; null means the default applies."
+          },
+          "memory_gb": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "format": "double",
+            "description": "Configured memory in GB; null means the default applies."
+          },
+          "idle_timeout_seconds": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "description": "Configured idle timeout in seconds; null means the default."
+          },
+          "restart_required": {
+            "type": "boolean",
+            "description": "True when a kernel is currently active: config applies at sandbox provision time, so the running kernel keeps its old resources until restarted (restarting loses materialized dataframes)."
+          }
+        },
+        "required": [
+          "restart_required"
+        ]
+      },
+      "NotebookKernelState": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "description": "Kernel runtime state: 'starting', 'running', 'stopped', 'timed_out', 'discarded', or 'error'."
+          },
+          "cpu_cores": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "format": "double",
+            "description": "CPU cores the notebook's sandbox is configured with."
+          },
+          "memory_gb": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "format": "double",
+            "description": "Memory in GB the notebook's sandbox is configured with."
+          },
+          "idle_timeout_seconds": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "description": "Seconds of inactivity before the sandbox shuts down."
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "NotebookKernelStatusResponse": {
+        "type": "object",
+        "properties": {
+          "backend": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Sandbox backend the kernel runs on: 'modal' or 'docker'."
+          },
+          "status": {
+            "type": "string",
+            "description": "Live-checked kernel state: 'starting', 'running', 'stopped', 'timed_out', 'discarded', or 'error'."
+          },
+          "last_used_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time",
+            "description": "When the kernel last executed anything."
+          },
+          "last_error": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Most recent provisioning or runtime error, if any."
+          },
+          "runtime_id": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uuid",
+            "description": "Kernel runtime row identifier."
+          },
+          "kernel_id": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Jupyter kernel identifier."
+          },
+          "kernel_pid": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "description": "Kernel process id inside the sandbox."
+          },
+          "sandbox_id": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Sandbox container identifier."
+          },
+          "frames": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NotebookSQLV2Frame"
+            },
+            "description": "Dataframes and DuckDB tables a cell can currently reference, with column names and types. Empty unless the kernel is running and the caller has query access."
+          },
+          "cpu_cores": {
+            "type": "number",
+            "format": "double",
+            "description": "CPU cores the sandbox is configured with."
+          },
+          "memory_gb": {
+            "type": "number",
+            "format": "double",
+            "description": "Memory in GB the sandbox is configured with."
+          },
+          "disk_size_gb": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "format": "double",
+            "description": "Disk size in GB the sandbox is configured with."
+          },
+          "idle_timeout_seconds": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "description": "Seconds of inactivity before the sandbox shuts down."
+          }
+        },
+        "required": [
+          "cpu_cores",
+          "frames",
+          "memory_gb",
+          "status"
         ]
       },
       "NotebookMarkdownSave": {
@@ -173897,6 +175347,358 @@
           "short_id",
           "title",
           "user_access_level"
+        ]
+      },
+      "NotebookSQLV2Envelope": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "description": "Run outcome: 'ok', 'error', or 'interrupted' (user-requested stop)."
+          },
+          "frames": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NotebookSQLV2Frame"
+            },
+            "description": "DuckDB objects a SQL node can SELECT from as of this run, for the schema browser. Only kernel runs (python/duckdb) report these; a hogql run never enters the kernel."
+          },
+          "stdout": {
+            "type": "string",
+            "default": "",
+            "description": "Captured stdout from a Python node run."
+          },
+          "stderr": {
+            "type": "string",
+            "default": "",
+            "description": "Captured stderr (including tracebacks) from a Python node run."
+          },
+          "media": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NotebookSQLV2Media"
+            },
+            "description": "Rich outputs from a Python node run, e.g. matplotlib figures as PNGs."
+          },
+          "columns": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Result column names."
+          },
+          "types": {
+            "type": "array",
+            "items": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "A [column name, ClickHouse type] pair."
+            },
+            "description": "ClickHouse type per column, as [name, type] pairs; used by the visualization tab."
+          },
+          "row_count": {
+            "type": "integer",
+            "default": 0,
+            "description": "Number of rows in the result."
+          },
+          "has_more": {
+            "type": "boolean",
+            "default": false,
+            "description": "Whether ClickHouse has more rows beyond first_page (detected by fetching limit+1)."
+          },
+          "first_page": {
+            "type": "array",
+            "items": {
+              "type": "array",
+              "items": {},
+              "description": "A single result row as a list of cell values."
+            },
+            "description": "First page of result rows for display; each row is a list of cell values."
+          },
+          "result_id": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uuid",
+            "description": "Identifier of the materialized result, used as the paging key."
+          },
+          "error": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Error message when status is 'error'."
+          },
+          "timings": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "number",
+              "format": "double"
+            },
+            "description": "Phase durations in seconds. From the sandbox: input_wait_s (waiting on the data plane), download_s (presigned frame downloads), kernel_boot_s (ensuring the ipykernel is up), exec_s (kernel cell execution), sandbox_total_s (the whole sandbox-side run). From the direct lane: queued_s (enqueue to Celery pickup), clickhouse_s (pickup to completion). Feeds the node-run metrics."
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "NotebookSQLV2Frame": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Name a SQL node can SELECT from."
+          },
+          "kind": {
+            "type": "string",
+            "description": "Where the object came from: 'frame' (a dataframe a node produced), or 'table'/'view' (created by SQL DDL in a DuckDB node)."
+          },
+          "columns": {
+            "type": "array",
+            "items": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "A [column name, DuckDB type] pair."
+            },
+            "description": "DuckDB type per column, as [name, type] pairs."
+          },
+          "row_count": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "description": "Rows available, or null when counting would require a table scan (a DDL view)."
+          },
+          "row_count_is_estimate": {
+            "type": "boolean",
+            "default": false,
+            "description": "True when row_count is DuckDB's optimizer estimate rather than a count. The estimate does not track deletes, so it must never be presented as exact."
+          }
+        },
+        "required": [
+          "kind",
+          "name"
+        ]
+      },
+      "NotebookSQLV2InterruptResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "description": "The run's status after the interrupt request. Already-terminal runs return their outcome unchanged (idempotent noop); a stopped kernel run reports its terminal state through the normal result poll."
+          },
+          "detail": {
+            "type": "string",
+            "description": "Present when the interrupt could not take effect yet, e.g. the run has not reached the kernel."
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "NotebookSQLV2Media": {
+        "type": "object",
+        "properties": {
+          "mime_type": {
+            "type": "string",
+            "description": "MIME type of the media, e.g. 'image/png' for a matplotlib figure."
+          },
+          "data": {
+            "type": "string",
+            "description": "Base64-encoded media bytes."
+          }
+        },
+        "required": [
+          "data",
+          "mime_type"
+        ]
+      },
+      "NotebookSQLV2NodeTypeEnum": {
+        "enum": [
+          "hogql",
+          "python"
+        ],
+        "type": "string",
+        "description": "* `hogql` - hogql\n* `python` - python"
+      },
+      "NotebookSQLV2Ref": {
+        "type": "object",
+        "properties": {
+          "node_id": {
+            "type": "string",
+            "description": "ProseMirror node id of the upstream node this name points at."
+          },
+          "kind": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/NotebookSQLV2RefKindEnum"
+              }
+            ],
+            "default": "hogql",
+            "description": "What the name resolves to: 'hogql' is a SQL node's query definition (resolved to its last-run HogQL); 'local' is a dataframe a Python node bound in the kernel namespace.\n\n* `hogql` - hogql\n* `local` - local"
+          }
+        },
+        "required": [
+          "node_id"
+        ]
+      },
+      "NotebookSQLV2RefKindEnum": {
+        "enum": [
+          "hogql",
+          "local"
+        ],
+        "type": "string",
+        "description": "* `hogql` - hogql\n* `local` - local"
+      },
+      "NotebookSQLV2RunRequest": {
+        "type": "object",
+        "properties": {
+          "node_id": {
+            "type": "string",
+            "description": "ProseMirror node id of the SQLV2 node being run."
+          },
+          "node_type": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/NotebookSQLV2NodeTypeEnum"
+              }
+            ],
+            "default": "hogql",
+            "description": "Execution kind. 'hogql' is a SQL node — pushed to ClickHouse, or rerouted to the sandbox's DuckDB when it references a local frame; 'python' runs the code in the sandbox kernel, materializing referenced upstream nodes as pandas frames first.\n\n* `hogql` - hogql\n* `python` - python"
+          },
+          "code": {
+            "type": "string",
+            "description": "The node's source — SQL for a hogql node, Python for a python node. Must not be blank."
+          },
+          "output_name": {
+            "type": "string",
+            "default": "",
+            "description": "Kernel nodes only: the dataframe variable to bind the result to in the kernel namespace (a python node falls back to the last expression for its preview)."
+          },
+          "refs": {
+            "type": "object",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/NotebookSQLV2Ref"
+            },
+            "description": "Available upstream nodes, keyed by dataframe name. A SQL node inlines referenced hogql refs as CTEs — unless it references a local ref, which reroutes the run to the sandbox's DuckDB; a python node materializes the hogql refs its code reads as pandas frames."
+          }
+        },
+        "required": [
+          "code",
+          "node_id"
+        ]
+      },
+      "NotebookSQLV2RunResponse": {
+        "type": "object",
+        "properties": {
+          "run_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Identifier of the dispatched run. Poll the run result endpoint with it until the status is terminal."
+          }
+        },
+        "required": [
+          "run_id"
+        ]
+      },
+      "NotebookSQLV2RunStatusResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "description": "Run state: 'running' (keep polling), or terminal — 'done', 'failed', or 'interrupted'."
+          },
+          "result": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/NotebookSQLV2Envelope"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "The result envelope once the run is 'done' or 'interrupted' (an interrupted run keeps the stdout/stderr captured before the stop); null while running and for failed runs."
+          },
+          "error": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Why the run failed when it never produced an envelope (dispatch or watchdog failure); execution errors arrive inside the envelope's error field instead."
+          },
+          "rows": {
+            "type": "array",
+            "items": {
+              "type": "array",
+              "items": {},
+              "description": "A single result row as a list of cell values."
+            },
+            "description": "SQL (hogql) runs only: the full capped row set for client-side paging, present while the query manager's transient result is alive (~20 minutes). Absent afterwards and for kernel (python/duckdb) runs, which keep only the envelope's first_page preview."
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "NotebookSQLV2StateResponse": {
+        "type": "object",
+        "properties": {
+          "notebook_id": {
+            "type": "string",
+            "description": "The notebook's short id."
+          },
+          "title": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The notebook's title."
+          },
+          "version": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "description": "Document version, the optimistic-concurrency baseline for edits."
+          },
+          "markdown": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The full markdown source — prose and cell tags. Null for legacy rich-text notebooks, which carry their document in `content` instead."
+          },
+          "content": {
+            "description": "Legacy rich-text notebooks only: the raw ProseMirror document. Omitted for markdown notebooks — their document is the `markdown` field."
+          },
+          "kernel": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/NotebookKernelState"
+              }
+            ],
+            "description": "The notebook's kernel runtime state and compute config."
+          },
+          "cells": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NotebookCellState"
+            },
+            "description": "Every cell in document order, with its dependency edges and derived run state."
+          }
+        },
+        "required": [
+          "cells",
+          "kernel",
+          "markdown",
+          "notebook_id",
+          "title",
+          "version"
         ]
       },
       "NotificationDestinationTypeEnum": {
@@ -174306,6 +176108,17 @@
               }
             ],
             "description": "Scorer-type aggregates; null when the scanner is not a scorer."
+          },
+          "summarizer": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/SummarizerStats"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Summarizer-type facet aggregates; null when the scanner is not a summarizer."
           }
         },
         "required": [
@@ -174315,7 +176128,8 @@
           "labels",
           "monitor",
           "scorer",
-          "status_counts"
+          "status_counts",
+          "summarizer"
         ]
       },
       "ObservationStatusCounts": {
@@ -175708,6 +177522,41 @@
         ],
         "title": "PageURL",
         "type": "object"
+      },
+      "PaginatedAccountChannelSummaryList": {
+        "type": "object",
+        "required": [
+          "count",
+          "results"
+        ],
+        "properties": {
+          "count": {
+            "type": "integer",
+            "example": 123
+          },
+          "next": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uri",
+            "example": "http://api.example.org/accounts/?offset=400&limit=100"
+          },
+          "previous": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uri",
+            "example": "http://api.example.org/accounts/?offset=200&limit=100"
+          },
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AccountChannelSummary"
+            }
+          }
+        }
       },
       "PaginatedAccountList": {
         "type": "object",
@@ -182459,6 +184308,17 @@
             "readOnly": true,
             "description": "Short IDs of the internal notebooks linked to this account, used to persist investigations, call notes, and other free-form context. Empty list if no notebooks have been created for the account."
           },
+          "slack_summary_cadence": {
+            "description": "How often to generate an AI summary of the account's bound Slack channel (daily, weekly, or monthly). Null means summaries are off.\n\n* `daily` - daily\n* `weekly` - weekly\n* `monthly` - monthly",
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/SlackSummaryCadenceEnum"
+              },
+              {
+                "$ref": "#/components/schemas/NullEnum"
+              }
+            ]
+          },
           "created_at": {
             "type": "string",
             "format": "date-time",
@@ -188319,6 +190179,13 @@
             },
             "description": "List of find/replace operations to apply to the current prompt version. Each edit's 'old' text must match exactly once. Edits are applied sequentially. Mutually exclusive with prompt."
           },
+          "config": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "description": "JSON object with model parameters or any agent configuration to store with this version. If omitted, the current version's config is carried forward; pass null to clear it. Can be combined with either prompt or edits. Don't store secrets here: config is returned to anyone who can read the prompt."
+          },
           "base_version": {
             "type": "integer",
             "minimum": 1,
@@ -193230,7 +195097,7 @@
       },
       "PatchedTicket": {
         "type": "object",
-        "description": "Serializer mixin that handles tags for objects.",
+        "description": "Mixin for serializers to add user access control fields",
         "properties": {
           "id": {
             "type": "string",
@@ -193477,6 +195344,14 @@
           "tags": {
             "type": "array",
             "items": {}
+          },
+          "user_access_level": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "readOnly": true,
+            "description": "The effective access level the user has for this object"
           }
         }
       },
@@ -193928,6 +195803,9 @@
           "hide_mcp_hints": {
             "type": "boolean",
             "description": "When true, the user has opted out of in-app hints promoting the PostHog MCP integration after taking actions."
+          },
+          "ui_configuration": {
+            "description": "Per-user UI customization, validated against the `UserUIConfiguration` schema. Currently covers sidebar section and item visibility. Send the complete object: it replaces the stored value wholesale. Null means no customization; absent keys mean the element is shown."
           },
           "onboarding_skipped_at": {
             "type": [
@@ -195141,6 +197019,45 @@
           "stage",
           "stage_name",
           "track_key"
+        ]
+      },
+      "PendingInput": {
+        "type": "object",
+        "description": "The in-flight `wizard_ask` question. Typed rather than a free-form dict so the shape the\nwidget renders is enforced at the edge instead of trusted from the producer.",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Identifier the wizard mints for this question. Changes when a new question is asked.",
+            "maxLength": 255
+          },
+          "asked_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "UTC timestamp when the wizard asked. Defaults to the session's update time when absent."
+          },
+          "question_count": {
+            "type": "integer",
+            "maximum": 100,
+            "minimum": 1,
+            "description": "How many questions this single ask covers."
+          },
+          "sensitive": {
+            "type": "boolean",
+            "default": false,
+            "description": "Whether the answer is a secret. Sensitive questions never carry prompt text."
+          },
+          "prompts": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 2000
+            },
+            "description": "The question text shown to the user. Always empty for sensitive questions.",
+            "maxItems": 10
+          }
+        },
+        "required": [
+          "id"
         ]
       },
       "PendingInvite": {
@@ -235999,10 +237916,58 @@
           },
           "metadata": {
             "type": "object",
-            "additionalProperties": {
-              "type": "string"
+            "properties": {
+              "harness_prompt_version": {
+                "type": "string"
+              },
+              "report_channel": {
+                "type": "string"
+              },
+              "skill_origin": {
+                "type": "string"
+              },
+              "github_guidance": {
+                "type": "boolean"
+              },
+              "model": {
+                "type": "string"
+              },
+              "runtime_adapter": {
+                "type": "string"
+              },
+              "reasoning_effort": {
+                "type": "string"
+              },
+              "derived": {
+                "type": "object",
+                "properties": {
+                  "has_emit_report": {
+                    "type": "boolean"
+                  },
+                  "has_edit_report": {
+                    "type": "boolean"
+                  },
+                  "has_self_improvement": {
+                    "type": "boolean"
+                  },
+                  "has_chart": {
+                    "type": "boolean"
+                  },
+                  "has_self_validation": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "has_emit_report",
+                  "has_edit_report",
+                  "has_self_improvement",
+                  "has_chart",
+                  "has_self_validation"
+                ]
+              }
             },
-            "description": "Scout-owned per-run context stamped at run start. Known keys today: `model`, `runtime_adapter`, and `reasoning_effort` — the triple the run was routed on when the `scouts-model-selection` gate (or a runtime pin) overrode the agent-server default. Empty object when the run rode the default model, or for runs predating the field."
+            "additionalProperties": true,
+            "description": "Scout-owned per-run context, in two regions. Top-level keys are stamped by the runner at run start. Always present: `harness_prompt_version` (id of the harness prompt build the run was given), `report_channel` (which report tools the run held: `none`, `emit`, `edit`, or `both`), `skill_origin` (`canonical` or `custom`), and `github_guidance` (whether the run got the GitHub evidence section) — the provenance set that says which instructions the run actually got, so runs are only compared against runs of the same shape. Present only when routing overrode the agent-server default: `model`, `runtime_adapter`, and `reasoning_effort`. The nested `derived` object is the harness's own map of boolean run dimensions, computed server-side at finalize: `has_emit_report`, `has_edit_report`, `has_self_improvement`, `has_chart`, and `has_self_validation`. Use `derived` to answer 'what kind of run was this?' instead of parsing the `summary` prose. Note the flags describe the reports the run authored as they stand now, so charts attached to someone else's report via an edit are not counted. A missing `derived` object is unknown, not all-false: the run predates the field, never finalized, or its stamp failed."
           }
         },
         "required": [
@@ -236126,10 +238091,58 @@
           },
           "metadata": {
             "type": "object",
-            "additionalProperties": {
-              "type": "string"
+            "properties": {
+              "harness_prompt_version": {
+                "type": "string"
+              },
+              "report_channel": {
+                "type": "string"
+              },
+              "skill_origin": {
+                "type": "string"
+              },
+              "github_guidance": {
+                "type": "boolean"
+              },
+              "model": {
+                "type": "string"
+              },
+              "runtime_adapter": {
+                "type": "string"
+              },
+              "reasoning_effort": {
+                "type": "string"
+              },
+              "derived": {
+                "type": "object",
+                "properties": {
+                  "has_emit_report": {
+                    "type": "boolean"
+                  },
+                  "has_edit_report": {
+                    "type": "boolean"
+                  },
+                  "has_self_improvement": {
+                    "type": "boolean"
+                  },
+                  "has_chart": {
+                    "type": "boolean"
+                  },
+                  "has_self_validation": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "has_emit_report",
+                  "has_edit_report",
+                  "has_self_improvement",
+                  "has_chart",
+                  "has_self_validation"
+                ]
+              }
             },
-            "description": "Scout-owned per-run context stamped at run start. Known keys today: `model`, `runtime_adapter`, and `reasoning_effort` — the triple the run was routed on when the `scouts-model-selection` gate (or a runtime pin) overrode the agent-server default. Empty object when the run rode the default model, or for runs predating the field."
+            "additionalProperties": true,
+            "description": "Scout-owned per-run context, in two regions. Top-level keys are stamped by the runner at run start. Always present: `harness_prompt_version` (id of the harness prompt build the run was given), `report_channel` (which report tools the run held: `none`, `emit`, `edit`, or `both`), `skill_origin` (`canonical` or `custom`), and `github_guidance` (whether the run got the GitHub evidence section) — the provenance set that says which instructions the run actually got, so runs are only compared against runs of the same shape. Present only when routing overrode the agent-server default: `model`, `runtime_adapter`, and `reasoning_effort`. The nested `derived` object is the harness's own map of boolean run dimensions, computed server-side at finalize: `has_emit_report`, `has_edit_report`, `has_self_improvement`, `has_chart`, and `has_self_validation`. Use `derived` to answer 'what kind of run was this?' instead of parsing the `summary` prose. Note the flags describe the reports the run authored as they stand now, so charts attached to someone else's report via an edit are not counted. A missing `derived` object is unknown, not all-false: the run predates the field, never finalized, or its stamp failed."
           }
         },
         "required": [
@@ -237117,6 +239130,15 @@
         "required": [
           "channels"
         ]
+      },
+      "SlackSummaryCadenceEnum": {
+        "enum": [
+          "daily",
+          "weekly",
+          "monthly"
+        ],
+        "type": "string",
+        "description": "* `daily` - daily\n* `weekly` - weekly\n* `monthly` - monthly"
       },
       "SlackThreadContextRepoResearch": {
         "type": "object",
@@ -240461,6 +242483,34 @@
         "type": "string",
         "description": "* `trace` - trace\n* `event` - event"
       },
+      "SummarizerStats": {
+        "type": "object",
+        "properties": {
+          "friction_ranked": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FacetCount"
+            },
+            "description": "Top friction points by emission count."
+          },
+          "keyword_ranked": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FacetCount"
+            },
+            "description": "Top keywords by emission count."
+          },
+          "total_with_facets": {
+            "type": "integer",
+            "description": "Succeeded observations that emitted at least one friction point or keyword."
+          }
+        },
+        "required": [
+          "friction_ranked",
+          "keyword_ranked",
+          "total_with_facets"
+        ]
+      },
       "SummaryBullet": {
         "type": "object",
         "properties": {
@@ -240506,6 +242556,57 @@
         },
         "title": "SummaryOutcome",
         "type": "object"
+      },
+      "SupportTicket": {
+        "type": "object",
+        "description": "A support ticket linked to an account, sourced from the conversations product (read-only).",
+        "properties": {
+          "id": {
+            "type": "string",
+            "readOnly": true,
+            "description": "UUID of the support ticket."
+          },
+          "ticket_number": {
+            "type": "integer",
+            "readOnly": true,
+            "description": "Human-readable ticket number."
+          },
+          "status": {
+            "type": "string",
+            "readOnly": true,
+            "description": "Current status of the ticket (e.g. 'new', 'open')."
+          },
+          "last_message_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time",
+            "readOnly": true,
+            "description": "When the most recent message was sent on this ticket."
+          },
+          "last_message_text": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "readOnly": true,
+            "description": "Truncated preview of the most recent message."
+          },
+          "deep_link": {
+            "type": "string",
+            "readOnly": true,
+            "description": "Absolute URL to open this ticket in the app."
+          }
+        },
+        "required": [
+          "deep_link",
+          "id",
+          "last_message_at",
+          "last_message_text",
+          "status",
+          "ticket_number"
+        ]
       },
       "Survey": {
         "type": "object",
@@ -244413,7 +246514,7 @@
                 "$ref": "#/components/schemas/MethodEnum"
               }
             ],
-            "description": "Command method to execute on the agent server\n\n* `user_message` - user_message\n* `cancel` - cancel\n* `close` - close\n* `permission_response` - permission_response\n* `set_config_option` - set_config_option\n* `mcp_response` - mcp_response"
+            "description": "Command method to execute on the agent server\n\n* `user_message` - user_message\n* `cancel` - cancel\n* `close` - close\n* `permission_response` - permission_response\n* `set_config_option` - set_config_option\n* `mcp_response` - mcp_response\n* `pi/rpc` - pi/rpc\n* `queue_get` - queue_get\n* `queue_clear` - queue_clear"
           },
           "params": {
             "type": "object",
@@ -244441,8 +246542,6 @@
             "description": "Request ID echoed back (string or number)"
           },
           "result": {
-            "type": "object",
-            "additionalProperties": true,
             "description": "Command result on success"
           },
           "error": {
@@ -245151,6 +247250,54 @@
         ],
         "type": "string",
         "description": "* `local` - local"
+      },
+      "TaskSessionResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Task session identifier"
+          },
+          "download_url": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uri",
+            "description": "Temporary URL for downloading the session"
+          },
+          "content_sha256": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "SHA-256 digest of the current session content"
+          }
+        },
+        "required": [
+          "content_sha256",
+          "download_url",
+          "id"
+        ]
+      },
+      "TaskSessionSyncResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Task session identifier"
+          },
+          "content_sha256": {
+            "type": "string",
+            "description": "SHA-256 digest of the uploaded session content"
+          }
+        },
+        "required": [
+          "content_sha256",
+          "id"
+        ]
       },
       "TaskStagedArtifactFinalizeUpload": {
         "type": "object",
@@ -246522,9 +248669,31 @@
             },
             "readOnly": true,
             "description": "Latest snapshot per workflow, worst state and highest rates first, capped at the worst 50 workflows."
+          },
+          "email_sending_suspended": {
+            "type": "boolean",
+            "readOnly": true,
+            "description": "True while workflow email sending is suspended for this project to protect deliverability."
+          },
+          "email_sending_suspended_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time",
+            "readOnly": true,
+            "description": "When email sending was suspended; null while sending is enabled."
+          },
+          "email_sending_suspension_reason": {
+            "type": "string",
+            "readOnly": true,
+            "description": "Staff-authored reason shown to customers alongside the suspension notice; empty when not suspended."
           }
         },
         "required": [
+          "email_sending_suspended",
+          "email_sending_suspended_at",
+          "email_sending_suspension_reason",
           "reputation",
           "workflows"
         ]
@@ -247590,7 +249759,7 @@
       },
       "Ticket": {
         "type": "object",
-        "description": "Serializer mixin that handles tags for objects.",
+        "description": "Mixin for serializers to add user access control fields",
         "properties": {
           "id": {
             "type": "string",
@@ -247837,6 +250006,14 @@
           "tags": {
             "type": "array",
             "items": {}
+          },
+          "user_access_level": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "readOnly": true,
+            "description": "The effective access level the user has for this object"
           }
         },
         "required": [
@@ -247869,6 +250046,7 @@
           "unread_customer_count",
           "unread_team_count",
           "updated_at",
+          "user_access_level",
           "zendesk_ticket_id"
         ]
       },
@@ -253525,6 +255703,17 @@
         "type": "object",
         "description": "Input: validates the JSON the wizard CLI posts. team_id is derived from URL.",
         "properties": {
+          "pending_input": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/PendingInput"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Populated while the wizard is blocked on a question in the terminal. Null/absent means no input is pending; a push without it clears the previous prompt."
+          },
           "session_id": {
             "type": "string",
             "description": "Stable identifier the wizard mints for this run (format: '{workflow_id}-{skill_id}-{started_at_iso}'). Reposting with the same session_id upserts the existing row.",
@@ -254179,6 +256368,9 @@
           "hide_mcp_hints": {
             "type": "boolean",
             "description": "When true, the user has opted out of in-app hints promoting the PostHog MCP integration after taking actions."
+          },
+          "ui_configuration": {
+            "description": "Per-user UI customization, validated against the `UserUIConfiguration` schema. Currently covers sidebar section and item visibility. Send the complete object: it replaces the stored value wholesale. Null means no customization; absent keys mean the element is shown."
           },
           "onboarding_skipped_at": {
             "type": [
@@ -261054,6 +263246,17 @@
         "type": "object",
         "description": "Output: serialises a WizardSessionDTO returned by the facade.",
         "properties": {
+          "pending_input": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/PendingInput"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "The question the wizard is currently blocked on, or null when nothing is pending."
+          },
           "session_id": {
             "type": "string"
           },
@@ -261093,6 +263296,17 @@
             ],
             "additionalProperties": true
           },
+          "created_by": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/WizardSessionUserDTO"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "The user who initiated this wizard run (null for runs created before attribution existed). Lets the UI name whose run it is."
+          },
           "created_at": {
             "type": "string",
             "format": "date-time"
@@ -261107,9 +263321,11 @@
         },
         "required": [
           "created_at",
+          "created_by",
           "error",
           "event_plan",
           "is_stale",
+          "pending_input",
           "run_phase",
           "session_id",
           "skill_id",
@@ -261118,6 +263334,25 @@
           "team_id",
           "updated_at",
           "workflow_id"
+        ]
+      },
+      "WizardSessionUserDTO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "first_name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "email",
+          "first_name",
+          "id"
         ]
       },
       "WizardTaskDTO": {
