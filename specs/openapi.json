@@ -1709,7 +1709,7 @@
     "/api/organizations/{organization_id}/cimd_verification_tokens/": {
       "get": {
         "operationId": "cimd_verification_tokens_list",
-        "description": "Manage CIMD verification tokens for an organization.\n\nA partner embeds the plaintext token in their CIMD metadata document as\n`verification_token` inside the `com.posthog` object (the legacy top-level\n`posthog_verification_token` field still works as a fallback). When PostHog fetches\nthe metadata, matching the token links the partner app to this organization and\ngrants a higher default rate limit for account provisioning.\n\nThe plaintext value is only available on creation; we store a hash.",
+        "description": "Manage CIMD verification tokens for an organization.\n\nA partner embeds the plaintext token in their CIMD metadata document as\n`verification_token` inside the `com.posthog` object (the legacy top-level\n`posthog_verification_token` field still works as a fallback). When PostHog fetches\nthe metadata, matching the token links the partner app to this organization and\ngrants a higher default rate limit for account provisioning.\n\nEach token is scoped at creation to the one `cimd_url` it will be published at,\nand verifies nowhere else. Two organizations may name the same URL; only the one\nwhose token is actually served there verifies, so claiming a URL cannot be used\nto block a partner from verifying theirs.\n\nThe plaintext value is only available on creation; we store a hash.",
         "parameters": [
           {
             "name": "limit",
@@ -1762,7 +1762,7 @@
       },
       "post": {
         "operationId": "cimd_verification_tokens_create",
-        "description": "Manage CIMD verification tokens for an organization.\n\nA partner embeds the plaintext token in their CIMD metadata document as\n`verification_token` inside the `com.posthog` object (the legacy top-level\n`posthog_verification_token` field still works as a fallback). When PostHog fetches\nthe metadata, matching the token links the partner app to this organization and\ngrants a higher default rate limit for account provisioning.\n\nThe plaintext value is only available on creation; we store a hash.",
+        "description": "Manage CIMD verification tokens for an organization.\n\nA partner embeds the plaintext token in their CIMD metadata document as\n`verification_token` inside the `com.posthog` object (the legacy top-level\n`posthog_verification_token` field still works as a fallback). When PostHog fetches\nthe metadata, matching the token links the partner app to this organization and\ngrants a higher default rate limit for account provisioning.\n\nEach token is scoped at creation to the one `cimd_url` it will be published at,\nand verifies nowhere else. Two organizations may name the same URL; only the one\nwhose token is actually served there verifies, so claiming a URL cannot be used\nto block a partner from verifying theirs.\n\nThe plaintext value is only available on creation; we store a hash.",
         "parameters": [
           {
             "$ref": "#/components/parameters/OrganizationIdPath"
@@ -1776,17 +1776,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/CIMDVerificationToken"
+                "$ref": "#/components/schemas/CIMDVerificationTokenCreate"
               }
             },
             "application/x-www-form-urlencoded": {
               "schema": {
-                "$ref": "#/components/schemas/CIMDVerificationToken"
+                "$ref": "#/components/schemas/CIMDVerificationTokenCreate"
               }
             },
             "multipart/form-data": {
               "schema": {
-                "$ref": "#/components/schemas/CIMDVerificationToken"
+                "$ref": "#/components/schemas/CIMDVerificationTokenCreate"
               }
             }
           },
@@ -1819,7 +1819,7 @@
     "/api/organizations/{organization_id}/cimd_verification_tokens/{id}/": {
       "get": {
         "operationId": "cimd_verification_tokens_retrieve",
-        "description": "Manage CIMD verification tokens for an organization.\n\nA partner embeds the plaintext token in their CIMD metadata document as\n`verification_token` inside the `com.posthog` object (the legacy top-level\n`posthog_verification_token` field still works as a fallback). When PostHog fetches\nthe metadata, matching the token links the partner app to this organization and\ngrants a higher default rate limit for account provisioning.\n\nThe plaintext value is only available on creation; we store a hash.",
+        "description": "Manage CIMD verification tokens for an organization.\n\nA partner embeds the plaintext token in their CIMD metadata document as\n`verification_token` inside the `com.posthog` object (the legacy top-level\n`posthog_verification_token` field still works as a fallback). When PostHog fetches\nthe metadata, matching the token links the partner app to this organization and\ngrants a higher default rate limit for account provisioning.\n\nEach token is scoped at creation to the one `cimd_url` it will be published at,\nand verifies nowhere else. Two organizations may name the same URL; only the one\nwhose token is actually served there verifies, so claiming a URL cannot be used\nto block a partner from verifying theirs.\n\nThe plaintext value is only available on creation; we store a hash.",
         "parameters": [
           {
             "in": "path",
@@ -1862,9 +1862,73 @@
           "core"
         ]
       },
+      "patch": {
+        "operationId": "cimd_verification_tokens_partial_update",
+        "description": "Manage CIMD verification tokens for an organization.\n\nA partner embeds the plaintext token in their CIMD metadata document as\n`verification_token` inside the `com.posthog` object (the legacy top-level\n`posthog_verification_token` field still works as a fallback). When PostHog fetches\nthe metadata, matching the token links the partner app to this organization and\ngrants a higher default rate limit for account provisioning.\n\nEach token is scoped at creation to the one `cimd_url` it will be published at,\nand verifies nowhere else. Two organizations may name the same URL; only the one\nwhose token is actually served there verifies, so claiming a URL cannot be used\nto block a partner from verifying theirs.\n\nThe plaintext value is only available on creation; we store a hash.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "A UUID string identifying this CIMD Verification Token.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/OrganizationIdPath"
+          }
+        ],
+        "tags": [
+          "organizations",
+          "cimd_verification_tokens"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchedCIMDVerificationTokenUpdate"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchedCIMDVerificationTokenUpdate"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchedCIMDVerificationTokenUpdate"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "organization:write"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CIMDVerificationToken"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "core"
+        ]
+      },
       "delete": {
         "operationId": "cimd_verification_tokens_destroy",
-        "description": "Manage CIMD verification tokens for an organization.\n\nA partner embeds the plaintext token in their CIMD metadata document as\n`verification_token` inside the `com.posthog` object (the legacy top-level\n`posthog_verification_token` field still works as a fallback). When PostHog fetches\nthe metadata, matching the token links the partner app to this organization and\ngrants a higher default rate limit for account provisioning.\n\nThe plaintext value is only available on creation; we store a hash.",
+        "description": "Manage CIMD verification tokens for an organization.\n\nA partner embeds the plaintext token in their CIMD metadata document as\n`verification_token` inside the `com.posthog` object (the legacy top-level\n`posthog_verification_token` field still works as a fallback). When PostHog fetches\nthe metadata, matching the token links the partner app to this organization and\ngrants a higher default rate limit for account provisioning.\n\nEach token is scoped at creation to the one `cimd_url` it will be published at,\nand verifies nowhere else. Two organizations may name the same URL; only the one\nwhose token is actually served there verifies, so claiming a URL cannot be used\nto block a partner from verifying theirs.\n\nThe plaintext value is only available on creation; we store a hash.",
         "parameters": [
           {
             "in": "path",
@@ -7566,6 +7630,69 @@
         ]
       }
     },
+    "/api/projects/{project_id}/accounts/{id}/meetings/": {
+      "get": {
+        "operationId": "accounts_meetings_list",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "description": "A UUID string identifying this account.",
+            "required": true
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Number of results to return per page.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "offset",
+            "required": false,
+            "in": "query",
+            "description": "The initial index from which to return the results.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          },
+          {
+            "in": "query",
+            "name": "search",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter meetings by title or attendee email/name."
+          }
+        ],
+        "tags": [
+          "accounts"
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedMeetingList"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "customer_analytics"
+        ]
+      }
+    },
     "/api/projects/{project_id}/accounts/{id}/summaries/": {
       "get": {
         "operationId": "accounts_summaries_list",
@@ -8310,6 +8437,7 @@
                 "Team",
                 "Project",
                 "ErrorTrackingIssue",
+                "DataWarehouseExpression",
                 "DataWarehouseSavedQuery",
                 "LegalDocument",
                 "Organization",
@@ -8357,13 +8485,14 @@
                 "StreamlitApp",
                 "Metric",
                 "TableCertification",
+                "DataQualityCheck",
                 "Billing",
                 "Loop"
               ],
               "type": "string",
               "minLength": 1
             },
-            "description": "Filter by a single activity scope, e.g. \"FeatureFlag\", \"Insight\", \"Dashboard\", \"Experiment\".\n\n* `Cohort` - Cohort\n* `FeatureFlag` - FeatureFlag\n* `Person` - Person\n* `Group` - Group\n* `Insight` - Insight\n* `Plugin` - Plugin\n* `PluginConfig` - PluginConfig\n* `HogFunction` - HogFunction\n* `HogFlow` - HogFlow\n* `DataManagement` - DataManagement\n* `EventDefinition` - EventDefinition\n* `PropertyDefinition` - PropertyDefinition\n* `Notebook` - Notebook\n* `Endpoint` - Endpoint\n* `EndpointVersion` - EndpointVersion\n* `Dashboard` - Dashboard\n* `Replay` - Replay\n* `Experiment` - Experiment\n* `ExperimentHoldout` - ExperimentHoldout\n* `ExperimentSavedMetric` - ExperimentSavedMetric\n* `Survey` - Survey\n* `EarlyAccessFeature` - EarlyAccessFeature\n* `SessionRecordingPlaylist` - SessionRecordingPlaylist\n* `Comment` - Comment\n* `Team` - Team\n* `Project` - Project\n* `ErrorTrackingIssue` - ErrorTrackingIssue\n* `DataWarehouseSavedQuery` - DataWarehouseSavedQuery\n* `LegalDocument` - LegalDocument\n* `Organization` - Organization\n* `OrganizationDomain` - OrganizationDomain\n* `IdentityProviderConfig` - IdentityProviderConfig\n* `OrganizationMembership` - OrganizationMembership\n* `Role` - Role\n* `UserGroup` - UserGroup\n* `BatchExport` - BatchExport\n* `BatchImport` - BatchImport\n* `ExportedAsset` - ExportedAsset\n* `Integration` - Integration\n* `Annotation` - Annotation\n* `Tag` - Tag\n* `TaggedItem` - TaggedItem\n* `Subscription` - Subscription\n* `PersonalAPIKey` - PersonalAPIKey\n* `ProjectSecretAPIKey` - ProjectSecretAPIKey\n* `OAuthApplication` - OAuthApplication\n* `User` - User\n* `Action` - Action\n* `AlertConfiguration` - AlertConfiguration\n* `Threshold` - Threshold\n* `AlertSubscription` - AlertSubscription\n* `ExternalDataSource` - ExternalDataSource\n* `ExternalDataSchema` - ExternalDataSchema\n* `Evaluation` - Evaluation\n* `EvaluationDirectory` - EvaluationDirectory\n* `LLMPrompt` - LLMPrompt\n* `LLMPromptLabel` - LLMPromptLabel\n* `LLMTrace` - LLMTrace\n* `AIGatewayCredit` - AIGatewayCredit\n* `WebAnalyticsFilterPreset` - WebAnalyticsFilterPreset\n* `CustomerProfileConfig` - CustomerProfileConfig\n* `Log` - Log\n* `LogsAlertConfiguration` - LogsAlertConfiguration\n* `LogsExclusionRule` - LogsExclusionRule\n* `LogsRetentionRule` - LogsRetentionRule\n* `DashboardWidget` - DashboardWidget\n* `ProductTour` - ProductTour\n* `Ticket` - Ticket\n* `InstanceSetting` - InstanceSetting\n* `SignalReport` - SignalReport\n* `SignalScoutConfig` - SignalScoutConfig\n* `StreamlitApp` - StreamlitApp\n* `Metric` - Metric\n* `TableCertification` - TableCertification\n* `Billing` - Billing\n* `Loop` - Loop"
+            "description": "Filter by a single activity scope, e.g. \"FeatureFlag\", \"Insight\", \"Dashboard\", \"Experiment\".\n\n* `Cohort` - Cohort\n* `FeatureFlag` - FeatureFlag\n* `Person` - Person\n* `Group` - Group\n* `Insight` - Insight\n* `Plugin` - Plugin\n* `PluginConfig` - PluginConfig\n* `HogFunction` - HogFunction\n* `HogFlow` - HogFlow\n* `DataManagement` - DataManagement\n* `EventDefinition` - EventDefinition\n* `PropertyDefinition` - PropertyDefinition\n* `Notebook` - Notebook\n* `Endpoint` - Endpoint\n* `EndpointVersion` - EndpointVersion\n* `Dashboard` - Dashboard\n* `Replay` - Replay\n* `Experiment` - Experiment\n* `ExperimentHoldout` - ExperimentHoldout\n* `ExperimentSavedMetric` - ExperimentSavedMetric\n* `Survey` - Survey\n* `EarlyAccessFeature` - EarlyAccessFeature\n* `SessionRecordingPlaylist` - SessionRecordingPlaylist\n* `Comment` - Comment\n* `Team` - Team\n* `Project` - Project\n* `ErrorTrackingIssue` - ErrorTrackingIssue\n* `DataWarehouseExpression` - DataWarehouseExpression\n* `DataWarehouseSavedQuery` - DataWarehouseSavedQuery\n* `LegalDocument` - LegalDocument\n* `Organization` - Organization\n* `OrganizationDomain` - OrganizationDomain\n* `IdentityProviderConfig` - IdentityProviderConfig\n* `OrganizationMembership` - OrganizationMembership\n* `Role` - Role\n* `UserGroup` - UserGroup\n* `BatchExport` - BatchExport\n* `BatchImport` - BatchImport\n* `ExportedAsset` - ExportedAsset\n* `Integration` - Integration\n* `Annotation` - Annotation\n* `Tag` - Tag\n* `TaggedItem` - TaggedItem\n* `Subscription` - Subscription\n* `PersonalAPIKey` - PersonalAPIKey\n* `ProjectSecretAPIKey` - ProjectSecretAPIKey\n* `OAuthApplication` - OAuthApplication\n* `User` - User\n* `Action` - Action\n* `AlertConfiguration` - AlertConfiguration\n* `Threshold` - Threshold\n* `AlertSubscription` - AlertSubscription\n* `ExternalDataSource` - ExternalDataSource\n* `ExternalDataSchema` - ExternalDataSchema\n* `Evaluation` - Evaluation\n* `EvaluationDirectory` - EvaluationDirectory\n* `LLMPrompt` - LLMPrompt\n* `LLMPromptLabel` - LLMPromptLabel\n* `LLMTrace` - LLMTrace\n* `AIGatewayCredit` - AIGatewayCredit\n* `WebAnalyticsFilterPreset` - WebAnalyticsFilterPreset\n* `CustomerProfileConfig` - CustomerProfileConfig\n* `Log` - Log\n* `LogsAlertConfiguration` - LogsAlertConfiguration\n* `LogsExclusionRule` - LogsExclusionRule\n* `LogsRetentionRule` - LogsRetentionRule\n* `DashboardWidget` - DashboardWidget\n* `ProductTour` - ProductTour\n* `Ticket` - Ticket\n* `InstanceSetting` - InstanceSetting\n* `SignalReport` - SignalReport\n* `SignalScoutConfig` - SignalScoutConfig\n* `StreamlitApp` - StreamlitApp\n* `Metric` - Metric\n* `TableCertification` - TableCertification\n* `DataQualityCheck` - DataQualityCheck\n* `Billing` - Billing\n* `Loop` - Loop"
           },
           {
             "in": "query",
@@ -8399,6 +8528,7 @@
                   "Team",
                   "Project",
                   "ErrorTrackingIssue",
+                  "DataWarehouseExpression",
                   "DataWarehouseSavedQuery",
                   "LegalDocument",
                   "Organization",
@@ -8446,11 +8576,12 @@
                   "StreamlitApp",
                   "Metric",
                   "TableCertification",
+                  "DataQualityCheck",
                   "Billing",
                   "Loop"
                 ],
                 "type": "string",
-                "description": "* `Cohort` - Cohort\n* `FeatureFlag` - FeatureFlag\n* `Person` - Person\n* `Group` - Group\n* `Insight` - Insight\n* `Plugin` - Plugin\n* `PluginConfig` - PluginConfig\n* `HogFunction` - HogFunction\n* `HogFlow` - HogFlow\n* `DataManagement` - DataManagement\n* `EventDefinition` - EventDefinition\n* `PropertyDefinition` - PropertyDefinition\n* `Notebook` - Notebook\n* `Endpoint` - Endpoint\n* `EndpointVersion` - EndpointVersion\n* `Dashboard` - Dashboard\n* `Replay` - Replay\n* `Experiment` - Experiment\n* `ExperimentHoldout` - ExperimentHoldout\n* `ExperimentSavedMetric` - ExperimentSavedMetric\n* `Survey` - Survey\n* `EarlyAccessFeature` - EarlyAccessFeature\n* `SessionRecordingPlaylist` - SessionRecordingPlaylist\n* `Comment` - Comment\n* `Team` - Team\n* `Project` - Project\n* `ErrorTrackingIssue` - ErrorTrackingIssue\n* `DataWarehouseSavedQuery` - DataWarehouseSavedQuery\n* `LegalDocument` - LegalDocument\n* `Organization` - Organization\n* `OrganizationDomain` - OrganizationDomain\n* `IdentityProviderConfig` - IdentityProviderConfig\n* `OrganizationMembership` - OrganizationMembership\n* `Role` - Role\n* `UserGroup` - UserGroup\n* `BatchExport` - BatchExport\n* `BatchImport` - BatchImport\n* `ExportedAsset` - ExportedAsset\n* `Integration` - Integration\n* `Annotation` - Annotation\n* `Tag` - Tag\n* `TaggedItem` - TaggedItem\n* `Subscription` - Subscription\n* `PersonalAPIKey` - PersonalAPIKey\n* `ProjectSecretAPIKey` - ProjectSecretAPIKey\n* `OAuthApplication` - OAuthApplication\n* `User` - User\n* `Action` - Action\n* `AlertConfiguration` - AlertConfiguration\n* `Threshold` - Threshold\n* `AlertSubscription` - AlertSubscription\n* `ExternalDataSource` - ExternalDataSource\n* `ExternalDataSchema` - ExternalDataSchema\n* `Evaluation` - Evaluation\n* `EvaluationDirectory` - EvaluationDirectory\n* `LLMPrompt` - LLMPrompt\n* `LLMPromptLabel` - LLMPromptLabel\n* `LLMTrace` - LLMTrace\n* `AIGatewayCredit` - AIGatewayCredit\n* `WebAnalyticsFilterPreset` - WebAnalyticsFilterPreset\n* `CustomerProfileConfig` - CustomerProfileConfig\n* `Log` - Log\n* `LogsAlertConfiguration` - LogsAlertConfiguration\n* `LogsExclusionRule` - LogsExclusionRule\n* `LogsRetentionRule` - LogsRetentionRule\n* `DashboardWidget` - DashboardWidget\n* `ProductTour` - ProductTour\n* `Ticket` - Ticket\n* `InstanceSetting` - InstanceSetting\n* `SignalReport` - SignalReport\n* `SignalScoutConfig` - SignalScoutConfig\n* `StreamlitApp` - StreamlitApp\n* `Metric` - Metric\n* `TableCertification` - TableCertification\n* `Billing` - Billing\n* `Loop` - Loop"
+                "description": "* `Cohort` - Cohort\n* `FeatureFlag` - FeatureFlag\n* `Person` - Person\n* `Group` - Group\n* `Insight` - Insight\n* `Plugin` - Plugin\n* `PluginConfig` - PluginConfig\n* `HogFunction` - HogFunction\n* `HogFlow` - HogFlow\n* `DataManagement` - DataManagement\n* `EventDefinition` - EventDefinition\n* `PropertyDefinition` - PropertyDefinition\n* `Notebook` - Notebook\n* `Endpoint` - Endpoint\n* `EndpointVersion` - EndpointVersion\n* `Dashboard` - Dashboard\n* `Replay` - Replay\n* `Experiment` - Experiment\n* `ExperimentHoldout` - ExperimentHoldout\n* `ExperimentSavedMetric` - ExperimentSavedMetric\n* `Survey` - Survey\n* `EarlyAccessFeature` - EarlyAccessFeature\n* `SessionRecordingPlaylist` - SessionRecordingPlaylist\n* `Comment` - Comment\n* `Team` - Team\n* `Project` - Project\n* `ErrorTrackingIssue` - ErrorTrackingIssue\n* `DataWarehouseExpression` - DataWarehouseExpression\n* `DataWarehouseSavedQuery` - DataWarehouseSavedQuery\n* `LegalDocument` - LegalDocument\n* `Organization` - Organization\n* `OrganizationDomain` - OrganizationDomain\n* `IdentityProviderConfig` - IdentityProviderConfig\n* `OrganizationMembership` - OrganizationMembership\n* `Role` - Role\n* `UserGroup` - UserGroup\n* `BatchExport` - BatchExport\n* `BatchImport` - BatchImport\n* `ExportedAsset` - ExportedAsset\n* `Integration` - Integration\n* `Annotation` - Annotation\n* `Tag` - Tag\n* `TaggedItem` - TaggedItem\n* `Subscription` - Subscription\n* `PersonalAPIKey` - PersonalAPIKey\n* `ProjectSecretAPIKey` - ProjectSecretAPIKey\n* `OAuthApplication` - OAuthApplication\n* `User` - User\n* `Action` - Action\n* `AlertConfiguration` - AlertConfiguration\n* `Threshold` - Threshold\n* `AlertSubscription` - AlertSubscription\n* `ExternalDataSource` - ExternalDataSource\n* `ExternalDataSchema` - ExternalDataSchema\n* `Evaluation` - Evaluation\n* `EvaluationDirectory` - EvaluationDirectory\n* `LLMPrompt` - LLMPrompt\n* `LLMPromptLabel` - LLMPromptLabel\n* `LLMTrace` - LLMTrace\n* `AIGatewayCredit` - AIGatewayCredit\n* `WebAnalyticsFilterPreset` - WebAnalyticsFilterPreset\n* `CustomerProfileConfig` - CustomerProfileConfig\n* `Log` - Log\n* `LogsAlertConfiguration` - LogsAlertConfiguration\n* `LogsExclusionRule` - LogsExclusionRule\n* `LogsRetentionRule` - LogsRetentionRule\n* `DashboardWidget` - DashboardWidget\n* `ProductTour` - ProductTour\n* `Ticket` - Ticket\n* `InstanceSetting` - InstanceSetting\n* `SignalReport` - SignalReport\n* `SignalScoutConfig` - SignalScoutConfig\n* `StreamlitApp` - StreamlitApp\n* `Metric` - Metric\n* `TableCertification` - TableCertification\n* `DataQualityCheck` - DataQualityCheck\n* `Billing` - Billing\n* `Loop` - Loop"
               }
             },
             "description": "Filter by multiple activity scopes, comma-separated. Values must be valid ActivityScope enum values. E.g. \"FeatureFlag,Insight\"."
@@ -12149,6 +12280,95 @@
         ]
       }
     },
+    "/api/projects/{project_id}/calendar_sync/": {
+      "get": {
+        "operationId": "calendar_sync_list",
+        "description": "Calendar-sync controls for Customer analytics settings. Sync runs on an hourly\nTemporal schedule; this surface only offers the manual \"sync now\" escape hatch.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "calendar_sync"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "account:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CalendarSyncStatus"
+                  }
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "customer_analytics"
+        ]
+      }
+    },
+    "/api/projects/{project_id}/calendar_sync/sync_now/": {
+      "post": {
+        "operationId": "calendar_sync_sync_now_create",
+        "description": "Start a sync run for one connected Google Calendar immediately, outside the hourly schedule.",
+        "summary": "Sync a connected calendar now",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "calendar_sync"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CalendarSyncTrigger"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/CalendarSyncTrigger"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/CalendarSyncTrigger"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CalendarSyncTriggerResponse"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "customer_analytics"
+        ]
+      }
+    },
     "/api/projects/{project_id}/canvases/": {
       "get": {
         "operationId": "canvases_list",
@@ -14096,6 +14316,7 @@
       },
       "post": {
         "operationId": "comments_create",
+        "description": "Create a comment.\n\nSupport messages are deduplicated: an identical message from the same author on the same\nticket within a short window returns the original comment with a 200 instead of creating a\nsecond one, and a 409 while a concurrent request is still creating it.",
         "parameters": [
           {
             "$ref": "#/components/parameters/ProjectIdPath"
@@ -14131,6 +14352,16 @@
           }
         ],
         "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Comment"
+                }
+              }
+            },
+            "description": "An identical support message was already created by a recent request. The original comment is returned and nothing new is written."
+          },
           "201": {
             "content": {
               "application/json": {
@@ -14140,6 +14371,16 @@
               }
             },
             "description": ""
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommentError"
+                }
+              }
+            },
+            "description": "An identical support message is still being created by another request."
           }
         },
         "x-product": [
@@ -15916,7 +16157,7 @@
     "/api/projects/{project_id}/conversations/tickets/{id}/reply/": {
       "post": {
         "operationId": "conversations_tickets_reply_create",
-        "description": "Post a reply or internal note to a ticket.\n\nWith is_private=false, the reply is delivered to the customer via the\nticket's channel (email, Slack, Teams, GitHub). With is_private=true,\nthe message is stored as an internal note only visible to team members.",
+        "description": "Post a reply or internal note to a ticket.\n\nWith is_private=false, the reply is delivered to the customer via the\nticket's channel (email, Slack, Teams, GitHub). With is_private=true,\nthe message is stored as an internal note only visible to team members.\n\nRetrying an identical message from the same author within a short window returns the\noriginal message with a 200 rather than posting it twice, and a 409 while a concurrent\nrequest is still creating it.",
         "parameters": [
           {
             "in": "path",
@@ -15962,6 +16203,16 @@
           }
         ],
         "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TicketMessage"
+                }
+              }
+            },
+            "description": "An identical message was already posted by a recent request. The original message is returned and nothing new is written."
+          },
           "201": {
             "content": {
               "application/json": {
@@ -15971,6 +16222,26 @@
               }
             },
             "description": ""
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TicketError"
+                }
+              }
+            },
+            "description": ""
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TicketError"
+                }
+              }
+            },
+            "description": "An identical message is still being created by another request."
           }
         },
         "x-product": [
@@ -50834,6 +51105,7 @@
                 "gitlab",
                 "google-ads",
                 "google-analytics",
+                "google-calendar",
                 "google-cloud-service-account",
                 "google-cloud-storage",
                 "google-pubsub",
@@ -50863,7 +51135,7 @@
                 "vercel"
               ]
             },
-            "description": "* `anthropic` - Anthropic\n* `apns` - Apple Push\n* `aws-redshift` - Aws Redshift\n* `aws-s3` - Aws S3\n* `azure-blob` - Azure Blob\n* `bing-ads` - Bing Ads\n* `clickup` - Clickup\n* `customerio-app` - Customerio App\n* `customerio-track` - Customerio Track\n* `customerio-webhook` - Customerio Webhook\n* `databricks` - Databricks\n* `email` - Email\n* `firebase` - Firebase\n* `github` - Github\n* `gitlab` - Gitlab\n* `google-ads` - Google Ads\n* `google-analytics` - Google Analytics\n* `google-cloud-service-account` - Google Cloud Service Account\n* `google-cloud-storage` - Google Cloud Storage\n* `google-pubsub` - Google Pubsub\n* `google-search-console` - Google Search Console\n* `google-sheets` - Google Sheets\n* `hubspot` - Hubspot\n* `intercom` - Intercom\n* `jira` - Jira\n* `linear` - Linear\n* `linkedin-ads` - Linkedin Ads\n* `meta-ads` - Meta Ads\n* `pardot` - Pardot\n* `pinterest-ads` - Pinterest Ads\n* `postgresql` - Postgresql\n* `posthog` - Posthog\n* `reddit-ads` - Reddit Ads\n* `resend` - Resend\n* `s3-compatible` - S3 Compatible\n* `salesforce` - Salesforce\n* `slack` - Slack\n* `slack-posthog-code` - Slack Posthog Code\n* `snapchat` - Snapchat\n* `snowflake` - Snowflake\n* `stripe` - Stripe\n* `tiktok-ads` - Tiktok Ads\n* `twilio` - Twilio\n* `vercel` - Vercel"
+            "description": "* `anthropic` - Anthropic\n* `apns` - Apple Push\n* `aws-redshift` - Aws Redshift\n* `aws-s3` - Aws S3\n* `azure-blob` - Azure Blob\n* `bing-ads` - Bing Ads\n* `clickup` - Clickup\n* `customerio-app` - Customerio App\n* `customerio-track` - Customerio Track\n* `customerio-webhook` - Customerio Webhook\n* `databricks` - Databricks\n* `email` - Email\n* `firebase` - Firebase\n* `github` - Github\n* `gitlab` - Gitlab\n* `google-ads` - Google Ads\n* `google-analytics` - Google Analytics\n* `google-calendar` - Google Calendar\n* `google-cloud-service-account` - Google Cloud Service Account\n* `google-cloud-storage` - Google Cloud Storage\n* `google-pubsub` - Google Pubsub\n* `google-search-console` - Google Search Console\n* `google-sheets` - Google Sheets\n* `hubspot` - Hubspot\n* `intercom` - Intercom\n* `jira` - Jira\n* `linear` - Linear\n* `linkedin-ads` - Linkedin Ads\n* `meta-ads` - Meta Ads\n* `pardot` - Pardot\n* `pinterest-ads` - Pinterest Ads\n* `postgresql` - Postgresql\n* `posthog` - Posthog\n* `reddit-ads` - Reddit Ads\n* `resend` - Resend\n* `s3-compatible` - S3 Compatible\n* `salesforce` - Salesforce\n* `slack` - Slack\n* `slack-posthog-code` - Slack Posthog Code\n* `snapchat` - Snapchat\n* `snowflake` - Snowflake\n* `stripe` - Stripe\n* `tiktok-ads` - Tiktok Ads\n* `twilio` - Twilio\n* `vercel` - Vercel"
           },
           {
             "name": "limit",
@@ -65279,6 +65551,13 @@
         "tags": [
           "mcp_server_installations"
         ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "project:read"
+            ]
+          }
+        ],
         "responses": {
           "200": {
             "content": {
@@ -65760,6 +66039,7 @@
       "post": {
         "operationId": "messaging_preferences_generate_link_create",
         "description": "Generate an unsubscribe link for the current user's email address",
+        "summary": "Generate a preferences page link for a recipient",
         "parameters": [
           {
             "$ref": "#/components/parameters/ProjectIdPath"
@@ -65768,9 +66048,35 @@
         "tags": [
           "messaging_preferences"
         ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GenerateLinkRequest"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/GenerateLinkRequest"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/GenerateLinkRequest"
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
-            "description": "No response body"
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PreferencesLink"
+                }
+              }
+            },
+            "description": ""
           }
         },
         "x-product": [
@@ -65847,10 +66153,68 @@
         ]
       }
     },
+    "/api/projects/{project_id}/messaging_preferences/remove_opt_out/": {
+      "post": {
+        "operationId": "messaging_preferences_remove_opt_out_create",
+        "description": "Opt a recipient back in to a specific category, or to all marketing messages.",
+        "summary": "Remove a recipient from the opt-out list",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "messaging_preferences"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RemoveOptOutRequest"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/RemoveOptOutRequest"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/RemoveOptOutRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "hog_flow:write"
+            ]
+          }
+        ],
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessagePreferences"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "messaging"
+        ]
+      }
+    },
     "/api/projects/{project_id}/messaging_preferences/webhook_url/": {
       "get": {
         "operationId": "messaging_preferences_webhook_url_retrieve",
         "description": "Return the webhook URL for Customer.io integration setup.",
+        "summary": "Get the Customer.io webhook URL for the team",
         "parameters": [
           {
             "$ref": "#/components/parameters/ProjectIdPath"
@@ -65861,7 +66225,14 @@
         ],
         "responses": {
           "200": {
-            "description": "No response body"
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebhookUrl"
+                }
+              }
+            },
+            "description": ""
           }
         },
         "x-product": [
@@ -70254,6 +70625,66 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/PostHogConnectionForwardResponse"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "integrations"
+        ]
+      }
+    },
+    "/api/projects/{project_id}/posthog_connections/{id}/target/": {
+      "get": {
+        "operationId": "posthog_connections_target_retrieve",
+        "description": "Resolve which project, organization and region a PostHog connection points at, so callers can build target API paths without reading `api/users/@me/` through the connection first.",
+        "summary": "Read the connected project's identity",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "posthog_connections"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "integration:read"
+            ]
+          },
+          {
+            "PersonalAPIKeyAuth": [
+              "integration:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PostHogConnectionTarget"
+                }
+              }
+            },
+            "description": ""
+          },
+          "502": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PostHogConnectionTargetError"
                 }
               }
             },
@@ -77445,7 +77876,7 @@
     "/api/projects/{project_id}/signals/reports/{id}/feedback/": {
       "post": {
         "operationId": "signals_reports_feedback_create",
-        "description": "Record a note left with the thumbs rating at the end of a report. The rating itself is a product-analytics event; this endpoint exists to carry the note into the scout steering channel. For a report authored by a scout, the note is forwarded to that scout as a steering note it reads on its next run; for any other report there is nothing to steer and the call is a no-op success. The report's state is never changed.",
+        "description": "Record the thumbs rating at the end of a report, with an optional note. For browser-session requests the rating is persisted as a per-person report action, which counts as consumption evidence for the scout that authored the report (scouts whose output nobody consumes are eventually paused); requests authenticated any other way record no action. When a note is present and the report was authored by a scout, the note is also forwarded to that scout as a steering note it reads on its next run; for any other report there is nothing to steer. The report's state is never changed.",
         "summary": "Leave feedback on a report",
         "parameters": [
           {
@@ -78232,6 +78663,51 @@
               }
             },
             "description": ""
+          }
+        },
+        "x-product": [
+          "signals"
+        ]
+      }
+    },
+    "/api/projects/{project_id}/signals/reports/{id}/viewed/": {
+      "post": {
+        "operationId": "signals_reports_viewed_create",
+        "description": "Record that the caller opened this report's detail view. One row per person per report is kept (repeat views bump a counter), and the record counts as consumption evidence for the scout that authored the report — scouts whose reports nobody consumes are eventually paused. Intended as fire-and-forget from the inbox UI when a person opens a report. Only browser-session requests leave a record; a call with any other credential (personal API key, OAuth token) returns 204 but records nothing.",
+        "summary": "Record that a person viewed a report",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "A UUID string identifying this signal report.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "signals"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "task:read"
+            ]
+          },
+          {
+            "PersonalAPIKeyAuth": [
+              "task:read"
+            ]
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No response body"
           }
         },
         "x-product": [
@@ -88445,6 +88921,166 @@
         ]
       }
     },
+    "/api/projects/{project_id}/tasks/{task_id}/runs/{id}/artifacts/{artifact_id}/download/": {
+      "get": {
+        "operationId": "tasks_runs_artifacts_download_retrieve",
+        "description": "Redirects to a short-lived presigned URL for the artifact, so callers can share a stable link instead of a raw presigned URL.",
+        "summary": "Download a task run artifact by id",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "artifact_id",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Manifest id of the artifact to download",
+            "required": true
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          },
+          {
+            "in": "path",
+            "name": "task_id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "tags": [
+          "task-runs",
+          "tasks",
+          "tasks"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "task:read"
+            ]
+          },
+          {
+            "PersonalAPIKeyAuth": [
+              "task:read"
+            ]
+          }
+        ],
+        "responses": {
+          "302": {
+            "description": "Redirect to a short-lived presigned download URL"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskRunErrorResponse"
+                }
+              }
+            },
+            "description": "Unable to generate download URL"
+          },
+          "404": {
+            "description": "Artifact not found"
+          }
+        },
+        "x-product": [
+          "task-runs",
+          "tasks"
+        ]
+      }
+    },
+    "/api/projects/{project_id}/tasks/{task_id}/runs/{id}/artifacts/dismiss/": {
+      "post": {
+        "operationId": "tasks_runs_artifacts_dismiss_create",
+        "description": "Hides artifacts from clients without deleting them from storage, so a file dismissed by mistake can be restored.",
+        "summary": "Dismiss or restore task run artifacts",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          },
+          {
+            "in": "path",
+            "name": "task_id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "tags": [
+          "task-runs",
+          "tasks",
+          "tasks"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TaskRunArtifactsDismissRequest"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/TaskRunArtifactsDismissRequest"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/TaskRunArtifactsDismissRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "task:write"
+            ]
+          },
+          {
+            "PersonalAPIKeyAuth": [
+              "task:write"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskRunArtifactsDismissResponse"
+                }
+              }
+            },
+            "description": "Run with updated artifact manifest"
+          },
+          "404": {
+            "description": "Artifact not found"
+          }
+        },
+        "x-product": [
+          "task-runs",
+          "tasks"
+        ]
+      }
+    },
     "/api/projects/{project_id}/tasks/{task_id}/runs/{id}/artifacts/download/": {
       "post": {
         "operationId": "tasks_runs_artifacts_download_create",
@@ -91008,8 +91644,7 @@
                 "$ref": "#/components/schemas/WarmTaskRequest"
               }
             }
-          },
-          "required": true
+          }
         },
         "security": [
           {
@@ -91033,6 +91668,16 @@
               }
             },
             "description": "Warm Run provisioned (`task_id`/`run_id` to activate on submit), or an empty body when the feature is off, capped, or the integration didn't resolve."
+          },
+          "429": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskRunErrorResponse"
+                }
+              }
+            },
+            "description": "Team is over its posthog_code usage limit"
           }
         },
         "x-product": [
@@ -94737,6 +95382,14 @@
               "type": "string"
             },
             "description": "Filter by enabled state. Accepts a comma-separated list of `enabled`/`disabled`."
+          },
+          {
+            "in": "query",
+            "name": "experiment_id",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter to scanners whose targeting watches the given experiment."
           },
           {
             "name": "limit",
@@ -98637,6 +99290,333 @@
         ],
         "responses": {
           "200": {
+            "description": "No response body"
+          }
+        },
+        "x-product": [
+          "data_warehouse"
+        ]
+      }
+    },
+    "/api/projects/{project_id}/warehouse_expressions/": {
+      "get": {
+        "operationId": "warehouse_expressions_list",
+        "description": "Create, read, update and delete saved HogQL expressions that appear as virtual fields on tables.",
+        "parameters": [
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Number of results to return per page.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "offset",
+            "required": false,
+            "in": "query",
+            "description": "The initial index from which to return the results.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "description": "A search term.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "tags": [
+          "warehouse_expressions"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "warehouse_view:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedDataWarehouseExpressionList"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "data_warehouse"
+        ]
+      },
+      "post": {
+        "operationId": "warehouse_expressions_create",
+        "description": "Create, read, update and delete saved HogQL expressions that appear as virtual fields on tables.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "warehouse_expressions"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DataWarehouseExpression"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/DataWarehouseExpression"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/DataWarehouseExpression"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "warehouse_view:write"
+            ]
+          }
+        ],
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DataWarehouseExpression"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "data_warehouse"
+        ]
+      }
+    },
+    "/api/projects/{project_id}/warehouse_expressions/{id}/": {
+      "get": {
+        "operationId": "warehouse_expressions_retrieve",
+        "description": "Create, read, update and delete saved HogQL expressions that appear as virtual fields on tables.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "A UUID string identifying this data warehouse expression.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "warehouse_expressions"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "warehouse_view:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DataWarehouseExpression"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "data_warehouse"
+        ]
+      },
+      "put": {
+        "operationId": "warehouse_expressions_update",
+        "description": "Create, read, update and delete saved HogQL expressions that appear as virtual fields on tables.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "A UUID string identifying this data warehouse expression.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "warehouse_expressions"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DataWarehouseExpression"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/DataWarehouseExpression"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/DataWarehouseExpression"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "warehouse_view:write"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DataWarehouseExpression"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "data_warehouse"
+        ]
+      },
+      "patch": {
+        "operationId": "warehouse_expressions_partial_update",
+        "description": "Create, read, update and delete saved HogQL expressions that appear as virtual fields on tables.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "A UUID string identifying this data warehouse expression.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "warehouse_expressions"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchedDataWarehouseExpression"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchedDataWarehouseExpression"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchedDataWarehouseExpression"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "warehouse_view:write"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DataWarehouseExpression"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "data_warehouse"
+        ]
+      },
+      "delete": {
+        "operationId": "warehouse_expressions_destroy",
+        "description": "Create, read, update and delete saved HogQL expressions that appear as virtual fields on tables.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "A UUID string identifying this data warehouse expression.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "warehouse_expressions"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "warehouse_view:write"
+            ]
+          }
+        ],
+        "responses": {
+          "204": {
             "description": "No response body"
           }
         },
@@ -104948,6 +105928,20 @@
             ],
             "additionalProperties": false,
             "properties": {
+              "email_domains": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Email domains owned by this account's company, used to match inbound touchpoints to the account."
+              },
+              "known_emails": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Individual email addresses pinned to this account, matched before the domain fallback."
+              },
               "stripe_customer_id": {
                 "type": [
                   "string",
@@ -104997,7 +105991,7 @@
                 ]
               }
             },
-            "description": "Typed account properties: external system identifiers (stripe_customer_id, hubspot_deal_id, billing_id, sfdc_id, zendesk_id, slack_channel_id, usage_dashboard_link, metabase_link). Defaults to an empty object. Unknown keys are rejected. User assignments live on account relationships, not here."
+            "description": "Typed account properties: external system identifiers (stripe_customer_id, hubspot_deal_id, billing_id, sfdc_id, zendesk_id, slack_channel_id, usage_dashboard_link, metabase_link) plus touchpoint matching lists: email_domains (the company's email domains) and known_emails (individual addresses pinned to the account). Defaults to an empty object. Unknown keys are rejected. User assignments live on account relationships, not here."
           },
           "tags": {
             "type": "array",
@@ -114298,6 +115292,7 @@
       },
       "CIMDVerificationToken": {
         "type": "object",
+        "description": "Read shape for list/retrieve/create-response. `cimd_url` is nullable here for\ntokens issued before URL binding; the write serializers below require a value.",
         "properties": {
           "id": {
             "type": "string",
@@ -114306,7 +115301,17 @@
           },
           "label": {
             "type": "string",
-            "maxLength": 40
+            "readOnly": true,
+            "description": "Human-readable name to identify this token later, e.g. 'Production CIMD partner'."
+          },
+          "cimd_url": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "readOnly": true,
+            "description": "HTTPS URL of the CIMD metadata document this token verifies at. Null on tokens issued before URL binding; those no longer verify until bound via PATCH or reissued.",
+            "maxLength": 2048
           },
           "mask_value": {
             "type": [
@@ -114338,12 +115343,33 @@
           }
         },
         "required": [
+          "cimd_url",
           "created_at",
           "created_by",
           "id",
           "label",
           "last_used_at",
           "mask_value"
+        ]
+      },
+      "CIMDVerificationTokenCreate": {
+        "type": "object",
+        "description": "Write shape for `create`. `cimd_url` is required and non-null: only tokens\nissued before URL binding existed are nullable, not new ones.",
+        "properties": {
+          "label": {
+            "type": "string",
+            "description": "Human-readable name to identify this token later, e.g. 'Production CIMD partner'.",
+            "maxLength": 40
+          },
+          "cimd_url": {
+            "type": "string",
+            "description": "HTTPS URL of the CIMD metadata document this token will be published in. The token only verifies at this URL, so a copy hosted anywhere else is rejected. Host case, an explicit :443 and a trailing slash are normalized away; the path is case-sensitive.",
+            "maxLength": 2048
+          }
+        },
+        "required": [
+          "cimd_url",
+          "label"
         ]
       },
       "CIMDVerificationTokenWithValue": {
@@ -114357,7 +115383,17 @@
           },
           "label": {
             "type": "string",
-            "maxLength": 40
+            "readOnly": true,
+            "description": "Human-readable name to identify this token later, e.g. 'Production CIMD partner'."
+          },
+          "cimd_url": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "readOnly": true,
+            "description": "HTTPS URL of the CIMD metadata document this token verifies at. Null on tokens issued before URL binding; those no longer verify until bound via PATCH or reissued.",
+            "maxLength": 2048
           },
           "mask_value": {
             "type": [
@@ -114394,6 +115430,7 @@
           }
         },
         "required": [
+          "cimd_url",
           "created_at",
           "created_by",
           "id",
@@ -115034,6 +116071,74 @@
         "title": "CalendarHeatmapResponse",
         "type": "object"
       },
+      "CalendarSyncStatus": {
+        "type": "object",
+        "description": "Sync state of one connected calendar (read-only).",
+        "properties": {
+          "integration_id": {
+            "type": "integer",
+            "readOnly": true,
+            "description": "Id of the google-calendar integration."
+          },
+          "last_synced_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time",
+            "readOnly": true,
+            "description": "When the last sync run completed; null before the first sync."
+          },
+          "is_syncing": {
+            "type": "boolean",
+            "readOnly": true,
+            "description": "Whether a sync run is currently in flight."
+          }
+        },
+        "required": [
+          "integration_id",
+          "is_syncing",
+          "last_synced_at"
+        ]
+      },
+      "CalendarSyncTrigger": {
+        "type": "object",
+        "description": "Request body of the calendar sync-now trigger.",
+        "properties": {
+          "integration_id": {
+            "type": "integer",
+            "description": "Id of the google-calendar integration to sync."
+          }
+        },
+        "required": [
+          "integration_id"
+        ]
+      },
+      "CalendarSyncTriggerResponse": {
+        "type": "object",
+        "description": "Response of the calendar sync-now trigger.",
+        "properties": {
+          "status": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CalendarSyncTriggerResponseStatusEnum"
+              }
+            ],
+            "description": "'started' (a sync run began) or 'already_running' (a sync for this calendar was already in flight, so this was a no-op).\n\n* `started` - started\n* `already_running` - already_running"
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "CalendarSyncTriggerResponseStatusEnum": {
+        "enum": [
+          "started",
+          "already_running"
+        ],
+        "type": "string",
+        "description": "* `started` - started\n* `already_running` - already_running"
+      },
       "CallToolBlocked": {
         "type": "object",
         "properties": {
@@ -115215,10 +116320,15 @@
           "reason": {
             "type": "string",
             "description": "Why these campaign values were clustered together"
+          },
+          "event_count_30d": {
+            "type": "integer",
+            "description": "Events across every raw value folded into this suggestion. Suggestions are ordered by it."
           }
         },
         "required": [
           "confidence",
+          "event_count_30d",
           "integration",
           "integration_display_name",
           "method",
@@ -119035,6 +120145,22 @@
           "version"
         ]
       },
+      "CommentError": {
+        "type": "object",
+        "properties": {
+          "detail": {
+            "type": "string",
+            "description": "Human-readable explanation of what went wrong."
+          },
+          "error_type": {
+            "type": "string",
+            "description": "Stable machine-readable identifier for the failure."
+          }
+        },
+        "required": [
+          "detail"
+        ]
+      },
       "CommentSlackThread": {
         "type": "object",
         "properties": {
@@ -119071,6 +120197,11 @@
             "type": "string",
             "readOnly": true,
             "description": "Slack channel the mirrored thread lives in."
+          },
+          "slack_channel_name": {
+            "type": "string",
+            "readOnly": true,
+            "description": "Slack channel name resolved from Slack at send time (no leading #). Empty for private channels and when unknown."
           },
           "slack_thread_ts": {
             "type": "string",
@@ -119111,6 +120242,7 @@
           "item_id",
           "scope",
           "slack_channel_id",
+          "slack_channel_name",
           "slack_team_id",
           "slack_thread_ts",
           "source_comment"
@@ -119123,6 +120255,10 @@
             "type": "string",
             "description": "Slack channel ID this discussion is mirrored to."
           },
+          "channel_name": {
+            "type": "string",
+            "description": "Slack channel name resolved from Slack when the discussion was sent (no leading #). Empty for private channels and when unknown; may lag behind a rename in Slack."
+          },
           "url": {
             "type": "string",
             "description": "Deep link that opens the mirrored Slack thread."
@@ -119130,6 +120266,7 @@
         },
         "required": [
           "channel_id",
+          "channel_name",
           "url"
         ]
       },
@@ -125855,6 +126992,68 @@
         ],
         "title": "DataWarehouseEventsModifier",
         "type": "object"
+      },
+      "DataWarehouseExpression": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "readOnly": true
+          },
+          "deleted": {
+            "type": [
+              "boolean",
+              "null"
+            ],
+            "description": "Whether this expression has been soft-deleted."
+          },
+          "created_by": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/UserBasic"
+              }
+            ],
+            "readOnly": true
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          },
+          "table_name": {
+            "type": "string",
+            "description": "Name of the table the expression field is added to, for example events.",
+            "maxLength": 400
+          },
+          "field_name": {
+            "type": "string",
+            "description": "Name of the virtual field the expression is exposed as. Letters, numbers, underscores and $ only, starting with a letter, underscore or $. Must not clash with an existing field on the table.",
+            "pattern": "^[A-Za-z_$][A-Za-z0-9_$]*$",
+            "maxLength": 400
+          },
+          "expression": {
+            "type": "string",
+            "description": "HogQL expression evaluated in the context of the table, for example properties.$browser or lower(email).",
+            "maxLength": 10000
+          },
+          "connection_id": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uuid",
+            "description": "ExternalDataSource id to scope the expression to that connection's direct-query database. Null applies it to the default warehouse database."
+          }
+        },
+        "required": [
+          "created_at",
+          "created_by",
+          "expression",
+          "field_name",
+          "id",
+          "table_name"
+        ]
       },
       "DataWarehouseModelPath": {
         "type": "object",
@@ -142936,6 +144135,18 @@
       "ExperimentApiExposureCriteria": {
         "additionalProperties": false,
         "properties": {
+          "activation_config": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ExperimentApiExposureConfig"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Additional event (or action) an entity must emit at/after their first default exposure event before they count as exposed; exposure time becomes this event's timestamp. Only valid with the default exposure event, not a custom `exposure_config`."
+          },
           "exposure_config": {
             "anyOf": [
               {
@@ -143991,6 +145202,22 @@
       "ExperimentExposureCriteria": {
         "additionalProperties": false,
         "properties": {
+          "activation_config": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ExperimentEventExposureConfig"
+              },
+              {
+                "$ref": "#/components/schemas/ActionsNode"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Additional event (or action) an entity must emit at/after their first default exposure event before they count as exposed; exposure time becomes this event's timestamp. Only valid with the default exposure event, not a custom `exposure_config`.",
+            "title": "Activation Config"
+          },
           "exposure_config": {
             "anyOf": [
               {
@@ -156902,6 +158129,16 @@
           }
         }
       },
+      "GenerateLinkRequest": {
+        "type": "object",
+        "properties": {
+          "recipient": {
+            "type": "string",
+            "description": "Recipient to generate the link for. Defaults to the requesting user's own email address.",
+            "maxLength": 512
+          }
+        }
+      },
       "GeneratePathCleaningSuggestionResponse": {
         "type": "object",
         "properties": {
@@ -162880,7 +164117,7 @@
               }
             ],
             "default": null,
-            "description": "Extra filters applied to query via {filters}"
+            "description": "Extra filters applied to query via {filters} or the column-bound {filters(expr AS key, ...)} placeholder"
           },
           "globals": {
             "anyOf": [
@@ -163536,7 +164773,8 @@
                 "type": "null"
               }
             ],
-            "default": null
+            "default": null,
+            "description": "Extra filters applied to query via {filters} or the column-bound {filters(expr AS key, ...)} placeholder"
           },
           "kind": {
             "const": "HogQLQuery",
@@ -163809,6 +165047,19 @@
               }
             ],
             "default": null
+          },
+          "mergeFederatedAggregateJoins": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Merge sibling aggregating LEFT JOINs over federated Postgres tables into one UNION ALL join, so their scans overlap",
+            "title": "Mergefederatedaggregatejoins"
           },
           "optimizeJoinedFilters": {
             "anyOf": [
@@ -166232,6 +167483,24 @@
           },
           "values": {
             "description": "Allowed values for List variables. Null for other variable types."
+          },
+          "is_multi": {
+            "type": "boolean",
+            "description": "Whether a List variable accepts multiple selected values."
+          },
+          "values_query": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "HogQL query whose first result column supplies the allowed values for a List variable. An optional second column supplies display labels."
+          },
+          "values_query_connection_id": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "ID of the external data source connection values_query runs against. Null runs it against PostHog."
           }
         },
         "required": [
@@ -166731,7 +168000,7 @@
                 "$ref": "#/components/schemas/IntegrationKindEnum"
               }
             ],
-            "description": "The kind of integration the member is requesting be connected (e.g. 'slack', 'github').\n\n* `anthropic` - Anthropic\n* `apns` - Apple Push\n* `aws-redshift` - Aws Redshift\n* `aws-s3` - Aws S3\n* `azure-blob` - Azure Blob\n* `bing-ads` - Bing Ads\n* `clickup` - Clickup\n* `customerio-app` - Customerio App\n* `customerio-track` - Customerio Track\n* `customerio-webhook` - Customerio Webhook\n* `databricks` - Databricks\n* `email` - Email\n* `firebase` - Firebase\n* `github` - Github\n* `gitlab` - Gitlab\n* `google-ads` - Google Ads\n* `google-analytics` - Google Analytics\n* `google-cloud-service-account` - Google Cloud Service Account\n* `google-cloud-storage` - Google Cloud Storage\n* `google-pubsub` - Google Pubsub\n* `google-search-console` - Google Search Console\n* `google-sheets` - Google Sheets\n* `hubspot` - Hubspot\n* `intercom` - Intercom\n* `jira` - Jira\n* `linear` - Linear\n* `linkedin-ads` - Linkedin Ads\n* `meta-ads` - Meta Ads\n* `pardot` - Pardot\n* `pinterest-ads` - Pinterest Ads\n* `postgresql` - Postgresql\n* `posthog` - Posthog\n* `reddit-ads` - Reddit Ads\n* `resend` - Resend\n* `s3-compatible` - S3 Compatible\n* `salesforce` - Salesforce\n* `slack` - Slack\n* `slack-posthog-code` - Slack Posthog Code\n* `snapchat` - Snapchat\n* `snowflake` - Snowflake\n* `stripe` - Stripe\n* `tiktok-ads` - Tiktok Ads\n* `twilio` - Twilio\n* `vercel` - Vercel"
+            "description": "The kind of integration the member is requesting be connected (e.g. 'slack', 'github').\n\n* `anthropic` - Anthropic\n* `apns` - Apple Push\n* `aws-redshift` - Aws Redshift\n* `aws-s3` - Aws S3\n* `azure-blob` - Azure Blob\n* `bing-ads` - Bing Ads\n* `clickup` - Clickup\n* `customerio-app` - Customerio App\n* `customerio-track` - Customerio Track\n* `customerio-webhook` - Customerio Webhook\n* `databricks` - Databricks\n* `email` - Email\n* `firebase` - Firebase\n* `github` - Github\n* `gitlab` - Gitlab\n* `google-ads` - Google Ads\n* `google-analytics` - Google Analytics\n* `google-calendar` - Google Calendar\n* `google-cloud-service-account` - Google Cloud Service Account\n* `google-cloud-storage` - Google Cloud Storage\n* `google-pubsub` - Google Pubsub\n* `google-search-console` - Google Search Console\n* `google-sheets` - Google Sheets\n* `hubspot` - Hubspot\n* `intercom` - Intercom\n* `jira` - Jira\n* `linear` - Linear\n* `linkedin-ads` - Linkedin Ads\n* `meta-ads` - Meta Ads\n* `pardot` - Pardot\n* `pinterest-ads` - Pinterest Ads\n* `postgresql` - Postgresql\n* `posthog` - Posthog\n* `reddit-ads` - Reddit Ads\n* `resend` - Resend\n* `s3-compatible` - S3 Compatible\n* `salesforce` - Salesforce\n* `slack` - Slack\n* `slack-posthog-code` - Slack Posthog Code\n* `snapchat` - Snapchat\n* `snowflake` - Snowflake\n* `stripe` - Stripe\n* `tiktok-ads` - Tiktok Ads\n* `twilio` - Twilio\n* `vercel` - Vercel"
           },
           "reason": {
             "type": "string",
@@ -166977,6 +168246,7 @@
           "google-cloud-storage",
           "google-ads",
           "google-analytics",
+          "google-calendar",
           "google-search-console",
           "google-sheets",
           "linkedin-ads",
@@ -167031,6 +168301,7 @@
           "gitlab",
           "google-ads",
           "google-analytics",
+          "google-calendar",
           "google-cloud-service-account",
           "google-cloud-storage",
           "google-pubsub",
@@ -167060,7 +168331,7 @@
           "vercel"
         ],
         "type": "string",
-        "description": "* `anthropic` - Anthropic\n* `apns` - Apple Push\n* `aws-redshift` - Aws Redshift\n* `aws-s3` - Aws S3\n* `azure-blob` - Azure Blob\n* `bing-ads` - Bing Ads\n* `clickup` - Clickup\n* `customerio-app` - Customerio App\n* `customerio-track` - Customerio Track\n* `customerio-webhook` - Customerio Webhook\n* `databricks` - Databricks\n* `email` - Email\n* `firebase` - Firebase\n* `github` - Github\n* `gitlab` - Gitlab\n* `google-ads` - Google Ads\n* `google-analytics` - Google Analytics\n* `google-cloud-service-account` - Google Cloud Service Account\n* `google-cloud-storage` - Google Cloud Storage\n* `google-pubsub` - Google Pubsub\n* `google-search-console` - Google Search Console\n* `google-sheets` - Google Sheets\n* `hubspot` - Hubspot\n* `intercom` - Intercom\n* `jira` - Jira\n* `linear` - Linear\n* `linkedin-ads` - Linkedin Ads\n* `meta-ads` - Meta Ads\n* `pardot` - Pardot\n* `pinterest-ads` - Pinterest Ads\n* `postgresql` - Postgresql\n* `posthog` - Posthog\n* `reddit-ads` - Reddit Ads\n* `resend` - Resend\n* `s3-compatible` - S3 Compatible\n* `salesforce` - Salesforce\n* `slack` - Slack\n* `slack-posthog-code` - Slack Posthog Code\n* `snapchat` - Snapchat\n* `snowflake` - Snowflake\n* `stripe` - Stripe\n* `tiktok-ads` - Tiktok Ads\n* `twilio` - Twilio\n* `vercel` - Vercel"
+        "description": "* `anthropic` - Anthropic\n* `apns` - Apple Push\n* `aws-redshift` - Aws Redshift\n* `aws-s3` - Aws S3\n* `azure-blob` - Azure Blob\n* `bing-ads` - Bing Ads\n* `clickup` - Clickup\n* `customerio-app` - Customerio App\n* `customerio-track` - Customerio Track\n* `customerio-webhook` - Customerio Webhook\n* `databricks` - Databricks\n* `email` - Email\n* `firebase` - Firebase\n* `github` - Github\n* `gitlab` - Gitlab\n* `google-ads` - Google Ads\n* `google-analytics` - Google Analytics\n* `google-calendar` - Google Calendar\n* `google-cloud-service-account` - Google Cloud Service Account\n* `google-cloud-storage` - Google Cloud Storage\n* `google-pubsub` - Google Pubsub\n* `google-search-console` - Google Search Console\n* `google-sheets` - Google Sheets\n* `hubspot` - Hubspot\n* `intercom` - Intercom\n* `jira` - Jira\n* `linear` - Linear\n* `linkedin-ads` - Linkedin Ads\n* `meta-ads` - Meta Ads\n* `pardot` - Pardot\n* `pinterest-ads` - Pinterest Ads\n* `postgresql` - Postgresql\n* `posthog` - Posthog\n* `reddit-ads` - Reddit Ads\n* `resend` - Resend\n* `s3-compatible` - S3 Compatible\n* `salesforce` - Salesforce\n* `slack` - Slack\n* `slack-posthog-code` - Slack Posthog Code\n* `snapchat` - Snapchat\n* `snowflake` - Snowflake\n* `stripe` - Stripe\n* `tiktok-ads` - Tiktok Ads\n* `twilio` - Twilio\n* `vercel` - Vercel"
       },
       "InteractionKindEnum": {
         "enum": [
@@ -185855,6 +187126,107 @@
         "title": "MeanRetentionCalculation",
         "type": "string"
       },
+      "Meeting": {
+        "type": "object",
+        "description": "A calendar meeting synced from a connected employee calendar (read-only).",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "readOnly": true,
+            "description": "UUID of the meeting."
+          },
+          "title": {
+            "type": "string",
+            "readOnly": true,
+            "description": "Meeting title; may be empty."
+          },
+          "start_time": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true,
+            "description": "When the meeting starts."
+          },
+          "end_time": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time",
+            "readOnly": true,
+            "description": "When the meeting ends."
+          },
+          "organizer_email": {
+            "type": "string",
+            "readOnly": true,
+            "description": "Email address of the meeting organizer; may be empty."
+          },
+          "status": {
+            "type": "string",
+            "readOnly": true,
+            "description": "Meeting status: 'confirmed', 'tentative', or 'cancelled'."
+          },
+          "participants": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MeetingParticipant"
+            },
+            "readOnly": true,
+            "description": "Attendees of the meeting."
+          }
+        },
+        "required": [
+          "end_time",
+          "id",
+          "organizer_email",
+          "participants",
+          "start_time",
+          "status",
+          "title"
+        ]
+      },
+      "MeetingParticipant": {
+        "type": "object",
+        "description": "One attendee of a synced calendar meeting (read-only).",
+        "properties": {
+          "email": {
+            "type": "string",
+            "readOnly": true,
+            "description": "Email address of the attendee."
+          },
+          "display_name": {
+            "type": "string",
+            "readOnly": true,
+            "description": "Display name from the calendar event; may be empty."
+          },
+          "response_status": {
+            "type": "string",
+            "readOnly": true,
+            "description": "The attendee's RSVP: 'needs_action', 'accepted', 'declined', or 'tentative'."
+          },
+          "is_organizer": {
+            "type": "boolean",
+            "readOnly": true,
+            "description": "Whether this attendee organized the meeting."
+          },
+          "person_id": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uuid",
+            "readOnly": true,
+            "description": "UUID of the PostHog person resolved for this attendee, if any."
+          }
+        },
+        "required": [
+          "display_name",
+          "email",
+          "is_organizer",
+          "person_id",
+          "response_status"
+        ]
+      },
       "MemberAccessUpdate": {
         "type": "object",
         "properties": {
@@ -186023,7 +187395,8 @@
           "id": {
             "type": "string",
             "format": "uuid",
-            "readOnly": true
+            "readOnly": true,
+            "description": "Server-assigned UUID for this recipient's preference record."
           },
           "identifier": {
             "type": "string",
@@ -186035,7 +187408,7 @@
             "description": "When the preference was last updated."
           },
           "preferences": {
-            "description": "Map of category ID to preference status."
+            "description": "Map of category ID to preference status (`OPTED_IN`, `OPTED_OUT` or `NO_PREFERENCE`). The reserved `$all` key covers every marketing message."
           }
         },
         "required": [
@@ -192223,6 +193596,41 @@
           }
         }
       },
+      "PaginatedDataWarehouseExpressionList": {
+        "type": "object",
+        "required": [
+          "count",
+          "results"
+        ],
+        "properties": {
+          "count": {
+            "type": "integer",
+            "example": 123
+          },
+          "next": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uri",
+            "example": "http://api.example.org/accounts/?offset=400&limit=100"
+          },
+          "previous": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uri",
+            "example": "http://api.example.org/accounts/?offset=200&limit=100"
+          },
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DataWarehouseExpression"
+            }
+          }
+        }
+      },
       "PaginatedDataWarehouseModelPathList": {
         "type": "object",
         "required": [
@@ -194961,6 +196369,41 @@
           "has_next": {
             "type": "boolean",
             "description": "Whether more results exist beyond this page; the client fetches the next page with a larger offset."
+          }
+        }
+      },
+      "PaginatedMeetingList": {
+        "type": "object",
+        "required": [
+          "count",
+          "results"
+        ],
+        "properties": {
+          "count": {
+            "type": "integer",
+            "example": 123
+          },
+          "next": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uri",
+            "example": "http://api.example.org/accounts/?offset=400&limit=100"
+          },
+          "previous": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uri",
+            "example": "http://api.example.org/accounts/?offset=200&limit=100"
+          },
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Meeting"
+            }
           }
         }
       },
@@ -197882,6 +199325,20 @@
             ],
             "additionalProperties": false,
             "properties": {
+              "email_domains": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Email domains owned by this account's company, used to match inbound touchpoints to the account."
+              },
+              "known_emails": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Individual email addresses pinned to this account, matched before the domain fallback."
+              },
               "stripe_customer_id": {
                 "type": [
                   "string",
@@ -197931,7 +199388,7 @@
                 ]
               }
             },
-            "description": "Typed account properties: external system identifiers (stripe_customer_id, hubspot_deal_id, billing_id, sfdc_id, zendesk_id, slack_channel_id, usage_dashboard_link, metabase_link). Defaults to an empty object. Unknown keys are rejected. User assignments live on account relationships, not here."
+            "description": "Typed account properties: external system identifiers (stripe_customer_id, hubspot_deal_id, billing_id, sfdc_id, zendesk_id, slack_channel_id, usage_dashboard_link, metabase_link) plus touchpoint matching lists: email_domains (the company's email domains) and known_emails (individual addresses pinned to the account). Defaults to an empty object. Unknown keys are rejected. User assignments live on account relationships, not here."
           },
           "tags": {
             "type": "array",
@@ -198643,6 +200100,17 @@
             ],
             "format": "date-time",
             "readOnly": true
+          }
+        }
+      },
+      "PatchedCIMDVerificationTokenUpdate": {
+        "type": "object",
+        "description": "Write shape for `partial_update` (PATCH). Exposes only `cimd_url`, and only ever\nperforms a null -> value transition: `validate` rejects any instance whose `cimd_url`\nis already set, so an existing binding can never be re-pointed through this endpoint.",
+        "properties": {
+          "cimd_url": {
+            "type": "string",
+            "description": "HTTPS URL of the CIMD metadata document to bind this token to. Only settable once, on a token with no existing binding; an already-bound token must be reissued instead.",
+            "maxLength": 2048
           }
         }
       },
@@ -199668,6 +201136,60 @@
               }
             ],
             "readOnly": true
+          }
+        }
+      },
+      "PatchedDataWarehouseExpression": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "readOnly": true
+          },
+          "deleted": {
+            "type": [
+              "boolean",
+              "null"
+            ],
+            "description": "Whether this expression has been soft-deleted."
+          },
+          "created_by": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/UserBasic"
+              }
+            ],
+            "readOnly": true
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          },
+          "table_name": {
+            "type": "string",
+            "description": "Name of the table the expression field is added to, for example events.",
+            "maxLength": 400
+          },
+          "field_name": {
+            "type": "string",
+            "description": "Name of the virtual field the expression is exposed as. Letters, numbers, underscores and $ only, starting with a letter, underscore or $. Must not clash with an existing field on the table.",
+            "pattern": "^[A-Za-z_$][A-Za-z0-9_$]*$",
+            "maxLength": 400
+          },
+          "expression": {
+            "type": "string",
+            "description": "HogQL expression evaluated in the context of the table, for example properties.$browser or lower(email).",
+            "maxLength": 10000
+          },
+          "connection_id": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uuid",
+            "description": "ExternalDataSource id to scope the expression to that connection's direct-query database. Null applies it to the default warehouse database."
           }
         }
       },
@@ -203804,6 +205326,24 @@
           },
           "values": {
             "description": "Allowed values for List variables. Null for other variable types."
+          },
+          "is_multi": {
+            "type": "boolean",
+            "description": "Whether a List variable accepts multiple selected values."
+          },
+          "values_query": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "HogQL query whose first result column supplies the allowed values for a List variable. An optional second column supplies display labels."
+          },
+          "values_query_connection_id": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "ID of the external data source connection values_query runs against. Null runs it against PostHog."
           }
         }
       },
@@ -206548,6 +208088,20 @@
             "type": "boolean",
             "description": "When true, the prompt is augmented with the Signal side mission and the scanner emits PostHog Signals."
           },
+          "experiment_targeting": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/ScannerExperimentTargeting"
+              },
+              {
+                "type": "null"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "The experiment this scanner's targeting watches, if any. Set null when the experiment targeting is removed."
+          },
           "scanner_version": {
             "type": "integer",
             "readOnly": true,
@@ -207822,13 +209376,13 @@
           },
           "name": {
             "type": "string",
-            "description": "Survey name.",
+            "description": "Survey name. Anyone can read it. In-app surveys send it to every visitor's browser alongside the questions and appearance text, and a hosted survey shows it on its public page. Keep customer names and other private details out of it.",
             "maxLength": 400,
             "minLength": 1
           },
           "description": {
             "type": "string",
-            "description": "Survey description."
+            "description": "Survey description. Internal only: unlike the name and questions, it is never delivered to visitors."
           },
           "type": {
             "allOf": [
@@ -213725,6 +215279,55 @@
           "status"
         ]
       },
+      "PostHogConnectionTarget": {
+        "type": "object",
+        "properties": {
+          "project_id": {
+            "type": "integer",
+            "description": "Project id to use in target API paths. It is the connected project's id, not this one's."
+          },
+          "project_name": {
+            "type": "string",
+            "description": "Name of the connected project."
+          },
+          "organization_id": {
+            "type": "string",
+            "description": "Id of the organization the connected project belongs to."
+          },
+          "organization_name": {
+            "type": "string",
+            "description": "Name of the organization the connected project belongs to."
+          },
+          "region": {
+            "type": "string",
+            "description": "Cloud region the connected project lives in, e.g. `US` or `EU`."
+          },
+          "base_url": {
+            "type": "string",
+            "description": "Base URL requests through this connection are sent to."
+          }
+        },
+        "required": [
+          "base_url",
+          "organization_id",
+          "organization_name",
+          "project_id",
+          "project_name",
+          "region"
+        ]
+      },
+      "PostHogConnectionTargetError": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string",
+            "description": "Why the connected project's context could not be read."
+          }
+        },
+        "required": [
+          "error"
+        ]
+      },
       "PostgresDestinationConfig": {
         "type": "object",
         "description": "Typed configuration for a PostgreSQL batch-export destination.\n\nConnection credentials may live in a linked Integration (when one is provided) or\ninline in this config (legacy). Mirrors the non-credential fields of\n`PostgresBatchExportInputs` in `products/batch_exports/backend/service.py`.",
@@ -213804,6 +215407,19 @@
         ],
         "title": "PrecomputationMode",
         "type": "string"
+      },
+      "PreferencesLink": {
+        "type": "object",
+        "properties": {
+          "preferences_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "Token-gated URL where the recipient can manage their preferences."
+          }
+        },
+        "required": [
+          "preferences_url"
+        ]
       },
       "PreprocessingConfig": {
         "additionalProperties": false,
@@ -236222,7 +237838,7 @@
             "additionalProperties": {
               "$ref": "#/components/schemas/QuotaResourceLimit"
             },
-            "description": "Per-resource limit state for every `QuotaResource` value, e.g. `ai_credits`, `posthog_code_credits`."
+            "description": "Per-resource limit state for every `QuotaResource` value, e.g. `ai_credits`, `posthog_code_credits`. Also carries the informational Desktop component resources (`posthog_code_token_credits`, `sandbox_compute_credits`, `sandbox_compute_cpu_millicore_seconds`, `sandbox_compute_memory_mib_seconds`) with usage in their native units, a null limit, and `limited` always false — they are never quota-enforced; only the combined `posthog_code_credits` is."
           },
           "code_usage_billing_active": {
             "type": "boolean",
@@ -238309,6 +239925,23 @@
         "type": "string",
         "description": "* `active` - Active\n* `completed` - Completed\n* `errored` - Errored"
       },
+      "RemoveOptOutRequest": {
+        "type": "object",
+        "properties": {
+          "identifier": {
+            "type": "string",
+            "description": "The recipient identifier to opt back in (e.g. email address).",
+            "maxLength": 512
+          },
+          "category_key": {
+            "type": "string",
+            "description": "Optional message category key. If omitted, the recipient is opted back in to all marketing messages."
+          }
+        },
+        "required": [
+          "identifier"
+        ]
+      },
       "ReorderTilesRequest": {
         "type": "object",
         "properties": {
@@ -238592,6 +240225,20 @@
           "emits_signals": {
             "type": "boolean",
             "description": "When true, the prompt is augmented with the Signal side mission and the scanner emits PostHog Signals."
+          },
+          "experiment_targeting": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/ScannerExperimentTargeting"
+              },
+              {
+                "type": "null"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "The experiment this scanner's targeting watches, if any. Set null when the experiment targeting is removed."
           },
           "scanner_version": {
             "type": "integer",
@@ -248702,6 +250349,35 @@
           "creators"
         ]
       },
+      "ScannerExperimentTargeting": {
+        "type": "object",
+        "description": "The experiment a scanner's targeting watches. Metadata only; scanning never reads it.",
+        "properties": {
+          "experiment_id": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "The experiment the scanner watches."
+          },
+          "variant_keys": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 400
+            },
+            "description": "Targeted experiment variants. Empty means every variant.",
+            "maxItems": 50
+          },
+          "use_exposure_fallback": {
+            "type": "boolean",
+            "description": "True when the exposure event is captured server-side and the query filters on the `$feature/<flag_key>` property instead."
+          }
+        },
+        "required": [
+          "experiment_id",
+          "use_exposure_fallback",
+          "variant_keys"
+        ]
+      },
       "ScannerImpact": {
         "type": "object",
         "description": "Who this scanner's findings affected in the window; counted from observations, not estimated.",
@@ -250260,7 +251936,7 @@
           },
           "channel_id": {
             "type": "string",
-            "description": "Slack channel ID to create the mirrored thread in. The bot must be a member of the channel.",
+            "description": "Slack channel ID to create the mirrored thread in. The bot must be a member of the channel. The channel's display name is resolved server-side.",
             "maxLength": 255
           }
         },
@@ -254387,12 +256063,12 @@
           },
           "note": {
             "type": "string",
-            "description": "Free-form note explaining the rating. Capped at 4000 characters. Only submitted alongside a note — a bare thumb carries none — and, for a report authored by a scout, forwarded to that scout as a steering note.",
+            "default": "",
+            "description": "Free-form note explaining the rating. Capped at 4000 characters. Optional — a bare thumb carries none. When present and the report was authored by a scout, the note is forwarded to that scout as a steering note.",
             "maxLength": 4000
           }
         },
         "required": [
-          "note",
           "sentiment"
         ]
       },
@@ -254740,7 +256416,7 @@
           },
           "pause_reason": {
             "readOnly": true,
-            "description": "Why the system paused (or warned) this scout: `no_output` (it emitted nothing over the evaluation window), `ignored` (its output received no human engagement), or `repeated_failures` (consecutive failed runs). Null unless `status` is `pending_pause` or `paused_by_system`.\n\n* `no_output` - No output\n* `ignored` - Ignored\n* `repeated_failures` - Repeated failures",
+            "description": "Why the system paused (or warned) this scout: `no_output` (it emitted nothing over the evaluation window), `ignored` (no person engaged with its reports — no view, rating, note, dismissal, or resolution), or `repeated_failures` (consecutive failed runs). Null unless `status` is `pending_pause` or `paused_by_system`.\n\n* `no_output` - No output\n* `ignored` - Ignored\n* `repeated_failures` - Repeated failures",
             "oneOf": [
               {
                 "$ref": "#/components/schemas/ScoutConfigPauseReasonEnum"
@@ -254826,7 +256502,7 @@
             ],
             "format": "date-time",
             "readOnly": true,
-            "description": "When `status` last changed. For `pending_pause` this is when the warning was issued (an `ignored` warning pauses about a week later unless someone acts on the scout's reports; a `no_output` warning only flags the scout); for the paused statuses it is when the scout was paused. Null if the status never changed."
+            "description": "When `status` last changed. For `pending_pause` this is when the warning was issued (an `ignored` warning pauses about a week later unless someone engages with the scout's reports — opening one counts; a `no_output` warning only flags the scout); for the paused statuses it is when the scout was paused. Null if the status never changed."
           },
           "auto_pause_exempt": {
             "type": "boolean",
@@ -257570,9 +259246,14 @@
           "reason": {
             "type": "string",
             "description": "Why this mapping is suggested"
+          },
+          "event_count_30d": {
+            "type": "integer",
+            "description": "Events carrying this raw utm_source in the window. Suggestions are ordered by it."
           }
         },
         "required": [
+          "event_count_30d",
           "raw_utm_source",
           "reason",
           "suggested_target",
@@ -259863,6 +261544,16 @@
           "suggestions"
         ]
       },
+      "SuggestedActionsEnum": {
+        "enum": [
+          "fix_platform_urls",
+          "add_source_mapping",
+          "switch_to_id_match",
+          "add_campaign_name_mapping"
+        ],
+        "type": "string",
+        "description": "* `fix_platform_urls` - fix_platform_urls\n* `add_source_mapping` - add_source_mapping\n* `switch_to_id_match` - switch_to_id_match\n* `add_campaign_name_mapping` - add_campaign_name_mapping"
+      },
       "SuggestedQuestionsQuery": {
         "additionalProperties": false,
         "properties": {
@@ -261674,13 +263365,13 @@
           },
           "name": {
             "type": "string",
-            "description": "Survey name.",
+            "description": "Survey name. Anyone can read it. In-app surveys send it to every visitor's browser alongside the questions and appearance text, and a hosted survey shows it on its public page. Keep customer names and other private details out of it.",
             "maxLength": 400,
             "minLength": 1
           },
           "description": {
             "type": "string",
-            "description": "Survey description."
+            "description": "Survey description. Internal only: unlike the name and questions, it is never delivered to visitors."
           },
           "type": {
             "allOf": [
@@ -264157,10 +265848,14 @@
             "type": "string",
             "description": "Timestamp when the artifact was uploaded"
           },
+          "dismissed_at": {
+            "type": "string",
+            "description": "Timestamp when a user dismissed the artifact. Absent while the artifact is shown."
+          },
           "url": {
             "type": "string",
             "format": "uri",
-            "description": "Presigned download URL for the artifact. Populated on the finalize-upload response so the caller can link to the file directly; it is time-limited and not persisted on the manifest."
+            "description": "Stable download URL for the artifact. Populated on the finalize-upload response so the caller can link to the file; it redirects to a fresh presigned URL on each request and is not persisted on the manifest."
           }
         },
         "required": [
@@ -264237,6 +265932,43 @@
           "content",
           "name",
           "type"
+        ]
+      },
+      "TaskRunArtifactsDismissRequest": {
+        "type": "object",
+        "properties": {
+          "artifact_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 128
+            },
+            "description": "Manifest ids of the artifacts to update. Pass every version of a file together so the whole file is dismissed rather than a single upload of it.",
+            "maxItems": 100
+          },
+          "dismissed": {
+            "type": "boolean",
+            "default": true,
+            "description": "True to hide the artifacts from clients, false to show them again."
+          }
+        },
+        "required": [
+          "artifact_ids"
+        ]
+      },
+      "TaskRunArtifactsDismissResponse": {
+        "type": "object",
+        "properties": {
+          "artifacts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TaskRunArtifactResponse"
+            },
+            "description": "Updated list of artifacts on the run"
+          }
+        },
+        "required": [
+          "artifacts"
         ]
       },
       "TaskRunArtifactsFinalizeUploadRequest": {
@@ -275945,16 +277677,29 @@
           "missing_source_count": {
             "type": "integer",
             "description": "Pageviews that matched this campaign but carried no utm_source, on any issue kind"
+          },
+          "suggested_actions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SuggestedActionsEnum"
+            },
+            "description": "Recommended remediations, most-recommended first. fix_platform_urls cures the tagging bug itself; the others are workarounds that leave the bad URLs in place."
+          },
+          "mapping_candidate": {
+            "type": "string",
+            "description": "The orphaned utm_campaign value that looks like a typo of this campaign, when one was found confidently. Set only alongside add_campaign_name_mapping; empty otherwise, including when several candidates tie and picking one could misattribute spend."
           }
         },
         "required": [
           "alternative_sources",
           "field",
           "kind",
+          "mapping_candidate",
           "message",
           "missing_source_count",
           "severity",
-          "shared_with_integrations"
+          "shared_with_integrations",
+          "suggested_actions"
         ]
       },
       "UtmIssueKindEnum": {
@@ -275983,7 +277728,7 @@
             "items": {
               "$ref": "#/components/schemas/CampaignMappingSuggestion"
             },
-            "description": "Suggested campaign-name clusters (empty in v1)"
+            "description": "campaign_name_mappings entries for orphaned utm_campaign values that fuzzy-match a real campaign. Near-ties are withheld, so an absent campaign may still be mappable by hand."
           },
           "raw_unmatched_samples": {
             "type": "array",
@@ -277307,16 +279052,31 @@
       },
       "WarmTaskRequest": {
         "type": "object",
-        "description": "Request body for warming a full idling Run while composing a Code-app cloud task.\n\nCollection-level: no task exists yet at typing time. The warmer births a draft Task and an\ninteractive Run that boots, clones, checks out `branch`, and starts the agent, then idles awaiting\nthe first message. `github_integration` is a plain integration PK (an integer); the view re-scopes\nit to the caller's team before use.",
+        "description": "Request body for warming a full idling Run while composing a Code-app cloud task.\n\nCollection-level: no task exists yet at typing time. The warmer births a draft Task and an\ninteractive Run that boots and starts the agent, optionally cloning and checking out a repository,\nthen idles awaiting the first message. `github_integration` is a plain integration PK (an integer);\nthe view re-scopes it to the caller's team before use.",
         "properties": {
           "repository": {
-            "type": "string",
-            "description": "Target GitHub repository to clone, in `organization/repo` format (e.g. `posthog/posthog`).",
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Optional GitHub repository to clone, in `organization/repo` format (e.g. `posthog/posthog`).",
             "maxLength": 255
           },
+          "repositories": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 255
+            },
+            "description": "GitHub repositories to clone into the warm sandbox, each in `organization/repo` format.",
+            "maxItems": 3
+          },
           "github_integration": {
-            "type": "integer",
-            "description": "Primary key of the team's GitHub integration to clone with."
+            "type": [
+              "integer",
+              "null"
+            ],
+            "description": "Primary key of the team's GitHub integration to clone with when a repository is selected."
           },
           "branch": {
             "type": [
@@ -277371,11 +279131,7 @@
             "format": "uuid",
             "description": "Optional custom base image to provision before the task is submitted; takes precedence over the environment's image."
           }
-        },
-        "required": [
-          "github_integration",
-          "repository"
-        ]
+        }
       },
       "WarmTaskResponse": {
         "type": "object",
@@ -282118,6 +283874,19 @@
         ],
         "title": "WebVitalsQuery",
         "type": "object"
+      },
+      "WebhookUrl": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "format": "uri",
+            "description": "URL to register in Customer.io so it posts subscription changes to PostHog."
+          }
+        },
+        "required": [
+          "url"
+        ]
       },
       "WeekStartDayEnum": {
         "enum": [
@@ -288551,6 +290320,9 @@
       "name": "business_knowledge"
     },
     {
+      "name": "calendar_sync"
+    },
+    {
       "name": "canvases"
     },
     {
@@ -289007,6 +290779,9 @@
       "name": "warehouse_dag"
     },
     {
+      "name": "warehouse_expressions"
+    },
+    {
       "name": "warehouse_model_paths"
     },
     {
@@ -289064,6 +290839,7 @@
         "approval_policies",
         "batch_exports",
         "business_knowledge",
+        "calendar_sync",
         "canvases",
         "change_requests",
         "cimd_verification_tokens",
@@ -289216,6 +290992,7 @@
         "warehouse_column_annotations",
         "warehouse_column_statistics",
         "warehouse_dag",
+        "warehouse_expressions",
         "warehouse_model_paths",
         "warehouse_saved_queries",
         "warehouse_saved_query_folders",
