@@ -37235,6 +37235,52 @@
         ]
       }
     },
+    "/api/projects/{project_id}/experiments/{id}/session_event_deltas/": {
+      "post": {
+        "operationId": "experiments_session_event_deltas_create",
+        "description": "The recordings worth watching for this experiment, grouped into cards.\n\nEach card is one sentence and the recordings that back it: an event one variant did clearly\nmore than the others, an error signal concentrated in one variant, or a shortcut to a\nmetric event happening on screen. Every card's count is a count of recordings that actually\nexist, so handing its session ids to the recordings list can't come back empty. POST to\ntake the same throttle and cache posture as the other reads in this family rather than\nbecause it carries a body: it takes no parameters, and it only reads.\n\nIt reports no effect size. The experiment's own metric events never enter the comparison,\nand cards carry a direction and a band rather than a rate, a ratio or a person count: the\nexperiment's results already state magnitudes, computed per person over the whole run\nwindow, and this reads one session per person over a clamped one. Two numbers for the same\nevent would read as a contradiction, so this surface states none.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "A unique integer value identifying this experiment.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "experiments"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "experiment:read",
+              "session_recording:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExperimentSessionEventDeltaResponse"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "experiments"
+        ]
+      }
+    },
     "/api/projects/{project_id}/experiments/{id}/ship_variant/": {
       "post": {
         "operationId": "experiments_ship_variant_create",
@@ -126017,10 +126063,11 @@
           "Cancelled",
           "Completed",
           "Failed",
-          "Running"
+          "Running",
+          "Skipped"
         ],
         "type": "string",
-        "description": "* `Cancelled` - Cancelled\n* `Completed` - Completed\n* `Failed` - Failed\n* `Running` - Running"
+        "description": "* `Cancelled` - Cancelled\n* `Completed` - Completed\n* `Failed` - Failed\n* `Running` - Running\n* `Skipped` - Skipped"
       },
       "DataSourceHealthEntry": {
         "type": "object",
@@ -135375,6 +135422,18 @@
               },
               {
                 "type": "null"
+              },
+              {
+                "type": "null"
+              },
+              {
+                "type": "null"
+              },
+              {
+                "type": "null"
+              },
+              {
+                "type": "null"
               }
             ],
             "description": "User ID or role UUID to filter by."
@@ -135403,6 +135462,18 @@
               },
               {
                 "type": "integer"
+              },
+              {
+                "type": "null"
+              },
+              {
+                "type": "null"
+              },
+              {
+                "type": "null"
+              },
+              {
+                "type": "null"
               },
               {
                 "type": "null"
@@ -136640,6 +136711,18 @@
               },
               {
                 "type": "string"
+              },
+              {
+                "type": "null"
+              },
+              {
+                "type": "null"
+              },
+              {
+                "type": "null"
+              },
+              {
+                "type": "null"
               },
               {
                 "type": "null"
@@ -148188,6 +148271,94 @@
           "results"
         ]
       },
+      "ExperimentSessionEventDeltaResponse": {
+        "type": "object",
+        "description": "The recordings worth watching for this experiment, grouped into cards.\n\nDescriptive, never a result: cards say where behavior visibly differed and hand over the\nrecordings, while the experiment's results measure its metrics over the whole run window and\nstate the magnitudes. Nothing here says a variant is winning.",
+        "properties": {
+          "cards": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ExperimentWatchCard"
+            },
+            "description": "The shelf, strongest comparison first, then metric shortcuts. Events the variants can't be told apart on get no card at all rather than a weak one, so an empty shelf means no difference was big enough to be sure of, not that nothing was measured. The experiment's own metric events never appear as comparisons: see metric_events."
+          },
+          "arms": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ExperimentWatchArm"
+            },
+            "description": "Every variant's compared population, in the flag's variant order."
+          },
+          "multiple_variant_persons": {
+            "type": "integer",
+            "description": "People who saw more than one variant and were left out of every card. Always 0 when the experiment attributes such users to the variant they saw first."
+          },
+          "multiple_variant_handling": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ExperimentWatchMultipleVariantHandlingEnum"
+              }
+            ],
+            "description": "How the experiment handles someone who saw more than one variant, followed here so the cards split their people the same way the analysis does.\n\n* `exclude` - exclude\n* `first_seen` - first_seen"
+          },
+          "metric_events": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "The experiment's own metric events, which never enter the behavior comparison. They are the events it was built to move, so they would top the ranking on nearly every experiment, and the experiment's results already say what happened to them with the statistics that go with a result. They can appear as 'metric' shortcut cards, which claim nothing."
+          },
+          "date_from": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Start of what was actually compared. The requested window is the experiment's run window clamped to its most recent 14 days (2 when sessions are matched on the stamped flag property, which no event name can prune a scan on), but a busy experiment reaches the session ceiling long before that, and this reports where the compared sessions really begin - often hours rather than days back. Display this, not the experiment's own dates."
+          },
+          "date_to": {
+            "type": "string",
+            "format": "date-time",
+            "description": "End of what was compared: the experiment's end date, or now while it runs."
+          },
+          "filter_test_accounts": {
+            "type": "boolean",
+            "description": "Whether the project's test-account filters were applied, following the experiment's exposure criteria, the same rule the experiment's recordings list uses."
+          },
+          "used_exposure_fallback": {
+            "type": "boolean",
+            "description": "True when the compared sessions were matched on the stamped $feature/<flag key> event property instead of the exposure event, because the default exposure event has only ever been captured server-side and can never match a session. The sessions then mean 'the flag was active in this session', and the variant comes from the flag's value on each event, so a returning user can be counted under a variant they were re-bucketed into later."
+          },
+          "sessions_truncated": {
+            "type": "boolean",
+            "description": "True when the experiment had more exposed sessions in the requested window than one comparison covers, so the most recent ones were used and date_from is later than the experiment's own window. Every variant is still covered over the same stretch of time."
+          },
+          "events_truncated": {
+            "type": "boolean",
+            "description": "True when the project has more distinct event names in the window than one comparison can rank, so some were never considered."
+          },
+          "min_arm_persons": {
+            "type": "integer",
+            "description": "How many exposed people a variant needs before it can be compared at all. Below it a variant's cards would be noise whatever the evidence bar allows."
+          },
+          "too_early": {
+            "type": "boolean",
+            "description": "True when fewer than two variants have min_arm_persons exposed people, so no comparison exists and cards is empty. Say 'too early to compare' and show the arms' counts; an empty shelf presented without this would read as 'the variants behaved identically'."
+          }
+        },
+        "required": [
+          "arms",
+          "cards",
+          "date_from",
+          "date_to",
+          "events_truncated",
+          "filter_test_accounts",
+          "metric_events",
+          "min_arm_persons",
+          "multiple_variant_handling",
+          "multiple_variant_persons",
+          "sessions_truncated",
+          "too_early",
+          "used_exposure_fallback"
+        ]
+      },
       "ExperimentSessionMetricHit": {
         "type": "object",
         "description": "One experiment metric with at least one matching event in a session recording.",
@@ -149193,6 +149364,116 @@
         ],
         "title": "ExperimentVariantTrendsBaseStats",
         "type": "object"
+      },
+      "ExperimentWatchArm": {
+        "type": "object",
+        "description": "One variant's compared population.",
+        "properties": {
+          "key": {
+            "type": "string",
+            "description": "The variant key."
+          },
+          "persons": {
+            "type": "integer",
+            "description": "Exposed people the comparison covered for this variant. People rather than sessions because a variant can change how often the flag is evaluated again later, which moves a variant's session count without anyone behaving differently. Each person is read from the first session the comparison covers them in, so every variant gets the same amount of behavior per person."
+          },
+          "sessions": {
+            "type": "integer",
+            "description": "Exposed sessions those people were seen in, which is more than the comparison reads: it says how much recorded material sits behind the variant."
+          }
+        },
+        "required": [
+          "key",
+          "persons",
+          "sessions"
+        ]
+      },
+      "ExperimentWatchCard": {
+        "type": "object",
+        "description": "One group of recordings worth opening, and the sentence that justifies it.\n\nDeliberately no rate, no ratio and no person count: a precise number next to an event name is\nan effect size, and the experiment's results publish those for everything it measures, computed\nover a different window and a different unit. The only number here is how many recordings the\ncard can actually show.",
+        "properties": {
+          "kind": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ExperimentWatchCardKindEnum"
+              }
+            ],
+            "description": "What the card is: 'behavior' for an event this variant did clearly more than the other variants together, 'friction' for the same finding on an error or rage signal, 'metric' for a shortcut to recordings around one of the experiment's own metric events. Metric cards claim nothing about how the metric moved: that is the experiment results' answer.\n\n* `behavior` - behavior\n* `friction` - friction\n* `metric` - metric"
+          },
+          "event": {
+            "type": "string",
+            "description": "The event behind the card."
+          },
+          "variant": {
+            "type": "string",
+            "description": "The variant whose recordings these are: for comparison cards, the one that did the event more."
+          },
+          "strength": {
+            "description": "How far apart this variant and the rest are, as a band rather than a number: 'only' when nobody in the other variants did it at all among the people compared, then 'far_more', 'more' and 'slightly_more'. Read off the conservative end of the difference, so a card that clears the bar only because the sample is large reports as slight. Null on metric cards, which compare nothing. Present a band as a comparison ('far more common in test'), never convert it into a multiple.\n\n* `only` - only\n* `far_more` - far_more\n* `more` - more\n* `slightly_more` - slightly_more",
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/ExperimentWatchCardStrengthEnum"
+              },
+              {
+                "$ref": "#/components/schemas/NullEnum"
+              }
+            ]
+          },
+          "metric_name": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The metric whose event this card shortcuts to. Null outside metric cards."
+          },
+          "recording_count": {
+            "type": "integer",
+            "description": "How many recordings the card carries, at most 20. Every card is backed by recordings that actually exist: a finding whose sessions were never recorded is dropped rather than promised."
+          },
+          "session_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "The recordings themselves, most recent first, ready to hand to the recordings list as-is."
+          }
+        },
+        "required": [
+          "event",
+          "kind",
+          "metric_name",
+          "recording_count",
+          "session_ids",
+          "strength",
+          "variant"
+        ]
+      },
+      "ExperimentWatchCardKindEnum": {
+        "enum": [
+          "behavior",
+          "friction",
+          "metric"
+        ],
+        "type": "string",
+        "description": "* `behavior` - behavior\n* `friction` - friction\n* `metric` - metric"
+      },
+      "ExperimentWatchCardStrengthEnum": {
+        "enum": [
+          "only",
+          "far_more",
+          "more",
+          "slightly_more"
+        ],
+        "type": "string",
+        "description": "* `only` - only\n* `far_more` - far_more\n* `more` - more\n* `slightly_more` - slightly_more"
+      },
+      "ExperimentWatchMultipleVariantHandlingEnum": {
+        "enum": [
+          "exclude",
+          "first_seen"
+        ],
+        "type": "string",
+        "description": "* `exclude` - exclude\n* `first_seen` - first_seen"
       },
       "ExperimentWrite": {
         "type": "object",
@@ -265848,6 +266129,18 @@
             "type": "string",
             "description": "Timestamp when the artifact was uploaded"
           },
+          "uploaded_by": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/UploadedByEnum"
+              }
+            ],
+            "description": "Whether the artifact version was uploaded by the task agent or an interactive user.\n\n* `agent` - agent\n* `user` - user"
+          },
+          "uploaded_by_user_id": {
+            "type": "integer",
+            "description": "User id for an interactive user upload. Absent for agent uploads and legacy entries."
+          },
           "dismissed_at": {
             "type": "string",
             "description": "Timestamp when a user dismissed the artifact. Absent while the artifact is shown."
@@ -275886,6 +276179,14 @@
         "required": [
           "file"
         ]
+      },
+      "UploadedByEnum": {
+        "enum": [
+          "agent",
+          "user"
+        ],
+        "type": "string",
+        "description": "* `agent` - agent\n* `user` - user"
       },
       "UpsertWizardSessionRequest": {
         "type": "object",
