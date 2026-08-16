@@ -7730,6 +7730,140 @@
         ]
       }
     },
+    "/api/projects/{project_id}/accounts/{id}/email_threads/": {
+      "get": {
+        "operationId": "accounts_email_threads_list",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "description": "A UUID string identifying this account.",
+            "required": true
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Number of results to return per page.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "offset",
+            "required": false,
+            "in": "query",
+            "description": "The initial index from which to return the results.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "accounts"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "account:read",
+              "ticket:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedAccountEmailThreadList"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "customer_analytics"
+        ]
+      }
+    },
+    "/api/projects/{project_id}/accounts/{id}/email_threads/{thread_id}/": {
+      "get": {
+        "operationId": "accounts_email_thread_messages_list",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string"
+            },
+            "description": "A UUID string identifying this account.",
+            "required": true
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Number of results to return per page.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "offset",
+            "required": false,
+            "in": "query",
+            "description": "The initial index from which to return the results.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          },
+          {
+            "in": "path",
+            "name": "thread_id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "tags": [
+          "accounts"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "account:read",
+              "ticket:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedAccountEmailThreadMessageList"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "customer_analytics"
+        ]
+      }
+    },
     "/api/projects/{project_id}/accounts/{id}/meetings/": {
       "get": {
         "operationId": "accounts_meetings_list",
@@ -108641,6 +108775,188 @@
         "title": "AccountCustomPropertyFilter",
         "type": "object"
       },
+      "AccountEmailThread": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "readOnly": true,
+            "description": "UUID of the captured email thread."
+          },
+          "subject": {
+            "type": "string",
+            "readOnly": true,
+            "description": "Email thread subject."
+          },
+          "preview": {
+            "type": "string",
+            "readOnly": true,
+            "description": "Plain-text preview of the latest captured message."
+          },
+          "first_message_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time",
+            "readOnly": true,
+            "description": "Source timestamp of the first captured message."
+          },
+          "last_message_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time",
+            "readOnly": true,
+            "description": "Source timestamp of the latest captured message."
+          },
+          "message_count": {
+            "type": "integer",
+            "readOnly": true,
+            "description": "Number of captured messages in the thread."
+          },
+          "participants": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AccountEmailThreadParticipant"
+            },
+            "readOnly": true,
+            "description": "Participants included in the email thread."
+          }
+        },
+        "required": [
+          "first_message_at",
+          "id",
+          "last_message_at",
+          "message_count",
+          "participants",
+          "preview",
+          "subject"
+        ]
+      },
+      "AccountEmailThreadAddress": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "readOnly": true,
+            "description": "Name from the email header."
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "readOnly": true,
+            "description": "Email address from the email header."
+          }
+        },
+        "required": [
+          "email",
+          "name"
+        ]
+      },
+      "AccountEmailThreadMessage": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "readOnly": true,
+            "description": "UUID of the captured email message."
+          },
+          "sent_at": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true,
+            "description": "Timestamp from the source email."
+          },
+          "sender": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/AccountEmailThreadAddress"
+              }
+            ],
+            "readOnly": true,
+            "description": "Sender from the email From header."
+          },
+          "to_recipients": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AccountEmailThreadAddress"
+            },
+            "readOnly": true,
+            "description": "Recipients from the email To header."
+          },
+          "cc_recipients": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AccountEmailThreadAddress"
+            },
+            "readOnly": true,
+            "description": "Recipients from the email Cc header."
+          },
+          "sender_authenticated": {
+            "type": "boolean",
+            "readOnly": true,
+            "description": "Whether Mailgun authentication verified the sender domain."
+          },
+          "direction": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/EmailThreadMessageDirectionEnum"
+              }
+            ],
+            "readOnly": true,
+            "description": "Whether PostHog received or sent the message.\n\n* `inbound` - Inbound\n* `outbound` - Outbound"
+          },
+          "content": {
+            "type": "string",
+            "readOnly": true,
+            "description": "Plain-text email content."
+          }
+        },
+        "required": [
+          "cc_recipients",
+          "content",
+          "direction",
+          "id",
+          "sender",
+          "sender_authenticated",
+          "sent_at",
+          "to_recipients"
+        ]
+      },
+      "AccountEmailThreadParticipant": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email",
+            "readOnly": true,
+            "description": "Email address of the thread participant."
+          },
+          "display_name": {
+            "type": "string",
+            "readOnly": true,
+            "description": "Display name from the captured email headers."
+          },
+          "kind": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/EmailThreadParticipantKindEnum"
+              }
+            ],
+            "readOnly": true,
+            "description": "Whether the participant belongs to the PostHog organization or the customer.\n\n* `internal` - Internal\n* `customer` - Customer"
+          }
+        },
+        "required": [
+          "display_name",
+          "email",
+          "kind"
+        ]
+      },
       "AccountNote": {
         "type": "object",
         "description": "A team-wide account note — an internal notebook linked to a Customer analytics account.",
@@ -137124,6 +137440,22 @@
         "type": "string",
         "description": "* `update_content` - update_content\n* `update_column` - update_column\n* `update_row` - update_row\n* `update_body` - update_body\n* `add_content` - add_content\n* `remove_content` - remove_content\n* `move_content` - move_content\n* `add_row` - add_row\n* `remove_row` - remove_row"
       },
+      "EmailThreadMessageDirectionEnum": {
+        "enum": [
+          "inbound",
+          "outbound"
+        ],
+        "type": "string",
+        "description": "* `inbound` - Inbound\n* `outbound` - Outbound"
+      },
+      "EmailThreadParticipantKindEnum": {
+        "enum": [
+          "internal",
+          "customer"
+        ],
+        "type": "string",
+        "description": "* `internal` - Internal\n* `customer` - Customer"
+      },
       "EmailTrackingConsentModeEnum": {
         "enum": [
           "off",
@@ -153034,6 +153366,10 @@
             "type": "integer",
             "description": "The most recordings one card can carry. A card whose recording_count equals this hit the ceiling, so report it as 'at least this many' rather than as a count."
           },
+          "dropped_duplicate_cards": {
+            "type": "integer",
+            "description": "How many cards were removed because their recordings were already another card's on the same shelf. Nothing was lost: the recordings are all reachable through the cards that stayed."
+          },
           "too_early": {
             "type": "boolean",
             "description": "True when fewer than two variants have min_arm_persons exposed people, so no comparison exists and cards is empty. Say 'too early to compare' and show the arms' counts; an empty shelf presented without this would read as 'the variants behaved identically'."
@@ -153044,6 +153380,7 @@
           "cards",
           "date_from",
           "date_to",
+          "dropped_duplicate_cards",
           "events_truncated",
           "filter_test_accounts",
           "max_card_recordings",
@@ -198316,6 +198653,76 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/AccountChannelSummary"
+            }
+          }
+        }
+      },
+      "PaginatedAccountEmailThreadList": {
+        "type": "object",
+        "required": [
+          "count",
+          "results"
+        ],
+        "properties": {
+          "count": {
+            "type": "integer",
+            "example": 123
+          },
+          "next": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uri",
+            "example": "http://api.example.org/accounts/?offset=400&limit=100"
+          },
+          "previous": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uri",
+            "example": "http://api.example.org/accounts/?offset=200&limit=100"
+          },
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AccountEmailThread"
+            }
+          }
+        }
+      },
+      "PaginatedAccountEmailThreadMessageList": {
+        "type": "object",
+        "required": [
+          "count",
+          "results"
+        ],
+        "properties": {
+          "count": {
+            "type": "integer",
+            "example": 123
+          },
+          "next": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uri",
+            "example": "http://api.example.org/accounts/?offset=400&limit=100"
+          },
+          "previous": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uri",
+            "example": "http://api.example.org/accounts/?offset=200&limit=100"
+          },
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AccountEmailThreadMessage"
             }
           }
         }
