@@ -13631,6 +13631,82 @@
         ]
       }
     },
+    "/api/projects/{project_id}/canvases/{id}/request_agent/": {
+      "post": {
+        "operationId": "canvases_request_agent_create",
+        "description": "Route a viewer-approved change request to the canvas's authoring task.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "A UUID string identifying this canvas.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "canvases"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CanvasAgentRequest"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/CanvasAgentRequest"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/CanvasAgentRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "canvas:write",
+              "task:write"
+            ]
+          }
+        ],
+        "responses": {
+          "202": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CanvasAgentRequestResult"
+                }
+              }
+            },
+            "description": ""
+          },
+          "403": {
+            "description": "Agent requests are not declared or the caller is a sandbox."
+          },
+          "409": {
+            "description": "The canvas has no authoring task."
+          },
+          "429": {
+            "description": "The team's compute quota is exhausted; retry later."
+          }
+        },
+        "x-product": [
+          "canvas"
+        ]
+      }
+    },
     "/api/projects/{project_id}/canvases/{id}/request_fix/": {
       "post": {
         "operationId": "canvases_request_fix_create",
@@ -120614,6 +120690,43 @@
           "actions"
         ]
       },
+      "CanvasAgentRequest": {
+        "type": "object",
+        "description": "A viewer-approved request for the canvas's authoring agent.",
+        "properties": {
+          "prompt": {
+            "type": "string",
+            "description": "Exact change request the viewer reviewed and approved in the trusted host dialog.",
+            "maxLength": 10000
+          }
+        },
+        "required": [
+          "prompt"
+        ]
+      },
+      "CanvasAgentRequestResult": {
+        "type": "object",
+        "description": "Outcome of routing a canvas change request.",
+        "properties": {
+          "request_outcome": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/RequestOutcomeEnum"
+              }
+            ],
+            "description": "signaled: the live run received the request. new_run: a fresh run started. already_queued: an identical run was already starting. reported: a non-creator's request was filed in the task thread for the creator.\n\n* `signaled` - signaled\n* `new_run` - new_run\n* `already_queued` - already_queued\n* `reported` - reported"
+          },
+          "task_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Authoring task that received the request or report."
+          }
+        },
+        "required": [
+          "request_outcome",
+          "task_id"
+        ]
+      },
       "CanvasArtifactAsset": {
         "type": "object",
         "description": "One emitted file of a built canvas artifact.",
@@ -120875,6 +120988,10 @@
             "type": "boolean",
             "description": "True when the draft enables inline queries and the current head does not."
           },
+          "agent_requests_enabled": {
+            "type": "boolean",
+            "description": "True when the draft enables requests to the canvas's authoring agent and the current head does not."
+          },
           "network_origins_added": {
             "type": "array",
             "items": {
@@ -120899,6 +121016,7 @@
         },
         "required": [
           "actions_added",
+          "agent_requests_enabled",
           "capture_events_added",
           "inline_queries_enabled",
           "insights_added",
@@ -121123,6 +121241,10 @@
             },
             "description": "Registered action verbs the canvas may invoke via ph.actions (e.g. 'annotations.create', 'tasks.create'). Each executes as the viewer; declaring one shows it in the promote review.",
             "maxItems": 32
+          },
+          "agentRequests": {
+            "type": "boolean",
+            "default": false
           }
         },
         "required": [
@@ -140415,6 +140537,9 @@
               },
               {
                 "type": "null"
+              },
+              {
+                "type": "null"
               }
             ],
             "description": "User ID or role UUID to filter by."
@@ -140443,6 +140568,9 @@
               },
               {
                 "type": "integer"
+              },
+              {
+                "type": "null"
               },
               {
                 "type": "null"
@@ -141680,6 +141808,9 @@
               },
               {
                 "type": "string"
+              },
+              {
+                "type": "null"
               },
               {
                 "type": "null"
@@ -159360,6 +159491,12 @@
               },
               {
                 "type": "null"
+              },
+              {
+                "type": "null"
+              },
+              {
+                "type": "null"
               }
             ],
             "readOnly": true,
@@ -159407,6 +159544,12 @@
                     }
                   }
                 }
+              },
+              {
+                "type": "null"
+              },
+              {
+                "type": "null"
               },
               {
                 "type": "null"
@@ -217166,7 +217309,11 @@
           "enabled": {
             "type": "boolean"
           },
-          "config": {},
+          "config": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "Per-source settings as a JSON object. Keys read by the emission actionability gate on sources that define one (most data warehouse imports, and Conversations): `steering` (string, max 2000 characters) holds the team's preferences about this source's records in plain language: what matters, what to skip, what's out of scope. The emission actionability gate applies it when deciding which records become signals; rules apply from the next sync and nothing already emitted is retracted. `default_not_actionable` (boolean, default false) flips the gate's default: instead of keeping every record the steering rules don't exclude, only records that clearly match the team's preferences are kept. Other sources store these keys without reading them yet; future pipeline stages will consume the same steering text. Some sources read additional keys, for example `recording_filters` and `sample_rate` for session analysis."
+          },
           "created_at": {
             "type": "string",
             "format": "date-time",
@@ -249811,6 +249958,16 @@
           "windowDays"
         ]
       },
+      "RequestOutcomeEnum": {
+        "enum": [
+          "signaled",
+          "new_run",
+          "already_queued",
+          "reported"
+        ],
+        "type": "string",
+        "description": "* `signaled` - signaled\n* `new_run` - new_run\n* `already_queued` - already_queued\n* `reported` - reported"
+      },
       "RequestPriorityEnum": {
         "enum": [
           "high",
@@ -266310,7 +266467,11 @@
           "enabled": {
             "type": "boolean"
           },
-          "config": {},
+          "config": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "Per-source settings as a JSON object. Keys read by the emission actionability gate on sources that define one (most data warehouse imports, and Conversations): `steering` (string, max 2000 characters) holds the team's preferences about this source's records in plain language: what matters, what to skip, what's out of scope. The emission actionability gate applies it when deciding which records become signals; rules apply from the next sync and nothing already emitted is retracted. `default_not_actionable` (boolean, default false) flips the gate's default: instead of keeping every record the steering rules don't exclude, only records that clearly match the team's preferences are kept. Other sources store these keys without reading them yet; future pipeline stages will consume the same steering text. Some sources read additional keys, for example `recording_filters` and `sample_rate` for session analysis."
+          },
           "created_at": {
             "type": "string",
             "format": "date-time",
