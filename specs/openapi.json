@@ -1773,6 +1773,573 @@
         "deprecated": true
       }
     },
+    "/api/organizations/{organization_id}/billing/alerts/": {
+      "get": {
+        "operationId": "billing_alerts_list",
+        "parameters": [
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Number of results to return per page.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "offset",
+            "required": false,
+            "in": "query",
+            "description": "The initial index from which to return the results.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/OrganizationIdPath"
+          }
+        ],
+        "tags": [
+          "billing",
+          "billing"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "organization:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedBillingAlertConfigurationList"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "billing",
+          "billing_alerts"
+        ]
+      },
+      "post": {
+        "operationId": "billing_alerts_create",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/OrganizationIdPath"
+          }
+        ],
+        "tags": [
+          "billing",
+          "billing"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BillingAlertConfiguration"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/BillingAlertConfiguration"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/BillingAlertConfiguration"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "organization:write"
+            ]
+          }
+        ],
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BillingAlertConfiguration"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "billing",
+          "billing_alerts"
+        ]
+      }
+    },
+    "/api/organizations/{organization_id}/billing/alerts/{id}/": {
+      "get": {
+        "operationId": "billing_alerts_retrieve",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "A UUID string identifying this billing alert configuration.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/OrganizationIdPath"
+          }
+        ],
+        "tags": [
+          "billing",
+          "billing"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "organization:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BillingAlertConfiguration"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "billing",
+          "billing_alerts"
+        ]
+      },
+      "put": {
+        "operationId": "billing_alerts_update",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "A UUID string identifying this billing alert configuration.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/OrganizationIdPath"
+          }
+        ],
+        "tags": [
+          "billing",
+          "billing"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BillingAlertConfiguration"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/BillingAlertConfiguration"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/BillingAlertConfiguration"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "organization:write"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BillingAlertConfiguration"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "billing",
+          "billing_alerts"
+        ]
+      },
+      "patch": {
+        "operationId": "billing_alerts_partial_update",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "A UUID string identifying this billing alert configuration.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/OrganizationIdPath"
+          }
+        ],
+        "tags": [
+          "billing",
+          "billing"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchedBillingAlertConfiguration"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchedBillingAlertConfiguration"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchedBillingAlertConfiguration"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "organization:write"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BillingAlertConfiguration"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "billing",
+          "billing_alerts"
+        ]
+      },
+      "delete": {
+        "operationId": "billing_alerts_destroy",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "A UUID string identifying this billing alert configuration.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/OrganizationIdPath"
+          }
+        ],
+        "tags": [
+          "billing",
+          "billing"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "organization:write"
+            ]
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No response body"
+          }
+        },
+        "x-product": [
+          "billing",
+          "billing_alerts"
+        ]
+      }
+    },
+    "/api/organizations/{organization_id}/billing/alerts/{id}/check_now/": {
+      "post": {
+        "operationId": "billing_alerts_check_now_create",
+        "description": "Evaluate this billing alert immediately against real billing spend data. An enabled alert can send notifications when the evaluation records a dispatchable event. A paused alert is evaluated as a preview only: it reports the current spend and would-be outcome without sending notifications or recording an evaluation.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "A UUID string identifying this billing alert configuration.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/OrganizationIdPath"
+          }
+        ],
+        "tags": [
+          "billing",
+          "billing"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "organization:write"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BillingAlertCheckNowResponse"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "billing",
+          "billing_alerts"
+        ]
+      }
+    },
+    "/api/organizations/{organization_id}/billing/alerts/{id}/destinations/": {
+      "post": {
+        "operationId": "billing_alerts_destinations_create",
+        "description": "Create a notification destination for this alert. One HogFunction is created per alert event kind.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "A UUID string identifying this billing alert configuration.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/OrganizationIdPath"
+          }
+        ],
+        "tags": [
+          "billing",
+          "billing"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BillingAlertDestinationCreateData"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/BillingAlertDestinationCreateData"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/BillingAlertDestinationCreateData"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "organization:write"
+            ]
+          }
+        ],
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BillingAlertDestinationResponse"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "billing",
+          "billing_alerts"
+        ]
+      }
+    },
+    "/api/organizations/{organization_id}/billing/alerts/{id}/destinations/delete/": {
+      "post": {
+        "operationId": "billing_alerts_destinations_delete_create",
+        "description": "Delete a notification destination by deleting its HogFunction group atomically.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "A UUID string identifying this billing alert configuration.",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/OrganizationIdPath"
+          }
+        ],
+        "tags": [
+          "billing",
+          "billing"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BillingAlertDeleteDestination"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/BillingAlertDeleteDestination"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/BillingAlertDeleteDestination"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "organization:write"
+            ]
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No response body"
+          }
+        },
+        "x-product": [
+          "billing",
+          "billing_alerts"
+        ]
+      }
+    },
+    "/api/organizations/{organization_id}/billing/alerts/{id}/events/": {
+      "get": {
+        "operationId": "billing_alerts_events_list",
+        "description": "List evaluation and notification events for this billing alert, newest first.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "A UUID string identifying this billing alert configuration.",
+            "required": true
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Number of results to return per page.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "offset",
+            "required": false,
+            "in": "query",
+            "description": "The initial index from which to return the results.",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "$ref": "#/components/parameters/OrganizationIdPath"
+          }
+        ],
+        "tags": [
+          "billing",
+          "billing"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "organization:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedBillingAlertEventList"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "billing",
+          "billing_alerts"
+        ]
+      }
+    },
     "/api/organizations/{organization_id}/cimd_verification_tokens/": {
       "get": {
         "operationId": "cimd_verification_tokens_list",
@@ -13699,7 +14266,7 @@
             "description": "The canvas has no authoring task."
           },
           "429": {
-            "description": "The team's compute quota is exhausted; retry later."
+            "description": "The request was denied for compute: the team's quota is exhausted (retry later), or the organization is deactivated (not retryable)."
           }
         },
         "x-product": [
@@ -23420,6 +23987,238 @@
               }
             },
             "description": ""
+          }
+        },
+        "x-product": [
+          "data_warehouse"
+        ]
+      }
+    },
+    "/api/projects/{project_id}/data_warehouse/managed-warehouse-monitoring/": {
+      "get": {
+        "operationId": "data_warehouse_managed_warehouse_monitoring_retrieve",
+        "description": "Get tenant-safe live worker, session, queue, and capacity data for the current organization.",
+        "summary": "Get managed warehouse monitoring snapshot",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "data_warehouse"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "warehouse_view:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ManagedWarehouseMonitoringSnapshotResponse"
+                }
+              }
+            },
+            "description": "Current organization-scoped worker and query activity."
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ManagedWarehouseMonitoringErrorResponse"
+                }
+              }
+            },
+            "description": "The monitoring query parameters are invalid."
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ManagedWarehouseMonitoringErrorResponse"
+                }
+              }
+            },
+            "description": "Managed warehouse monitoring is not available to the caller."
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ManagedWarehouseMonitoringErrorResponse"
+                }
+              }
+            },
+            "description": "The organization does not have a managed warehouse."
+          },
+          "501": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ManagedWarehouseMonitoringErrorResponse"
+                }
+              }
+            },
+            "description": "Managed warehouse monitoring is not configured."
+          },
+          "502": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ManagedWarehouseMonitoringErrorResponse"
+                }
+              }
+            },
+            "description": "The managed warehouse monitoring service returned an invalid response or was unreachable."
+          },
+          "504": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ManagedWarehouseMonitoringErrorResponse"
+                }
+              }
+            },
+            "description": "The managed warehouse monitoring service timed out."
+          }
+        },
+        "x-product": [
+          "data_warehouse"
+        ]
+      }
+    },
+    "/api/projects/{project_id}/data_warehouse/managed-warehouse-monitoring-timeseries/": {
+      "get": {
+        "operationId": "data_warehouse_managed_warehouse_monitoring_timeseries_retrieve",
+        "description": "Get one allow-listed monitoring metric for the current organization and trailing time window.",
+        "summary": "Get managed warehouse monitoring time series",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "metric",
+            "schema": {
+              "enum": [
+                "query_rate",
+                "error_ratio",
+                "duration_p50",
+                "duration_p95",
+                "sessions_active",
+                "acquire_p95",
+                "acquire_by_source",
+                "storage_bytes",
+                "worker_crash_rate"
+              ],
+              "type": "string",
+              "minLength": 1
+            },
+            "description": "Allow-listed managed warehouse metric to retrieve.\n\n* `query_rate` - query_rate\n* `error_ratio` - error_ratio\n* `duration_p50` - duration_p50\n* `duration_p95` - duration_p95\n* `sessions_active` - sessions_active\n* `acquire_p95` - acquire_p95\n* `acquire_by_source` - acquire_by_source\n* `storage_bytes` - storage_bytes\n* `worker_crash_rate` - worker_crash_rate",
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          },
+          {
+            "in": "query",
+            "name": "window",
+            "schema": {
+              "enum": [
+                "1h",
+                "6h",
+                "24h",
+                "7d",
+                "30d"
+              ],
+              "type": "string",
+              "default": "24h",
+              "minLength": 1
+            },
+            "description": "Trailing time window to retrieve. Defaults to 24h.\n\n* `1h` - 1h\n* `6h` - 6h\n* `24h` - 24h\n* `7d` - 7d\n* `30d` - 30d"
+          }
+        ],
+        "tags": [
+          "data_warehouse"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "warehouse_view:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ManagedWarehouseMonitoringSeriesResponse"
+                }
+              }
+            },
+            "description": "One organization-scoped monitoring metric over time."
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ManagedWarehouseMonitoringErrorResponse"
+                }
+              }
+            },
+            "description": "The monitoring query parameters are invalid."
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ManagedWarehouseMonitoringErrorResponse"
+                }
+              }
+            },
+            "description": "Managed warehouse monitoring is not available to the caller."
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ManagedWarehouseMonitoringErrorResponse"
+                }
+              }
+            },
+            "description": "The organization does not have a managed warehouse."
+          },
+          "501": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ManagedWarehouseMonitoringErrorResponse"
+                }
+              }
+            },
+            "description": "Managed warehouse monitoring is not configured."
+          },
+          "502": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ManagedWarehouseMonitoringErrorResponse"
+                }
+              }
+            },
+            "description": "The managed warehouse monitoring service returned an invalid response or was unreachable."
+          },
+          "504": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ManagedWarehouseMonitoringErrorResponse"
+                }
+              }
+            },
+            "description": "The managed warehouse monitoring service timed out."
           }
         },
         "x-product": [
@@ -78142,7 +78941,7 @@
             "schema": {
               "type": "boolean"
             },
-            "description": "When true, bypasses the Redis cache and re-queries ClickHouse for SDK usage. Use sparingly — data is refreshed every 12 hours by a background job."
+            "description": "When true, bypasses the Redis cache and re-queries ClickHouse for SDK usage. A background job refreshes this data once a day, so the cached answer is usually current. Use sparingly."
           },
           {
             "$ref": "#/components/parameters/ProjectIdPath"
@@ -117364,6 +118163,634 @@
         "type": "string",
         "description": "* `BigQuery` - BigQuery"
       },
+      "BillingAlertCheckNowResponse": {
+        "type": "object",
+        "properties": {
+          "event": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/BillingAlertEvent"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Evaluation event recorded by the manual check, or null for a paused preview."
+          },
+          "dispatched_destinations": {
+            "type": "integer",
+            "description": "Number of destination HogFunctions queued."
+          },
+          "preview": {
+            "type": "boolean",
+            "description": "True when the alert is paused: it was evaluated but no notifications were sent."
+          },
+          "threshold_breached": {
+            "type": "boolean",
+            "description": "Whether the evaluated billing-period total breached the configured threshold."
+          },
+          "current_value": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Evaluated billing-period total, or null when billing data was not available."
+          }
+        },
+        "required": [
+          "dispatched_destinations",
+          "preview",
+          "threshold_breached"
+        ]
+      },
+      "BillingAlertConfiguration": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "readOnly": true,
+            "description": "Unique identifier for this billing alert."
+          },
+          "organization_id": {
+            "type": "string",
+            "format": "uuid",
+            "readOnly": true,
+            "description": "Organization this billing alert belongs to."
+          },
+          "execution_team_id": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "readOnly": true,
+            "description": "Team used as the execution context for internal notification destinations."
+          },
+          "created_by_id": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "readOnly": true,
+            "description": "User ID that created this alert."
+          },
+          "updated_by_id": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "readOnly": true,
+            "description": "User ID that last updated this alert."
+          },
+          "name": {
+            "type": "string",
+            "description": "Display name for this billing alert.",
+            "maxLength": 160
+          },
+          "description": {
+            "type": "string",
+            "description": "Optional internal description."
+          },
+          "enabled": {
+            "type": "boolean",
+            "description": "Whether scheduled checks should evaluate this alert."
+          },
+          "metric": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/BillingAlertMetricEnum"
+              }
+            ],
+            "description": "Billing-period total to evaluate: current spend so far, or projected period-end spend.\n\n* `spend` - Spend\n* `projected_spend` - Projected spend"
+          },
+          "currency": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CurrencyEnum"
+              }
+            ],
+            "readOnly": true,
+            "description": "Server-controlled currency for spend values.\n\n* `USD` - USD"
+          },
+          "configuration_revision": {
+            "type": "integer",
+            "readOnly": true,
+            "description": "Revision incremented whenever evaluation behavior changes."
+          },
+          "threshold_type": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ThresholdTypeEnum"
+              }
+            ],
+            "description": "Threshold rule type. The first version supports absolute value only.\n\n* `relative_increase` - Relative increase\n* `absolute_value` - Absolute value\n* `absolute_increase` - Absolute increase"
+          },
+          "threshold_percentage": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "decimal",
+            "pattern": "^-?\\d{0,6}(?:\\.\\d{0,2})?$",
+            "description": "Reserved for future increase-over-baseline rules. Not used by absolute value alerts."
+          },
+          "threshold_value": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "decimal",
+            "pattern": "^-?\\d{0,14}(?:\\.\\d{0,6})?$",
+            "description": "Absolute value or absolute increase that triggers absolute threshold alerts."
+          },
+          "minimum_value": {
+            "type": "string",
+            "format": "decimal",
+            "pattern": "^-?\\d{0,14}(?:\\.\\d{0,6})?$",
+            "description": "Minimum current value before the alert can fire."
+          },
+          "baseline_window_days": {
+            "type": "integer",
+            "maximum": 90,
+            "minimum": 1,
+            "description": "Reserved for future increase-over-baseline rules. Not used by absolute value alerts."
+          },
+          "evaluation_delay_hours": {
+            "type": "integer",
+            "maximum": 72,
+            "minimum": 0,
+            "description": "Hours after a UTC billing date ends before it becomes eligible for evaluation."
+          },
+          "state": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/BillingAlertStateEnum"
+              }
+            ],
+            "readOnly": true,
+            "description": "Current lifecycle state of this alert.\n\n* `not_firing` - Not firing\n* `firing` - Firing\n* `errored` - Errored\n* `snoozed` - Snoozed\n* `broken` - Broken"
+          },
+          "cooldown_hours": {
+            "type": "integer",
+            "maximum": 720,
+            "minimum": 0,
+            "description": "Minimum hours between repeated firing notifications."
+          },
+          "snoozed_until": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time",
+            "description": "ISO 8601 timestamp until which evaluation and notifications are snoozed, or null to resume."
+          },
+          "next_check_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time",
+            "readOnly": true,
+            "description": "When the next scheduled evaluation is due."
+          },
+          "last_checked_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time",
+            "readOnly": true,
+            "description": "When this alert was last evaluated."
+          },
+          "last_notified_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time",
+            "readOnly": true,
+            "description": "When notifications were last delivered for this alert."
+          },
+          "consecutive_failures": {
+            "type": "integer",
+            "readOnly": true,
+            "description": "Number of consecutive failed evaluations."
+          },
+          "destinations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BillingAlertDestinationSummary"
+            },
+            "readOnly": true,
+            "description": "Notification destination groups configured for this alert, including their shared HogFunctions."
+          },
+          "destination_changes": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/BillingAlertDestinationChanges"
+              }
+            ],
+            "writeOnly": true,
+            "description": "Destination groups to create or delete in the same transaction as this configuration write."
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true,
+            "description": "When this alert was created."
+          },
+          "updated_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time",
+            "readOnly": true,
+            "description": "When this alert was last updated."
+          }
+        },
+        "required": [
+          "configuration_revision",
+          "consecutive_failures",
+          "created_at",
+          "created_by_id",
+          "currency",
+          "destinations",
+          "execution_team_id",
+          "id",
+          "last_checked_at",
+          "last_notified_at",
+          "name",
+          "next_check_at",
+          "organization_id",
+          "state",
+          "updated_at",
+          "updated_by_id"
+        ]
+      },
+      "BillingAlertDeleteDestination": {
+        "type": "object",
+        "properties": {
+          "hog_function_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "HogFunction IDs to delete as one atomic destination group.",
+            "maxItems": 4,
+            "minItems": 4
+          }
+        },
+        "required": [
+          "hog_function_ids"
+        ]
+      },
+      "BillingAlertDestinationChanges": {
+        "type": "object",
+        "properties": {
+          "delete": {
+            "type": "array",
+            "items": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "maxItems": 4,
+              "minItems": 4
+            }
+          },
+          "create": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BillingAlertDestinationCreateData"
+            }
+          }
+        }
+      },
+      "BillingAlertDestinationCreateData": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/NotificationDestinationTypeEnum"
+              }
+            ],
+            "description": "Destination type.\n\n* `slack` - slack\n* `webhook` - webhook\n* `teams` - teams"
+          },
+          "slack_workspace_id": {
+            "type": "integer",
+            "description": "Slack integration ID in the alert execution project."
+          },
+          "slack_channel_id": {
+            "type": "string",
+            "description": "Slack channel ID for alert delivery."
+          },
+          "slack_channel_name": {
+            "type": "string",
+            "description": "Optional Slack channel name shown in the UI."
+          },
+          "webhook_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "HTTPS webhook URL for webhook or Microsoft Teams delivery."
+          }
+        },
+        "required": [
+          "type"
+        ]
+      },
+      "BillingAlertDestinationResponse": {
+        "type": "object",
+        "properties": {
+          "hog_function_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        },
+        "required": [
+          "hog_function_ids"
+        ]
+      },
+      "BillingAlertDestinationSummary": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "$ref": "#/components/schemas/NotificationDestinationTypeEnum"
+          },
+          "hog_function_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        },
+        "required": [
+          "hog_function_ids",
+          "type"
+        ]
+      },
+      "BillingAlertEvent": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "readOnly": true,
+            "description": "Unique identifier for this billing alert event."
+          },
+          "kind": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/BillingAlertEventKindEnum"
+              }
+            ],
+            "readOnly": true,
+            "description": "Event kind for a check, state transition, or delivery-worthy alert event.\n\n* `check` - Check\n* `firing` - Firing\n* `resolved` - Resolved\n* `errored` - Errored\n* `broken_config` - Broken config"
+          },
+          "source": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/BillingAlertEventSourceEnum"
+              }
+            ],
+            "readOnly": true,
+            "description": "Whether this evaluation was scheduled or manually requested.\n\n* `scheduled` - Scheduled\n* `manual` - Manual"
+          },
+          "attempt_number": {
+            "type": "integer",
+            "readOnly": true,
+            "description": "Attempt number for this billing date and configuration revision."
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true,
+            "description": "When this event was recorded."
+          },
+          "evaluation_date": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date",
+            "readOnly": true,
+            "description": "Billing data date evaluated by this event."
+          },
+          "configuration_revision": {
+            "type": "integer",
+            "readOnly": true,
+            "description": "Configuration revision used for this evaluation."
+          },
+          "period_start": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time",
+            "readOnly": true,
+            "description": "Start of the evaluated billing period."
+          },
+          "period_end": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time",
+            "readOnly": true,
+            "description": "End of the evaluated billing period."
+          },
+          "metric": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/BillingAlertMetricEnum"
+              }
+            ],
+            "readOnly": true,
+            "description": "Billing metric evaluated by this event.\n\n* `spend` - Spend\n* `projected_spend` - Projected spend"
+          },
+          "current_value": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "decimal",
+            "pattern": "^-?\\d{0,14}(?:\\.\\d{0,6})?$",
+            "readOnly": true,
+            "description": "Metric value for the evaluated billing date."
+          },
+          "baseline_value": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "decimal",
+            "pattern": "^-?\\d{0,14}(?:\\.\\d{0,6})?$",
+            "readOnly": true,
+            "description": "Average metric value across the baseline window."
+          },
+          "absolute_delta": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "decimal",
+            "pattern": "^-?\\d{0,14}(?:\\.\\d{0,6})?$",
+            "readOnly": true,
+            "description": "Current value minus the baseline value."
+          },
+          "relative_delta_percentage": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "decimal",
+            "pattern": "^-?\\d{0,22}(?:\\.\\d{0,6})?$",
+            "readOnly": true,
+            "description": "Percentage change against the baseline value."
+          },
+          "threshold_breached": {
+            "type": "boolean",
+            "readOnly": true,
+            "description": "Whether the evaluated value breached the configured threshold."
+          },
+          "state_before": {
+            "readOnly": true,
+            "description": "Alert state before this event was applied.\n\n* `not_firing` - Not firing\n* `firing` - Firing\n* `errored` - Errored\n* `snoozed` - Snoozed\n* `broken` - Broken",
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/BillingAlertStateEnum"
+              },
+              {
+                "$ref": "#/components/schemas/NullEnum"
+              }
+            ]
+          },
+          "state_after": {
+            "readOnly": true,
+            "description": "Alert state after this event was applied.\n\n* `not_firing` - Not firing\n* `firing` - Firing\n* `errored` - Errored\n* `snoozed` - Snoozed\n* `broken` - Broken",
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/BillingAlertStateEnum"
+              },
+              {
+                "$ref": "#/components/schemas/NullEnum"
+              }
+            ]
+          },
+          "notification_sent_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time",
+            "readOnly": true,
+            "description": "When notifications for this event were delivered."
+          },
+          "targets_notified": {
+            "readOnly": true,
+            "description": "Notification targets recorded for this event."
+          },
+          "query_duration_ms": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "readOnly": true,
+            "description": "Milliseconds spent fetching billing data for this evaluation."
+          },
+          "error_code": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "readOnly": true,
+            "description": "Exception class name recorded when the evaluation failed."
+          },
+          "error_message": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "readOnly": true,
+            "description": "Failure description recorded when the evaluation failed."
+          },
+          "reason": {
+            "type": "string",
+            "readOnly": true,
+            "description": "Human-readable explanation of the evaluation outcome."
+          }
+        },
+        "required": [
+          "absolute_delta",
+          "attempt_number",
+          "baseline_value",
+          "configuration_revision",
+          "created_at",
+          "current_value",
+          "error_code",
+          "error_message",
+          "evaluation_date",
+          "id",
+          "kind",
+          "metric",
+          "notification_sent_at",
+          "period_end",
+          "period_start",
+          "query_duration_ms",
+          "reason",
+          "relative_delta_percentage",
+          "source",
+          "state_after",
+          "state_before",
+          "targets_notified",
+          "threshold_breached"
+        ]
+      },
+      "BillingAlertEventKindEnum": {
+        "enum": [
+          "check",
+          "firing",
+          "resolved",
+          "errored",
+          "broken_config"
+        ],
+        "type": "string",
+        "description": "* `check` - Check\n* `firing` - Firing\n* `resolved` - Resolved\n* `errored` - Errored\n* `broken_config` - Broken config"
+      },
+      "BillingAlertEventSourceEnum": {
+        "enum": [
+          "scheduled",
+          "manual"
+        ],
+        "type": "string",
+        "description": "* `scheduled` - Scheduled\n* `manual` - Manual"
+      },
+      "BillingAlertMetricEnum": {
+        "enum": [
+          "spend",
+          "projected_spend"
+        ],
+        "type": "string",
+        "description": "* `spend` - Spend\n* `projected_spend` - Projected spend"
+      },
+      "BillingAlertStateEnum": {
+        "enum": [
+          "not_firing",
+          "firing",
+          "errored",
+          "snoozed",
+          "broken"
+        ],
+        "type": "string",
+        "description": "* `not_firing` - Not firing\n* `firing` - Firing\n* `errored` - Errored\n* `snoozed` - Snoozed\n* `broken` - Broken"
+      },
       "BillingExemptReasonEnum": {
         "enum": [
           "posthog_health_check",
@@ -121568,7 +122995,7 @@
             "additionalProperties": {
               "type": "string"
             },
-            "description": "Exact-version dependencies, restricted to the platform-supported set (react, react-dom, @posthog/quill, recharts, lucide-react, dayjs) at their pinned versions."
+            "description": "Exact-version dependencies, restricted to the platform-supported set at its pinned versions."
           },
           "canvasSdkVersion": {
             "type": "string",
@@ -121580,7 +123007,7 @@
                 "$ref": "#/components/schemas/CanvasCapabilities"
               }
             ],
-            "description": "Bounded capabilities frozen into the built artifact. Declare every insight short id the canvas loads, every event it captures, and inlineQueries when it runs ad-hoc HogQL — the host enforces these at runtime and validation rejects undeclared `ph` calls."
+            "description": "Bounded capabilities frozen into the built artifact. Declare every insight short id the canvas loads, every event it captures, and inlineQueries when it runs ad-hoc HogQL — the host enforces these at runtime and validation rejects undeclared `ph` calls. Network origins must be exact HTTPS origins. Data fetched by canvas code can be sent to those origins."
           }
         },
         "required": [
@@ -128245,6 +129672,13 @@
         ],
         "title": "CurrencyCode",
         "type": "string"
+      },
+      "CurrencyEnum": {
+        "enum": [
+          "USD"
+        ],
+        "type": "string",
+        "description": "* `USD` - USD"
       },
       "CurrentBranchHealth": {
         "type": "object",
@@ -140537,9 +141971,6 @@
               },
               {
                 "type": "null"
-              },
-              {
-                "type": "null"
               }
             ],
             "description": "User ID or role UUID to filter by."
@@ -140568,9 +141999,6 @@
               },
               {
                 "type": "integer"
-              },
-              {
-                "type": "null"
               },
               {
                 "type": "null"
@@ -141808,9 +143236,6 @@
               },
               {
                 "type": "string"
-              },
-              {
-                "type": "null"
               },
               {
                 "type": "null"
@@ -155921,6 +157346,11 @@
             "readOnly": true,
             "description": "Whether HogQL queries compile for this connection. When false, only raw SQL (sendRawQuery) works."
           },
+          "is_builtin_managed_warehouse": {
+            "type": "boolean",
+            "readOnly": true,
+            "description": "Whether this option is the built-in PostHog managed warehouse connection."
+          },
           "description": {
             "type": [
               "string",
@@ -155935,6 +157365,7 @@
           "description",
           "engine",
           "id",
+          "is_builtin_managed_warehouse",
           "prefix",
           "source_type",
           "supports_hogql"
@@ -159338,7 +160769,8 @@
           },
           "description": {
             "type": "string",
-            "description": "Required customer-facing request description in Markdown."
+            "default": "",
+            "description": "Optional customer-facing request description in Markdown."
           },
           "account_id": {
             "type": "string",
@@ -159361,7 +160793,6 @@
         },
         "required": [
           "account_id",
-          "description",
           "idempotency_key",
           "product_area_ids",
           "title"
@@ -159491,12 +160922,6 @@
               },
               {
                 "type": "null"
-              },
-              {
-                "type": "null"
-              },
-              {
-                "type": "null"
               }
             ],
             "readOnly": true,
@@ -159544,12 +160969,6 @@
                     }
                   }
                 }
-              },
-              {
-                "type": "null"
-              },
-              {
-                "type": "null"
               },
               {
                 "type": "null"
@@ -159711,7 +161130,7 @@
           },
           "description": {
             "type": "string",
-            "description": "Updated customer-facing request description in Markdown."
+            "description": "Updated optional customer-facing request description in Markdown."
           },
           "account_id": {
             "type": "string",
@@ -164891,6 +166310,30 @@
           "state": {
             "title": "State",
             "type": "string"
+          },
+          "author_login": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Author Login"
+          },
+          "author_association": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Author Association"
           }
         },
         "required": [
@@ -172138,6 +173581,11 @@
             "readOnly": true,
             "description": "Whether SAML is fully configured on this config."
           },
+          "saml_relay_state": {
+            "type": "string",
+            "readOnly": true,
+            "description": "Stable UUID sent as SAML RelayState to route authentication responses to this IdP configuration."
+          },
           "saml_entity_id": {
             "type": [
               "string",
@@ -172214,6 +173662,7 @@
           "has_saml",
           "has_scim",
           "id",
+          "saml_relay_state",
           "scim_bearer_token",
           "updated_at"
         ]
@@ -189772,6 +191221,427 @@
           "total_partitions"
         ]
       },
+      "ManagedWarehouseMonitoringCoverage": {
+        "type": "object",
+        "properties": {
+          "cp_responders": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Number of control planes that contributed live data."
+          },
+          "cp_total": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Number of control planes queried for live data."
+          },
+          "partial": {
+            "type": "boolean",
+            "description": "Whether one or more control planes failed to contribute live data."
+          }
+        },
+        "required": [
+          "cp_responders",
+          "cp_total",
+          "partial"
+        ]
+      },
+      "ManagedWarehouseMonitoringErrorResponse": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string",
+            "description": "Human-readable managed warehouse monitoring error."
+          },
+          "type": {
+            "type": "string",
+            "description": "Machine-readable validation error type."
+          },
+          "code": {
+            "type": "string",
+            "description": "Machine-readable validation error code."
+          },
+          "detail": {
+            "type": "string",
+            "description": "Human-readable validation error detail."
+          },
+          "attr": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Query parameter associated with an error."
+          }
+        }
+      },
+      "ManagedWarehouseMonitoringLimits": {
+        "type": "object",
+        "properties": {
+          "max_workers": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Maximum concurrent workers for the organization. Zero means no organization-specific limit."
+          },
+          "max_vcpus": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Maximum active session vCPUs admitted for the organization. Zero means no organization-specific limit."
+          },
+          "default_worker_cpu": {
+            "type": "string",
+            "description": "Default worker CPU as a Kubernetes resource quantity, such as 2 or 500m."
+          },
+          "default_worker_memory": {
+            "type": "string",
+            "description": "Default worker memory as a Kubernetes resource quantity, such as 8Gi."
+          },
+          "default_worker_ttl_seconds": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Default number of seconds an idle worker remains available for reuse."
+          },
+          "default_worker_min_hot_idle": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Minimum number of idle workers the organization keeps warm."
+          }
+        },
+        "required": [
+          "default_worker_cpu",
+          "default_worker_memory",
+          "default_worker_min_hot_idle",
+          "default_worker_ttl_seconds",
+          "max_vcpus",
+          "max_workers"
+        ]
+      },
+      "ManagedWarehouseMonitoringPoint": {
+        "type": "object",
+        "properties": {
+          "timestamp": {
+            "type": "string",
+            "format": "date-time",
+            "description": "UTC timestamp of the sample."
+          },
+          "value": {
+            "type": "number",
+            "format": "double",
+            "description": "Metric value at the sample timestamp."
+          }
+        },
+        "required": [
+          "timestamp",
+          "value"
+        ]
+      },
+      "ManagedWarehouseMonitoringSeries": {
+        "type": "object",
+        "properties": {
+          "labels": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "description": "Allow-listed labels distinguishing this series, such as query outcome or acquisition source."
+          },
+          "points": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ManagedWarehouseMonitoringPoint"
+            },
+            "description": "Chronologically ordered metric samples."
+          }
+        },
+        "required": [
+          "labels",
+          "points"
+        ]
+      },
+      "ManagedWarehouseMonitoringSeriesResponse": {
+        "type": "object",
+        "properties": {
+          "schema_version": {
+            "type": "integer",
+            "maximum": 1,
+            "minimum": 1,
+            "description": "Version of the managed warehouse monitoring response schema."
+          },
+          "org_id": {
+            "type": "string",
+            "description": "Organization whose managed warehouse is represented."
+          },
+          "metric": {
+            "type": "string",
+            "description": "Allow-listed metric returned by this response."
+          },
+          "unit": {
+            "type": "string",
+            "description": "Unit for every value in the response."
+          },
+          "start": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Inclusive UTC start of the returned time window."
+          },
+          "end": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Inclusive UTC end of the returned time window."
+          },
+          "step_seconds": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Number of seconds between requested samples."
+          },
+          "series": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ManagedWarehouseMonitoringSeries"
+            },
+            "description": "Metric series grouped by their allow-listed labels."
+          }
+        },
+        "required": [
+          "end",
+          "metric",
+          "org_id",
+          "schema_version",
+          "series",
+          "start",
+          "step_seconds",
+          "unit"
+        ]
+      },
+      "ManagedWarehouseMonitoringSnapshotResponse": {
+        "type": "object",
+        "properties": {
+          "schema_version": {
+            "type": "integer",
+            "maximum": 1,
+            "minimum": 1,
+            "description": "Version of the managed warehouse monitoring response schema."
+          },
+          "org_id": {
+            "type": "string",
+            "description": "Organization whose managed warehouse is represented."
+          },
+          "as_of": {
+            "type": "string",
+            "format": "date-time",
+            "description": "UTC timestamp when this snapshot was assembled."
+          },
+          "warehouse": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ManagedWarehouseMonitoringWarehouse"
+              }
+            ],
+            "description": "Managed warehouse lifecycle details."
+          },
+          "limits": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ManagedWarehouseMonitoringLimits"
+              }
+            ],
+            "description": "Organization-level worker limits and defaults."
+          },
+          "totals": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ManagedWarehouseMonitoringTotals"
+              }
+            ],
+            "description": "Current organization-level activity totals."
+          },
+          "workers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ManagedWarehouseMonitoringWorker"
+            },
+            "description": "Current non-terminal workers with tenant-safe runtime details."
+          },
+          "coverage": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ManagedWarehouseMonitoringCoverage"
+              }
+            ],
+            "description": "Completeness of the cross-control-plane live data."
+          }
+        },
+        "required": [
+          "as_of",
+          "coverage",
+          "limits",
+          "org_id",
+          "schema_version",
+          "totals",
+          "warehouse",
+          "workers"
+        ]
+      },
+      "ManagedWarehouseMonitoringTotals": {
+        "type": "object",
+        "properties": {
+          "workers": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Number of current non-terminal workers."
+          },
+          "allocated_cpu_cores": {
+            "type": "number",
+            "format": "double",
+            "minimum": 0,
+            "description": "Total CPU cores allocated to current workers."
+          },
+          "allocated_memory_bytes": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Total memory bytes allocated to current workers."
+          },
+          "active_sessions": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Number of active database sessions across the organization's control planes."
+          },
+          "running_queries": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Number of sessions currently executing a query."
+          },
+          "queued_connections": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Number of connections waiting for worker capacity."
+          }
+        },
+        "required": [
+          "active_sessions",
+          "allocated_cpu_cores",
+          "allocated_memory_bytes",
+          "queued_connections",
+          "running_queries",
+          "workers"
+        ]
+      },
+      "ManagedWarehouseMonitoringWarehouse": {
+        "type": "object",
+        "properties": {
+          "state": {
+            "type": "string",
+            "description": "Current managed warehouse lifecycle state, such as ready, provisioning, or resharding."
+          }
+        },
+        "required": [
+          "state"
+        ]
+      },
+      "ManagedWarehouseMonitoringWorker": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Opaque identifier for the worker."
+          },
+          "state": {
+            "type": "string",
+            "description": "Current worker lifecycle state."
+          },
+          "cpu": {
+            "type": "string",
+            "description": "Worker CPU as a Kubernetes resource quantity, such as 2 or 500m. Blank when unavailable."
+          },
+          "memory": {
+            "type": "string",
+            "description": "Worker memory as a Kubernetes resource quantity, such as 8Gi. Blank when unavailable."
+          },
+          "ttl_seconds": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Number of seconds the worker remains available while idle."
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "UTC timestamp when the worker was created."
+          },
+          "last_heartbeat_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "UTC timestamp of the worker's latest heartbeat."
+          },
+          "session": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/ManagedWarehouseMonitoringWorkerSession"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Sanitized live session assigned to the worker, when one exists."
+          }
+        },
+        "required": [
+          "cpu",
+          "created_at",
+          "id",
+          "last_heartbeat_at",
+          "memory",
+          "state",
+          "ttl_seconds"
+        ]
+      },
+      "ManagedWarehouseMonitoringWorkerSession": {
+        "type": "object",
+        "properties": {
+          "protocol": {
+            "type": "string",
+            "description": "Connection protocol, such as pg or flight."
+          },
+          "state": {
+            "type": "string",
+            "description": "Current database session state."
+          },
+          "elapsed_ms": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Milliseconds elapsed for the current query, or zero when the session is idle."
+          },
+          "percentage": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "format": "double",
+            "minimum": 0,
+            "description": "Best-effort query progress percentage, or null when DuckDB cannot estimate progress."
+          },
+          "rows": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Rows processed by the current query."
+          },
+          "total_rows": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Estimated total rows for the current query when available."
+          },
+          "stalled": {
+            "type": "boolean",
+            "description": "Whether the current query appears stalled."
+          }
+        },
+        "required": [
+          "elapsed_ms",
+          "percentage",
+          "protocol",
+          "rows",
+          "stalled",
+          "state",
+          "total_rows"
+        ]
+      },
       "ManagedWarehouseReadinessStateEnum": {
         "enum": [
           "not_configured",
@@ -199380,6 +201250,76 @@
           }
         }
       },
+      "PaginatedBillingAlertConfigurationList": {
+        "type": "object",
+        "required": [
+          "count",
+          "results"
+        ],
+        "properties": {
+          "count": {
+            "type": "integer",
+            "example": 123
+          },
+          "next": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uri",
+            "example": "http://api.example.org/accounts/?offset=400&limit=100"
+          },
+          "previous": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uri",
+            "example": "http://api.example.org/accounts/?offset=200&limit=100"
+          },
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BillingAlertConfiguration"
+            }
+          }
+        }
+      },
+      "PaginatedBillingAlertEventList": {
+        "type": "object",
+        "required": [
+          "count",
+          "results"
+        ],
+        "properties": {
+          "count": {
+            "type": "integer",
+            "example": 123
+          },
+          "next": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uri",
+            "example": "http://api.example.org/accounts/?offset=400&limit=100"
+          },
+          "previous": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uri",
+            "example": "http://api.example.org/accounts/?offset=200&limit=100"
+          },
+          "results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BillingAlertEvent"
+            }
+          }
+        }
+      },
       "PaginatedBriefConfigList": {
         "type": "object",
         "required": [
@@ -208120,6 +210060,213 @@
           }
         }
       },
+      "PatchedBillingAlertConfiguration": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "readOnly": true,
+            "description": "Unique identifier for this billing alert."
+          },
+          "organization_id": {
+            "type": "string",
+            "format": "uuid",
+            "readOnly": true,
+            "description": "Organization this billing alert belongs to."
+          },
+          "execution_team_id": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "readOnly": true,
+            "description": "Team used as the execution context for internal notification destinations."
+          },
+          "created_by_id": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "readOnly": true,
+            "description": "User ID that created this alert."
+          },
+          "updated_by_id": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "readOnly": true,
+            "description": "User ID that last updated this alert."
+          },
+          "name": {
+            "type": "string",
+            "description": "Display name for this billing alert.",
+            "maxLength": 160
+          },
+          "description": {
+            "type": "string",
+            "description": "Optional internal description."
+          },
+          "enabled": {
+            "type": "boolean",
+            "description": "Whether scheduled checks should evaluate this alert."
+          },
+          "metric": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/BillingAlertMetricEnum"
+              }
+            ],
+            "description": "Billing-period total to evaluate: current spend so far, or projected period-end spend.\n\n* `spend` - Spend\n* `projected_spend` - Projected spend"
+          },
+          "currency": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/CurrencyEnum"
+              }
+            ],
+            "readOnly": true,
+            "description": "Server-controlled currency for spend values.\n\n* `USD` - USD"
+          },
+          "configuration_revision": {
+            "type": "integer",
+            "readOnly": true,
+            "description": "Revision incremented whenever evaluation behavior changes."
+          },
+          "threshold_type": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ThresholdTypeEnum"
+              }
+            ],
+            "description": "Threshold rule type. The first version supports absolute value only.\n\n* `relative_increase` - Relative increase\n* `absolute_value` - Absolute value\n* `absolute_increase` - Absolute increase"
+          },
+          "threshold_percentage": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "decimal",
+            "pattern": "^-?\\d{0,6}(?:\\.\\d{0,2})?$",
+            "description": "Reserved for future increase-over-baseline rules. Not used by absolute value alerts."
+          },
+          "threshold_value": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "decimal",
+            "pattern": "^-?\\d{0,14}(?:\\.\\d{0,6})?$",
+            "description": "Absolute value or absolute increase that triggers absolute threshold alerts."
+          },
+          "minimum_value": {
+            "type": "string",
+            "format": "decimal",
+            "pattern": "^-?\\d{0,14}(?:\\.\\d{0,6})?$",
+            "description": "Minimum current value before the alert can fire."
+          },
+          "baseline_window_days": {
+            "type": "integer",
+            "maximum": 90,
+            "minimum": 1,
+            "description": "Reserved for future increase-over-baseline rules. Not used by absolute value alerts."
+          },
+          "evaluation_delay_hours": {
+            "type": "integer",
+            "maximum": 72,
+            "minimum": 0,
+            "description": "Hours after a UTC billing date ends before it becomes eligible for evaluation."
+          },
+          "state": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/BillingAlertStateEnum"
+              }
+            ],
+            "readOnly": true,
+            "description": "Current lifecycle state of this alert.\n\n* `not_firing` - Not firing\n* `firing` - Firing\n* `errored` - Errored\n* `snoozed` - Snoozed\n* `broken` - Broken"
+          },
+          "cooldown_hours": {
+            "type": "integer",
+            "maximum": 720,
+            "minimum": 0,
+            "description": "Minimum hours between repeated firing notifications."
+          },
+          "snoozed_until": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time",
+            "description": "ISO 8601 timestamp until which evaluation and notifications are snoozed, or null to resume."
+          },
+          "next_check_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time",
+            "readOnly": true,
+            "description": "When the next scheduled evaluation is due."
+          },
+          "last_checked_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time",
+            "readOnly": true,
+            "description": "When this alert was last evaluated."
+          },
+          "last_notified_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time",
+            "readOnly": true,
+            "description": "When notifications were last delivered for this alert."
+          },
+          "consecutive_failures": {
+            "type": "integer",
+            "readOnly": true,
+            "description": "Number of consecutive failed evaluations."
+          },
+          "destinations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BillingAlertDestinationSummary"
+            },
+            "readOnly": true,
+            "description": "Notification destination groups configured for this alert, including their shared HogFunctions."
+          },
+          "destination_changes": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/BillingAlertDestinationChanges"
+              }
+            ],
+            "writeOnly": true,
+            "description": "Destination groups to create or delete in the same transaction as this configuration write."
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true,
+            "description": "When this alert was created."
+          },
+          "updated_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time",
+            "readOnly": true,
+            "description": "When this alert was last updated."
+          }
+        }
+      },
       "PatchedBriefConfig": {
         "type": "object",
         "properties": {
@@ -212224,7 +214371,7 @@
           },
           "description": {
             "type": "string",
-            "description": "Updated customer-facing request description in Markdown."
+            "description": "Updated optional customer-facing request description in Markdown."
           },
           "account_id": {
             "type": "string",
@@ -212861,7 +215008,7 @@
             "description": "Ordered design edits applied atomically to this step's email design - the same operations as the email template patch. The result is re-rendered to HTML server-side, so the sent email always matches the patched design."
           },
           "email_patch": {
-            "description": "Partial email fields deep-merged into the step's email (a null leaf deletes the key): subject, preheader, text, to, from, replyTo, cc, bcc. The design is edited via operations, and html is always re-rendered from it."
+            "description": "Partial email fields deep-merged into the step's email (a null leaf deletes the key): subject, preheader, text, to, from, replyTo, cc, bcc. The sender is from: {integrationId, email?, name?}, where email and name are optional templated overrides resolved per invocation; the address must resolve to the selected sender's verified domain or the send fails. The design is edited via operations, and html is always re-rendered from it."
           }
         }
       },
@@ -213186,6 +215333,11 @@
             "type": "boolean",
             "readOnly": true,
             "description": "Whether SAML is fully configured on this config."
+          },
+          "saml_relay_state": {
+            "type": "string",
+            "readOnly": true,
+            "description": "Stable UUID sent as SAML RelayState to route authentication responses to this IdP configuration."
           },
           "saml_entity_id": {
             "type": [
@@ -217363,7 +219515,7 @@
           },
           "digest_enabled": {
             "type": "boolean",
-            "description": "Whether merged PRs on this repo are captured for the daily Slack digest."
+            "description": "Whether merged PRs on this repo are captured for the daily Slack digest. Requires 'enabled', since the digest reports what stamphog approved."
           },
           "review_mode": {
             "allOf": [
@@ -268749,20 +270901,6 @@
             "readOnly": true,
             "description": "Files changed, recorded when the pull request merges."
           },
-          "audience_key": {
-            "type": "string",
-            "readOnly": true,
-            "description": "Digest bucket this merged PR belongs to; blank unless it was digest-eligible."
-          },
-          "digest_run": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "format": "uuid",
-            "readOnly": true,
-            "description": "ID of the digest run that reported this merged PR, if any."
-          },
           "created_at": {
             "type": "string",
             "format": "date-time",
@@ -268778,12 +270916,10 @@
         },
         "required": [
           "additions",
-          "audience_key",
           "author_login",
           "changed_files",
           "created_at",
           "deletions",
-          "digest_run",
           "head_branch",
           "id",
           "merge_commit_sha",
@@ -268826,7 +270962,7 @@
           },
           "digest_enabled": {
             "type": "boolean",
-            "description": "Whether merged PRs on this repo are captured for the daily Slack digest."
+            "description": "Whether merged PRs on this repo are captured for the daily Slack digest. Requires 'enabled', since the digest reports what stamphog approved."
           },
           "review_mode": {
             "allOf": [
@@ -278943,6 +281079,15 @@
         },
         "title": "ThresholdDetectorConfig",
         "type": "object"
+      },
+      "ThresholdTypeEnum": {
+        "enum": [
+          "relative_increase",
+          "absolute_value",
+          "absolute_increase"
+        ],
+        "type": "string",
+        "description": "* `relative_increase` - Relative increase\n* `absolute_value` - Absolute value\n* `absolute_increase` - Absolute increase"
       },
       "ThresholdWithAlert": {
         "type": "object",
@@ -295234,7 +297379,7 @@
               "string",
               "null"
             ],
-            "description": "RE2-safe regex over raw log bodies that matches lines of this pattern, compiled from the template and validated against the pattern's own examples before being offered. Null when the template lacks literal content or validation failed — never trust an unvalidated predicate. Use with the message/regex log property filter."
+            "description": "RE2-safe regex over raw log bodies that matches lines of this pattern, compiled from the template and validated against the raw bodies of the pattern's own sampled rows before being offered. Null when the template lacks literal content or validation failed. Never trust an unvalidated predicate. Use with the message/regex log property filter."
           },
           "match_literal": {
             "type": [
@@ -295327,7 +297472,7 @@
         "properties": {
           "body": {
             "type": "string",
-            "description": "Log body as the miner saw it: whitespace-collapsed and truncated to the mining length cap, not the raw stored line."
+            "description": "Log body as the miner saw it: whitespace-collapsed and truncated to the mining length cap, with the message field extracted from JSON bodies. This is not the raw stored line."
           },
           "severity_text": {
             "type": "string",
@@ -299839,6 +301984,9 @@
       "name": "batch_exports"
     },
     {
+      "name": "billing"
+    },
+    {
       "name": "business_knowledge"
     },
     {
@@ -300360,6 +302508,7 @@
         "announcements",
         "approval_policies",
         "batch_exports",
+        "billing",
         "business_knowledge",
         "calendar_sync",
         "canvases",
