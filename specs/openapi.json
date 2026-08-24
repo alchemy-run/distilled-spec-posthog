@@ -3338,6 +3338,446 @@
         ]
       }
     },
+    "/api/organizations/{organization_id}/context_layer/channel-pages/{channel_id}/": {
+      "get": {
+        "operationId": "context_layer_channel_pages_retrieve",
+        "description": "The organization's context wiki: a git repo of Markdown pages hosted by PostHog.",
+        "summary": "Resolve a channel's wiki page",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "channel_id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "$ref": "#/components/parameters/OrganizationIdPath"
+          }
+        ],
+        "tags": [
+          "context_layer",
+          "context_layer"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "organization:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChannelWikiPage"
+                }
+              }
+            },
+            "description": ""
+          },
+          "404": {
+            "description": "This channel has no page in the context wiki."
+          }
+        },
+        "x-product": [
+          "context_layer"
+        ]
+      }
+    },
+    "/api/organizations/{organization_id}/context_layer/commits/": {
+      "post": {
+        "operationId": "context_layer_commits_create",
+        "description": "The organization's context wiki: a git repo of Markdown pages hosted by PostHog.",
+        "summary": "Land agent commits from a git bundle",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/OrganizationIdPath"
+          }
+        ],
+        "tags": [
+          "context_layer",
+          "context_layer"
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/CommitBundle"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/CommitBundle"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "organization:write"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContextLayerStatus"
+                }
+              }
+            },
+            "description": ""
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LintError"
+                }
+              }
+            },
+            "description": ""
+          },
+          "409": {
+            "description": "The posted commits conflict with the current head; re-pull and retry."
+          }
+        },
+        "x-product": [
+          "context_layer"
+        ]
+      }
+    },
+    "/api/organizations/{organization_id}/context_layer/enable/": {
+      "post": {
+        "operationId": "context_layer_enable_create",
+        "description": "Create the organization's wiki with the default structure and import existing channel CONTEXT.md documents once. Idempotent.",
+        "summary": "Enable the context layer",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/OrganizationIdPath"
+          }
+        ],
+        "tags": [
+          "context_layer",
+          "context_layer"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "organization:write"
+            ]
+          }
+        ],
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContextLayerStatus"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "context_layer"
+        ]
+      }
+    },
+    "/api/organizations/{organization_id}/context_layer/export/": {
+      "get": {
+        "operationId": "context_layer_export_retrieve",
+        "description": "A short-lived download URL for the wiki's current bundle: the whole repo and its history, one file, standard git.",
+        "summary": "Export the wiki",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/OrganizationIdPath"
+          }
+        ],
+        "tags": [
+          "context_layer",
+          "context_layer"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "organization:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WikiExport"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "context_layer"
+        ]
+      }
+    },
+    "/api/organizations/{organization_id}/context_layer/pages/": {
+      "get": {
+        "operationId": "context_layer_pages_retrieve",
+        "description": "The organization's context wiki: a git repo of Markdown pages hosted by PostHog.",
+        "summary": "Read a wiki page",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/OrganizationIdPath"
+          },
+          {
+            "in": "query",
+            "name": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Repo-relative Markdown path of the page to read.",
+            "required": true
+          }
+        ],
+        "tags": [
+          "context_layer",
+          "context_layer"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "organization:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WikiPage"
+                }
+              }
+            },
+            "description": ""
+          },
+          "404": {
+            "description": "No page at this path."
+          }
+        },
+        "x-product": [
+          "context_layer"
+        ]
+      },
+      "put": {
+        "operationId": "context_layer_pages_update",
+        "description": "The organization's context wiki: a git repo of Markdown pages hosted by PostHog.",
+        "summary": "Create or replace a wiki page",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/OrganizationIdPath"
+          }
+        ],
+        "tags": [
+          "context_layer",
+          "context_layer"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WikiPageWrite"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/WikiPageWrite"
+              }
+            },
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/WikiPageWrite"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "organization:write"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContextLayerStatus"
+                }
+              }
+            },
+            "description": ""
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LintError"
+                }
+              }
+            },
+            "description": ""
+          },
+          "403": {
+            "description": "The wiki is unavailable, or a loop run targeted a page outside its own context."
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HeadConflict"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "context_layer"
+        ]
+      }
+    },
+    "/api/organizations/{organization_id}/context_layer/status/": {
+      "get": {
+        "operationId": "context_layer_status_retrieve",
+        "description": "The organization's context wiki: a git repo of Markdown pages hosted by PostHog.",
+        "summary": "Get the wiki head",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/OrganizationIdPath"
+          }
+        ],
+        "tags": [
+          "context_layer",
+          "context_layer"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "organization:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContextLayerStatus"
+                }
+              }
+            },
+            "description": ""
+          },
+          "404": {
+            "description": "The context layer is not enabled."
+          }
+        },
+        "x-product": [
+          "context_layer"
+        ]
+      }
+    },
+    "/api/organizations/{organization_id}/context_layer/tree/": {
+      "get": {
+        "operationId": "context_layer_tree_retrieve",
+        "description": "The organization's context wiki: a git repo of Markdown pages hosted by PostHog.",
+        "summary": "List wiki pages",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/OrganizationIdPath"
+          }
+        ],
+        "tags": [
+          "context_layer",
+          "context_layer"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "organization:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WikiTree"
+                }
+              }
+            },
+            "description": ""
+          },
+          "404": {
+            "description": "The context layer is not enabled."
+          }
+        },
+        "x-product": [
+          "context_layer"
+        ]
+      }
+    },
+    "/api/organizations/{organization_id}/context_layer/wiki/report/": {
+      "get": {
+        "operationId": "context_layer_wiki_report_retrieve",
+        "description": "The organization's context wiki: a git repo of Markdown pages hosted by PostHog.",
+        "summary": "Report wiki health findings",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/OrganizationIdPath"
+          }
+        ],
+        "tags": [
+          "context_layer",
+          "context_layer"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "organization:read"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WikiHealthReport"
+                }
+              }
+            },
+            "description": ""
+          }
+        },
+        "x-product": [
+          "context_layer"
+        ]
+      }
+    },
     "/api/organizations/{organization_id}/domains/": {
       "get": {
         "operationId": "domains_list",
@@ -91679,6 +92119,51 @@
         ]
       }
     },
+    "/api/projects/{project_id}/task_channels/onboarding_session/": {
+      "post": {
+        "operationId": "task_channels_onboarding_session_create",
+        "description": "Open the agent session a new user lands in, in the team's #general space. Reads the company's homepage, so it takes a few seconds and is deliberately not part of provisioning, which blocks the app opening. Callers fire it without awaiting it when provision_defaults reports personal_created.",
+        "summary": "Start a first-run onboarding session",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ProjectIdPath"
+          }
+        ],
+        "tags": [
+          "task_channels"
+        ],
+        "security": [
+          {
+            "PersonalAPIKeyAuth": [
+              "task:write"
+            ]
+          },
+          {
+            "PersonalAPIKeyAuth": [
+              "task:write"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OnboardingSession"
+                }
+              }
+            },
+            "description": "The session that was started"
+          },
+          "409": {
+            "description": "This team has no #general space to open a session in"
+          }
+        },
+        "x-product": [
+          "tasks"
+        ]
+      }
+    },
     "/api/projects/{project_id}/task_channels/provision_defaults/": {
       "post": {
         "operationId": "task_channels_provision_defaults_create",
@@ -129785,6 +130270,24 @@
           "sent_at"
         ]
       },
+      "ChannelWikiPage": {
+        "type": "object",
+        "description": "Response shape for a channel's page identity in the wiki.",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Repo-relative path of the wiki page whose frontmatter names the channel."
+          },
+          "exists": {
+            "type": "boolean",
+            "default": true,
+            "description": "Whether a page exists at this path. False when the path is a proposal for a channel whose page has not been created yet."
+          }
+        },
+        "required": [
+          "path"
+        ]
+      },
       "ChannelWrite": {
         "type": "object",
         "description": "Request body for creating (resolve-or-create) or renaming a public channel.",
@@ -132083,6 +132586,33 @@
         "type": "string",
         "description": "* `conversation` - conversation\n* `review` - review"
       },
+      "CommitBundle": {
+        "type": "object",
+        "description": "Request body for landing agent commits posted back as a git bundle.",
+        "properties": {
+          "bundle": {
+            "type": "string",
+            "format": "uri",
+            "description": "A `git bundle` carrying the ref to land, created in the agent's clone (for example `git bundle create out.bundle origin/main..main`)."
+          },
+          "summary": {
+            "type": "string",
+            "description": "Optional run summary stored in the landed commit body.",
+            "maxLength": 10000
+          },
+          "branch": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Land a dated dreaming branch (`dream/<YYYY-MM-DD>`) as one merge commit instead of rebasing onto `main`. Omit for ordinary commits on `main`.",
+            "maxLength": 64
+          }
+        },
+        "required": [
+          "bundle"
+        ]
+      },
       "CommitDiffResponse": {
         "type": "object",
         "description": "Response for the `commit` artefact diff endpoint — the commit's branch rendered against the\nrepository default branch.",
@@ -132427,6 +132957,19 @@
         ],
         "type": "string",
         "description": "* `image/png` - image/png\n* `image/jpeg` - image/jpeg\n* `image/gif` - image/gif\n* `image/webp` - image/webp\n* `image/svg+xml` - image/svg+xml\n* `font/woff` - font/woff\n* `font/woff2` - font/woff2\n* `application/wasm` - application/wasm\n* `application/octet-stream` - application/octet-stream"
+      },
+      "ContextLayerStatus": {
+        "type": "object",
+        "description": "Response shape for the wiki's current state.",
+        "properties": {
+          "head_sha": {
+            "type": "string",
+            "description": "Commit sha of the wiki's current head."
+          }
+        },
+        "required": [
+          "head_sha"
+        ]
       },
       "ContextWindowEnum": {
         "enum": [
@@ -175581,6 +176124,24 @@
         "title": "HBOSDetectorConfig",
         "type": "object"
       },
+      "HeadConflict": {
+        "type": "object",
+        "description": "409 body when a guarded write was based on a stale head.",
+        "properties": {
+          "detail": {
+            "type": "string",
+            "description": "What moved and what to do next."
+          },
+          "current_head": {
+            "type": "string",
+            "description": "The wiki's current head sha; re-read pages at this head and retry."
+          }
+        },
+        "required": [
+          "current_head",
+          "detail"
+        ]
+      },
       "HealthCheckSignalExtra": {
         "additionalProperties": false,
         "properties": {
@@ -188448,6 +189009,27 @@
           "id",
           "status",
           "title"
+        ]
+      },
+      "LintError": {
+        "type": "object",
+        "description": "400 body when a write violates the wiki's structure rules.",
+        "properties": {
+          "detail": {
+            "type": "string",
+            "description": "What was rejected."
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "One entry per structure violation found by the linter."
+          }
+        },
+        "required": [
+          "detail",
+          "errors"
         ]
       },
       "ListOutput": {
@@ -207675,6 +208257,20 @@
         "required": [
           "onboarded",
           "schema_name"
+        ]
+      },
+      "OnboardingSession": {
+        "type": "object",
+        "description": "The first-run session that was started for the requester.",
+        "properties": {
+          "task_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "The agent session opened in the team's #general space."
+          }
+        },
+        "required": [
+          "task_id"
         ]
       },
       "OnboardingSkipRequest": {
@@ -305558,6 +306154,143 @@
         "type": "string",
         "description": "* `button` - button\n* `tab` - tab\n* `selector` - selector"
       },
+      "WikiExport": {
+        "type": "object",
+        "description": "Response shape for a wiki bundle export.",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "Short-lived download URL for the wiki's current bundle."
+          },
+          "head_sha": {
+            "type": "string",
+            "description": "Commit sha of the bundle behind the URL."
+          }
+        },
+        "required": [
+          "head_sha",
+          "url"
+        ]
+      },
+      "WikiHealthFinding": {
+        "type": "object",
+        "properties": {
+          "category": {
+            "type": "string",
+            "description": "Stable category used to group this finding."
+          },
+          "path": {
+            "type": "string",
+            "description": "Wiki page path associated with this finding."
+          },
+          "message": {
+            "type": "string",
+            "description": "Human-readable explanation of the finding."
+          }
+        },
+        "required": [
+          "category",
+          "message",
+          "path"
+        ]
+      },
+      "WikiHealthReport": {
+        "type": "object",
+        "properties": {
+          "head_sha": {
+            "type": "string",
+            "description": "Commit sha inspected by the report."
+          },
+          "findings": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WikiHealthFinding"
+            },
+            "description": "Health findings for the current wiki head."
+          }
+        },
+        "required": [
+          "findings",
+          "head_sha"
+        ]
+      },
+      "WikiPage": {
+        "type": "object",
+        "description": "Response shape for one wiki page.",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Repo-relative path of the page, for example `areas/analytics.md`."
+          },
+          "content": {
+            "type": "string",
+            "description": "The page's Markdown content."
+          },
+          "head_sha": {
+            "type": "string",
+            "description": "Commit sha the content was read at; pass back as `base_head` on writes."
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When this page was last changed in the wiki history."
+          }
+        },
+        "required": [
+          "content",
+          "head_sha",
+          "path",
+          "updated_at"
+        ]
+      },
+      "WikiPageWrite": {
+        "type": "object",
+        "description": "Request body for creating or replacing one wiki page.",
+        "properties": {
+          "path": {
+            "type": "string",
+            "description": "Repo-relative Markdown path inside the wiki's structure, for example `projects/12/spaces/general.md`.",
+            "maxLength": 512
+          },
+          "content": {
+            "type": "string",
+            "description": "The complete Markdown content for the page.",
+            "maxLength": 1000000
+          },
+          "base_head": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Optimistic-concurrency guard: the head sha the edit is based on. A moved head is rejected with 409 and the current head; omit to write unguarded."
+          }
+        },
+        "required": [
+          "content",
+          "path"
+        ]
+      },
+      "WikiTree": {
+        "type": "object",
+        "description": "Response shape for the wiki's page listing.",
+        "properties": {
+          "head_sha": {
+            "type": "string",
+            "description": "Commit sha of the wiki's current head."
+          },
+          "paths": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Repo-relative path of every Markdown page at the current head."
+          }
+        },
+        "required": [
+          "head_sha",
+          "paths"
+        ]
+      },
       "WindowDays": {
         "enum": [
           7,
@@ -312280,6 +313013,9 @@
       "name": "comments"
     },
     {
+      "name": "context_layer"
+    },
+    {
       "name": "conversations"
     },
     {
@@ -312778,6 +313514,7 @@
         "code-invites",
         "cohorts",
         "comments",
+        "context_layer",
         "conversations",
         "custom_property_definitions",
         "custom_property_sources",
